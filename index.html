@@ -59,6 +59,7 @@
       <nav class="hidden md:flex items-center gap-8 text-sm text-zinc-400 font-bold">
         <a href="#como-funciona" class="hover:text-yellow-400 transition">Como funciona</a>
         <a href="#feed" class="hover:text-yellow-400 transition">Feed</a>
+        <a href="#shitclips" class="hover:text-yellow-400 transition">ShitClips</a>
         <a href="#perfil" class="hover:text-yellow-400 transition">Perfil</a>
         <a href="#ranking" class="hover:text-yellow-400 transition">Ranking</a>
         <a href="#regras" class="hover:text-yellow-400 transition">Regras</a>
@@ -76,6 +77,7 @@
       <div class="px-5 py-5 flex flex-col gap-4 text-sm font-bold text-zinc-300">
         <a onclick="toggleMenu()" href="#como-funciona">Como funciona</a>
         <a onclick="toggleMenu()" href="#feed">Feed</a>
+        <a onclick="toggleMenu()" href="#shitclips">ShitClips</a>
         <a onclick="toggleMenu()" href="#perfil">Perfil</a>
         <a onclick="toggleMenu()" href="#ranking">Ranking</a>
         <a onclick="toggleMenu()" href="#regras">Regras</a>
@@ -226,6 +228,93 @@
 
             <div id="realFeedList" class="mt-5 space-y-3">
               <p class="text-sm text-zinc-500">A carregar posts...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="shitclips" class="border-y border-white/10 bg-white/[0.02]">
+      <div class="max-w-7xl mx-auto px-5 py-20">
+        <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 items-start">
+          <div>
+            <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">ShitClips™</p>
+            <h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Vídeos curtos onde o mico ganha vida.</h2>
+            <p class="mt-5 text-zinc-400 leading-relaxed max-w-xl">
+              Publica vídeos rápidos de 5 a 10 segundos. O ficheiro vai para o Supabase Storage e o clip aparece no feed público.
+            </p>
+            <div class="mt-7 flex flex-wrap gap-2">
+              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">⏱️ 5 a 10 segundos</span>
+              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">📱 Vertical recomendado</span>
+              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🎬 MP4, WebM ou MOV</span>
+              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🔒 Máx. 30 MB</span>
+            </div>
+            <div class="mt-8 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5">
+              <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.2em]">Regra beta</p>
+              <p class="mt-2 text-sm text-zinc-300">Não publiques terceiros sem autorização, dados pessoais, nudez, ódio ou bullying.</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <form id="clipForm" onsubmit="publishClip(event)" class="rounded-[32px] border border-white/10 bg-zinc-950 p-5 space-y-4">
+              <div>
+                <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Novo ShitClip™</p>
+                <h3 class="mt-2 text-2xl font-black">Publicar vídeo curto</h3>
+                <p class="mt-2 text-sm text-zinc-500">Escolhe um vídeo entre 5 e 10 segundos para publicar.</p>
+              </div>
+
+              <div>
+                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Vídeo</label>
+                <input id="clipFile" required type="file" accept="video/mp4,video/webm,video/quicktime" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+                <p id="clipDurationHint" class="mt-2 text-xs text-zinc-600">Duração aceite: mínimo 5s e máximo 10s.</p>
+              </div>
+
+              <div>
+                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Legenda</label>
+                <input id="clipCaption" maxlength="180" placeholder="O mico em uma frase..." class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Categoria</label>
+                  <select id="clipCategory" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+                    <option>Mico Geral</option>
+                    <option>Trabalho</option>
+                    <option>Dates</option>
+                    <option>Casa de Banho</option>
+                    <option>Família</option>
+                    <option>Vida Adulta</option>
+                    <option>Redes sociais</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Trauma</label>
+                  <select id="clipTrauma" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+                    <option value="1">Grau 1</option><option value="2">Grau 2</option><option value="3">Grau 3</option><option value="4">Grau 4</option><option value="5" selected>Grau 5</option><option value="6">Grau 6</option><option value="7">Grau 7</option><option value="8">Grau 8</option><option value="9">Grau 9</option><option value="10">Grau 10</option>
+                  </select>
+                </div>
+              </div>
+
+              <button id="clipPublishBtn" class="w-full bg-yellow-400 text-black rounded-2xl py-4 text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">
+                Publicar ShitClip™
+              </button>
+
+              <p id="clipMessage" class="hidden text-sm text-yellow-400 font-bold text-center">A publicar...</p>
+            </form>
+
+            <div class="rounded-[32px] border border-white/10 bg-black/40 p-5">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Clips reais</p>
+                  <h3 class="mt-2 text-2xl font-black">Feed de ShitClips™</h3>
+                </div>
+                <button onclick="fetchClips()" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
+              </div>
+              <div id="clipsList" class="mt-5 grid sm:grid-cols-2 gap-4">
+                <p class="text-sm text-zinc-500">A carregar clips...</p>
+              </div>
             </div>
           </div>
         </div>
@@ -723,6 +812,208 @@
       }).join("");
     };
 
+
+    function getVideoDuration(file) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const video = document.createElement("video");
+        video.preload = "metadata";
+        video.onloadedmetadata = () => {
+          URL.revokeObjectURL(url);
+          resolve(video.duration || 0);
+        };
+        video.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("Não foi possível ler a duração do vídeo."));
+        };
+        video.src = url;
+      });
+    }
+
+    window.publishClip = async function(event) {
+      event.preventDefault();
+
+      if (!currentUser) {
+        setMessage("clipMessage", "error", "Faz login antes de publicar um ShitClip™.");
+        openRegisterModal("login");
+        return;
+      }
+
+      const fileInput = document.getElementById("clipFile");
+      const file = fileInput.files?.[0];
+      const caption = document.getElementById("clipCaption").value.trim();
+      const category = document.getElementById("clipCategory").value;
+      const trauma_level = Number(document.getElementById("clipTrauma").value);
+
+      if (!file) {
+        setMessage("clipMessage", "error", "Escolhe um vídeo primeiro.");
+        return;
+      }
+
+      if (file.size > 30 * 1024 * 1024) {
+        setMessage("clipMessage", "error", "O vídeo deve ter no máximo 30 MB.");
+        return;
+      }
+
+      if (!["video/mp4", "video/webm", "video/quicktime"].includes(file.type)) {
+        setMessage("clipMessage", "error", "Formato inválido. Usa MP4, WebM ou MOV.");
+        return;
+      }
+
+      let duration = 0;
+      try {
+        duration = await getVideoDuration(file);
+      } catch (err) {
+        setMessage("clipMessage", "error", err.message);
+        return;
+      }
+
+      if (duration < 5 || duration > 10.5) {
+        setMessage("clipMessage", "error", `O vídeo tem ${duration.toFixed(1)}s. Usa vídeos de 5 a 10 segundos.`);
+        return;
+      }
+
+      setMessage("clipMessage", "info", "A enviar vídeo para o Supabase Storage...");
+
+      const ext = file.name.split(".").pop() || "mp4";
+      const safeExt = ext.toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
+      const filePath = `${currentUser.id}/${Date.now()}.${safeExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("clips")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        setMessage("clipMessage", "error", uploadError.message);
+        return;
+      }
+
+      const { data: publicData } = supabase.storage.from("clips").getPublicUrl(filePath);
+      const video_url = publicData.publicUrl;
+
+      setMessage("clipMessage", "info", "A guardar ShitClip™ na base de dados...");
+
+      const { error: insertError } = await supabase.from("clips").insert({
+        user_id: currentUser.id,
+        video_url,
+        caption,
+        category,
+        trauma_level,
+        status: "active"
+      });
+
+      if (insertError) {
+        setMessage("clipMessage", "error", insertError.message);
+        return;
+      }
+
+      setMessage("clipMessage", "success", "ShitClip™ publicado com sucesso.");
+      event.target.reset();
+      document.getElementById("clipDurationHint").innerText = "Duração aceite: mínimo 5s e máximo 10s.";
+      await fetchClips();
+    };
+
+    window.fetchClips = async function() {
+      const list = document.getElementById("clipsList");
+      if (!list) return;
+
+      list.innerHTML = '<p class="text-sm text-zinc-500">A carregar ShitClips™...</p>';
+
+      const { data, error } = await supabase
+        .from("clips")
+        .select(`
+          id,
+          video_url,
+          caption,
+          category,
+          trauma_level,
+          reactions_count,
+          comments_count,
+          created_at,
+          profiles (
+            username,
+            display_name
+          )
+        `)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(error.message)}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        list.innerHTML = `
+          <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
+            <div class="text-4xl">🎬</div>
+            <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = data.map((clip) => {
+        const username = clip.profiles?.username || "utilizador";
+        return `
+          <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
+            <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
+            <div class="p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-black">@${escapeHtml(username)}</p>
+                  <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
+                </div>
+                <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
+              </div>
+              ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
+              <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
+                <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
+                <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    };
+
+    window.shareClip = async function(clipId) {
+      const url = window.location.href.split("#")[0] + "#shitclips";
+      const text = "Olha este ShitClip™ no SHITAGRAM™";
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: "SHITAGRAM™", text, url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert("Link copiado. Partilha o ShitClip™.");
+        }
+      } catch {
+        alert("Link copiado. Partilha o ShitClip™.");
+      }
+    };
+
+    const clipFileInput = document.getElementById("clipFile");
+    if (clipFileInput) {
+      clipFileInput.addEventListener("change", async function() {
+        const file = this.files?.[0];
+        const hint = document.getElementById("clipDurationHint");
+        if (!file || !hint) return;
+        try {
+          const duration = await getVideoDuration(file);
+          hint.innerText = `Duração detetada: ${duration.toFixed(1)}s. ${duration >= 5 && duration <= 10.5 ? "Pronto para publicar." : "Tem de ter entre 5 e 10 segundos."}`;
+          hint.className = duration >= 5 && duration <= 10.5 ? "mt-2 text-xs text-green-400" : "mt-2 text-xs text-red-400";
+        } catch {
+          hint.innerText = "Não foi possível ler a duração do vídeo.";
+          hint.className = "mt-2 text-xs text-red-400";
+        }
+      });
+    }
+
     function startRealtime() {
       if (realtimeChannel) return;
 
@@ -731,6 +1022,7 @@
         .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, fetchPosts)
         .on("postgres_changes", { event: "*", schema: "public", table: "reactions" }, fetchPosts)
         .on("postgres_changes", { event: "*", schema: "public", table: "comments" }, fetchPosts)
+        .on("postgres_changes", { event: "*", schema: "public", table: "clips" }, fetchClips)
         .subscribe();
     }
 
@@ -852,6 +1144,7 @@
 
       updateProfileUI();
       fetchPosts();
+      fetchClips();
       startRealtime();
     }
 
