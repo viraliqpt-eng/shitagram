@@ -1,1390 +1,156 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ - A vergonha agora dá XP</title>
-  <meta name="description" content="SHITAGRAM™ é uma plataforma humorística onde micos, falhanços e pequenas tragédias sociais viram XP, ranking e histórias partilháveis." />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário com Botão Excluir</title>
+  
   <style>
-    :root {
-      --gold: #ffb800;
-      --bg: #050505;
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
     }
-
-    * { box-sizing: border-box; scroll-behavior: smooth; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: #fff; font-family: "Inter", system-ui, sans-serif; }
-    body { overflow-x: hidden; }
-    .hero-gradient {
-      background:
-        radial-gradient(circle at top left, rgba(255,184,0,0.18), transparent 32%),
-        radial-gradient(circle at 80% 20%, rgba(251,146,60,0.12), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(255,184,0,0.08), transparent 40%),
-        #050505;
+    
+    form {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .phone-frame {
-      background: linear-gradient(180deg, #111, #050505);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 70px rgba(255,184,0,0.08);
+    
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
     }
-    .gold-glow { box-shadow: 0 0 40px rgba(255,184,0,0.18); }
-    .floating-card { animation: floatCard 5s ease-in-out infinite; }
-    @keyframes floatCard { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-    .fade-in { animation: fadeIn 0.9s ease forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-    .mobile-menu { display: none; }
-    .mobile-menu.open { display: block; }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    
+    .botoes {
+      margin-top: 30px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    
+    .btn-salvar {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .btn-salvar:hover {
+      background-color: #218838;
+    }
+    
+    .btn-excluir {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-excluir:hover {
+      background-color: #c82333;
+    }
+    
+    .btn-cancelar {
+      background-color: #6c757d;
+      color: white;
+    }
   </style>
 </head>
+<body>
 
-<body class="hero-gradient">
-  <header class="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl bg-yellow-400/10 border border-yellow-400/25 flex items-center justify-center text-2xl">💩</div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-lg font-black tracking-tight">SHITAGRAM</span>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 font-black">TM</span>
-          </div>
-          <p class="text-[11px] text-zinc-500 font-semibold">A vergonha agora dá XP.</p>
-        </div>
-      </a>
+  <h2>Editar / Cadastrar Registro</h2>
+  
+  <form id="formulario" action="/salvar" method="POST">
+    
+    <!-- Campo oculto com ID (importante para exclusão) -->
+    <input type="hidden" name="id" id="registroId" value="123">
 
-      <nav class="hidden md:flex items-center gap-8 text-sm text-zinc-400 font-bold">
-        <a href="#como-funciona" class="hover:text-yellow-400 transition">Como funciona</a>
-        <a href="#feed" class="hover:text-yellow-400 transition">Feed</a>
-        <a href="#shitclips" class="hover:text-yellow-400 transition">ShitClips</a>
-        <a href="#perfil" class="hover:text-yellow-400 transition">Perfil</a>
-        <a href="#ranking" class="hover:text-yellow-400 transition">Ranking</a>
-        <a href="#regras" class="hover:text-yellow-400 transition">Regras</a>
-      </nav>
+    <label for="nome">Nome Completo:</label>
+    <input type="text" id="nome" name="nome" required>
 
-      <div class="hidden md:flex items-center gap-2">
-        <button
-          id="headerLoginBtn"
-          onclick="openRegisterModal('login')"
-          class="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-xs font-black uppercase tracking-wider hover:bg-white/10 transition"
-        >
-          Entrar
-        </button>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
 
-        <button
-          id="headerRegisterBtn"
-          onclick="openRegisterModal('register')"
-          class="px-4 py-2.5 rounded-xl bg-yellow-400 text-black text-xs font-black uppercase tracking-wider hover:bg-yellow-300 transition shadow-lg shadow-yellow-500/10"
-        >
-          Criar conta
-        </button>
+    <label for="telefone">Telefone:</label>
+    <input type="tel" id="telefone" name="telefone">
 
-        <button
-          id="headerUserBtn"
-          onclick="document.getElementById('perfil').scrollIntoView({ behavior: 'smooth' })"
-          class="hidden px-4 py-2.5 rounded-xl border border-yellow-400/30 bg-yellow-400/10 text-yellow-400 text-xs font-black uppercase tracking-wider hover:bg-yellow-400 hover:text-black transition"
-        >
-          @user
-        </button>
+    <label for="observacoes">Observações:</label>
+    <textarea id="observacoes" name="observacoes" rows="4"></textarea>
 
-        <button
-          id="headerLogoutBtn"
-          onclick="logout()"
-          class="hidden px-4 py-2.5 rounded-xl bg-red-500 text-white text-xs font-black uppercase tracking-wider hover:bg-red-400 transition"
-        >
-          Sair
-        </button>
-      </div>
-
-      <button onclick="toggleMenu()" class="md:hidden w-11 h-11 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">☰</button>
+    <!-- Botões -->
+    <div class="botoes">
+      <button type="button" class="btn-cancelar" onclick="window.history.back()">
+        Cancelar
+      </button>
+      
+      <button type="submit" class="btn-salvar">
+        💾 Salvar
+      </button>
+      
+      <button type="button" id="btnExcluir" class="btn-excluir">
+        🗑️ Excluir
+      </button>
     </div>
-
-    <div id="mobileMenu" class="mobile-menu md:hidden border-t border-white/10 bg-black/95">
-      <div class="px-5 py-5 flex flex-col gap-4 text-sm font-bold text-zinc-300">
-        <a onclick="toggleMenu()" href="#como-funciona">Como funciona</a>
-        <a onclick="toggleMenu()" href="#feed">Feed</a>
-        <a onclick="toggleMenu()" href="#shitclips">ShitClips</a>
-        <a onclick="toggleMenu()" href="#perfil">Perfil</a>
-        <a onclick="toggleMenu()" href="#ranking">Ranking</a>
-        <a onclick="toggleMenu()" href="#regras">Regras</a>
-
-        <button
-          id="mobileLoginBtn"
-          onclick="toggleMenu(); openRegisterModal('login')"
-          class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-left font-black uppercase"
-        >
-          Entrar
-        </button>
-
-        <button
-          id="mobileRegisterBtn"
-          onclick="toggleMenu(); openRegisterModal('register')"
-          class="bg-yellow-400 text-black rounded-xl px-4 py-3 text-center font-black uppercase"
-        >
-          Criar conta
-        </button>
-
-        <button
-          id="mobileUserBtn"
-          onclick="toggleMenu(); document.getElementById('perfil').scrollIntoView({ behavior: 'smooth' })"
-          class="hidden bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 rounded-xl px-4 py-3 text-left font-black uppercase"
-        >
-          @user
-        </button>
-
-        <button
-          id="mobileLogoutBtn"
-          onclick="toggleMenu(); logout()"
-          class="hidden bg-red-500 text-white rounded-xl px-4 py-3 text-center font-black uppercase"
-        >
-          Sair
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="pt-24">
-    <section class="relative max-w-7xl mx-auto px-5 pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
-      <div class="absolute -top-40 -left-40 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute top-40 -right-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="grid lg:grid-cols-2 gap-14 items-center relative z-10">
-        <div class="fade-in">
-          <div class="inline-flex items-center gap-2 rounded-full border border-yellow-400/20 bg-yellow-400/10 px-4 py-2 text-yellow-400 text-xs font-black uppercase tracking-[0.2em]">
-            <span>🔥</span><span>Nova rede social humorística</span>
-          </div>
-          <h1 class="mt-7 text-5xl md:text-7xl font-black leading-[0.95] tracking-tight">A rede social onde a vergonha finalmente dá <span class="text-yellow-400">XP.</span></h1>
-          <p class="mt-6 text-lg md:text-xl text-zinc-400 leading-relaxed max-w-xl">Partilha micos, falhanços, dates desastrosos, momentos embaraçosos e pequenas tragédias do dia a dia. Quanto maior a vergonha, maior a glória.</p>
-          <div class="mt-9 flex flex-col sm:flex-row gap-3">
-            <button onclick="openRegisterModal('register')" class="inline-flex items-center justify-center rounded-2xl bg-yellow-400 px-7 py-4 text-black text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition shadow-xl shadow-yellow-500/20">Confessar a minha desgraça →</button>
-            <a href="#feed" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-7 py-4 text-white text-sm font-black uppercase tracking-wider hover:bg-white/10 transition">Ver tragédias em alta</a>
-          </div>
-          <div class="mt-10 grid grid-cols-3 gap-3 max-w-md">
-            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p class="text-2xl font-black">12k+</p><p class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Micos</p></div>
-            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p class="text-2xl font-black text-yellow-400">89%</p><p class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Dor comum</p></div>
-            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p class="text-2xl font-black">24h</p><p class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Ranking</p></div>
-          </div>
-        </div>
-
-        <div class="relative fade-in">
-          <div class="absolute -inset-6 bg-yellow-400/10 blur-3xl rounded-full"></div>
-          <div class="relative mx-auto w-full max-w-[390px] rounded-[36px] phone-frame overflow-hidden floating-card">
-            <div class="px-4 pt-4 pb-3 border-b border-white/10 bg-zinc-950/90">
-              <div class="flex items-center justify-between">
-                <div><p class="text-yellow-400 text-[10px] font-black uppercase tracking-[0.2em]">SHITAGRAM™</p><h2 class="text-lg font-black">Feed em alta</h2></div>
-                <div class="w-10 h-10 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-xl">💩</div>
-              </div>
-            </div>
-            <div class="p-4 space-y-3 bg-[#070707]">
-              <article class="rounded-3xl border border-white/10 bg-zinc-950 p-4">
-                <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-black">@marta_dates</p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">Dates Falhados</p></div><span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau 10</span></div>
-                <h3 class="mt-4 text-sm font-black leading-snug">Enviei o print das mensagens dele para ele próprio.</h3>
-                <p class="mt-2 text-xs text-zinc-400 leading-relaxed">Era para mandar ao grupo das amigas. Mandei ao próprio. Ainda tentei fingir normalidade, mas o estrago já estava feito.</p>
-                <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[11px] text-zinc-400 font-black">💩 Também me aconteceu</span><span class="text-[11px] text-yellow-400 font-black">12.4k</span></div>
-              </article>
-              <article class="rounded-3xl border border-white/10 bg-zinc-950 p-4">
-                <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-black">@ze_reunioes</p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">Trabalho</p></div><span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau 9</span></div>
-                <h3 class="mt-4 text-sm font-black leading-snug">Partilhei o ecrã com a conversa do grupo aberta.</h3>
-                <p class="mt-2 text-xs text-zinc-400 leading-relaxed">O chefe viu a alcunha que tínhamos dado a ele. A reunião continuou, mas a minha alma saiu do corpo.</p>
-                <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[11px] text-zinc-400 font-black">💩 Também me aconteceu</span><span class="text-[11px] text-yellow-400 font-black">8.7k</span></div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="como-funciona" class="border-y border-white/10 bg-white/[0.02]">
-      <div class="max-w-7xl mx-auto px-5 py-20">
-        <div class="max-w-2xl"><p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Como funciona</p><h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Simples, rápido e perigosamente identificável.</h2></div>
-        <div class="mt-10 grid md:grid-cols-3 gap-4">
-          <div class="rounded-3xl border border-white/10 bg-black/50 p-6"><p class="text-yellow-400 text-sm font-black">01</p><h3 class="mt-5 text-xl font-black">Cria conta</h3><p class="mt-3 text-sm text-zinc-400 leading-relaxed">Escolhe o teu username e entra na comunidade dos sobreviventes sociais.</p></div>
-          <div class="rounded-3xl border border-white/10 bg-black/50 p-6"><p class="text-yellow-400 text-sm font-black">02</p><h3 class="mt-5 text-xl font-black">Confessa o mico</h3><p class="mt-3 text-sm text-zinc-400 leading-relaxed">Publica aquela história que ainda te visita antes de dormir.</p></div>
-          <div class="rounded-3xl border border-white/10 bg-black/50 p-6"><p class="text-yellow-400 text-sm font-black">03</p><h3 class="mt-5 text-xl font-black">Ganha XP</h3><p class="mt-3 text-sm text-zinc-400 leading-relaxed">Recebe reações, comentários e sobe no ranking da vergonha.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="feed" class="max-w-7xl mx-auto px-5 py-20">
-      <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 items-start">
-        <div>
-          <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Feed real</p>
-          <h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Publica uma desgraça e guarda no Supabase.</h2>
-          <p class="mt-5 text-zinc-400 leading-relaxed">
-            Esta secção já usa o teu login real. Quando estiveres com sessão ativa, podes publicar um post e ele fica guardado na tabela <strong class="text-white">posts</strong> do Supabase.
-          </p>
-
-          <div class="mt-7 flex flex-wrap gap-2">
-            <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">💼 Trabalho</span>
-            <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">💔 Dates</span>
-            <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🚽 Casa de banho</span>
-            <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">👨‍👩‍👧 Família</span>
-            <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🫠 Vida adulta</span>
-          </div>
-
-          <div class="mt-8 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5">
-            <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.2em]">Estado</p>
-            <p id="feedAuthStatus" class="mt-2 text-sm text-zinc-300">A verificar sessão...</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <form id="postForm" onsubmit="publishPost(event)" class="rounded-[32px] border border-white/10 bg-zinc-950 p-5 space-y-4">
-            <div>
-              <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Nova publicação</p>
-              <h3 class="mt-2 text-2xl font-black">Confessar uma desgraça</h3>
-              <p class="mt-2 text-sm text-zinc-500">Tens de estar com login feito para publicar.</p>
-            </div>
-
-            <div>
-              <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Título</label>
-              <input id="postTitle" required maxlength="120" placeholder="Ex: Partilhei o ecrã errado na reunião" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-            </div>
-
-            <div>
-              <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Descrição</label>
-              <textarea id="postDescription" required maxlength="500" rows="5" placeholder="Conta o que aconteceu..." class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400 resize-none"></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Categoria</label>
-                <select id="postCategory" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                  <option>Mico Geral</option>
-                  <option>Trabalho</option>
-                  <option>Dates</option>
-                  <option>Casa de Banho</option>
-                  <option>Família</option>
-                  <option>Vida Adulta</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Trauma</label>
-                <select id="postTrauma" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                  <option value="1">Grau 1</option><option value="2">Grau 2</option><option value="3">Grau 3</option><option value="4">Grau 4</option><option value="5" selected>Grau 5</option><option value="6">Grau 6</option><option value="7">Grau 7</option><option value="8">Grau 8</option><option value="9">Grau 9</option><option value="10">Grau 10</option>
-                </select>
-              </div>
-            </div>
-
-            <button id="publishBtn" class="w-full bg-yellow-400 text-black rounded-2xl py-4 text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">
-              Publicar no feed real
-            </button>
-
-            <p id="postMessage" class="hidden text-sm text-yellow-400 font-bold text-center">A publicar...</p>
-          </form>
-
-          <div class="rounded-[32px] border border-white/10 bg-black/40 p-5">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Posts reais</p>
-                <h3 class="mt-2 text-2xl font-black">Feed Supabase</h3>
-              </div>
-              <button onclick="fetchPosts()" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
-            </div>
-
-            <div id="realFeedList" class="mt-5 space-y-3">
-              <p class="text-sm text-zinc-500">A carregar posts...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section id="shitclips" class="border-y border-white/10 bg-white/[0.02]">
-      <div class="max-w-7xl mx-auto px-5 py-20">
-        <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 items-start">
-          <div>
-            <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">ShitClips™</p>
-            <h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Vídeos curtos onde o mico ganha vida.</h2>
-            <p class="mt-5 text-zinc-400 leading-relaxed max-w-xl">
-              Publica vídeos rápidos de 5 a 10 segundos. O ficheiro vai para o Supabase Storage e o clip aparece no feed público.
-            </p>
-            <div class="mt-7 flex flex-wrap gap-2">
-              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">⏱️ 5 a 10 segundos</span>
-              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">📱 Vertical recomendado</span>
-              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🎬 MP4, WebM ou MOV</span>
-              <span class="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-zinc-300 font-bold">🔒 Máx. 30 MB</span>
-            </div>
-            <div class="mt-8 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5">
-              <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.2em]">Regra beta</p>
-              <p class="mt-2 text-sm text-zinc-300">Não publiques terceiros sem autorização, dados pessoais, nudez, ódio ou bullying.</p>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <form id="clipForm" onsubmit="publishClip(event)" class="rounded-[32px] border border-white/10 bg-zinc-950 p-5 space-y-4">
-              <div>
-                <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Novo ShitClip™</p>
-                <h3 class="mt-2 text-2xl font-black">Publicar vídeo curto</h3>
-                <p class="mt-2 text-sm text-zinc-500">Escolhe um vídeo entre 5 e 10 segundos para publicar.</p>
-              </div>
-
-              <div>
-                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Vídeo</label>
-                <input id="clipFile" required type="file" accept="video/mp4,video/webm,video/quicktime" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                <p id="clipDurationHint" class="mt-2 text-xs text-zinc-600">Duração aceite: mínimo 5s e máximo 10s.</p>
-              </div>
-
-              <div>
-                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Legenda</label>
-                <input id="clipCaption" maxlength="180" placeholder="O mico em uma frase..." class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Categoria</label>
-                  <select id="clipCategory" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                    <option>Mico Geral</option>
-                    <option>Trabalho</option>
-                    <option>Dates</option>
-                    <option>Casa de Banho</option>
-                    <option>Família</option>
-                    <option>Vida Adulta</option>
-                    <option>Redes sociais</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Trauma</label>
-                  <select id="clipTrauma" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                    <option value="1">Grau 1</option><option value="2">Grau 2</option><option value="3">Grau 3</option><option value="4">Grau 4</option><option value="5" selected>Grau 5</option><option value="6">Grau 6</option><option value="7">Grau 7</option><option value="8">Grau 8</option><option value="9">Grau 9</option><option value="10">Grau 10</option>
-                  </select>
-                </div>
-              </div>
-
-              <button id="clipPublishBtn" class="w-full bg-yellow-400 text-black rounded-2xl py-4 text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">
-                Publicar ShitClip™
-              </button>
-
-              <p id="clipMessage" class="hidden text-sm text-yellow-400 font-bold text-center">A publicar...</p>
-            </form>
-
-            <div class="rounded-[32px] border border-white/10 bg-black/40 p-5">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Clips reais</p>
-                  <h3 class="mt-2 text-2xl font-black">Feed de ShitClips™</h3>
-                </div>
-                <button onclick="fetchClips()" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
-              </div>
-              <div id="clipsList" class="mt-5 grid sm:grid-cols-2 gap-4">
-                <p class="text-sm text-zinc-500">A carregar clips...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-        <section id="perfil" class="border-y border-white/10 bg-white/[0.02]">
-          <div class="max-w-7xl mx-auto px-5 py-20">
-            <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 items-start">
-              <div>
-                <p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Perfil do usuário</p>
-                <h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">O teu perfil SHITAGRAM™.</h2>
-                <p class="mt-5 text-zinc-400 leading-relaxed max-w-xl">
-                  Edita o teu username, nome visível e bio. Estes dados aparecem associados aos teus micos no feed real.
-                </p>
-                <div class="mt-8 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5">
-                  <p class="text-[10px] text-yellow-400 font-black uppercase tracking-[0.25em]">Sessão</p>
-                  <p id="profileSessionStatus" class="mt-2 text-sm text-zinc-300">A verificar sessão...</p>
-                </div>
-              </div>
-
-              <div class="rounded-[32px] border border-white/10 bg-zinc-950 p-6">
-                <div class="flex items-center gap-5">
-                  <div id="profileAvatar" class="w-20 h-20 rounded-full bg-yellow-400 flex items-center justify-center text-4xl border border-yellow-400/30 shadow-lg shadow-yellow-500/10">💩</div>
-                  <div>
-                    <p id="profileUsernameView" class="text-2xl font-black">@visitante</p>
-                    <p id="profileEmailView" class="text-sm text-zinc-500 mt-1">sem sessão ativa</p>
-                    <p id="profileLevelView" class="text-xs text-yellow-400 font-black uppercase tracking-widest mt-2">Visitante</p>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-3 mt-6">
-                  <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center">
-                    <p id="profileXpView" class="text-xl font-black text-yellow-400">0</p>
-                    <p class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">XP</p>
-                  </div>
-                  <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center">
-                    <p id="profilePostsView" class="text-xl font-black">0</p>
-                    <p class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Posts</p>
-                  </div>
-                  <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center">
-                    <p id="profileStatusView" class="text-xl font-black">Beta</p>
-                    <p class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Estado</p>
-                  </div>
-                </div>
-
-                <form onsubmit="saveUserProfile(event)" class="mt-6 space-y-4">
-                  <div>
-                    <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Username</label>
-                    <input id="profileUsernameInput" type="text" placeholder="teu_username" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                  </div>
-                  <div>
-                    <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Nome visível</label>
-                    <input id="profileDisplayNameInput" type="text" placeholder="O teu nome público" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                  </div>
-                  <div>
-                    <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Bio</label>
-                    <textarea id="profileBioInput" rows="4" maxlength="180" placeholder="Sobrevivente oficial da vergonha pública..." class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400 resize-none"></textarea>
-                  </div>
-                  <button class="w-full rounded-2xl bg-yellow-400 py-4 text-black text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">Guardar perfil</button>
-                  <p id="profileMessage" class="hidden text-sm font-bold text-center"></p>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="ranking" class="border-y border-white/10 bg-white/[0.02]">
-      <div class="max-w-7xl mx-auto px-5 py-20 grid lg:grid-cols-2 gap-10 items-center">
-        <div><p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Ranking</p><h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">A vergonha deixa de ser trauma. Agora é estatuto.</h2><p class="mt-5 text-zinc-400 leading-relaxed">O ranking recompensa quem partilha os maiores micos e gera mais identificação.</p><button onclick="openRegisterModal('register')" class="mt-8 inline-flex rounded-2xl bg-yellow-400 px-6 py-4 text-black text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">Entrar no ranking</button></div>
-        <div class="space-y-3">
-          <article class="rounded-3xl border border-white/10 bg-black/50 p-5 flex items-center justify-between"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl">🥇</div><div><p class="font-black">@reidacagada</p><p class="text-[11px] text-zinc-500 font-black uppercase tracking-widest">Lenda Viva</p></div></div><p class="text-yellow-400 font-black">450k XP</p></article>
-          <article class="rounded-3xl border border-white/10 bg-black/50 p-5 flex items-center justify-between"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl">🥈</div><div><p class="font-black">@marta_dates</p><p class="text-[11px] text-zinc-500 font-black uppercase tracking-widest">Rainha do Date Falhado</p></div></div><p class="text-yellow-400 font-black">312k XP</p></article>
-          <article class="rounded-3xl border border-white/10 bg-black/50 p-5 flex items-center justify-between"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl">🥉</div><div><p class="font-black">@ze_reunioes</p><p class="text-[11px] text-zinc-500 font-black uppercase tracking-widest">Trauma Corporativo</p></div></div><p class="text-yellow-400 font-black">284k XP</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="regras" class="max-w-7xl mx-auto px-5 py-20">
-      <div class="grid lg:grid-cols-2 gap-10">
-        <div><p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">Segurança</p><h2 class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Humor sim. Exposição, bullying e dados pessoais não.</h2></div>
-        <div class="rounded-3xl border border-white/10 bg-zinc-950 p-6"><ul class="space-y-4 text-sm text-zinc-400 leading-relaxed"><li><strong class="text-white">01.</strong> Não publicar dados pessoais de terceiros.</li><li><strong class="text-white">02.</strong> Não usar o humor para atacar pessoas reais.</li><li><strong class="text-white">03.</strong> Não publicar conteúdo sexual explícito, ódio ou assédio.</li><li><strong class="text-white">04.</strong> Posts podem ser denunciados e ocultados pela moderação.</li><li><strong class="text-white">05.</strong> O objetivo é rir de situações, não destruir pessoas.</li></ul></div>
-      </div>
-    </section>
-
-    <section id="registo" class="px-5 pb-24">
-      <div class="max-w-5xl mx-auto rounded-[36px] border border-yellow-400/20 bg-yellow-400 text-black p-8 md:p-12 text-center gold-glow">
-        <h2 class="text-4xl md:text-6xl font-black tracking-tight">Tens uma história que ainda te dá vergonha?</h2>
-        <p class="mt-5 text-black/70 text-lg font-bold max-w-2xl mx-auto">Transforma isso em XP. Alguém vai ler e pensar: “finalmente, não fui só eu.”</p>
-        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-          <button onclick="openRegisterModal('register')" class="inline-flex items-center justify-center rounded-2xl bg-black px-7 py-4 text-white text-sm font-black uppercase tracking-wider hover:bg-zinc-900 transition">Criar conta grátis</button>
-          <a href="#feed" class="inline-flex items-center justify-center rounded-2xl border border-black/20 bg-black/5 px-7 py-4 text-black text-sm font-black uppercase tracking-wider hover:bg-black/10 transition">Ver feed primeiro</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="border-t border-white/10 bg-black">
-    <div class="max-w-7xl mx-auto px-5 py-8 flex flex-col md:flex-row gap-4 items-center justify-between">
-      <div class="flex items-center gap-2"><span class="text-xl">💩</span><span class="font-black">SHITAGRAM™</span></div>
-      <p class="text-xs text-zinc-600 text-center">© 2026 SHITAGRAM™. Plataforma humorística de confissões, micos e falhanços sociais.</p>
-      <div class="flex items-center gap-4 text-xs text-zinc-500 font-bold"><button onclick="openTextModal('Regras da Comunidade', rulesText)" class="hover:text-yellow-400">Regras</button><button onclick="openTextModal('Política de Privacidade', privacyText)" class="hover:text-yellow-400">Privacidade</button><button onclick="openTextModal('Termos de Uso', termsText)" class="hover:text-yellow-400">Termos</button></div>
-    </div>
-  </footer>
-
-  <div id="registerModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl px-5 py-8 overflow-y-auto">
-    <div class="min-h-full flex items-center justify-center">
-      <div class="w-full max-w-md rounded-[32px] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
-        <div class="flex items-start justify-between gap-4">
-          <div><p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">SHITAGRAM™</p><h3 id="authModalTitle" class="mt-2 text-3xl font-black">Criar conta</h3><p id="authModalSubtitle" class="mt-2 text-sm text-zinc-500">Registo real ligado ao Supabase Auth.</p></div>
-          <button onclick="closeRegisterModal()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
-        </div>
-
-        <div class="mt-6 grid grid-cols-2 gap-2 rounded-2xl bg-black/40 p-1 border border-white/10">
-          <button id="tabRegister" onclick="setAuthMode('register')" class="rounded-xl py-3 text-xs font-black uppercase bg-yellow-400 text-black">Registo</button>
-          <button id="tabLogin" onclick="setAuthMode('login')" class="rounded-xl py-3 text-xs font-black uppercase text-zinc-400">Login</button>
-        </div>
-
-        <form id="registerForm" onsubmit="submitRegister(event)" class="mt-6 space-y-4">
-          <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Username</label><input id="registerUsername" required type="text" placeholder="@teu_nome" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400"></div>
-          <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Email</label><input id="registerEmail" required type="email" placeholder="email@exemplo.com" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400"></div>
-          <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Password</label><input id="registerPassword" required type="password" placeholder="mínimo 6 caracteres" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400"></div>
-          <button class="w-full bg-yellow-400 text-black rounded-2xl py-4 text-sm font-black uppercase tracking-wider hover:bg-yellow-300 transition">Criar conta real</button>
-          <p id="registerMessage" class="hidden text-sm text-yellow-400 font-bold text-center">A criar conta...</p>
-        </form>
-
-        <form id="loginForm" onsubmit="submitLogin(event)" class="hidden mt-6 space-y-4">
-          <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Email</label><input id="loginEmail" required type="email" placeholder="email@exemplo.com" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400"></div>
-          <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Password</label><input id="loginPassword" required type="password" placeholder="••••••••" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400"></div>
-          <button class="w-full bg-white text-black rounded-2xl py-4 text-sm font-black uppercase tracking-wider hover:bg-zinc-200 transition">Entrar</button>
-          <p id="loginMessage" class="hidden text-sm text-yellow-400 font-bold text-center">A entrar...</p>
-        </form>
-
-        <div class="mt-5 rounded-2xl border border-white/10 bg-black/50 p-4">
-          <p id="authStatus" class="text-xs text-zinc-400">Ainda não tens sessão iniciada.</p>
-          <button id="logoutBtn" onclick="logout()" class="hidden mt-3 w-full bg-red-500 text-white rounded-xl py-3 text-xs font-black uppercase">Terminar sessão</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="textModal" class="hidden fixed inset-0 z-[120] bg-black/80 backdrop-blur-xl px-5 py-8 overflow-y-auto">
-    <div class="min-h-full flex items-center justify-center">
-      <div class="w-full max-w-2xl rounded-[32px] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
-        <div class="flex items-start justify-between gap-4"><div><p class="text-yellow-400 text-xs font-black uppercase tracking-[0.25em]">SHITAGRAM™</p><h3 id="textModalTitle" class="mt-2 text-3xl font-black">Título</h3></div><button onclick="closeTextModal()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button></div>
-        <div id="textModalBody" class="mt-6 text-sm text-zinc-400 leading-relaxed space-y-4"></div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const rulesText = `
-      <p><strong class="text-white">1. Humor sem destruição.</strong> O SHITAGRAM™ existe para rir de situações, não para atacar pessoas reais.</p>
-      <p><strong class="text-white">2. Nada de dados pessoais.</strong> Não publiques moradas, telefones, emails, documentos, matrículas ou informações privadas.</p>
-      <p><strong class="text-white">3. Sem ódio ou assédio.</strong> Conteúdo ofensivo contra grupos, bullying ou perseguição deve ser removido.</p>
-      <p><strong class="text-white">4. Denúncias.</strong> Qualquer utilizador poderá denunciar conteúdo. Posts problemáticos poderão ser ocultados.</p>
-    `;
-    const privacyText = `<p>Esta página usa autenticação Supabase para permitir registo e login com email e password.</p><p>Numa versão pública completa, deverás incluir informação clara sobre dados recolhidos, eliminação de conta, cookies, RGPD e contacto do responsável.</p>`;
-    const termsText = `<p>Ao usar o SHITAGRAM™, o utilizador aceita publicar apenas conteúdo próprio, humorístico e que não exponha terceiros.</p><p>A plataforma poderá remover posts, suspender contas e bloquear conteúdos que violem regras de segurança, privacidade ou respeito.</p>`;
-
-    window.rulesText = rulesText;
-    window.privacyText = privacyText;
-    window.termsText = termsText;
-
-    window.toggleMenu = function () {
-      document.getElementById("mobileMenu").classList.toggle("open");
-    };
-
-    window.openRegisterModal = function (mode = "register") {
-      document.getElementById("registerModal").classList.remove("hidden");
-      document.body.style.overflow = "hidden";
-      setAuthMode(mode);
-    };
-
-    window.closeRegisterModal = function () {
-      document.getElementById("registerModal").classList.add("hidden");
-      document.body.style.overflow = "";
-    };
-
-    window.setAuthMode = function (mode) {
-      const registerForm = document.getElementById("registerForm");
-      const loginForm = document.getElementById("loginForm");
-      const tabRegister = document.getElementById("tabRegister");
-      const tabLogin = document.getElementById("tabLogin");
-      const title = document.getElementById("authModalTitle");
-      const subtitle = document.getElementById("authModalSubtitle");
-
-      if (mode === "login") {
-        registerForm.classList.add("hidden");
-        loginForm.classList.remove("hidden");
-        tabLogin.className = "rounded-xl py-3 text-xs font-black uppercase bg-yellow-400 text-black";
-        tabRegister.className = "rounded-xl py-3 text-xs font-black uppercase text-zinc-400";
-        title.innerText = "Entrar";
-        subtitle.innerText = "Login real ligado ao Supabase Auth.";
-      } else {
-        loginForm.classList.add("hidden");
-        registerForm.classList.remove("hidden");
-        tabRegister.className = "rounded-xl py-3 text-xs font-black uppercase bg-yellow-400 text-black";
-        tabLogin.className = "rounded-xl py-3 text-xs font-black uppercase text-zinc-400";
-        title.innerText = "Criar conta";
-        subtitle.innerText = "Registo real ligado ao Supabase Auth.";
-      }
-    };
-
-    window.openTextModal = function (title, body) {
-      document.getElementById("textModalTitle").innerText = title;
-      document.getElementById("textModalBody").innerHTML = body;
-      document.getElementById("textModal").classList.remove("hidden");
-      document.body.style.overflow = "hidden";
-    };
-
-    window.closeTextModal = function () {
-      document.getElementById("textModal").classList.add("hidden");
-      document.body.style.overflow = "";
-    };
-
-    function setMessage(id, type, text) {
-      const el = document.getElementById(id);
-      el.classList.remove("hidden", "text-red-400", "text-yellow-400", "text-green-400");
-      el.classList.add(type === "error" ? "text-red-400" : type === "success" ? "text-green-400" : "text-yellow-400");
-      el.innerText = text;
-    }
-
-
-    let currentUser = null;
-    let currentProfile = null;
-    let realtimeChannel = null;
-
-    function escapeHtml(value) {
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function setFeedStatus(text) {
-      const el = document.getElementById("feedAuthStatus");
-      if (el) el.innerText = text;
-    }
-
-    window.publishPost = async function(event) {
-      event.preventDefault();
-
-      if (!currentUser) {
-        setMessage("postMessage", "error", "Faz login antes de publicar.");
-        openRegisterModal("login");
+  </form>
+
+  <script>
+    // Botão Excluir
+    document.getElementById('btnExcluir').addEventListener('click', function() {
+      
+      const id = document.getElementById('registroId').value;
+      
+      if (!id) {
+        alert('Não foi possível identificar o registro para exclusão.');
         return;
       }
 
-      const title = document.getElementById("postTitle").value.trim();
-      const description = document.getElementById("postDescription").value.trim();
-      const category = document.getElementById("postCategory").value;
-      const trauma_level = Number(document.getElementById("postTrauma").value);
-
-      if (!title || !description) {
-        setMessage("postMessage", "error", "Preenche título e descrição.");
+      if (!confirm('⚠️ Tem certeza que deseja excluir este registro?\n\nEsta ação é irreversível!')) {
         return;
       }
 
-      setMessage("postMessage", "info", "A publicar no Supabase...");
-
-      const { error } = await supabase.from("posts").insert({
-        user_id: currentUser.id,
-        title,
-        description,
-        category,
-        trauma_level
-      });
-
-      if (error) {
-        setMessage("postMessage", "error", error.message);
-        return;
-      }
-
-      const nextPostsCount = (currentProfile?.posts_count || 0) + 1;
-      const nextXp = (currentProfile?.xp || 0) + 85000;
-      await supabase
-        .from("profiles")
-        .update({
-          posts_count: nextPostsCount,
-          xp: nextXp,
-          level: nextXp >= 250000 ? "Catástrofe Ambulante" : "Sobrevivente Social"
-        })
-        .eq("id", currentUser.id);
-
-      await ensureProfile(currentUser);
-      updateProfileUI();
-
-      document.getElementById("postForm").reset();
-      setMessage("postMessage", "success", "Publicado com sucesso no feed real.");
-      await fetchPosts();
-    };
-
-    window.reactToPost = async function(postId) {
-      if (!currentUser) {
-        openRegisterModal("login");
-        return;
-      }
-
-      const { error } = await supabase.from("reactions").insert({
-        post_id: postId,
-        user_id: currentUser.id,
-        reaction_type: "poop"
-      });
-
-      if (error) {
-        alert("Já reagiste a este post ou ocorreu um erro.");
-        return;
-      }
-
-      await fetchPosts();
-    };
-
-    window.fetchPosts = async function() {
-      const list = document.getElementById("realFeedList");
-      if (!list) return;
-
-      list.innerHTML = '<p class="text-sm text-zinc-500">A carregar posts reais...</p>';
-
-      const { data, error } = await supabase
-        .from("posts")
-        .select(`
-          id,
-          title,
-          description,
-          category,
-          trauma_level,
-          reactions_count,
-          comments_count,
-          created_at,
-          profiles (
-            username,
-            display_name
-          )
-        `)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(30);
-
-      if (error) {
-        list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar posts: ${escapeHtml(error.message)}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        list.innerHTML = `
-          <div class="rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
-            <div class="text-4xl">🫥</div>
-            <p class="mt-3 text-sm text-zinc-500">Ainda não há posts reais. Publica o primeiro mico.</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = data.map((post) => {
-        const username = post.profiles?.username || "utilizador";
-        return `
-          <article class="rounded-3xl border border-white/10 bg-zinc-950 p-4">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <p class="text-sm font-black">@${escapeHtml(username)}</p>
-                <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(post.category)}</p>
-              </div>
-              <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(post.trauma_level)}</span>
-            </div>
-            <h4 class="mt-4 text-base font-black leading-snug">${escapeHtml(post.title)}</h4>
-            <p class="mt-2 text-sm text-zinc-400 leading-relaxed">${escapeHtml(post.description)}</p>
-            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
-              <button onclick="reactToPost('${post.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">💩 Também me aconteceu</button>
-              <div class="flex items-center gap-3">
-                <span class="text-[11px] text-yellow-400 font-black">💩 ${post.reactions_count || 0}</span>
-                <button onclick="toggleComments('${post.id}')" class="text-[11px] text-zinc-400 font-black hover:text-yellow-400">💬 ${post.comments_count || 0}</button>
-              </div>
-            </div>
-
-            <div id="comments-wrap-${post.id}" class="hidden mt-4 pt-4 border-t border-white/5">
-              <form onsubmit="publishComment(event, '${post.id}')" class="flex gap-2">
-                <input id="comment-input-${post.id}" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 bg-black border border-white/10 rounded-2xl px-4 py-3 text-xs outline-none focus:border-yellow-400">
-                <button class="bg-yellow-400 text-black rounded-2xl px-4 text-xs font-black uppercase hover:bg-yellow-300">Post</button>
-              </form>
-              <p id="comment-msg-${post.id}" class="hidden mt-2 text-xs text-yellow-400 font-bold"></p>
-              <div id="comments-list-${post.id}" class="mt-3 space-y-2">
-                <p class="text-xs text-zinc-600">A carregar comentários...</p>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join("");
-    };
-
-
-
-    window.toggleComments = async function(postId) {
-      const wrap = document.getElementById("comments-wrap-" + postId);
-      if (!wrap) return;
-      wrap.classList.toggle("hidden");
-      if (!wrap.classList.contains("hidden")) {
-        await fetchComments(postId);
-      }
-    };
-
-    function setCommentMessage(postId, type, text) {
-      const el = document.getElementById("comment-msg-" + postId);
-      if (!el) return;
-      el.classList.remove("hidden", "text-red-400", "text-yellow-400", "text-green-400");
-      el.classList.add(type === "error" ? "text-red-400" : type === "success" ? "text-green-400" : "text-yellow-400");
-      el.innerText = text;
-    }
-
-    window.publishComment = async function(event, postId) {
-      event.preventDefault();
-
-      if (!currentUser) {
-        openRegisterModal("login");
-        return;
-      }
-
-      const input = document.getElementById("comment-input-" + postId);
-      const content = input ? input.value.trim() : "";
-
-      if (!content) {
-        setCommentMessage(postId, "error", "Escreve um comentário primeiro.");
-        return;
-      }
-
-      setCommentMessage(postId, "info", "A publicar comentário...");
-
-      const { error } = await supabase.from("comments").insert({
-        post_id: postId,
-        user_id: currentUser.id,
-        content
-      });
-
-      if (error) {
-        setCommentMessage(postId, "error", error.message);
-        return;
-      }
-
-      input.value = "";
-      setCommentMessage(postId, "success", "Comentário publicado.");
-      await fetchComments(postId);
-      await fetchPosts();
-      const wrap = document.getElementById("comments-wrap-" + postId);
-      if (wrap) wrap.classList.remove("hidden");
-    };
-
-    window.fetchComments = async function(postId) {
-      const list = document.getElementById("comments-list-" + postId);
-      if (!list) return;
-
-      list.innerHTML = '<p class="text-xs text-zinc-600">A carregar comentários...</p>';
-
-      const { data, error } = await supabase
-        .from("comments")
-        .select(`
-          id,
-          content,
-          created_at,
-          profiles (
-            username,
-            display_name
-          )
-        `)
-        .eq("post_id", postId)
-        .order("created_at", { ascending: true })
-        .limit(50);
-
-      if (error) {
-        list.innerHTML = `<p class="text-xs text-red-400">Erro ao carregar comentários: ${escapeHtml(error.message)}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-xs text-zinc-600">Ainda não há comentários. Sê o primeiro.</p>';
-        return;
-      }
-
-      list.innerHTML = data.map((comment) => {
-        const username = comment.profiles?.username || "utilizador";
-        return `
-          <div class="rounded-2xl border border-white/10 bg-black/45 p-3">
-            <p class="text-[10px] text-yellow-400 font-black">@${escapeHtml(username)}</p>
-            <p class="mt-1 text-xs text-zinc-300 leading-relaxed">${escapeHtml(comment.content)}</p>
-          </div>
-        `;
-      }).join("");
-    };
-
-
-    function getVideoDuration(file) {
-      return new Promise((resolve, reject) => {
-        const url = URL.createObjectURL(file);
-        const video = document.createElement("video");
-        video.preload = "metadata";
-        video.onloadedmetadata = () => {
-          URL.revokeObjectURL(url);
-          resolve(video.duration || 0);
-        };
-        video.onerror = () => {
-          URL.revokeObjectURL(url);
-          reject(new Error("Não foi possível ler a duração do vídeo."));
-        };
-        video.src = url;
-      });
-    }
-
-    window.publishClip = async function(event) {
-      event.preventDefault();
-
-      if (!currentUser) {
-        setMessage("clipMessage", "error", "Faz login antes de publicar um ShitClip™.");
-        openRegisterModal("login");
-        return;
-      }
-
-      const fileInput = document.getElementById("clipFile");
-      const file = fileInput.files?.[0];
-      const caption = document.getElementById("clipCaption").value.trim();
-      const category = document.getElementById("clipCategory").value;
-      const trauma_level = Number(document.getElementById("clipTrauma").value);
-
-      if (!file) {
-        setMessage("clipMessage", "error", "Escolhe um vídeo primeiro.");
-        return;
-      }
-
-      if (file.size > 30 * 1024 * 1024) {
-        setMessage("clipMessage", "error", "O vídeo deve ter no máximo 30 MB.");
-        return;
-      }
-
-      if (!["video/mp4", "video/webm", "video/quicktime"].includes(file.type)) {
-        setMessage("clipMessage", "error", "Formato inválido. Usa MP4, WebM ou MOV.");
-        return;
-      }
-
-      let duration = 0;
-      try {
-        duration = await getVideoDuration(file);
-      } catch (err) {
-        setMessage("clipMessage", "error", err.message);
-        return;
-      }
-
-      if (duration < 5 || duration > 10.5) {
-        setMessage("clipMessage", "error", `O vídeo tem ${duration.toFixed(1)}s. Usa vídeos de 5 a 10 segundos.`);
-        return;
-      }
-
-      setMessage("clipMessage", "info", "A enviar vídeo para o Supabase Storage...");
-
-      const ext = file.name.split(".").pop() || "mp4";
-      const safeExt = ext.toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
-      const filePath = `${currentUser.id}/${Date.now()}.${safeExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("clips")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-          contentType: file.type
-        });
-
-      if (uploadError) {
-        setMessage("clipMessage", "error", uploadError.message);
-        return;
-      }
-
-      const { data: publicData } = supabase.storage.from("clips").getPublicUrl(filePath);
-      const video_url = publicData.publicUrl;
-
-      setMessage("clipMessage", "info", "A guardar ShitClip™ na base de dados...");
-
-      const { error: insertError } = await supabase.from("clips").insert({
-        user_id: currentUser.id,
-        video_url,
-        caption,
-        category,
-        trauma_level,
-        status: "active"
-      });
-
-      if (insertError) {
-        setMessage("clipMessage", "error", insertError.message);
-        return;
-      }
-
-      setMessage("clipMessage", "success", "ShitClip™ publicado com sucesso.");
-      event.target.reset();
-      document.getElementById("clipDurationHint").innerText = "Duração aceite: mínimo 5s e máximo 10s.";
-      await fetchClips();
-    };
-
-    window.fetchClips = async function() {
-      const list = document.getElementById("clipsList");
-      if (!list) return;
-
-      list.innerHTML = '<p class="text-sm text-zinc-500">A carregar ShitClips™...</p>';
-
-      const { data, error } = await supabase
-        .from("clips")
-        .select(`
-          id,
-          user_id,
-          video_url,
-          caption,
-          category,
-          trauma_level,
-          reactions_count,
-          comments_count,
-          created_at,
-          profiles (
-            username,
-            display_name
-          )
-        `)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(20);
-
-      if (error) {
-        list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(error.message)}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        list.innerHTML = `
-          <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
-            <div class="text-4xl">🎬</div>
-            <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = data.map((clip) => {
-        const username = clip.profiles?.username || "utilizador";
-        return `
-          <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
-            <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
-            <div class="p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-sm font-black">@${escapeHtml(username)}</p>
-                  <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
-                </div>
-                <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
-              </div>
-              ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
-              <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
-                <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
-                <div class="flex items-center gap-3">
-                  <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
-                  ${currentUser && currentUser.id === clip.user_id ? `
-                    <button onclick="deleteClip('${clip.id}', '${escapeForAttribute(clip.video_url)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
-                  ` : ""}
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join("");
-    };
-
-    window.shareClip = async function(clipId) {
-      const url = window.location.href.split("#")[0] + "#shitclips";
-      const text = "Olha este ShitClip™ no SHITAGRAM™";
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: "SHITAGRAM™", text, url });
+      // Envia requisição de exclusão
+      fetch(`/excluir/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('✅ Registro excluído com sucesso!');
+          window.location.href = '/lista'; // Redireciona para lista
         } else {
-          await navigator.clipboard.writeText(url);
-          alert("Link copiado. Partilha o ShitClip™.");
+          alert('❌ Erro ao excluir o registro.');
         }
-      } catch {
-        alert("Link copiado. Partilha o ShitClip™.");
-      }
-    };
-
-
-    window.deleteClip = async function(clipId, videoUrl) {
-      if (!currentUser) {
-        showToast("Faz login para excluir o vídeo.");
-        openAuthModal("login");
-        return;
-      }
-
-      const confirmDelete = confirm("Tens a certeza que queres excluir este ShitClip™? Esta ação não pode ser desfeita.");
-      if (!confirmDelete) return;
-
-      try {
-        let storagePath = null;
-        const marker = "/storage/v1/object/public/clips/";
-
-        try {
-          const parsedUrl = new URL(videoUrl);
-          storagePath = parsedUrl.pathname.split(marker)[1] || null;
-        } catch {
-          storagePath = null;
-        }
-
-        if (storagePath) {
-          await supabase.storage.from("clips").remove([storagePath]);
-        }
-
-        const { error } = await supabase
-          .from("clips")
-          .delete()
-          .eq("id", clipId)
-          .eq("user_id", currentUser.id);
-
-        if (error) {
-          showToast("Erro ao excluir: " + error.message);
-          return;
-        }
-
-        showToast("ShitClip™ excluído com sucesso.");
-        fetchClips();
-      } catch (error) {
-        showToast("Erro ao excluir vídeo.");
-      }
-    };
-
-    const clipFileInput = document.getElementById("clipFile");
-    if (clipFileInput) {
-      clipFileInput.addEventListener("change", async function() {
-        const file = this.files?.[0];
-        const hint = document.getElementById("clipDurationHint");
-        if (!file || !hint) return;
-        try {
-          const duration = await getVideoDuration(file);
-          hint.innerText = `Duração detetada: ${duration.toFixed(1)}s. ${duration >= 5 && duration <= 10.5 ? "Pronto para publicar." : "Tem de ter entre 5 e 10 segundos."}`;
-          hint.className = duration >= 5 && duration <= 10.5 ? "mt-2 text-xs text-green-400" : "mt-2 text-xs text-red-400";
-        } catch {
-          hint.innerText = "Não foi possível ler a duração do vídeo.";
-          hint.className = "mt-2 text-xs text-red-400";
-        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro de conexão com o servidor.');
       });
-    }
-
-    function startRealtime() {
-      if (realtimeChannel) return;
-
-      realtimeChannel = supabase
-        .channel("shitagram-feed-realtime")
-        .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, fetchPosts)
-        .on("postgres_changes", { event: "*", schema: "public", table: "reactions" }, fetchPosts)
-        .on("postgres_changes", { event: "*", schema: "public", table: "comments" }, fetchPosts)
-        .on("postgres_changes", { event: "*", schema: "public", table: "clips" }, fetchClips)
-        .subscribe();
-    }
-
-    async function ensureProfile(user) {
-      if (!user) {
-        currentProfile = null;
-        return;
-      }
-
-      const username = (user.user_metadata?.username || user.email?.split("@")[0] || "user")
-        .toLowerCase()
-        .replace(/[^a-z0-9_\.]/g, "");
-
-      const { data: existing } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (existing) {
-        currentProfile = existing;
-        return;
-      }
-
-      const { data: created } = await supabase
-        .from("profiles")
-        .insert({
-          id: user.id,
-          username,
-          display_name: username,
-          bio: "",
-          xp: 0,
-          level: "Humano Real",
-          posts_count: 0
-        })
-        .select("*")
-        .single();
-
-      currentProfile = created || null;
-    }
-
-    window.submitRegister = async function (event) {
-      event.preventDefault();
-      const username = document.getElementById("registerUsername").value.trim().replace("@", "").toLowerCase();
-      const email = document.getElementById("registerEmail").value.trim();
-      const password = document.getElementById("registerPassword").value.trim();
-
-      if (!username || !email || !password) return setMessage("registerMessage", "error", "Preenche todos os campos.");
-      if (password.length < 6) return setMessage("registerMessage", "error", "A password deve ter pelo menos 6 caracteres.");
-
-      setMessage("registerMessage", "info", "A criar conta real...");
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { username } }
-      });
-
-      if (error) return setMessage("registerMessage", "error", error.message);
-
-      if (data.user && data.session) {
-        await ensureProfile(data.user);
-        updateAuthUI(data.user);
-        setMessage("registerMessage", "success", "Conta criada e sessão iniciada com sucesso.");
-      } else {
-        setMessage("registerMessage", "success", "Conta criada. Verifica o teu email para confirmar o registo.");
-      }
-
-      event.target.reset();
-    };
-
-    window.submitLogin = async function (event) {
-      event.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-      setMessage("loginMessage", "info", "A entrar...");
-
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return setMessage("loginMessage", "error", error.message);
-
-      await ensureProfile(data.user);
-      updateAuthUI(data.user);
-      setMessage("loginMessage", "success", "Login feito com sucesso.");
-      event.target.reset();
-    };
-
-    window.logout = async function () {
-      await supabase.auth.signOut();
-      currentProfile = null;
-      updateAuthUI(null);
-    };
-
-    async function checkSession() {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) await ensureProfile(data.user);
-      updateAuthUI(data.user ?? null);
-    }
-
-    function getHeaderUsername(user) {
-      if (currentProfile?.username) return currentProfile.username;
-      if (user?.email) return user.email.split("@")[0];
-      return "user";
-    }
-
-    function updateHeaderAuthUI(user) {
-      const headerLoginBtn = document.getElementById("headerLoginBtn");
-      const headerRegisterBtn = document.getElementById("headerRegisterBtn");
-      const headerUserBtn = document.getElementById("headerUserBtn");
-      const headerLogoutBtn = document.getElementById("headerLogoutBtn");
-      const mobileLoginBtn = document.getElementById("mobileLoginBtn");
-      const mobileRegisterBtn = document.getElementById("mobileRegisterBtn");
-      const mobileUserBtn = document.getElementById("mobileUserBtn");
-      const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
-
-      const isLogged = Boolean(user);
-      const username = "@" + getHeaderUsername(user);
-
-      if (headerLoginBtn) headerLoginBtn.classList.toggle("hidden", isLogged);
-      if (headerRegisterBtn) headerRegisterBtn.classList.toggle("hidden", isLogged);
-      if (headerUserBtn) {
-        headerUserBtn.classList.toggle("hidden", !isLogged);
-        headerUserBtn.innerText = username;
-      }
-      if (headerLogoutBtn) headerLogoutBtn.classList.toggle("hidden", !isLogged);
-
-      if (mobileLoginBtn) mobileLoginBtn.classList.toggle("hidden", isLogged);
-      if (mobileRegisterBtn) mobileRegisterBtn.classList.toggle("hidden", isLogged);
-      if (mobileUserBtn) {
-        mobileUserBtn.classList.toggle("hidden", !isLogged);
-        mobileUserBtn.innerText = username;
-      }
-      if (mobileLogoutBtn) mobileLogoutBtn.classList.toggle("hidden", !isLogged);
-    }
-
-    function updateAuthUI(user) {
-      const authStatus = document.getElementById("authStatus");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const profileSessionStatus = document.getElementById("profileSessionStatus");
-
-      currentUser = user || null;
-
-      if (user) {
-        if (authStatus) authStatus.innerText = "Sessão ativa: " + user.email;
-        if (logoutBtn) logoutBtn.classList.remove("hidden");
-        setFeedStatus("Sessão ativa: " + user.email + ". Já podes publicar no feed real.");
-        if (profileSessionStatus) profileSessionStatus.innerText = "Sessão ativa: " + user.email + ". Podes editar o teu perfil.";
-      } else {
-        currentProfile = null;
-        if (authStatus) authStatus.innerText = "Ainda não tens sessão iniciada.";
-        if (logoutBtn) logoutBtn.classList.add("hidden");
-        setFeedStatus("Sem sessão ativa. Faz login para publicar, mas podes ver o feed.");
-        if (profileSessionStatus) profileSessionStatus.innerText = "Faz login para veres e editares o teu perfil.";
-      }
-
-      updateHeaderAuthUI(currentUser);
-      updateProfileUI();
-      fetchPosts();
-      fetchClips();
-      startRealtime();
-    }
-
-    function updateProfileUI() {
-      const usernameView = document.getElementById("profileUsernameView");
-      if (!usernameView) return;
-
-      const emailView = document.getElementById("profileEmailView");
-      const levelView = document.getElementById("profileLevelView");
-      const xpView = document.getElementById("profileXpView");
-      const postsView = document.getElementById("profilePostsView");
-      const usernameInput = document.getElementById("profileUsernameInput");
-      const displayNameInput = document.getElementById("profileDisplayNameInput");
-      const bioInput = document.getElementById("profileBioInput");
-
-      if (!currentUser || !currentProfile) {
-        usernameView.innerText = "@visitante";
-        emailView.innerText = "sem sessão ativa";
-        levelView.innerText = "Visitante";
-        xpView.innerText = "0";
-        postsView.innerText = "0";
-        usernameInput.value = "";
-        displayNameInput.value = "";
-        bioInput.value = "";
-        usernameInput.disabled = true;
-        displayNameInput.disabled = true;
-        bioInput.disabled = true;
-        return;
-      }
-
-      usernameView.innerText = "@" + (currentProfile.username || "user");
-      emailView.innerText = currentUser.email || "";
-      levelView.innerText = currentProfile.level || "Humano Real";
-      xpView.innerText = currentProfile.xp || 0;
-      postsView.innerText = currentProfile.posts_count || 0;
-      usernameInput.disabled = false;
-      displayNameInput.disabled = false;
-      bioInput.disabled = false;
-      usernameInput.value = currentProfile.username || "";
-      displayNameInput.value = currentProfile.display_name || "";
-      bioInput.value = currentProfile.bio || "";
-    }
-
-    window.saveUserProfile = async function(event) {
-      event.preventDefault();
-
-      if (!currentUser) {
-        setMessage("profileMessage", "error", "Tens de fazer login para editar o perfil.");
-        openRegisterModal("login");
-        return;
-      }
-
-      const username = document.getElementById("profileUsernameInput").value.trim().replace("@", "").toLowerCase();
-      const displayName = document.getElementById("profileDisplayNameInput").value.trim();
-      const bio = document.getElementById("profileBioInput").value.trim();
-
-      if (!username) {
-        setMessage("profileMessage", "error", "O username não pode ficar vazio.");
-        return;
-      }
-
-      setMessage("profileMessage", "info", "A guardar perfil...");
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({
-          username,
-          display_name: displayName || username,
-          bio
-        })
-        .eq("id", currentUser.id)
-        .select("*")
-        .single();
-
-      if (error) {
-        setMessage("profileMessage", "error", error.message);
-        return;
-      }
-
-      currentProfile = data;
-      updateProfileUI();
-      updateHeaderAuthUI(currentUser);
-      fetchPosts();
-      setMessage("profileMessage", "success", "Perfil atualizado com sucesso.");
-    };
-
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape") {
-        window.closeRegisterModal();
-        window.closeTextModal();
-      }
     });
-
-    checkSession();
   </script>
+
 </body>
 </html>
