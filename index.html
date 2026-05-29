@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - UX Perfil</title>
+  <title>SHITAGRAM™ - Reels</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=_zizy1vafo-oLliAV68iQv7GttVpalnOZ1YBT8T9nWKqnzMvBm4eBFTH4xyXe8_08eXUebqVlb__96CjoouAFdEd-iBXmQ5geVGYEvTx5LlanJkBlXnILBnoK-cQ8OyUrFItQDYyg-INQXdoHp3ToJGZnaXji0fzpO9pZqRhLjrg_6-ZUxXNwqULuXciEpKn83SqsTdhix2KD0Lca_3x3mGUbgwMctLZUWRz1XgQ-YHB4KEPEQij9yXADAJ5AgHYUAMib6K2tJkp-gCCfcH7yA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -30,11 +30,20 @@
     .safe-bottom{padding-bottom:max(88px,env(safe-area-inset-bottom))}
     .phone-max{max-width:520px}
     .post-img{aspect-ratio:4/3;background:linear-gradient(135deg,rgba(255,203,5,.18),rgba(255,255,255,.04));}
+
+    .reels-feed{height:calc(100dvh - 158px);overflow-y:auto;scroll-snap-type:y mandatory;border-radius:32px}
+    .reel-card{min-height:calc(100dvh - 158px);scroll-snap-align:start;position:relative;background:#050505;overflow:hidden;border-radius:32px;border:1px solid rgba(255,255,255,.1)}
+    .reel-video{width:100%;height:calc(100dvh - 158px);object-fit:cover;background:#000}
+    .reel-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.22),transparent 28%,rgba(0,0,0,.88));pointer-events:none}
+    .reel-actions{position:absolute;right:14px;bottom:92px;display:flex;flex-direction:column;gap:14px;z-index:5}
+    .reel-action{width:52px;height:52px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+    .reel-info{position:absolute;left:16px;right:82px;bottom:28px;z-index:5}
+    .comment-sheet{max-height:78dvh}
     @media(min-width:900px){.desktop-shell{display:grid;grid-template-columns:280px minmax(0,680px) 320px;gap:24px}.safe-bottom{padding-bottom:40px}}
   </style>
 </head>
 <body>
-  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vUXPerfil1</div>
+  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vReels1</div>
   <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
 
   <!-- ONBOARDING / VISITANTE -->
@@ -109,16 +118,29 @@
           <div id="postsList" class="space-y-4"><p class="text-sm text-zinc-500">A carregar posts...</p></div>
         </div>
 
-        <!-- CLIPS -->
+        <!-- CLIPS / REELS -->
         <div id="tab-clips" class="app-tab hidden space-y-4">
           <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-black text-yellow-400">SHITCLIPS<sup class="text-xs">™</sup></h2>
+            <div>
+              <h2 class="text-2xl font-black text-yellow-400">SHITCLIPS<sup class="text-xs">™</sup></h2>
+              <p class="text-xs text-zinc-500 font-bold">Scroll vertical, reações, comentários e criadores em destaque.</p>
+            </div>
             <div class="flex gap-2">
               <button class="pill active rounded-full border border-white/10 px-4 py-2 text-xs font-black">Para ti</button>
-              <button onclick="gateAction('seguir criadores')" class="pill rounded-full border border-white/10 px-4 py-2 text-xs font-black text-zinc-400">Seguir</button>
+              <button onclick="gateAction('seguir criadores')" class="pill rounded-full border border-white/10 px-4 py-2 text-xs font-black text-zinc-400">A seguir</button>
             </div>
           </div>
-          <div id="clipsList" class="grid gap-4 sm:grid-cols-2"><p class="text-sm text-zinc-500">A carregar ShitClips™...</p></div>
+          <div class="card p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[10px] text-yellow-400 font-black uppercase tracking-[.25em]">Em alta</p>
+                <p class="text-sm text-zinc-400">Clips com mais reação e conversa.</p>
+              </div>
+              <button onclick="goTab('publish');switchPublishMode('clip')" class="rounded-2xl bg-yellow-400 px-4 py-3 text-black text-xs font-black uppercase">Publicar clip</button>
+            </div>
+            <div id="clipsHotList" class="mt-4 flex gap-3 overflow-x-auto scrollbar-none"><p class="text-sm text-zinc-500">A carregar destaques...</p></div>
+          </div>
+          <div id="clipsList" class="reels-feed"><p class="text-sm text-zinc-500">A carregar ShitClips™...</p></div>
         </div>
 
         <!-- PUBLICAR -->
@@ -151,8 +173,8 @@
 
               <form id="clipForm" onsubmit="publishClip(event)" class="hidden mt-5 space-y-4">
                 <input id="clipFile" required type="file" accept="video/mp4,video/webm,video/quicktime" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-                <p id="clipDurationHint" class="text-xs text-zinc-500">Duração aceite: mínimo 5s e máximo 10s. Máx. 30 MB.</p>
-                <input id="clipCaption" maxlength="140" placeholder="Legenda curta..." class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
+                <p id="clipDurationHint" class="text-xs text-zinc-500">Escolhe um vídeo vertical curto. Aceite: 5s a 10s, máx. 30 MB.</p>
+                <input id="clipCaption" maxlength="140" placeholder="Legenda curta para o teu ShitClip™..." class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
                 <div class="grid grid-cols-2 gap-3">
                   <select id="clipCategory" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option>Mico Geral</option><option>Trabalho</option><option>Dates</option><option>Casa de banho</option><option>Família</option><option>Vida adulta</option><option>Redes sociais</option></select>
                   <select id="clipTrauma" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option value="5">Trauma 5</option><option value="6">Trauma 6</option><option value="7">Trauma 7</option><option value="8">Trauma 8</option><option value="9">Trauma 9</option><option value="10">Trauma 10</option></select>
@@ -266,6 +288,26 @@
   </section>
 
   <!-- MODAL AUTH -->
+
+  <div id="clipCommentsModal" class="modal fixed inset-0 z-[235] bg-black/70 backdrop-blur-xl px-3 py-3 items-end justify-center">
+    <div class="comment-sheet w-full max-w-xl rounded-t-[32px] md:rounded-[32px] border border-white/10 bg-zinc-950 shadow-2xl flex flex-col overflow-hidden">
+      <div class="p-5 border-b border-white/10 flex items-center justify-between">
+        <div>
+          <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Comentários</p>
+          <h3 class="text-2xl font-black">ShitClip™</h3>
+        </div>
+        <button onclick="closeClipComments()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
+      </div>
+      <div id="clipCommentsList" class="flex-1 overflow-y-auto p-5 space-y-3">
+        <p class="text-sm text-zinc-500">A carregar comentários...</p>
+      </div>
+      <div class="p-4 border-t border-white/10 flex gap-2">
+        <input id="clipCommentInput" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+        <button onclick="addClipCommentActive()" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Enviar</button>
+      </div>
+    </div>
+  </div>
+
   <div id="authModal" class="modal fixed inset-0 z-[200] bg-black/85 backdrop-blur-xl px-5 py-8 overflow-y-auto items-center justify-center">
     <div class="w-full max-w-md rounded-[32px] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
       <div class="flex items-start justify-between">
@@ -374,6 +416,7 @@
       $("tab-"+tab)?.classList.remove("hidden");
       document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
       $("nav-"+tab)?.classList.add("active");
+      if(tab==="clips") { fetchClips(); setTimeout(setupReelAutoplay,120); }
       if(tab==="ranking") fetchRanking();
       if(tab==="notifications") fetchNotifications();
       if(tab==="profile") updateProfileUI();
@@ -460,7 +503,7 @@
       },8000);
 
       try{
-        console.log("[SHITAGRAM vUXPerfil1] signUp start", email);
+        console.log("[SHITAGRAM vReels1] signUp start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
           8000,
@@ -468,7 +511,7 @@
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vUXPerfil1] signUp result", {data,error});
+        console.log("[SHITAGRAM vReels1] signUp result", {data,error});
         if(error){
           setMessage("registerMessage","error",error.message);
           return;
@@ -481,7 +524,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vUXPerfil1] signUp error",err);
+        console.error("[SHITAGRAM vReels1] signUp error",err);
         setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
       }finally{
         clearTimeout(safetyTimer);
@@ -507,7 +550,7 @@
       },8000);
 
       try{
-        console.log("[SHITAGRAM vUXPerfil1] login start", email);
+        console.log("[SHITAGRAM vReels1] login start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signInWithPassword({email,password}),
           8000,
@@ -515,7 +558,7 @@
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vUXPerfil1] login result", {data,error});
+        console.log("[SHITAGRAM vReels1] login result", {data,error});
         if(error){
           setMessage("loginMessage","error",error.message);
           return;
@@ -525,7 +568,7 @@
         try{
           await withTimeout(ensureProfile(),5000,"Carregamento do perfil");
         }catch(profileErr){
-          console.warn("[SHITAGRAM vUXPerfil1] profile load skipped",profileErr);
+          console.warn("[SHITAGRAM vReels1] profile load skipped",profileErr);
         }
 
         localStorage.setItem("shitagram_seen_onboarding","1");
@@ -540,7 +583,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vUXPerfil1] login error",err);
+        console.error("[SHITAGRAM vReels1] login error",err);
         setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
       }finally{
         clearTimeout(safetyTimer);
@@ -726,19 +769,180 @@
       finally{setBusy("publishClipBtn",false);}
     }
 
+    let activeClipId = null;
+    let clipCommentsCache = {};
+    let clipReelObserver = null;
+
+    function setupReelAutoplay(){
+      const videos=[...document.querySelectorAll(".reel-video")];
+      if(clipReelObserver){clipReelObserver.disconnect();}
+      clipReelObserver=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          const v=entry.target;
+          if(entry.isIntersecting && entry.intersectionRatio>0.65){
+            v.muted=true;
+            v.play().catch(()=>{});
+          }else{
+            v.pause();
+          }
+        });
+      },{threshold:[0.35,0.65,0.9]});
+      videos.forEach(v=>clipReelObserver.observe(v));
+    }
+
     window.fetchClips=async function(){
-      const box=$("clipsList"); if(!box)return; box.innerHTML=`<p class="text-sm text-zinc-500">A carregar ShitClips™...</p>`;
-      const {data,error}=await supabase.from("clips").select("id,user_id,video_url,storage_path,caption,category,trauma_level,status,created_at").eq("status","active").order("created_at",{ascending:false}).limit(20);
+      const box=$("clipsList"); if(!box)return;
+      box.innerHTML=`<div class="card p-8 text-center"><p class="text-sm text-zinc-500">A carregar ShitClips™...</p></div>`;
+      const {data,error}=await supabase.from("clips").select("id,user_id,video_url,storage_path,caption,category,trauma_level,status,created_at").eq("status","active").order("created_at",{ascending:false}).limit(30);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">Erro ao carregar ShitClips™: ${escapeHtml(error.message)}</p>`;return;}
-      if(!data||!data.length){box.innerHTML=`<div class="card p-8 text-center sm:col-span-2"><div class="text-4xl">🎬</div><p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro.</p></div>`;return;}
-      const ids=[...new Set(data.map(c=>c.user_id).filter(Boolean))]; let profileMap={}; if(ids.length){const {data:profiles}=await supabase.from("profiles").select("id,username,display_name").in("id",ids);(profiles||[]).forEach(p=>profileMap[p.id]=p);}
-      box.innerHTML=data.map(clip=>{const p=profileMap[clip.user_id]||{}; const owner=currentUser&&currentUser.id===clip.user_id; return `<article class="rounded-[30px] border border-white/10 bg-zinc-950 overflow-hidden relative">
-        <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
-        <div class="p-4">
-          <div class="flex items-start justify-between gap-3"><div><p class="text-sm font-black">@${escapeHtml(p.username||"utilizador")}</p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category||"Mico Geral")}</p></div><span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level||5)}</span></div>
-          ${clip.caption?`<p class="mt-3 text-sm text-zinc-300">${escapeHtml(clip.caption)}</p>`:""}
-          <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3"><span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span><div class="flex gap-3"><button onclick="gateAction('reagir ao clip')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">💩</button><button onclick="shareCurrent()" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button><button onclick="reportContent('clip','${clip.id}')" class="text-[11px] text-zinc-500 font-black">Denunciar</button>${owner?`<button onclick="deleteClip('${clip.id}','${escapeHtml(clip.storage_path||"")}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>`:""}</div></div>
-        </div></article>`}).join("");
+      const clips=data||[];
+      if(!clips.length){
+        $("clipsHotList").innerHTML=`<p class="text-sm text-zinc-500">Sem destaques ainda.</p>`;
+        box.className="grid gap-4";
+        box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🎬</div><p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro.</p><button onclick="goTab('publish');switchPublishMode('clip')" class="mt-5 rounded-2xl bg-yellow-400 px-5 py-3 text-black text-xs font-black uppercase">Publicar clip</button></div>`;
+        return;
+      }
+
+      const clipIds=clips.map(c=>c.id);
+      const authorIds=[...new Set(clips.map(c=>c.user_id).filter(Boolean))];
+
+      const [profilesRes,reactionsRes,commentsRes,myReactionsRes,followingRes] = await Promise.allSettled([
+        authorIds.length ? supabase.from("profiles").select("id,username,display_name,avatar_url,xp,bio").in("id",authorIds) : Promise.resolve({data:[]}),
+        supabase.from("clip_reactions").select("clip_id").in("clip_id",clipIds),
+        supabase.from("clip_comments").select("id,clip_id,user_id,body,created_at,profiles(username,display_name,avatar_url)").in("clip_id",clipIds).eq("status","active").order("created_at",{ascending:true}),
+        currentUser ? supabase.from("clip_reactions").select("clip_id").eq("user_id",currentUser.id).in("clip_id",clipIds) : Promise.resolve({data:[]}),
+        currentUser && authorIds.length ? supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",authorIds) : Promise.resolve({data:[]})
+      ]);
+
+      const profiles=(profilesRes.value?.data)||[];
+      const reactions=(reactionsRes.value?.data)||[];
+      const comments=(commentsRes.value?.data)||[];
+      const myReactions=(myReactionsRes.value?.data)||[];
+      const follows=(followingRes.value?.data)||[];
+
+      const profileMap={}; profiles.forEach(p=>profileMap[p.id]=p);
+      followingIds=new Set(follows.map(f=>f.following_id));
+
+      const reactionCount={}; reactions.forEach(r=>reactionCount[r.clip_id]=(reactionCount[r.clip_id]||0)+1);
+      const commentCount={}; comments.forEach(c=>commentCount[c.clip_id]=(commentCount[c.clip_id]||0)+1);
+      const mySet=new Set(myReactions.map(r=>r.clip_id));
+      const commentsByClip={}; comments.forEach(c=>{(commentsByClip[c.clip_id] ||= []).push(c);});
+      clipCommentsCache=commentsByClip;
+
+      const hot=clips.slice().sort((a,b)=>{
+        const sa=(reactionCount[a.id]||0)*3+(commentCount[a.id]||0)*2+(Number(a.trauma_level)||0);
+        const sb=(reactionCount[b.id]||0)*3+(commentCount[b.id]||0)*2+(Number(b.trauma_level)||0);
+        return sb-sa;
+      }).slice(0,8);
+
+      $("clipsHotList").innerHTML=hot.map((c,i)=>{
+        const p=profileMap[c.user_id]||{};
+        return `<button onclick="document.getElementById('clip-${c.id}')?.scrollIntoView({behavior:'smooth',block:'start'})" class="min-w-[164px] rounded-3xl border border-white/10 bg-black/40 p-3 text-left hover:border-yellow-400/40">
+          <div class="flex items-center justify-between"><span class="text-xl">${i===0?'🔥':'🎬'}</span><span class="text-[10px] text-yellow-400 font-black">💩 ${reactionCount[c.id]||0}</span></div>
+          <p class="mt-3 text-xs font-black truncate">@${escapeHtml(p.username||"utilizador")}</p>
+          <p class="mt-1 text-[11px] text-zinc-400 line-clamp-2">${escapeHtml(c.caption||"ShitClip™ em destaque")}</p>
+        </button>`;
+      }).join("");
+
+      box.className="reels-feed";
+      box.innerHTML=clips.map(c=>renderClipReel(c,profileMap[c.user_id]||{},reactionCount[c.id]||0,commentCount[c.id]||0,mySet.has(c.id),commentsByClip[c.id]||[])).join("");
+      setTimeout(setupReelAutoplay,150);
+    }
+
+    function renderClipReel(clip,p,reactions,commentsCount,reacted,comments){
+      const owner=currentUser&&currentUser.id===clip.user_id;
+      const caption=clip.caption||"Um mico em vídeo, para veres e fingires que não te identificaste.";
+      return `<article id="clip-${clip.id}" class="reel-card">
+        <video src="${escapeHtml(clip.video_url)}" controls playsinline muted loop preload="metadata" class="reel-video"></video>
+        <div class="reel-gradient"></div>
+
+        <div class="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
+          <span class="rounded-full bg-black/55 border border-white/10 px-4 py-2 text-[10px] font-black uppercase text-yellow-400 backdrop-blur-xl">🔥 Em alta</span>
+          <span class="rounded-full bg-red-500/20 border border-red-400/30 px-4 py-2 text-[10px] font-black text-red-100 backdrop-blur-xl">Trauma ${escapeHtml(clip.trauma_level||5)}</span>
+        </div>
+
+        <div class="reel-actions">
+          <button onclick="toggleClipReaction('${clip.id}')" class="reel-action ${reacted?'text-yellow-400':'text-white'}" title="Também me aconteceu">💩</button>
+          <p class="-mt-3 text-center text-[11px] font-black">${reactions}</p>
+          <button onclick="openClipComments('${clip.id}')" class="reel-action" title="Comentários">💬</button>
+          <p class="-mt-3 text-center text-[11px] font-black">${commentsCount}</p>
+          <button onclick="shareCurrent()" class="reel-action" title="Partilhar">↗</button>
+          <button onclick="reportContent('clip','${clip.id}')" class="reel-action text-sm" title="Denunciar">⚠</button>
+          ${owner?`<button onclick="deleteClip('${clip.id}','${escapeHtml(clip.storage_path||"")}')" class="reel-action text-sm text-red-300" title="Excluir">🗑</button>`:""}
+        </div>
+
+        <div class="reel-info">
+          <div class="flex items-center gap-3 min-w-0">
+            <button onclick="openPublicProfile('${clip.user_id}')" class="shrink-0">${avatarMarkup(p,"w-12 h-12","text-2xl")}</button>
+            <div class="min-w-0">
+              <button onclick="openPublicProfile('${clip.user_id}')" class="text-left font-black hover:text-yellow-400">@${escapeHtml(p.username||"utilizador")}</button>
+              <p class="text-[11px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category||"Mico Geral")} · ${timeAgo(clip.created_at)}</p>
+            </div>
+            <div class="ml-auto">${followButton(clip.user_id)}</div>
+          </div>
+          <p class="mt-4 text-sm text-zinc-100 leading-relaxed">${escapeHtml(caption)}</p>
+          <div class="mt-4 flex items-center gap-2 text-[11px] text-zinc-300 font-black">
+            <span class="rounded-full bg-white/10 border border-white/10 px-3 py-1">💩 ${reactions} também sentiram isto</span>
+            <button onclick="openClipComments('${clip.id}')" class="rounded-full bg-white/10 border border-white/10 px-3 py-1">💬 ${commentsCount}</button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    window.toggleClipReaction=async function(clipId){
+      if(!currentUser){gateAction("reagir ao ShitClip™");return;}
+      try{
+        const {data:existing,error:findError}=await supabase.from("clip_reactions").select("id").eq("clip_id",clipId).eq("user_id",currentUser.id).maybeSingle();
+        if(findError){showToast("Erro ao reagir: "+findError.message);return;}
+        if(existing){
+          const {error}=await supabase.from("clip_reactions").delete().eq("id",existing.id).eq("user_id",currentUser.id);
+          if(error){showToast("Erro ao remover reação: "+error.message);return;}
+        }else{
+          const {error}=await supabase.from("clip_reactions").insert({clip_id:clipId,user_id:currentUser.id,reaction_type:"same"});
+          if(error){showToast("Erro ao reagir: "+error.message);return;}
+        }
+        await fetchClips();
+      }catch(err){console.error(err);showToast("Erro inesperado ao reagir.");}
+    }
+
+    window.openClipComments=function(clipId){
+      activeClipId=clipId;
+      $("clipCommentsModal").classList.add("open");
+      document.body.style.overflow="hidden";
+      renderClipComments(clipId);
+      setTimeout(()=>$("clipCommentInput")?.focus(),120);
+    }
+
+    window.closeClipComments=function(){
+      $("clipCommentsModal").classList.remove("open");
+      document.body.style.overflow="";
+      activeClipId=null;
+    }
+
+    function renderClipComments(clipId){
+      const list=$("clipCommentsList"); if(!list)return;
+      const comments=clipCommentsCache[clipId]||[];
+      list.innerHTML=comments.length ? comments.map(c=>`<div class="rounded-3xl bg-white/[.04] border border-white/10 px-4 py-3">
+        <div class="flex gap-3 items-start">${avatarMarkup(c.profiles,"w-9 h-9","text-base")}<div class="min-w-0">
+          <p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p>
+          <p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p>
+        </div></div>
+      </div>`).join("") : `<div class="text-center py-10"><div class="text-4xl">💬</div><p class="mt-3 text-sm text-zinc-500">Ainda sem comentários neste ShitClip™.</p></div>`;
+    }
+
+    window.addClipCommentActive=async function(){
+      if(!activeClipId){return;}
+      if(!currentUser){gateAction("comentar este ShitClip™");return;}
+      const input=$("clipCommentInput"); const body=(input?.value||"").trim();
+      if(body.length<2){showToast("Escreve pelo menos 2 caracteres.");return;}
+      try{
+        const {error}=await supabase.from("clip_comments").insert({clip_id:activeClipId,user_id:currentUser.id,body,status:"active"});
+        if(error){showToast("Erro ao comentar: "+error.message);return;}
+        input.value="";
+        await fetchClips();
+        renderClipComments(activeClipId);
+        showToast("Comentário publicado.");
+      }catch(err){console.error(err);showToast("Erro inesperado ao comentar.");}
     }
 
     window.fetchRanking=async function(){
@@ -761,9 +965,10 @@
 
     function notificationText(n){
       const actor="@"+escapeHtml(n.actor?.username||n.actor?.display_name||"alguém");
+      const target=n.clip_id?"ShitClip™":"mico";
       if(n.type==="follow") return `${actor} começou a seguir-te.`;
-      if(n.type==="reaction") return `${actor} reagiu ao teu mico.`;
-      if(n.type==="comment") return `${actor} comentou no teu mico.`;
+      if(n.type==="reaction") return `${actor} reagiu ao teu ${target}.`;
+      if(n.type==="comment") return `${actor} comentou no teu ${target}.`;
       return `${actor} interagiu contigo.`;
     }
 
@@ -775,7 +980,7 @@
       list.classList.toggle("hidden",guest);
       if(guest){updateNotifBadge(0);return;}
       list.innerHTML=`<p class="text-sm text-zinc-500">A carregar notificações...</p>`;
-      const {data,error}=await supabase.from("notifications").select("id,type,post_id,comment_id,read_at,created_at,actor:actor_id(username,display_name)").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
+      const {data,error}=await supabase.from("notifications").select("id,type,post_id,clip_id,comment_id,read_at,created_at,actor:actor_id(username,display_name)").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
       if(error){list.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
       if(!data||!data.length){list.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🔕</div><p class="mt-3 text-sm text-zinc-500">Ainda não tens notificações.</p></div>`;updateNotifBadge(0);return;}
       const unread=data.filter(n=>!n.read_at).length; updateNotifBadge(unread);
