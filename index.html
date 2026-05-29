@@ -619,6 +619,15 @@
         .replaceAll("'", "&#039;");
     }
 
+    function escapeForAttribute(value) {
+      return String(value || "")
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll('"', "&quot;")
+        .replaceAll("\n", " ")
+        .replaceAll("\r", " ");
+    }
+
     function setFeedStatus(text) {
       const el = document.getElementById("feedAuthStatus");
       if (el) el.innerText = text;
@@ -629,7 +638,7 @@
 
       if (!currentUser) {
         setMessage("postMessage", "error", "Faz login antes de publicar.");
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
@@ -679,7 +688,7 @@
 
     window.reactToPost = async function(postId) {
       if (!currentUser) {
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
@@ -797,7 +806,7 @@
       event.preventDefault();
 
       if (!currentUser) {
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
@@ -895,7 +904,7 @@
 
       if (!currentUser) {
         setMessage("clipMessage", "error", "Faz login antes de publicar um ShitClip™.");
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
@@ -983,69 +992,74 @@
 
       list.innerHTML = '<p class="text-sm text-zinc-500">A carregar ShitClips™...</p>';
 
-      const { data, error } = await supabase
-        .from("clips")
-        .select(`
-          id,
-          user_id,
-          video_url,
-          caption,
-          category,
-          trauma_level,
-          reactions_count,
-          comments_count,
-          created_at,
-          profiles (
-            username,
-            display_name
-          )
-        `)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(20);
+      try {
+        const { data: clips, error: clipsError } = await supabase
+          .from("clips")
+          .select("id,user_id,video_url,caption,category,trauma_level,reactions_count,comments_count,status,created_at")
+          .eq("status", "active")
+          .order("created_at", { ascending: false })
+          .limit(20);
 
-      if (error) {
-        list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(error.message)}</p>`;
-        return;
-      }
+        if (clipsError) {
+          list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(clipsError.message)}</p>`;
+          return;
+        }
 
-      if (!data || data.length === 0) {
-        list.innerHTML = `
-          <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
-            <div class="text-4xl">🎬</div>
-            <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = data.map((clip) => {
-        const username = clip.profiles?.username || "utilizador";
-        return `
-          <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
-            <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
-            <div class="p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="text-sm font-black">@${escapeHtml(username)}</p>
-                  <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
-                </div>
-                <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
-              </div>
-              ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
-              <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
-                <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
-                <div class="flex items-center gap-3">
-                  <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
-                  ${currentUser && currentUser.id === clip.user_id ? `
-                    <button onclick="deleteClip('${clip.id}', '${escapeForAttribute(clip.video_url)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
-                  ` : ""}
-                </div>
-              </div>
+        if (!clips || clips.length === 0) {
+          list.innerHTML = `
+            <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
+              <div class="text-4xl">🎬</div>
+              <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
             </div>
-          </article>
-        `;
-      }).join("");
+          `;
+          return;
+        }
+
+        const userIds = [...new Set(clips.map(c => c.user_id).filter(Boolean))];
+        let profileMap = {};
+
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("id,username,display_name")
+            .in("id", userIds);
+
+          profileMap = Object.fromEntries((profiles || []).map(profile => [profile.id, profile]));
+        }
+
+        list.innerHTML = clips.map((clip) => {
+          const profile = profileMap[clip.user_id];
+          const username = profile?.username || "utilizador";
+          const isOwner = currentUser && currentUser.id === clip.user_id;
+
+          return `
+            <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
+              <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
+              <div class="p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="text-sm font-black">@${escapeHtml(username)}</p>
+                    <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
+                  </div>
+                  <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
+                </div>
+                ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
+                <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
+                  <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
+                  <div class="flex items-center gap-3">
+                    <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
+                    ${isOwner ? `
+                      <button onclick="deleteClip('${clip.id}', '${escapeForAttribute(clip.video_url)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
+                    ` : ""}
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        list.innerHTML = `<p class="text-sm text-red-400">Erro inesperado ao carregar ShitClips™: ${escapeHtml(error.message || error)}</p>`;
+      }
     };
 
     window.shareClip = async function(clipId) {
@@ -1067,7 +1081,7 @@
     window.deleteClip = async function(clipId, videoUrl) {
       if (!currentUser) {
         showToast("Faz login para excluir o vídeo.");
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
@@ -1283,7 +1297,7 @@
         currentProfile = null;
         if (authStatus) authStatus.innerText = "Ainda não tens sessão iniciada.";
         if (logoutBtn) logoutBtn.classList.add("hidden");
-        setFeedStatus("Sem sessão ativa. Faz login para publicar, mas podes ver o feed.");
+        setFeedStatus("Explora os primeiros micos da comunidade. Para publicar o teu, cria conta grátis ou faz login.");
         if (profileSessionStatus) profileSessionStatus.innerText = "Faz login para veres e editares o teu perfil.";
       }
 
@@ -1339,7 +1353,7 @@
 
       if (!currentUser) {
         setMessage("profileMessage", "error", "Tens de fazer login para editar o perfil.");
-        openRegisterModal("login");
+        openAuthModal("login");
         return;
       }
 
