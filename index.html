@@ -315,7 +315,8 @@
     }
     function showToast(text){const t=$("toast");$("toastText").innerText=text;t.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),3200);}
     function setMessage(id,type,text){const el=$(id); if(!el) return; el.classList.remove("hidden","text-red-400","text-yellow-400","text-green-400"); el.classList.add(type==="error"?"text-red-400":type==="success"?"text-green-400":"text-yellow-400"); el.innerText=text;}
-    function setBusy(btnId,busy,text){const b=$(btnId);if(!b)return;if(busy){b.dataset.oldText=b.innerText;b.innerText=text||"Aguarda...";b.disabled=true;b.classList.add("opacity-70");}else{b.innerText=b.dataset.oldText||b.innerText;b.disabled=false;b.classList.remove("opacity-70");}}
+    function setBusy(btnId,busy,text){const b=$(btnId);if(!b)return;if(busy){if(!b.dataset.oldText)b.dataset.oldText=b.innerText;b.innerText=text||"Aguarda...";b.disabled=true;b.classList.add("opacity-70");}else{b.innerText=b.dataset.defaultText||b.dataset.oldText||b.innerText;b.disabled=false;b.classList.remove("opacity-70");delete b.dataset.oldText;}}
+    function withTimeout(promise,ms=15000,label="Pedido"){return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" demorou demasiado. Verifica a ligação e tenta novamente.")),ms))]);}
     function showSearchSoon(){showToast("Pesquisa em breve.");}
 
     window.openAuthModal=function(tab="login"){$("authModal").classList.add("open");document.body.style.overflow="hidden";switchAuthTab(tab);};
@@ -413,31 +414,61 @@
       if(password.length<6){setMessage("registerMessage","error","A password deve ter pelo menos 6 caracteres.");return;}
       setMessage("registerMessage","info","A criar conta...");setBusy("registerBtn",true,"A criar...");
       try{
-        const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}});
+        const {data,error}=await withTimeout(
+          supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
+          15000,
+          "Registo"
+        );
         if(error){setMessage("registerMessage","error",error.message);return;}
-        if(data.user){
-          const {error:profileError}=await supabase.from("profiles").upsert({id:data.user.id,username,display_name:username});
-          if(profileError) console.warn(profileError);
-        }
-        setMessage("registerMessage","success","Conta criada. Vai ao teu email, confirma a conta e depois faz login.");
+
+        /* O perfil agora é criado automaticamente por trigger no Supabase.
+           Não fazemos upsert manual aqui para evitar bloqueios por RLS. */
+        setMessage("registerMessage","success","Conta criada. Confirma o email e depois entra com o teu email.");
         showToast("Conta criada. Confirma o email.");
         event.target.reset();
-      }catch(err){console.error(err);setMessage("registerMessage","error","Erro inesperado ao criar conta.");}
-      finally{setBusy("registerBtn",false);}
+        switchAuthTab("login");
+        $("loginEmail").value=email;
+      }catch(err){
+        console.error(err);
+        setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
+      }finally{
+        setBusy("registerBtn",false);
+        $("registerBtn").innerText="Criar conta";
+      }
     };
 
     window.loginUser=async function(event){
       event.preventDefault();
-      const email=$("loginEmail").value.trim(); const password=$("loginPassword").value.trim();
+      const email=$("loginEmail").value.trim();
+      const password=$("loginPassword").value.trim();
       setMessage("loginMessage","info","A entrar..."); setBusy("loginBtn",true,"A entrar...");
       try{
-        const {data,error}=await supabase.auth.signInWithPassword({email,password});
+        const {data,error}=await withTimeout(
+          supabase.auth.signInWithPassword({email,password}),
+          15000,
+          "Login"
+        );
         if(error){setMessage("loginMessage","error",error.message);return;}
-        currentUser=data.user; await ensureProfile(); localStorage.setItem("shitagram_seen_onboarding","1");
-        closeAuthModal(); showCorrectShell(); updateAuthUI(); updateProfileUI(); updatePublishGate(); await fetchAll(); goTab("feed");
+        currentUser=data.user;
+        try{await withTimeout(ensureProfile(),10000,"Carregamento do perfil");}
+        catch(profileErr){console.warn(profileErr);}
+
+        localStorage.setItem("shitagram_seen_onboarding","1");
+        closeAuthModal();
+        showCorrectShell();
+        updateAuthUI();
+        updateProfileUI();
+        updatePublishGate();
+        Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications()]);
+        goTab("feed");
         showToast("Login feito com sucesso.");
-      }catch(err){console.error(err);setMessage("loginMessage","error","Erro inesperado no login.");}
-      finally{setBusy("loginBtn",false);}
+      }catch(err){
+        console.error(err);
+        setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
+      }finally{
+        setBusy("loginBtn",false);
+        $("loginBtn").innerText="Entrar com email";
+      }
     };
 
     window.logoutUser=async function(){
