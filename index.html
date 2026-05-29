@@ -605,6 +605,15 @@
       el.innerText = text;
     }
 
+    function withTimeout(promise, ms = 20000, label = "operação") {
+      let timer;
+      const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`Tempo esgotado na ${label}. Verifica a internet, o domínio permitido no Supabase e a chave anon.`)), ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+    }
+
+
 
     let currentUser = null;
     let currentProfile = null;
@@ -1250,20 +1259,62 @@
         .toLowerCase()
         .replace(/[^a-z0-9_\.]/g, "");
 
-      const { data: existing } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+      try {
+        const { data: existing, error: selectError } = await withTimeout(
+          supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle(),
+          15000,
+          "leitura do perfil"
+        );
 
-      if (existing) {
-        currentProfile = existing;
-        return;
-      }
+        if (selectError && selectError.code !== "PGRST116") {
+          console.warn("Erro ao ler perfil:", selectError);
+        }
 
-      const { data: created } = await supabase
-        .from("profiles")
-        .insert({
+        if (existing) {
+          currentProfile = existing;
+          return;
+        }
+
+        const { data: created, error: insertError } = await withTimeout(
+          supabase
+            .from("profiles")
+            .insert({
+              id: user.id,
+              username,
+              display_name: username,
+              bio: "",
+              xp: 0,
+              level: "Humano Real",
+              posts_count: 0
+            })
+            .select("*")
+            .single(),
+          15000,
+          "criação do perfil"
+        );
+
+        if (insertError) {
+          console.warn("Erro ao criar perfil:", insertError);
+          currentProfile = {
+            id: user.id,
+            username,
+            display_name: username,
+            bio: "",
+            xp: 0,
+            level: "Humano Real",
+            posts_count: 0
+          };
+          return;
+        }
+
+        currentProfile = created || null;
+      } catch (err) {
+        console.error("Erro no ensureProfile:", err);
+        currentProfile = {
           id: user.id,
           username,
           display_name: username,
@@ -1271,15 +1322,14 @@
           xp: 0,
           level: "Humano Real",
           posts_count: 0
-        })
-        .select("*")
-        .single();
-
-      currentProfile = created || null;
+        };
+      }
     }
 
     window.submitRegister = async function (event) {
       event.preventDefault();
+
+      const registerButton = event.target.querySelector("button");
       const username = document.getElementById("registerUsername").value.trim().replace("@", "").toLowerCase();
       const email = document.getElementById("registerEmail").value.trim();
       const password = document.getElementById("registerPassword").value.trim();
@@ -1287,40 +1337,104 @@
       if (!username || !email || !password) return setMessage("registerMessage", "error", "Preenche todos os campos.");
       if (password.length < 6) return setMessage("registerMessage", "error", "A password deve ter pelo menos 6 caracteres.");
 
-      setMessage("registerMessage", "info", "A criar conta real...");
+      try {
+        if (registerButton) {
+          registerButton.disabled = true;
+          registerButton.innerText = "A CRIAR...";
+          registerButton.classList.add("opacity-60", "cursor-not-allowed");
+        }
 
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { username } }
-      });
+        setMessage("registerMessage", "info", "A criar conta real...");
 
-      if (error) return setMessage("registerMessage", "error", error.message);
+        const { data, error } = await withTimeout(
+          supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { username } }
+          }),
+          20000,
+          "registo"
+        );
 
-      if (data.user && data.session) {
-        await ensureProfile(data.user);
-        updateAuthUI(data.user);
-        setMessage("registerMessage", "success", "Conta criada e sessão iniciada com sucesso.");
-      } else {
-        setMessage("registerMessage", "success", "Conta criada. Verifica o teu email para confirmar o registo.");
+        if (error) return setMessage("registerMessage", "error", error.message);
+
+        if (data.user && data.session) {
+          await ensureProfile(data.user);
+          updateAuthUI(data.user);
+          setMessage("registerMessage", "success", "Conta criada e sessão iniciada com sucesso.");
+        } else {
+          setMessage("registerMessage", "success", "Conta criada. Verifica o teu email para confirmar o registo.");
+        }
+
+        event.target.reset();
+      } catch (err) {
+        console.error("Erro no registo:", err);
+        setMessage("registerMessage", "error", err?.message || "Erro inesperado no registo.");
+      } finally {
+        if (registerButton) {
+          registerButton.disabled = false;
+          registerButton.innerText = "CRIAR CONTA REAL";
+          registerButton.classList.remove("opacity-60", "cursor-not-allowed");
+        }
       }
-
-      event.target.reset();
     };
 
     window.submitLogin = async function (event) {
       event.preventDefault();
+
+      const loginButton = event.target.querySelector("button");
       const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value.trim();
-      setMessage("loginMessage", "info", "A entrar...");
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return setMessage("loginMessage", "error", error.message);
+      if (!email || !password) {
+        setMessage("loginMessage", "error", "Preenche email e password.");
+        return;
+      }
 
-      await ensureProfile(data.user);
-      updateAuthUI(data.user);
-      setMessage("loginMessage", "success", "Login feito com sucesso.");
-      event.target.reset();
+      try {
+        if (loginButton) {
+          loginButton.disabled = true;
+          loginButton.innerText = "A ENTRAR...";
+          loginButton.classList.add("opacity-60", "cursor-not-allowed");
+        }
+
+        setMessage("loginMessage", "info", "A entrar...");
+
+        const { data, error } = await withTimeout(
+          supabase.auth.signInWithPassword({ email, password }),
+          20000,
+          "autenticação"
+        );
+
+        if (error) {
+          setMessage("loginMessage", "error", error.message || "Erro ao iniciar sessão.");
+          return;
+        }
+
+        if (!data?.user) {
+          setMessage("loginMessage", "error", "Login não devolveu utilizador. Confirma se o email já foi validado.");
+          return;
+        }
+
+        await ensureProfile(data.user);
+        updateAuthUI(data.user);
+        setMessage("loginMessage", "success", "Login feito com sucesso.");
+
+        setTimeout(() => {
+          closeRegisterModal();
+        }, 700);
+
+        event.target.reset();
+      } catch (err) {
+        console.error("Erro no login:", err);
+        setMessage("loginMessage", "error", err?.message || "Erro inesperado no login.");
+      } finally {
+        if (loginButton) {
+          loginButton.disabled = false;
+          loginButton.innerText = "ENTRAR";
+          loginButton.classList.remove("opacity-60", "cursor-not-allowed");
+        }
+      }
     };
 
     window.logout = async function () {
@@ -1330,9 +1444,17 @@
     };
 
     async function checkSession() {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) await ensureProfile(data.user);
-      updateAuthUI(data.user ?? null);
+      try {
+        const { data } = await withTimeout(supabase.auth.getUser(), 15000, "verificação de sessão");
+        if (data.user) await ensureProfile(data.user);
+        updateAuthUI(data.user ?? null);
+      } catch (err) {
+        console.error("Erro ao verificar sessão:", err);
+        currentUser = null;
+        currentProfile = null;
+        updateAuthUI(null);
+        setFeedStatus("Não foi possível verificar a sessão. Confirma ligação ao Supabase.");
+      }
     }
 
     function getHeaderUsername(user) {
@@ -1489,12 +1611,17 @@
     });
 
     supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        await ensureProfile(session.user);
-        updateAuthUI(session.user);
-      } else {
-        currentProfile = null;
-        updateAuthUI(null);
+      try {
+        if (session?.user) {
+          await ensureProfile(session.user);
+          updateAuthUI(session.user);
+        } else {
+          currentProfile = null;
+          updateAuthUI(null);
+        }
+      } catch (err) {
+        console.error("Erro ao atualizar sessão:", err);
+        setFeedStatus("Sessão detetada, mas houve erro ao carregar perfil.");
       }
     });
 
