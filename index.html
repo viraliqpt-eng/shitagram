@@ -750,6 +750,7 @@
         .from("posts")
         .select(`
           id,
+          user_id,
           title,
           description,
           category,
@@ -795,10 +796,14 @@
             <h4 class="mt-4 text-base font-black leading-snug">${escapeHtml(post.title)}</h4>
             <p class="mt-2 text-sm text-zinc-400 leading-relaxed">${escapeHtml(post.description)}</p>
             <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
-              <button onclick="reactToPost('${post.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">💩 Também me aconteceu</button>
+              <button onclick="reactToPost('${escapeForAttribute(post.id)}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">💩 Também me aconteceu</button>
               <div class="flex items-center gap-3">
                 <span class="text-[11px] text-yellow-400 font-black">💩 ${post.reactions_count || 0}</span>
-                <button onclick="toggleComments('${post.id}')" class="text-[11px] text-zinc-400 font-black hover:text-yellow-400">💬 ${post.comments_count || 0}</button>
+                <button onclick="toggleComments('${escapeForAttribute(post.id)}')" class="text-[11px] text-zinc-400 font-black hover:text-yellow-400">💬 ${post.comments_count || 0}</button>
+                <button onclick="sharePost('${escapeForAttribute(post.id)}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
+                ${currentUser && currentUser.id === post.user_id ? `
+                  <button onclick="deletePost('${escapeForAttribute(post.id)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
+                ` : ""}
               </div>
             </div>
 
@@ -815,6 +820,97 @@
           </article>
         `;
       }).join("");
+    };
+
+
+
+    window.sharePost = async function(postId) {
+      const url = window.location.href.split("#")[0] + "#feed";
+      const text = "Olha este post no SHITAGRAM™";
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: "SHITAGRAM™", text, url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          showToast("Link copiado. Partilha o post.", "success");
+        }
+      } catch {
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast("Link copiado. Partilha o post.", "success");
+        } catch {
+          showToast("Não foi possível copiar o link.", "error");
+        }
+      }
+    };
+
+    window.deletePost = async function(postId) {
+      if (!currentUser) {
+        showToast("Faz login para excluir o post.", "error");
+        openRegisterModal("login");
+        return;
+      }
+
+      const confirmDelete = confirm("Tens a certeza que queres excluir este post? Os comentários e reações associados também podem ser removidos.");
+      if (!confirmDelete) return;
+
+      showToast("A excluir post...", "info");
+
+      try {
+        const { data: post, error: readError } = await supabase
+          .from("posts")
+          .select("id, user_id")
+          .eq("id", postId)
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
+
+        if (readError) {
+          showToast("Erro ao validar o post: " + readError.message, "error");
+          return;
+        }
+
+        if (!post) {
+          showToast("Este post não pertence à tua conta ou já foi excluído.", "error");
+          await fetchPosts();
+          return;
+        }
+
+        await supabase.from("comments").delete().eq("post_id", postId);
+        await supabase.from("reactions").delete().eq("post_id", postId);
+
+        const { error: deleteError } = await supabase
+          .from("posts")
+          .delete()
+          .eq("id", postId)
+          .eq("user_id", currentUser.id);
+
+        if (deleteError) {
+          showToast("Erro ao excluir post: " + deleteError.message, "error");
+          return;
+        }
+
+        if (currentProfile) {
+          const nextPostsCount = Math.max(0, (currentProfile.posts_count || 0) - 1);
+          const nextXp = Math.max(0, (currentProfile.xp || 0) - 85000);
+          await supabase
+            .from("profiles")
+            .update({
+              posts_count: nextPostsCount,
+              xp: nextXp,
+              level: nextXp >= 250000 ? "Catástrofe Ambulante" : nextXp > 0 ? "Sobrevivente Social" : "Humano Real"
+            })
+            .eq("id", currentUser.id);
+          await ensureProfile(currentUser);
+          updateProfileUI();
+          updateHeaderAuthUI(currentUser);
+        }
+
+        showToast("Post excluído com sucesso.", "success");
+        await fetchPosts();
+      } catch (error) {
+        showToast("Erro inesperado ao excluir post.", "error");
+        console.error(error);
+      }
     };
 
 
