@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - A vergonha agora dá XP</title>
+  <title>SHITAGRAM™ - vAuthFix2</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,6 +34,7 @@
   </style>
 </head>
 <body>
+  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vAuthFix2</div>
   <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
 
   <!-- ONBOARDING / VISITANTE -->
@@ -412,26 +413,44 @@
       const usernameError=validateUsername(username);
       if(usernameError){setMessage("registerMessage","error",usernameError);return;}
       if(password.length<6){setMessage("registerMessage","error","A password deve ter pelo menos 6 caracteres.");return;}
-      setMessage("registerMessage","info","A criar conta...");setBusy("registerBtn",true,"A criar...");
+      setMessage("registerMessage","info","A criar conta...");
+      setBusy("registerBtn",true,"A criar...");
+
+      let finished=false;
+      const safetyTimer=setTimeout(()=>{
+        if(!finished){
+          setBusy("registerBtn",false);
+          $("registerBtn").innerText="Criar conta";
+          setMessage("registerMessage","error","O pedido está a demorar demasiado. Se a conta aparecer no Supabase, tenta fazer login. Caso contrário, atualiza a página e tenta novamente.");
+        }
+      },8000);
+
       try{
+        console.log("[SHITAGRAM vAuthFix2] signUp start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
-          15000,
+          8000,
           "Registo"
         );
-        if(error){setMessage("registerMessage","error",error.message);return;}
-
-        /* O perfil agora é criado automaticamente por trigger no Supabase.
-           Não fazemos upsert manual aqui para evitar bloqueios por RLS. */
-        setMessage("registerMessage","success","Conta criada. Confirma o email e depois entra com o teu email.");
-        showToast("Conta criada. Confirma o email.");
+        finished=true;
+        clearTimeout(safetyTimer);
+        console.log("[SHITAGRAM vAuthFix2] signUp result", {data,error});
+        if(error){
+          setMessage("registerMessage","error",error.message);
+          return;
+        }
+        setMessage("registerMessage","success","Conta criada. Confirma o email se for pedido e entra com o teu email.");
+        showToast("Conta criada. Agora faz login.");
         event.target.reset();
         switchAuthTab("login");
         $("loginEmail").value=email;
       }catch(err){
-        console.error(err);
+        finished=true;
+        clearTimeout(safetyTimer);
+        console.error("[SHITAGRAM vAuthFix2] signUp error",err);
         setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
       }finally{
+        clearTimeout(safetyTimer);
         setBusy("registerBtn",false);
         $("registerBtn").innerText="Criar conta";
       }
@@ -441,17 +460,39 @@
       event.preventDefault();
       const email=$("loginEmail").value.trim();
       const password=$("loginPassword").value.trim();
-      setMessage("loginMessage","info","A entrar..."); setBusy("loginBtn",true,"A entrar...");
+      setMessage("loginMessage","info","A entrar...");
+      setBusy("loginBtn",true,"A entrar...");
+
+      let finished=false;
+      const safetyTimer=setTimeout(()=>{
+        if(!finished){
+          setBusy("loginBtn",false);
+          $("loginBtn").innerText="Entrar com email";
+          setMessage("loginMessage","error","O login está a demorar demasiado. Atualiza a página e tenta novamente. Se continuar, verifica a password ou confirmação do email.");
+        }
+      },8000);
+
       try{
+        console.log("[SHITAGRAM vAuthFix2] login start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signInWithPassword({email,password}),
-          15000,
+          8000,
           "Login"
         );
-        if(error){setMessage("loginMessage","error",error.message);return;}
+        finished=true;
+        clearTimeout(safetyTimer);
+        console.log("[SHITAGRAM vAuthFix2] login result", {data,error});
+        if(error){
+          setMessage("loginMessage","error",error.message);
+          return;
+        }
+
         currentUser=data.user;
-        try{await withTimeout(ensureProfile(),10000,"Carregamento do perfil");}
-        catch(profileErr){console.warn(profileErr);}
+        try{
+          await withTimeout(ensureProfile(),5000,"Carregamento do perfil");
+        }catch(profileErr){
+          console.warn("[SHITAGRAM vAuthFix2] profile load skipped",profileErr);
+        }
 
         localStorage.setItem("shitagram_seen_onboarding","1");
         closeAuthModal();
@@ -463,9 +504,12 @@
         goTab("feed");
         showToast("Login feito com sucesso.");
       }catch(err){
-        console.error(err);
+        finished=true;
+        clearTimeout(safetyTimer);
+        console.error("[SHITAGRAM vAuthFix2] login error",err);
         setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
       }finally{
+        clearTimeout(safetyTimer);
         setBusy("loginBtn",false);
         $("loginBtn").innerText="Entrar com email";
       }
