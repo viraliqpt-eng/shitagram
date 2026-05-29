@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SHITAGRAM™ - A vergonha agora dá XP</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WB5Shpl8bYXdOP4DYzMfuLD0UJuQrKUri3oBaTk6HRjeBzyZgyQEaer7BKaijnflFj6SsIwc8WPrc_2YXxbJKy87rlOwZ2Ef2AVYoitKM3JNGGrblWsI9amzym4mBKGOrHSGpbM20u1FU4QORIYkYMMgf8SrEQbgobTO64O9Ks927Yfuv5ArjCuGTarS41LWs4-5-JNZ6yPh4WW6CTnce3VDDzYt4UFeUQgW9fdjFqFdyAnxYP47rniVFKaTcPyIuYxvqO_AzC1JUl2ATZgSDg" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -66,7 +66,7 @@
         </div>
         <div class="flex items-center gap-2">
           <button onclick="showSearchSoon()" class="w-10 h-10 rounded-full soft flex items-center justify-center">🔍</button>
-          <button onclick="gateAction('ver notificações')" class="w-10 h-10 rounded-full soft flex items-center justify-center">🔔</button>
+          <button onclick="goTab('notifications')" class="relative w-10 h-10 rounded-full soft flex items-center justify-center">🔔<span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 rounded-full bg-red-500 px-1 text-[10px] font-black text-white items-center justify-center">0</span></button>
           <button onclick="goTab('profile')" class="w-10 h-10 rounded-full bg-yellow-400 text-black flex items-center justify-center font-black">👤</button>
         </div>
       </div>
@@ -79,6 +79,7 @@
           <button onclick="goTab('clips')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🎬</span> ShitClips™</button>
           <button onclick="goTab('publish')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>➕</span> Publicar</button>
           <button onclick="goTab('ranking')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🏆</span> Ranking</button>
+          <button onclick="goTab('notifications')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🔔</span> Notificações</button>
           <button onclick="goTab('profile')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>👤</span> Perfil</button>
           <button id="sideLoginBtn" onclick="openAuthModal('login')" class="mt-4 w-full rounded-2xl bg-yellow-400 py-3 text-black text-sm font-black uppercase">Entrar</button>
           <button id="sideLogoutBtn" onclick="logoutUser()" class="hidden mt-4 w-full rounded-2xl bg-red-500 py-3 text-white text-sm font-black uppercase">Sair</button>
@@ -171,6 +172,25 @@
           <div id="rankingList" class="space-y-3"></div>
         </div>
 
+
+        <!-- NOTIFICAÇÕES -->
+        <div id="tab-notifications" class="app-tab hidden space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-black text-yellow-400">Notificações</h2>
+              <p class="mt-1 text-sm text-zinc-500">Segue a atividade nos teus micos e no teu perfil.</p>
+            </div>
+            <button onclick="markNotificationsRead()" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Marcar como lidas</button>
+          </div>
+          <div id="notificationsGate" class="hidden card p-6 text-center">
+            <div class="text-4xl">🔔</div>
+            <h3 class="mt-3 text-xl font-black">Entra para veres notificações</h3>
+            <p class="mt-2 text-sm text-zinc-500">Recebe avisos quando alguém te segue, reage ou comenta nos teus micos.</p>
+            <button onclick="openAuthModal('login')" class="mt-5 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Entrar</button>
+          </div>
+          <div id="notificationsList" class="space-y-3"></div>
+        </div>
+
         <!-- PERFIL -->
         <div id="tab-profile" class="app-tab hidden space-y-5">
           <div class="card p-5">
@@ -227,11 +247,12 @@
     </div>
 
     <nav class="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10 px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2">
-      <div class="grid grid-cols-5 gap-1 text-[10px] font-black">
+      <div class="grid grid-cols-6 gap-1 text-[10px] font-black">
         <button id="nav-feed" onclick="goTab('feed')" class="tab active rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🏠</span><span>Feed</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
         <button id="nav-clips" onclick="goTab('clips')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🎬</span><span>Clips</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
         <button id="nav-publish" onclick="goTab('publish')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl bg-yellow-400 text-black w-11 h-11 -mt-5 rounded-full flex items-center justify-center border-4 border-black">＋</span><span>Publicar</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
         <button id="nav-ranking" onclick="goTab('ranking')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🏆</span><span>Ranking</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
+        <button id="nav-notifications" onclick="goTab('notifications')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🔔</span><span>Alertas</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
         <button id="nav-profile" onclick="goTab('profile')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">👤</span><span>Perfil</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
       </div>
     </nav>
@@ -320,6 +341,7 @@
       document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
       $("nav-"+tab)?.classList.add("active");
       if(tab==="ranking") fetchRanking();
+      if(tab==="notifications") fetchNotifications();
       if(tab==="profile") updateProfileUI();
       if(tab==="publish") updatePublishGate();
       window.scrollTo({top:0,behavior:"smooth"});
@@ -422,7 +444,7 @@
       await supabase.auth.signOut();currentUser=null;currentProfile=null;updateAuthUI();updateProfileUI();updatePublishGate();showToast("Sessão terminada.");goTab("feed");
     };
 
-    async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking()]);}
+    async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications()]);}
 
     function renderStories(profiles){
       const base=profiles?.slice(0,8)||[];
@@ -431,17 +453,19 @@
 
     window.fetchPosts=async function(){
       const box=$("postsList"); if(!box)return; box.innerHTML=`<p class="text-sm text-zinc-500">A carregar posts...</p>`;
-      const {data,error}=await supabase.from("posts").select("*,profiles(username,display_name,xp)").eq("status","active").order("created_at",{ascending:false}).limit(30);
+      const {data,error}=await supabase.from("posts").select("*,profiles(id,username,display_name,xp)").eq("status","active").order("created_at",{ascending:false}).limit(30);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
       const posts=data||[];
       const profiles=posts.map(p=>p.profiles).filter(Boolean); renderStories(profiles);
       if(!posts.length){box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🙂</div><p class="mt-3 text-sm text-zinc-500">Ainda não há posts reais. Publica o primeiro mico.</p></div>`;return;}
 
       const ids=posts.map(p=>p.id);
-      const [reactionsRes, commentsRes, myReactionsRes] = await Promise.allSettled([
+      const authorIds=[...new Set(posts.map(p=>p.user_id).filter(Boolean))];
+      const [reactionsRes, commentsRes, myReactionsRes, followingRes] = await Promise.allSettled([
         supabase.from("post_reactions").select("post_id").in("post_id",ids),
         supabase.from("comments").select("id,post_id,user_id,body,created_at,profiles(username,display_name)").in("post_id",ids).eq("status","active").order("created_at",{ascending:true}),
-        currentUser ? supabase.from("post_reactions").select("post_id").eq("user_id",currentUser.id).in("post_id",ids) : Promise.resolve({data:[]})
+        currentUser ? supabase.from("post_reactions").select("post_id").eq("user_id",currentUser.id).in("post_id",ids) : Promise.resolve({data:[]}),
+        currentUser && authorIds.length ? supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",authorIds) : Promise.resolve({data:[]})
       ]);
 
       const reactions=(reactionsRes.status==="fulfilled" && !reactionsRes.value.error) ? (reactionsRes.value.data||[]) : [];
@@ -461,8 +485,8 @@
       return `<article class="card overflow-hidden">
         <div class="p-4">
           <div class="flex items-start justify-between">
-            <div class="flex gap-3 items-center"><div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl">💩</div><div><p class="text-sm font-black">@${escapeHtml(p.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(p.created_at)}</span></p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
-            <span class="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-[10px] text-purple-200 font-black">Trauma ${escapeHtml(p.trauma_level||5)}</span>
+            <div class="flex gap-3 items-center min-w-0"><div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl shrink-0">💩</div><div class="min-w-0"><p class="text-sm font-black">@${escapeHtml(p.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(p.created_at)}</span></p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
+            <div class="flex flex-col items-end gap-2">${followButton(p.user_id)}<span class="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-[10px] text-purple-200 font-black">Trauma ${escapeHtml(p.trauma_level||5)}</span></div>
           </div>
           <h4 class="mt-4 text-lg font-black">${escapeHtml(p.title)}</h4>
           <p class="mt-2 text-sm text-zinc-300 leading-relaxed">${escapeHtml(p.description)}</p>
@@ -482,6 +506,29 @@
           </div>
         </div>
       </article>`;
+    }
+
+
+    function followButton(userId){
+      if(!userId || (currentUser && currentUser.id===userId)) return "";
+      const active=followingIds.has(userId);
+      return `<button onclick="toggleFollow('${userId}')" class="rounded-full ${active?'bg-white/10 text-zinc-200 border border-white/10':'bg-yellow-400 text-black'} px-3 py-1 text-[10px] font-black uppercase">${active?'A seguir':'Seguir'}</button>`;
+    }
+
+    window.toggleFollow=async function(userId){
+      if(!currentUser){gateAction("seguir utilizadores");return;}
+      if(!userId || userId===currentUser.id)return;
+      const already=followingIds.has(userId);
+      if(already){
+        const {error}=await supabase.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",userId);
+        if(error){showToast("Erro ao deixar de seguir: "+error.message);return;}
+        followingIds.delete(userId);showToast("Deixaste de seguir.");
+      }else{
+        const {error}=await supabase.from("follows").insert({follower_id:currentUser.id,following_id:userId});
+        if(error){showToast("Erro ao seguir: "+error.message);return;}
+        followingIds.add(userId);showToast("Agora estás a seguir.");
+      }
+      fetchPosts();fetchRanking();updateProfileUI();
     }
 
     window.reactPost=async function(postId){
@@ -583,9 +630,61 @@
       const {data,error}=await supabase.from("profiles").select("id,username,display_name,xp,level,posts_count").order("xp",{ascending:false}).limit(20);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
       if(!data||!data.length){box.innerHTML=`<div class="card p-8 text-center text-zinc-500">Ainda não há ranking.</div>`;return;}
-      box.innerHTML=data.map((p,i)=>`<article class="card p-4 flex items-center justify-between ${currentUser&&p.id===currentUser.id?"border-yellow-400/40 bg-yellow-400/5":""}">
-        <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div><p class="font-black">@${escapeHtml(p.username||"user")}</p><p class="text-[11px] text-zinc-500 font-black uppercase">${escapeHtml(p.level||"Humano Real")}</p></div></div><p class="text-yellow-400 font-black">XP ${escapeHtml(p.xp||0)}</p>
+      if(currentUser){
+        const ids=data.map(p=>p.id).filter(id=>id!==currentUser.id);
+        if(ids.length){
+          const {data:f}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",ids);
+          followingIds=new Set((f||[]).map(x=>x.following_id));
+        }
+      }
+      box.innerHTML=data.map((p,i)=>`<article class="card p-4 flex items-center justify-between gap-3 ${currentUser&&p.id===currentUser.id?"border-yellow-400/40 bg-yellow-400/5":""}">
+        <div class="flex items-center gap-4 min-w-0"><div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl shrink-0">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div class="min-w-0"><p class="font-black truncate">@${escapeHtml(p.username||"user")}</p><p class="text-[11px] text-zinc-500 font-black uppercase">${escapeHtml(p.level||"Humano Real")}</p></div></div><div class="text-right shrink-0"><p class="text-yellow-400 font-black">XP ${escapeHtml(p.xp||0)}</p>${followButton(p.id)}</div>
       </article>`).join("");
+    }
+
+
+    function notificationText(n){
+      const actor="@"+escapeHtml(n.actor?.username||n.actor?.display_name||"alguém");
+      if(n.type==="follow") return `${actor} começou a seguir-te.`;
+      if(n.type==="reaction") return `${actor} reagiu ao teu mico.`;
+      if(n.type==="comment") return `${actor} comentou no teu mico.`;
+      return `${actor} interagiu contigo.`;
+    }
+
+    window.fetchNotifications=async function(){
+      const gate=$("notificationsGate"), list=$("notificationsList");
+      if(!gate||!list)return;
+      const guest=!currentUser;
+      gate.classList.toggle("hidden",!guest);
+      list.classList.toggle("hidden",guest);
+      if(guest){updateNotifBadge(0);return;}
+      list.innerHTML=`<p class="text-sm text-zinc-500">A carregar notificações...</p>`;
+      const {data,error}=await supabase.from("notifications").select("id,type,post_id,comment_id,read_at,created_at,actor:actor_id(username,display_name)").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
+      if(error){list.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
+      if(!data||!data.length){list.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🔕</div><p class="mt-3 text-sm text-zinc-500">Ainda não tens notificações.</p></div>`;updateNotifBadge(0);return;}
+      const unread=data.filter(n=>!n.read_at).length; updateNotifBadge(unread);
+      list.innerHTML=data.map(n=>`<article class="card p-4 flex items-start gap-3 ${!n.read_at?'border-yellow-400/30 bg-yellow-400/5':''}">
+        <div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl">${n.type==="follow"?"👋":n.type==="comment"?"💬":"💩"}</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-bold">${notificationText(n)}</p>
+          <p class="mt-1 text-xs text-zinc-500">${timeAgo(n.created_at)}</p>
+        </div>
+        ${!n.read_at?'<span class="w-2.5 h-2.5 rounded-full bg-yellow-400 mt-2"></span>':''}
+      </article>`).join("");
+    }
+
+    function updateNotifBadge(count){
+      const b=$("notifBadge"); if(!b)return;
+      b.textContent=count>9?"9+":String(count);
+      b.classList.toggle("hidden",!count);
+      b.classList.toggle("flex",!!count);
+    }
+
+    window.markNotificationsRead=async function(){
+      if(!currentUser){gateAction("ver notificações");return;}
+      const {error}=await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("user_id",currentUser.id).is("read_at",null);
+      if(error){showToast("Erro: "+error.message);return;}
+      showToast("Notificações marcadas como lidas.");fetchNotifications();
     }
 
     window.deleteClip=async function(clipId,storagePath){
@@ -626,7 +725,7 @@
       finally{setBusy("saveProfileBtn",false);}
     }
 
-    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).subscribe();}
+    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).on("postgres_changes",{event:"*",schema:"public",table:"follows"},()=>{fetchPosts();fetchRanking();fetchNotifications();}).on("postgres_changes",{event:"*",schema:"public",table:"notifications"},fetchNotifications).subscribe();}
 
     async function init(){await refreshSession(); if(!$("appShell").classList.contains("hidden")) await fetchAll(); startRealtime();}
     supabase.auth.onAuthStateChange(async()=>{await refreshSession(); if(currentUser) await fetchAll();});
