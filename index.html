@@ -621,11 +621,36 @@
 
     function escapeForAttribute(value) {
       return String(value || "")
-        .replaceAll("\\", "\\\\")
-        .replaceAll("'", "\\'")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
-        .replaceAll("\n", " ")
-        .replaceAll("\r", " ");
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message, type = "info") {
+      let toast = document.getElementById("appToast");
+
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "appToast";
+        toast.className = "fixed left-1/2 bottom-6 z-[200] hidden -translate-x-1/2 rounded-2xl border px-5 py-3 text-sm font-black shadow-2xl backdrop-blur-xl transition";
+        document.body.appendChild(toast);
+      }
+
+      toast.innerText = message;
+      toast.classList.remove("hidden", "border-red-400/30", "bg-red-500/20", "text-red-200", "border-green-400/30", "bg-green-500/20", "text-green-200", "border-yellow-400/30", "bg-yellow-400/20", "text-yellow-200");
+
+      if (type === "error") {
+        toast.classList.add("border-red-400/30", "bg-red-500/20", "text-red-200");
+      } else if (type === "success") {
+        toast.classList.add("border-green-400/30", "bg-green-500/20", "text-green-200");
+      } else {
+        toast.classList.add("border-yellow-400/30", "bg-yellow-400/20", "text-yellow-200");
+      }
+
+      clearTimeout(window.__shitagramToastTimer);
+      window.__shitagramToastTimer = setTimeout(() => toast.classList.add("hidden"), 2800);
     }
 
     function setFeedStatus(text) {
@@ -638,7 +663,7 @@
 
       if (!currentUser) {
         setMessage("postMessage", "error", "Faz login antes de publicar.");
-        openAuthModal("login");
+        openRegisterModal("login");
         return;
       }
 
@@ -688,7 +713,7 @@
 
     window.reactToPost = async function(postId) {
       if (!currentUser) {
-        openAuthModal("login");
+        openRegisterModal("login");
         return;
       }
 
@@ -806,7 +831,7 @@
       event.preventDefault();
 
       if (!currentUser) {
-        openAuthModal("login");
+        openRegisterModal("login");
         return;
       }
 
@@ -833,10 +858,14 @@
 
       input.value = "";
       setCommentMessage(postId, "success", "Comentário publicado.");
-      await fetchComments(postId);
+
       await fetchPosts();
+
       const wrap = document.getElementById("comments-wrap-" + postId);
-      if (wrap) wrap.classList.remove("hidden");
+      if (wrap) {
+        wrap.classList.remove("hidden");
+        await fetchComments(postId);
+      }
     };
 
     window.fetchComments = async function(postId) {
@@ -849,6 +878,7 @@
         .from("comments")
         .select(`
           id,
+          user_id,
           content,
           created_at,
           profiles (
@@ -872,13 +902,51 @@
 
       list.innerHTML = data.map((comment) => {
         const username = comment.profiles?.username || "utilizador";
+        const canDelete = currentUser && currentUser.id === comment.user_id;
         return `
           <div class="rounded-2xl border border-white/10 bg-black/45 p-3">
-            <p class="text-[10px] text-yellow-400 font-black">@${escapeHtml(username)}</p>
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-[10px] text-yellow-400 font-black">@${escapeHtml(username)}</p>
+              ${canDelete ? `
+                <button onclick="deleteComment('${comment.id}', '${postId}')" class="text-[10px] text-red-400 font-black uppercase hover:text-red-300">Excluir</button>
+              ` : ""}
+            </div>
             <p class="mt-1 text-xs text-zinc-300 leading-relaxed">${escapeHtml(comment.content)}</p>
           </div>
         `;
       }).join("");
+    };
+
+    window.deleteComment = async function(commentId, postId) {
+      if (!currentUser) {
+        showToast("Faz login para excluir o comentário.");
+        openRegisterModal("login");
+        return;
+      }
+
+      const confirmDelete = confirm("Tens a certeza que queres excluir este comentário?");
+      if (!confirmDelete) return;
+
+      const { error } = await supabase
+        .from("comments")
+        .delete()
+        .eq("id", commentId)
+        .eq("user_id", currentUser.id);
+
+      if (error) {
+        showToast("Erro ao excluir comentário: " + error.message);
+        return;
+      }
+
+      showToast("Comentário excluído com sucesso.");
+
+      await fetchPosts();
+
+      const wrap = document.getElementById("comments-wrap-" + postId);
+      if (wrap) {
+        wrap.classList.remove("hidden");
+        await fetchComments(postId);
+      }
     };
 
 
@@ -904,7 +972,7 @@
 
       if (!currentUser) {
         setMessage("clipMessage", "error", "Faz login antes de publicar um ShitClip™.");
-        openAuthModal("login");
+        openRegisterModal("login");
         return;
       }
 
@@ -992,74 +1060,69 @@
 
       list.innerHTML = '<p class="text-sm text-zinc-500">A carregar ShitClips™...</p>';
 
-      try {
-        const { data: clips, error: clipsError } = await supabase
-          .from("clips")
-          .select("id,user_id,video_url,caption,category,trauma_level,reactions_count,comments_count,status,created_at")
-          .eq("status", "active")
-          .order("created_at", { ascending: false })
-          .limit(20);
+      const { data, error } = await supabase
+        .from("clips")
+        .select(`
+          id,
+          user_id,
+          video_url,
+          caption,
+          category,
+          trauma_level,
+          reactions_count,
+          comments_count,
+          created_at,
+          profiles (
+            username,
+            display_name
+          )
+        `)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-        if (clipsError) {
-          list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(clipsError.message)}</p>`;
-          return;
-        }
+      if (error) {
+        list.innerHTML = `<p class="text-sm text-red-400">Erro ao carregar clips: ${escapeHtml(error.message)}</p>`;
+        return;
+      }
 
-        if (!clips || clips.length === 0) {
-          list.innerHTML = `
-            <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
-              <div class="text-4xl">🎬</div>
-              <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
-            </div>
-          `;
-          return;
-        }
+      if (!data || data.length === 0) {
+        list.innerHTML = `
+          <div class="sm:col-span-2 rounded-3xl border border-white/10 bg-zinc-950 p-5 text-center">
+            <div class="text-4xl">🎬</div>
+            <p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro vídeo curto.</p>
+          </div>
+        `;
+        return;
+      }
 
-        const userIds = [...new Set(clips.map(c => c.user_id).filter(Boolean))];
-        let profileMap = {};
-
-        if (userIds.length > 0) {
-          const { data: profiles } = await supabase
-            .from("profiles")
-            .select("id,username,display_name")
-            .in("id", userIds);
-
-          profileMap = Object.fromEntries((profiles || []).map(profile => [profile.id, profile]));
-        }
-
-        list.innerHTML = clips.map((clip) => {
-          const profile = profileMap[clip.user_id];
-          const username = profile?.username || "utilizador";
-          const isOwner = currentUser && currentUser.id === clip.user_id;
-
-          return `
-            <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
-              <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
-              <div class="p-4">
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <p class="text-sm font-black">@${escapeHtml(username)}</p>
-                    <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
-                  </div>
-                  <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
+      list.innerHTML = data.map((clip) => {
+        const username = clip.profiles?.username || "utilizador";
+        return `
+          <article class="rounded-3xl border border-white/10 bg-zinc-950 overflow-hidden">
+            <video src="${escapeHtml(clip.video_url)}" controls playsinline class="w-full aspect-[9/16] bg-black object-cover"></video>
+            <div class="p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-black">@${escapeHtml(username)}</p>
+                  <p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category)}</p>
                 </div>
-                ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
-                <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
-                  <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
-                  <div class="flex items-center gap-3">
-                    <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
-                    ${isOwner ? `
-                      <button onclick="deleteClip('${clip.id}', '${escapeForAttribute(clip.video_url)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
-                    ` : ""}
-                  </div>
+                <span class="rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] text-red-300 font-black">Grau ${escapeHtml(clip.trauma_level)}</span>
+              </div>
+              ${clip.caption ? `<p class="mt-3 text-sm text-zinc-300 leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
+              <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
+                <span class="text-[11px] text-zinc-400 font-black">🎬 ShitClip™</span>
+                <div class="flex items-center gap-3">
+                  <button onclick="shareClip('${clip.id}')" class="text-[11px] text-zinc-300 font-black hover:text-yellow-400">Partilhar</button>
+                  ${currentUser && currentUser.id === clip.user_id ? `
+                    <button onclick="deleteClip('${escapeForAttribute(clip.id)}')" class="text-[11px] text-red-400 font-black hover:text-red-300">Excluir</button>
+                  ` : ""}
                 </div>
               </div>
-            </article>
-          `;
-        }).join("");
-      } catch (error) {
-        list.innerHTML = `<p class="text-sm text-red-400">Erro inesperado ao carregar ShitClips™: ${escapeHtml(error.message || error)}</p>`;
-      }
+            </div>
+          </article>
+        `;
+      }).join("");
     };
 
     window.shareClip = async function(clipId) {
@@ -1078,46 +1141,73 @@
     };
 
 
-    window.deleteClip = async function(clipId, videoUrl) {
+    window.deleteClip = async function(clipId) {
       if (!currentUser) {
-        showToast("Faz login para excluir o vídeo.");
-        openAuthModal("login");
+        showToast("Faz login para excluir o vídeo.", "error");
+        openRegisterModal("login");
         return;
       }
 
       const confirmDelete = confirm("Tens a certeza que queres excluir este ShitClip™? Esta ação não pode ser desfeita.");
       if (!confirmDelete) return;
 
+      showToast("A excluir ShitClip™...", "info");
+
       try {
-        let storagePath = null;
-        const marker = "/storage/v1/object/public/clips/";
+        const { data: clip, error: readError } = await supabase
+          .from("clips")
+          .select("id, user_id, video_url")
+          .eq("id", clipId)
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
 
-        try {
-          const parsedUrl = new URL(videoUrl);
-          storagePath = parsedUrl.pathname.split(marker)[1] || null;
-        } catch {
-          storagePath = null;
+        if (readError) {
+          showToast("Erro ao validar o vídeo: " + readError.message, "error");
+          return;
         }
 
-        if (storagePath) {
-          await supabase.storage.from("clips").remove([storagePath]);
+        if (!clip) {
+          showToast("Este vídeo não pertence à tua conta ou já foi excluído.", "error");
+          await fetchClips();
+          return;
         }
 
-        const { error } = await supabase
+        const { error: deleteError } = await supabase
           .from("clips")
           .delete()
           .eq("id", clipId)
           .eq("user_id", currentUser.id);
 
-        if (error) {
-          showToast("Erro ao excluir: " + error.message);
+        if (deleteError) {
+          showToast("Erro ao excluir da base de dados: " + deleteError.message, "error");
           return;
         }
 
-        showToast("ShitClip™ excluído com sucesso.");
-        fetchClips();
+        let storagePath = null;
+        const marker = "/storage/v1/object/public/clips/";
+
+        try {
+          const parsedUrl = new URL(clip.video_url);
+          const markerIndex = parsedUrl.pathname.indexOf(marker);
+          if (markerIndex !== -1) {
+            storagePath = decodeURIComponent(parsedUrl.pathname.slice(markerIndex + marker.length));
+          }
+        } catch (error) {
+          storagePath = null;
+        }
+
+        if (storagePath) {
+          const { error: storageError } = await supabase.storage.from("clips").remove([storagePath]);
+          if (storageError) {
+            console.warn("Vídeo removido do feed, mas não foi possível limpar o Storage:", storageError.message);
+          }
+        }
+
+        showToast("ShitClip™ excluído com sucesso.", "success");
+        await fetchClips();
       } catch (error) {
-        showToast("Erro ao excluir vídeo.");
+        showToast("Erro inesperado ao excluir vídeo.", "error");
+        console.error(error);
       }
     };
 
@@ -1297,7 +1387,7 @@
         currentProfile = null;
         if (authStatus) authStatus.innerText = "Ainda não tens sessão iniciada.";
         if (logoutBtn) logoutBtn.classList.add("hidden");
-        setFeedStatus("Explora os primeiros micos da comunidade. Para publicar o teu, cria conta grátis ou faz login.");
+        setFeedStatus("Sem sessão ativa. Faz login para publicar, mas podes ver o feed.");
         if (profileSessionStatus) profileSessionStatus.innerText = "Faz login para veres e editares o teu perfil.";
       }
 
@@ -1353,7 +1443,7 @@
 
       if (!currentUser) {
         setMessage("profileMessage", "error", "Tens de fazer login para editar o perfil.");
-        openAuthModal("login");
+        openRegisterModal("login");
         return;
       }
 
@@ -1395,6 +1485,16 @@
       if (event.key === "Escape") {
         window.closeRegisterModal();
         window.closeTextModal();
+      }
+    });
+
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        await ensureProfile(session.user);
+        updateAuthUI(session.user);
+      } else {
+        currentProfile = null;
+        updateAuthUI(null);
       }
     });
 
