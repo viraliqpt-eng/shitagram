@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SHITAGRAM™ - A vergonha agora dá XP</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=drnqmJEszIHgOP5bAT6ThNbUINDh0vXZ7j-vKsj9zwxctrua-V6rnyuHeCm5ewcVq4WujtOKWfwv-00C1PLGU6IcxXTGgCkAj6uja6im_ckaoDHn3AABuTQjYA7f4dQcoFpxnQvIlphw8TcQh-_bkM3IJc1bQSs3-JANByVV_g6BC0jnvugEx_rrBIDDG1rMvU156WToPaPnC7MshjcJOjFYnOkHDXcRgnH9LXuxbyyVq-Z4OvJFH5-RMuoGN8MCd1G8YtrqJYclOMYy11_f7A" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WB5Shpl8bYXdOP4DYzMfuLD0UJuQrKUri3oBaTk6HRjeBzyZgyQEaer7BKaijnflFj6SsIwc8WPrc_2YXxbJKy87rlOwZ2Ef2AVYoitKM3JNGGrblWsI9amzym4mBKGOrHSGpbM20u1FU4QORIYkYMMgf8SrEQbgobTO64O9Ks927Yfuv5ArjCuGTarS41LWs4-5-JNZ6yPh4WW6CTnce3VDDzYt4UFeUQgW9fdjFqFdyAnxYP47rniVFKaTcPyIuYxvqO_AzC1JUl2ATZgSDg" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -433,9 +433,32 @@
       const box=$("postsList"); if(!box)return; box.innerHTML=`<p class="text-sm text-zinc-500">A carregar posts...</p>`;
       const {data,error}=await supabase.from("posts").select("*,profiles(username,display_name,xp)").eq("status","active").order("created_at",{ascending:false}).limit(30);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-      const profiles=(data||[]).map(p=>p.profiles).filter(Boolean); renderStories(profiles);
-      if(!data||!data.length){box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🙂</div><p class="mt-3 text-sm text-zinc-500">Ainda não há posts reais. Publica o primeiro mico.</p></div>`;return;}
-      box.innerHTML=data.map(p=>`<article class="card overflow-hidden">
+      const posts=data||[];
+      const profiles=posts.map(p=>p.profiles).filter(Boolean); renderStories(profiles);
+      if(!posts.length){box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🙂</div><p class="mt-3 text-sm text-zinc-500">Ainda não há posts reais. Publica o primeiro mico.</p></div>`;return;}
+
+      const ids=posts.map(p=>p.id);
+      const [reactionsRes, commentsRes, myReactionsRes] = await Promise.allSettled([
+        supabase.from("post_reactions").select("post_id").in("post_id",ids),
+        supabase.from("comments").select("id,post_id,user_id,body,created_at,profiles(username,display_name)").in("post_id",ids).eq("status","active").order("created_at",{ascending:true}),
+        currentUser ? supabase.from("post_reactions").select("post_id").eq("user_id",currentUser.id).in("post_id",ids) : Promise.resolve({data:[]})
+      ]);
+
+      const reactions=(reactionsRes.status==="fulfilled" && !reactionsRes.value.error) ? (reactionsRes.value.data||[]) : [];
+      const comments=(commentsRes.status==="fulfilled" && !commentsRes.value.error) ? (commentsRes.value.data||[]) : [];
+      const myReactions=(myReactionsRes.status==="fulfilled" && !myReactionsRes.value.error) ? (myReactionsRes.value.data||[]) : [];
+
+      const reactionCount={}; reactions.forEach(r=>reactionCount[r.post_id]=(reactionCount[r.post_id]||0)+1);
+      const commentCount={}; comments.forEach(c=>commentCount[c.post_id]=(commentCount[c.post_id]||0)+1);
+      const mySet=new Set(myReactions.map(r=>r.post_id));
+      const commentsByPost={}; comments.forEach(c=>{(commentsByPost[c.post_id] ||= []).push(c);});
+
+      box.innerHTML=posts.map(p=>renderPostCard(p,reactionCount[p.id]||0,commentCount[p.id]||0,mySet.has(p.id),commentsByPost[p.id]||[])).join("");
+    };
+
+    function renderPostCard(p,reactions,commentsCount,reacted,comments){
+      const latest=comments.slice(-3);
+      return `<article class="card overflow-hidden">
         <div class="p-4">
           <div class="flex items-start justify-between">
             <div class="flex gap-3 items-center"><div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl">💩</div><div><p class="text-sm font-black">@${escapeHtml(p.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(p.created_at)}</span></p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
@@ -445,13 +468,57 @@
           <p class="mt-2 text-sm text-zinc-300 leading-relaxed">${escapeHtml(p.description)}</p>
         </div>
         <div class="post-img mx-4 rounded-3xl flex items-center justify-center text-6xl">🙈</div>
-        <div class="p-4 flex items-center justify-between text-sm">
-          <button onclick="gateAction('reagir a este mico')" class="font-black text-yellow-400">💩 128</button>
-          <button onclick="gateAction('comentar')" class="font-black text-zinc-300">💬 32</button>
-          <button onclick="shareCurrent()" class="font-black text-zinc-300">↗ 12</button>
+        <div class="px-4 pt-4 flex items-center justify-between text-sm">
+          <button onclick="reactPost('${p.id}')" class="font-black ${reacted?'text-yellow-400':'text-zinc-300'}">💩 ${reactions}</button>
+          <button onclick="toggleComments('${p.id}')" class="font-black text-zinc-300">💬 ${commentsCount}</button>
+          <button onclick="shareCurrent()" class="font-black text-zinc-300">↗ Partilhar</button>
           <button onclick="reportContent('post','${p.id}')" class="font-black text-zinc-500">⋯</button>
         </div>
-      </article>`).join("");
+        <div id="comments-${p.id}" class="hidden mx-4 my-4 rounded-3xl border border-white/10 bg-black/35 p-4">
+          <div class="space-y-3">${latest.length ? latest.map(c=>`<div class="rounded-2xl bg-white/[.04] border border-white/10 px-4 py-3"><p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p><p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p></div>`).join("") : `<p class="text-sm text-zinc-500">Ainda sem comentários. Sê o primeiro a responder.</p>`}</div>
+          <div class="mt-4 flex gap-2">
+            <input id="commentInput-${p.id}" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+            <button onclick="addComment('${p.id}')" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Enviar</button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    window.reactPost=async function(postId){
+      if(!currentUser){gateAction("reagir a este mico");return;}
+      try{
+        const {data:existing,error:findError}=await supabase.from("post_reactions").select("id").eq("post_id",postId).eq("user_id",currentUser.id).maybeSingle();
+        if(findError){showToast("Erro ao reagir: "+findError.message);return;}
+        if(existing){
+          const {error}=await supabase.from("post_reactions").delete().eq("id",existing.id).eq("user_id",currentUser.id);
+          if(error){showToast("Erro ao remover reação: "+error.message);return;}
+        }else{
+          const {error}=await supabase.from("post_reactions").insert({post_id:postId,user_id:currentUser.id,reaction_type:"same"});
+          if(error){showToast("Erro ao reagir: "+error.message);return;}
+        }
+        await fetchPosts();
+      }catch(err){console.error(err);showToast("Erro inesperado ao reagir.");}
+    };
+
+    window.toggleComments=function(postId){
+      const el=$("comments-"+postId); if(!el)return;
+      el.classList.toggle("hidden");
+      if(!el.classList.contains("hidden")){
+        setTimeout(()=>$("commentInput-"+postId)?.focus(),80);
+      }
+    };
+
+    window.addComment=async function(postId){
+      if(!currentUser){gateAction("comentar");return;}
+      const input=$("commentInput-"+postId); const body=(input?.value||"").trim();
+      if(body.length<2){showToast("Escreve pelo menos 2 caracteres.");return;}
+      try{
+        const {error}=await supabase.from("comments").insert({post_id:postId,user_id:currentUser.id,body,status:"active"});
+        if(error){showToast("Erro ao comentar: "+error.message);return;}
+        input.value="";
+        await fetchPosts();
+        setTimeout(()=>{$("comments-"+postId)?.classList.remove("hidden");},80);
+      }catch(err){console.error(err);showToast("Erro inesperado ao comentar.");}
     };
 
     function timeAgo(value){if(!value)return ""; const d=(Date.now()-new Date(value).getTime())/1000; if(d<60)return "agora"; if(d<3600)return Math.floor(d/60)+"m"; if(d<86400)return Math.floor(d/3600)+"h"; return Math.floor(d/86400)+"d";}
@@ -536,8 +603,7 @@
       if(!currentUser){gateAction("denunciar conteúdo");return;}
       const reason=prompt("Motivo da denúncia: dados pessoais, bullying, nudez, ódio, spam ou outro.");
       if(!reason)return;
-      const payload=type==="post"?{reporter_id:currentUser.id,post_id:id,reason}:{reporter_id:currentUser.id,clip_id:id,reason};
-      const {error}=await supabase.from("reports").insert(payload);
+      const {error}=await supabase.from("reports").insert({reporter_id:currentUser.id,content_type:type,content_id:id,reason});
       if(error){showToast("Erro ao denunciar: "+error.message);return;}
       showToast("Denúncia enviada. Obrigado.");
     }
@@ -560,7 +626,7 @@
       finally{setBusy("saveProfileBtn",false);}
     }
 
-    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).subscribe();}
+    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).subscribe();}
 
     async function init(){await refreshSession(); if(!$("appShell").classList.contains("hidden")) await fetchAll(); startRealtime();}
     supabase.auth.onAuthStateChange(async()=>{await refreshSession(); if(currentUser) await fetchAll();});
