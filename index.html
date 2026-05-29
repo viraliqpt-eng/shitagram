@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - vAuthFix2</title>
+  <title>SHITAGRAM™ - UX Perfil</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
   </style>
 </head>
 <body>
-  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vAuthFix2</div>
+  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vUXPerfil1</div>
   <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
 
   <!-- ONBOARDING / VISITANTE -->
@@ -66,7 +66,7 @@
           <h2 class="text-xl font-black tracking-tight text-yellow-400">SHITAGRAM<sup class="text-[9px]">™</sup></h2>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="showSearchSoon()" class="w-10 h-10 rounded-full soft flex items-center justify-center">🔍</button>
+          <button onclick="openSearchModal()" class="w-10 h-10 rounded-full soft flex items-center justify-center">🔍</button>
           <button onclick="goTab('notifications')" class="relative w-10 h-10 rounded-full soft flex items-center justify-center">🔔<span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 rounded-full bg-red-500 px-1 text-[10px] font-black text-white items-center justify-center">0</span></button>
           <button onclick="goTab('profile')" class="w-10 h-10 rounded-full bg-yellow-400 text-black flex items-center justify-center font-black">👤</button>
         </div>
@@ -197,7 +197,7 @@
           <div class="card p-5">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
-                <div class="w-20 h-20 rounded-full bg-yellow-400 flex items-center justify-center text-4xl">💩</div>
+                <div id="profileAvatarView" class="w-20 h-20 rounded-full avatar flex items-center justify-center text-4xl overflow-hidden">💩</div>
                 <div>
                   <p id="profileUsernameView" class="text-2xl font-black">@visitante</p>
                   <p id="profileEmailView" class="text-sm text-zinc-500">sem sessão</p>
@@ -219,6 +219,12 @@
             </div>
 
             <form id="profileForm" onsubmit="saveUserProfile(event)" class="hidden mt-6 space-y-4">
+              <div class="rounded-3xl border border-white/10 bg-black/35 p-4">
+                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Avatar</label>
+                <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
+                <button type="button" onclick="uploadAvatar()" class="mt-3 w-full rounded-2xl border border-yellow-400/40 bg-yellow-400/10 py-3 text-yellow-400 text-xs font-black uppercase">Atualizar avatar</button>
+                <p class="mt-2 text-xs text-zinc-500">Aceita PNG, JPG ou WebP até 3 MB.</p>
+              </div>
               <input id="profileUsernameInput" placeholder="Nome de utilizador" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
               <input id="profileDisplayNameInput" placeholder="Nome visível" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
               <textarea id="profileBioInput" rows="4" maxlength="180" placeholder="Bio" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400 resize-none"></textarea>
@@ -292,7 +298,33 @@
     </div>
   </div>
 
-  <script type="module">
+  
+  <div id="searchModal" class="sheet">
+    <div class="sheet-panel w-full rounded-t-[34px] border border-white/10 bg-zinc-950 p-5 shadow-2xl">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Pesquisar</p>
+          <h3 class="text-2xl font-black mt-1">Encontrar micos e pessoas</h3>
+        </div>
+        <button onclick="closeSearchModal()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
+      </div>
+      <input id="searchInput" oninput="runSearch()" placeholder="Pesquisar utilizadores, micos ou categorias..." class="mt-5 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
+      <div id="searchResults" class="mt-5 space-y-3"><p class="text-sm text-zinc-500">Escreve pelo menos 2 caracteres.</p></div>
+    </div>
+  </div>
+
+  <div id="publicProfileModal" class="sheet">
+    <div class="sheet-panel w-full rounded-t-[34px] border border-white/10 bg-zinc-950 p-5 shadow-2xl max-h-[88vh] overflow-y-auto">
+      <div class="flex justify-between items-start gap-3">
+        <div id="publicProfileHeader" class="min-w-0"></div>
+        <button onclick="closePublicProfile()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 shrink-0">✕</button>
+      </div>
+      <div id="publicProfileStats" class="grid grid-cols-3 gap-3 mt-5"></div>
+      <div id="publicProfilePosts" class="mt-5 space-y-3"></div>
+    </div>
+  </div>
+
+<script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
     const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
@@ -392,7 +424,7 @@
     function updateProfileUI(){
       const fields=[$("profileUsernameInput"),$("profileDisplayNameInput"),$("profileBioInput")];
       if(!currentUser||!currentProfile){
-        $("profileUsernameView").innerText="@visitante";$("profileEmailView").innerText="a explorar micos";$("profileLevelView").innerText="Visitante";$("profileXpView").innerText="0";$("profilePostsView").innerText="0";$("profileClipsView").innerText="0";
+        $("profileUsernameView").innerText="@visitante";$("profileEmailView").innerText="a explorar micos";$("profileLevelView").innerText="Visitante";$("profileXpView").innerText="0";$("profilePostsView").innerText="0";$("profileClipsView").innerText="0"; if($("profileAvatarView")) $("profileAvatarView").innerHTML="💩";
         $("profileGuestBox")?.classList.remove("hidden");$("profileForm")?.classList.add("hidden");return;
       }
       $("profileUsernameView").innerText="@"+(currentProfile.username||"user");
@@ -401,6 +433,8 @@
       $("profileXpView").innerText=currentProfile.xp||0;
       $("profilePostsView").innerText=currentProfile.posts_count||0;
       $("profileClipsView").innerText=currentProfile.clips_count||0;
+      const av=$("profileAvatarView");
+      if(av){av.innerHTML=currentProfile.avatar_url?`<img src="${escapeHtml(currentProfile.avatar_url)}" class="w-full h-full object-cover" alt="Avatar">`:"💩";}
       fields[0].value=currentProfile.username||"";fields[1].value=currentProfile.display_name||"";fields[2].value=currentProfile.bio||"";
       $("profileGuestBox")?.classList.add("hidden");$("profileForm")?.classList.remove("hidden");
     }
@@ -426,7 +460,7 @@
       },8000);
 
       try{
-        console.log("[SHITAGRAM vAuthFix2] signUp start", email);
+        console.log("[SHITAGRAM vUXPerfil1] signUp start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
           8000,
@@ -434,7 +468,7 @@
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vAuthFix2] signUp result", {data,error});
+        console.log("[SHITAGRAM vUXPerfil1] signUp result", {data,error});
         if(error){
           setMessage("registerMessage","error",error.message);
           return;
@@ -447,7 +481,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vAuthFix2] signUp error",err);
+        console.error("[SHITAGRAM vUXPerfil1] signUp error",err);
         setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
       }finally{
         clearTimeout(safetyTimer);
@@ -473,7 +507,7 @@
       },8000);
 
       try{
-        console.log("[SHITAGRAM vAuthFix2] login start", email);
+        console.log("[SHITAGRAM vUXPerfil1] login start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signInWithPassword({email,password}),
           8000,
@@ -481,7 +515,7 @@
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vAuthFix2] login result", {data,error});
+        console.log("[SHITAGRAM vUXPerfil1] login result", {data,error});
         if(error){
           setMessage("loginMessage","error",error.message);
           return;
@@ -491,7 +525,7 @@
         try{
           await withTimeout(ensureProfile(),5000,"Carregamento do perfil");
         }catch(profileErr){
-          console.warn("[SHITAGRAM vAuthFix2] profile load skipped",profileErr);
+          console.warn("[SHITAGRAM vUXPerfil1] profile load skipped",profileErr);
         }
 
         localStorage.setItem("shitagram_seen_onboarding","1");
@@ -506,7 +540,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vAuthFix2] login error",err);
+        console.error("[SHITAGRAM vUXPerfil1] login error",err);
         setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
       }finally{
         clearTimeout(safetyTimer);
@@ -521,14 +555,21 @@
 
     async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications()]);}
 
+    function avatarMarkup(profile,size="w-11 h-11",textSize="text-2xl"){
+      const url=profile?.avatar_url;
+      if(url) return `<img src="${escapeHtml(url)}" alt="Avatar de @${escapeHtml(profile?.username||"user")}" class="${size} rounded-full avatar shrink-0 border border-yellow-400/30">`;
+      return `<div class="${size} rounded-full avatar flex items-center justify-center ${textSize} shrink-0 border border-yellow-400/30">💩</div>`;
+    }
+
     function renderStories(profiles){
-      const base=profiles?.slice(0,8)||[];
-      $("storiesList").innerHTML = base.length ? base.map(p=>`<button onclick="goTab('profile')" class="min-w-[76px] text-center"><div class="w-16 h-16 rounded-full border-2 border-yellow-400 overflow-hidden bg-zinc-900 flex items-center justify-center text-3xl">💩</div><p class="mt-2 text-[11px] truncate max-w-[76px]">@${escapeHtml(p.username||"user")}</p><p class="text-[10px] text-yellow-400">XP ${escapeHtml(p.xp||0)}</p></button>`).join("") : "";
+      const seen=new Set();
+      const base=(profiles||[]).filter(p=>p?.id && !seen.has(p.id) && seen.add(p.id)).slice(0,10);
+      $("storiesList").innerHTML = base.length ? base.map(p=>`<button onclick="openPublicProfile('${p.id}')" class="min-w-[76px] text-center">${avatarMarkup(p,"w-16 h-16","text-3xl")}<p class="mt-2 text-[11px] truncate max-w-[76px]">@${escapeHtml(p.username||"user")}</p><p class="text-[10px] text-yellow-400">XP ${escapeHtml(p.xp||0)}</p></button>`).join("") : "";
     }
 
     window.fetchPosts=async function(){
       const box=$("postsList"); if(!box)return; box.innerHTML=`<p class="text-sm text-zinc-500">A carregar posts...</p>`;
-      const {data,error}=await supabase.from("posts").select("*,profiles(id,username,display_name,xp)").eq("status","active").order("created_at",{ascending:false}).limit(30);
+      const {data,error}=await supabase.from("posts").select("*,profiles(id,username,display_name,xp,avatar_url,bio)").eq("status","active").order("created_at",{ascending:false}).limit(30);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
       const posts=data||[];
       const profiles=posts.map(p=>p.profiles).filter(Boolean); renderStories(profiles);
@@ -538,7 +579,7 @@
       const authorIds=[...new Set(posts.map(p=>p.user_id).filter(Boolean))];
       const [reactionsRes, commentsRes, myReactionsRes, followingRes] = await Promise.allSettled([
         supabase.from("post_reactions").select("post_id").in("post_id",ids),
-        supabase.from("comments").select("id,post_id,user_id,body,created_at,profiles(username,display_name)").in("post_id",ids).eq("status","active").order("created_at",{ascending:true}),
+        supabase.from("comments").select("id,post_id,user_id,body,created_at,profiles(username,display_name,avatar_url)").in("post_id",ids).eq("status","active").order("created_at",{ascending:true}),
         currentUser ? supabase.from("post_reactions").select("post_id").eq("user_id",currentUser.id).in("post_id",ids) : Promise.resolve({data:[]}),
         currentUser && authorIds.length ? supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",authorIds) : Promise.resolve({data:[]})
       ]);
@@ -560,7 +601,7 @@
       return `<article class="card overflow-hidden">
         <div class="p-4">
           <div class="flex items-start justify-between">
-            <div class="flex gap-3 items-center min-w-0"><div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl shrink-0">💩</div><div class="min-w-0"><p class="text-sm font-black">@${escapeHtml(p.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(p.created_at)}</span></p><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
+            <div class="flex gap-3 items-center min-w-0"><button onclick="openPublicProfile(\'${p.user_id}\')" class="shrink-0">${avatarMarkup(p.profiles)}</button><div class="min-w-0"><button onclick="openPublicProfile(\'${p.user_id}\')" class="text-left text-sm font-black hover:text-yellow-400">@${escapeHtml(p.profiles?.username||"user")}</button> <span class="text-zinc-600 font-medium text-sm">· ${timeAgo(p.created_at)}</span><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
             <div class="flex flex-col items-end gap-2">${followButton(p.user_id)}<span class="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-[10px] text-purple-200 font-black">Trauma ${escapeHtml(p.trauma_level||5)}</span></div>
           </div>
           <h4 class="mt-4 text-lg font-black">${escapeHtml(p.title)}</h4>
@@ -574,7 +615,7 @@
           <button onclick="reportContent('post','${p.id}')" class="font-black text-zinc-500">⋯</button>
         </div>
         <div id="comments-${p.id}" class="hidden mx-4 my-4 rounded-3xl border border-white/10 bg-black/35 p-4">
-          <div class="space-y-3">${latest.length ? latest.map(c=>`<div class="rounded-2xl bg-white/[.04] border border-white/10 px-4 py-3"><p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p><p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p></div>`).join("") : `<p class="text-sm text-zinc-500">Ainda sem comentários. Sê o primeiro a responder.</p>`}</div>
+          <div class="space-y-3">${latest.length ? latest.map(c=>`<div class="rounded-2xl bg-white/[.04] border border-white/10 px-4 py-3"><div class="flex gap-2 items-start">${avatarMarkup(c.profiles,"w-8 h-8","text-base")}<div><p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p><p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p></div></div></div>`).join("") : `<p class="text-sm text-zinc-500">Ainda sem comentários. Sê o primeiro a responder.</p>`}</div>
           <div class="mt-4 flex gap-2">
             <input id="commentInput-${p.id}" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
             <button onclick="addComment('${p.id}')" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Enviar</button>
@@ -702,7 +743,7 @@
 
     window.fetchRanking=async function(){
       const box=$("rankingList"); if(!box)return;
-      const {data,error}=await supabase.from("profiles").select("id,username,display_name,xp,level,posts_count").order("xp",{ascending:false}).limit(20);
+      const {data,error}=await supabase.from("profiles").select("id,username,display_name,xp,level,posts_count,avatar_url,bio").order("xp",{ascending:false}).limit(20);
       if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
       if(!data||!data.length){box.innerHTML=`<div class="card p-8 text-center text-zinc-500">Ainda não há ranking.</div>`;return;}
       if(currentUser){
@@ -713,7 +754,7 @@
         }
       }
       box.innerHTML=data.map((p,i)=>`<article class="card p-4 flex items-center justify-between gap-3 ${currentUser&&p.id===currentUser.id?"border-yellow-400/40 bg-yellow-400/5":""}">
-        <div class="flex items-center gap-4 min-w-0"><div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-xl shrink-0">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div class="min-w-0"><p class="font-black truncate">@${escapeHtml(p.username||"user")}</p><p class="text-[11px] text-zinc-500 font-black uppercase">${escapeHtml(p.level||"Humano Real")}</p></div></div><div class="text-right shrink-0"><p class="text-yellow-400 font-black">XP ${escapeHtml(p.xp||0)}</p>${followButton(p.id)}</div>
+        <div class="flex items-center gap-4 min-w-0"><div class="relative shrink-0"><button onclick="openPublicProfile(\'${p.id}\')">${avatarMarkup(p,"w-12 h-12","text-xl")}</button><span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-black border border-white/10 flex items-center justify-center text-xs">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</span></div><div class="min-w-0"><button onclick="openPublicProfile(\'${p.id}\')" class="font-black truncate hover:text-yellow-400">@${escapeHtml(p.username||"user")}</button><p class="text-[11px] text-zinc-500 font-black uppercase">${escapeHtml(p.level||"Humano Real")}</p></div></div><div class="text-right shrink-0"><p class="text-yellow-400 font-black">XP ${escapeHtml(p.xp||0)}</p>${followButton(p.id)}</div>
       </article>`).join("");
     }
 
@@ -800,11 +841,82 @@
       finally{setBusy("saveProfileBtn",false);}
     }
 
+    
+    window.uploadAvatar=async function(){
+      if(!currentUser){gateAction("atualizar avatar");return;}
+      const file=$("avatarFile")?.files?.[0];
+      if(!file){showToast("Escolhe uma imagem primeiro.");return;}
+      if(!["image/png","image/jpeg","image/webp"].includes(file.type)){showToast("Formato aceite: PNG, JPG ou WebP.");return;}
+      if(file.size>3*1024*1024){showToast("A imagem deve ter no máximo 3 MB.");return;}
+      try{
+        setMessage("profileMessage","info","A enviar avatar...");
+        const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+        const path=`${currentUser.id}/avatar-${Date.now()}.${ext}`;
+        const {error:uploadError}=await supabase.storage.from("avatars").upload(path,file,{cacheControl:"3600",upsert:true,contentType:file.type});
+        if(uploadError){setMessage("profileMessage","error",uploadError.message);return;}
+        const {data:pub}=supabase.storage.from("avatars").getPublicUrl(path);
+        const {data,error}=await supabase.from("profiles").update({avatar_url:pub.publicUrl}).eq("id",currentUser.id).select("*").single();
+        if(error){setMessage("profileMessage","error",error.message);return;}
+        currentProfile=data;
+        updateProfileUI();
+        await Promise.allSettled([fetchPosts(),fetchRanking()]);
+        setMessage("profileMessage","success","Avatar atualizado.");
+        showToast("Avatar atualizado.");
+      }catch(err){console.error(err);setMessage("profileMessage","error","Erro inesperado ao atualizar avatar.");}
+    };
+
+    window.openSearchModal=function(){
+      $("searchModal").classList.add("open");
+      setTimeout(()=>$("searchInput")?.focus(),80);
+      runSearch();
+    };
+    window.closeSearchModal=function(){$("searchModal").classList.remove("open");};
+    window.runSearch=async function(){
+      const q=($("searchInput")?.value||"").trim().toLowerCase();
+      const box=$("searchResults"); if(!box)return;
+      if(q.length<2){box.innerHTML=`<p class="text-sm text-zinc-500">Escreve pelo menos 2 caracteres.</p>`;return;}
+      box.innerHTML=`<p class="text-sm text-zinc-500">A pesquisar...</p>`;
+      try{
+        const like=`%${q.replaceAll("%","").replaceAll("_","")}%`;
+        const [profilesRes, postsRes]=await Promise.allSettled([
+          supabase.from("profiles").select("id,username,display_name,bio,xp,avatar_url").or(`username.ilike.${like},display_name.ilike.${like}`).limit(8),
+          supabase.from("posts").select("id,user_id,title,description,category,created_at,profiles(id,username,avatar_url)").eq("status","active").or(`title.ilike.${like},description.ilike.${like},category.ilike.${like}`).limit(8)
+        ]);
+        const profiles=(profilesRes.status==="fulfilled"&&!profilesRes.value.error)?profilesRes.value.data||[]:[];
+        const posts=(postsRes.status==="fulfilled"&&!postsRes.value.error)?postsRes.value.data||[]:[];
+        const people=profiles.map(p=>`<button onclick="openPublicProfile('${p.id}');closeSearchModal();" class="w-full rounded-2xl border border-white/10 bg-white/[.03] p-3 flex items-center gap-3 text-left">${avatarMarkup(p,"w-11 h-11","text-xl")}<div class="min-w-0"><p class="font-black">@${escapeHtml(p.username||"user")}</p><p class="text-xs text-zinc-500 truncate">${escapeHtml(p.bio||"XP "+(p.xp||0))}</p></div></button>`).join("");
+        const micos=posts.map(p=>`<button onclick="closeSearchModal();goTab('feed');" class="w-full rounded-2xl border border-white/10 bg-white/[.03] p-3 text-left"><p class="text-xs text-yellow-400 font-black">@${escapeHtml(p.profiles?.username||"user")} · ${escapeHtml(p.category||"Mico Geral")}</p><p class="mt-1 font-black">${escapeHtml(p.title)}</p><p class="mt-1 text-sm text-zinc-500 line-clamp-2">${escapeHtml(p.description)}</p></button>`).join("");
+        box.innerHTML = `${people?`<p class="text-xs text-zinc-500 font-black uppercase">Pessoas</p>${people}`:""}${micos?`<p class="pt-3 text-xs text-zinc-500 font-black uppercase">Micos</p>${micos}`:""}${!people&&!micos?`<p class="text-sm text-zinc-500">Sem resultados.</p>`:""}`;
+      }catch(err){console.error(err);box.innerHTML=`<p class="text-sm text-red-400">Erro ao pesquisar.</p>`;}
+    };
+
+    window.openPublicProfile=async function(userId){
+      if(!userId){return;}
+      $("publicProfileModal").classList.add("open");
+      $("publicProfileHeader").innerHTML=`<p class="text-sm text-zinc-500">A carregar perfil...</p>`;
+      $("publicProfileStats").innerHTML="";
+      $("publicProfilePosts").innerHTML="";
+      try{
+        const [{data:p,error:pe},{data:posts,error:po},{data:followers},{data:following}]=await Promise.all([
+          supabase.from("profiles").select("id,username,display_name,bio,xp,level,posts_count,clips_count,avatar_url").eq("id",userId).maybeSingle(),
+          supabase.from("posts").select("id,title,description,category,trauma_level,created_at").eq("user_id",userId).eq("status","active").order("created_at",{ascending:false}).limit(10),
+          supabase.from("follows").select("id").eq("following_id",userId),
+          supabase.from("follows").select("id").eq("follower_id",userId)
+        ]);
+        if(pe||!p){$("publicProfileHeader").innerHTML=`<p class="text-sm text-red-400">Perfil não encontrado.</p>`;return;}
+        $("publicProfileHeader").innerHTML=`<div class="flex items-center gap-4 min-w-0">${avatarMarkup(p,"w-20 h-20","text-4xl")}<div class="min-w-0"><p class="text-2xl font-black truncate">@${escapeHtml(p.username||"user")}</p><p class="text-sm text-zinc-400 truncate">${escapeHtml(p.display_name||"")}</p><p class="mt-2 text-sm text-zinc-300">${escapeHtml(p.bio||"Sem bio ainda.")}</p><div class="mt-3">${followButton(p.id)}</div></div></div>`;
+        $("publicProfileStats").innerHTML=`<div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black text-yellow-400">${escapeHtml(p.xp||0)}</p><p class="text-[10px] text-zinc-500 font-black uppercase">XP</p></div><div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black">${(followers||[]).length}</p><p class="text-[10px] text-zinc-500 font-black uppercase">Seguidores</p></div><div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black">${(following||[]).length}</p><p class="text-[10px] text-zinc-500 font-black uppercase">A seguir</p></div>`;
+        $("publicProfilePosts").innerHTML=`<p class="text-xs text-zinc-500 font-black uppercase">Micos recentes</p>`+((posts||[]).length?(posts||[]).map(x=>`<article class="rounded-3xl border border-white/10 bg-black/35 p-4"><p class="text-xs text-yellow-400 font-black uppercase">${escapeHtml(x.category||"Mico Geral")} · Trauma ${escapeHtml(x.trauma_level||5)}</p><h4 class="mt-2 font-black">${escapeHtml(x.title)}</h4><p class="mt-1 text-sm text-zinc-400">${escapeHtml(x.description)}</p></article>`).join(""):`<div class="rounded-3xl border border-white/10 bg-black/35 p-6 text-center text-sm text-zinc-500">Ainda sem micos públicos.</div>`);
+      }catch(err){console.error(err);$("publicProfileHeader").innerHTML=`<p class="text-sm text-red-400">Erro ao carregar perfil.</p>`;}
+    };
+    window.closePublicProfile=function(){$("publicProfileModal").classList.remove("open");};
+
+
     function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).on("postgres_changes",{event:"*",schema:"public",table:"follows"},()=>{fetchPosts();fetchRanking();fetchNotifications();}).on("postgres_changes",{event:"*",schema:"public",table:"notifications"},fetchNotifications).subscribe();}
 
     async function init(){await refreshSession(); if(!$("appShell").classList.contains("hidden")) await fetchAll(); startRealtime();}
     supabase.auth.onAuthStateChange(async()=>{await refreshSession(); if(currentUser) await fetchAll();});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAuthModal();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAuthModal();closeSearchModal();closePublicProfile();}});
     init();
 
     window.showSearchSoon=showSearchSoon;
