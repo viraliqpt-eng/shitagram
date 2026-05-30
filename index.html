@@ -253,7 +253,7 @@
         <!-- Loading HUD Overlay -->
         <div id="aiLoadingHud" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center">
           <div class="w-16 h-16 rounded-full border-4 border-brandPink border-t-transparent animate-spin mb-4"></div>
-          <h3 class="text-lg font-bold text-white mb-2" id="aiLoadingTitle">O Árbitro de IA está a ler...</h3>
+          <h3 class="text-lg font-bold text-white mb-2" id="aiLoadingTitle">Análise SHITAGRAM ARENA..</h3>
           <p class="text-xs text-zinc-400 max-w-xs leading-relaxed" id="aiLoadingMessage">Analisando o teu mico na base de dados de vergonha...</p>
         </div>
       </section>
@@ -816,12 +816,17 @@
 
     // RULE 3 - Initialize Auth and Firebase FIRST before queries
     async function initFirebaseAndAuth() {
+      // Robust AppId Fallback and check to prevent double slash path errors
+      appId = 'shitagram-arena-default';
+      if (typeof __app_id !== 'undefined' && __app_id && __app_id.trim() !== '') {
+        appId = __app_id.trim();
+      }
+
       if (typeof __firebase_config === 'undefined' || !__firebase_config) {
         document.getElementById('cloudStatus').innerText = "🔴 Nuvem indisponível (Mock Mode)";
         return;
       }
       try {
-        appId = typeof __app_id !== 'undefined' ? __app_id : 'shitagram-arena-default';
         const config = JSON.parse(__firebase_config);
         
         // Check if already initialized to prevent duplicate errors
@@ -829,10 +834,15 @@
         auth = firebaseApp.auth();
         db = firebaseApp.firestore();
 
-        // Authenticaton Sequence (Strictly follow priority: Custom token then Anonymous)
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await auth.signInWithCustomToken(__initial_auth_token);
-        } else {
+        // Authenticaton Sequence (Strictly follow priority: Custom token with absolute fallback to Anonymous)
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && __initial_auth_token.trim() !== '') {
+            await auth.signInWithCustomToken(__initial_auth_token.trim());
+          } else {
+            await auth.signInAnonymously();
+          }
+        } catch (authError) {
+          console.warn("Custom token auth failed, falling back to anonymous:", authError);
           await auth.signInAnonymously();
         }
 
@@ -854,8 +864,10 @@
     async function syncFromCloud() {
       if (!db || !userId) return;
       try {
-        // Load Profile Private State: /artifacts/{appId}/users/{userId}/profile/state
-        const profileDoc = await db.doc(`artifacts/${appId}/users/${userId}/profile/state`).get();
+        // Load Profile Private State using collection/doc chains to avoid string manipulation / slash issues
+        const profileRef = db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('profile').doc('state');
+        const profileDoc = await profileRef.get();
+        
         if (profileDoc.exists) {
           const cloudData = profileDoc.data();
           gameState.player = { ...gameState.player, ...cloudData };
@@ -875,8 +887,8 @@
     async function saveProfileToCloud() {
       if (!db || !userId) return;
       try {
-        // Path: /artifacts/{appId}/users/{userId}/profile/state
-        await db.doc(`artifacts/${appId}/users/${userId}/profile/state`).set({
+        const profileRef = db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('profile').doc('state');
+        await profileRef.set({
           username: gameState.player.username,
           avatar: gameState.player.avatar,
           title: gameState.player.title,
@@ -896,16 +908,15 @@
     async function loadPublicGlobalFeed() {
       if (!db) return;
       try {
-        // RULE 2 - Simple collection path, in-memory sort
-        // Path: /artifacts/{appId}/public/data/globalFeed
-        const snapshot = await db.collection(`artifacts/${appId}/public/data/globalFeed`).limit(40).get();
+        const feedColl = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed');
+        const snapshot = await feedColl.limit(40).get();
         const loadedStories = [];
         snapshot.forEach(doc => {
           loadedStories.push({ id: doc.id, ...doc.data() });
         });
 
         if (loadedStories.length > 0) {
-          // Sort manually in memory (newest first) to avoid compound query requirement
+          // Sort manually in memory (newest first) to avoid compound query index requirement
           loadedStories.sort((a, b) => {
             const timeA = a.createdAt?.seconds || 0;
             const timeB = b.createdAt?.seconds || 0;
@@ -924,8 +935,8 @@
     async function uploadToGlobalFeed(storyText) {
       if (!db) return;
       try {
-        // Path: /artifacts/{appId}/public/data/globalFeed
-        await db.collection(`artifacts/${appId}/public/data/globalFeed`).add({
+        const feedColl = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed');
+        await feedColl.add({
           author: gameState.player.username + " " + gameState.player.avatar,
           text: storyText,
           votes: 0,
@@ -1025,14 +1036,15 @@
         incrementMissionProgress(2);
         showToast("Reagido com sucesso!", "💩");
         
-        // Update vote directly in cloud
+        // Update vote securely in cloud using merge to prevent missing document errors
         if (db) {
           try {
-            await db.doc(`artifacts/${appId}/public/data/globalFeed/${storyId}`).update({
+            const storyRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed').doc(storyId);
+            await storyRef.set({
               votes: story.votes
-            });
+            }, { merge: true });
           } catch(e) {
-            console.error(e);
+            console.error("React Feed error:", e);
           }
         }
         renderFeed();
@@ -1170,7 +1182,7 @@
 
       try {
         if (useGemini) {
-          document.getElementById('aiLoadingTitle').innerText = "Análise da IA Gemini...";
+          document.getElementById('aiLoadingTitle').innerText = "Análise SHITAGRAM ARENA..";
           document.getElementById('aiLoadingMessage').innerText = "O Árbitro está a analisar o teu mico na base de dados de vergonha...";
           
           const themeName = gameState.currentTheme.name;
@@ -1722,7 +1734,6 @@
         ctx.fillStyle = '#000000';
         ctx.beginPath();
         ctx.arc(cx - 8, cy - 6, 2, 0, Math.PI*2);
-        ctx.arc(cx + 8, cy - 6, 2, 0, Math.PI*2);
         ctx.fill();
         
         ctx.fillStyle = '#7f1d1d';
@@ -1765,105 +1776,6 @@
       ctx.lineTo(cx + 3, cy + r/3);
       ctx.lineTo(cx, cy + r);
       ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawExplosionCloud(ctx, cx, cy, r) {
-      ctx.save();
-      ctx.fillStyle = '#f97316';
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r - 5, 0, Math.PI*2);
-      ctx.arc(cx - r/2, cy + 5, r - 10, 0, Math.PI*2);
-      ctx.arc(cx + r/2, cy + 5, r - 10, 0, Math.PI*2);
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.fillStyle = '#facc15';
-      ctx.beginPath();
-      ctx.arc(cx, cy, r - 15, 0, Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawGiantEyes(ctx, cx, cy, r) {
-      ctx.save();
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx - r, cy, r, 0, Math.PI*2);
-      ctx.arc(cx + r, cy, r, 0, Math.PI*2);
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(cx - r + 2, cy, 2.5, 0, Math.PI*2);
-      ctx.arc(cx + r - 2, cy, 2.5, 0, Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawComicSplashText(ctx, x, y, txt) {
-      ctx.save();
-      ctx.fillStyle = '#ef4444';
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3.5;
-      ctx.beginPath();
-      const points = 12;
-      for (let i = 0; i < points * 2; i++) {
-        const angle = (Math.PI / points) * i;
-        const r = i % 2 === 0 ? 35 : 20;
-        const px = x + Math.cos(angle) * r;
-        const py = y + Math.sin(angle) * r;
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold italic 13px "Plus Jakarta Sans", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(txt, x, y);
-      ctx.restore();
-    }
-
-    function drawSpeechBubble(ctx, x, y, w, h, txt) {
-      ctx.save();
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      
-      const r = 10;
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + w - r, y);
-      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      
-      ctx.lineTo(x + 35, y + h);
-      ctx.lineTo(x + 22, y + h + 12);
-      ctx.lineTo(x + 22, y + h);
-      
-      ctx.lineTo(x + r, y + h);
-      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.fillStyle = '#111122';
-      ctx.font = 'bold 10px system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(txt, x + w/2, y + h/2);
       ctx.restore();
     }
 
