@@ -113,7 +113,8 @@
           bio: "",
           xp: 0,
           level: "Humano Real",
-          posts_count: 0
+          posts_count: 0,
+          coins: 0
         }, { onConflict: "id" })
         .select("*")
         .single();
@@ -154,6 +155,10 @@
       $("profileXp").textContent = state.profile?.xp || 0;
       $("profileLevel").textContent = state.profile?.level || "Visitante";
       $("profilePosts").textContent = state.profile?.posts_count || 0;
+      if ($("profileCoins")) $("profileCoins").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+      if ($("coinBalanceMain")) $("coinBalanceMain").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+      if ($("topCoins")) $("topCoins").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+      if ($("topCoinsNav")) $("topCoinsNav").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
       $("composerLock").classList.toggle("hidden", logged);
       $("composerForm").classList.toggle("hidden", !logged);
       if ($("clipLock")) $("clipLock").classList.toggle("hidden", logged);
@@ -304,7 +309,8 @@
         loadClips(),
         state.user ? loadMyReactions() : Promise.resolve(),
         state.user ? loadFollowingIds() : Promise.resolve(),
-        state.user ? loadNotifications() : Promise.resolve()
+        state.user ? loadNotifications() : Promise.resolve(),
+        state.user ? loadCoinHistory() : Promise.resolve()
       ]);
       renderPosts();
     }
@@ -312,7 +318,7 @@
     async function loadPosts() {
       const { data, error } = await supabase
         .from("posts")
-        .select("id,user_id,title,description,category,trauma_level,status,created_at,profiles(id,username,display_name,avatar_url)")
+        .select("id,user_id,title,description,category,trauma_level,status,created_at,is_boosted,boosted_until,gift_count,profiles(id,username,display_name,avatar_url)")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(50);
@@ -536,6 +542,38 @@
       renderPosts();
     };
 
+
+    async function loadCoinHistory() {
+      const box = $("coinHistory");
+      if (!box || !state.user) return;
+      const { data, error } = await supabase
+        .from("coin_transactions")
+        .select("id,amount,reason,created_at")
+        .eq("user_id", state.user.id)
+        .order("created_at", { ascending: false })
+        .limit(8);
+
+      if (error) {
+        box.innerHTML = `<p class="text-sm text-zinc-500">Histórico indisponível.</p>`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        box.innerHTML = `<p class="text-sm text-zinc-500">Ainda não há movimentos.</p>`;
+        return;
+      }
+
+      box.innerHTML = data.map(tx => `
+        <div class="flex items-center justify-between rounded-2xl bg-black/40 border border-white/10 p-3">
+          <div>
+            <p class="text-sm font-black">${escapeHtml(tx.reason || "Movimento")}</p>
+            <p class="text-[10px] text-zinc-500">${formatDate(tx.created_at)}</p>
+          </div>
+          <p class="font-black ${Number(tx.amount) >= 0 ? "text-yellow-400" : "text-red-300"}">${Number(tx.amount) > 0 ? "+" : ""}${Number(tx.amount).toLocaleString("pt-PT")} 🪙</p>
+        </div>
+      `).join("");
+    }
+
     function renderPosts() {
       const list = $("postsList");
       if (!state.posts.length) {
@@ -557,7 +595,8 @@
           ? `<img src="${escapeHtml(post.profiles.avatar_url)}" class="w-11 h-11 rounded-full object-cover border border-yellow-400/30">`
           : `<div class="w-11 h-11 rounded-full bg-yellow-400 text-black grid place-items-center text-xl">💩</div>`;
         return `
-          <article class="card p-5">
+          <article class="card p-5 ${post.is_boosted ? 'ring-2 ring-yellow-400/40 shadow-[0_0_40px_rgba(250,204,21,.12)]' : ''}">
+            ${post.is_boosted ? `<div class="mb-3 inline-flex rounded-full bg-yellow-400 text-black px-3 py-1 text-[10px] font-black uppercase tracking-widest">⚡ Mico destacado</div>` : ""}
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 ${avatar}
@@ -575,6 +614,8 @@
               <button onclick="toggleReaction('${post.id}')" class="action-btn ${reacted ? "active" : ""}">💩 ${state.reactionsByPost[post.id] || 0}</button>
               <button onclick="openComments('${post.id}')" class="action-btn">💬 ${state.commentsByPost[post.id] || 0}</button>
               <button onclick="sharePost('${post.id}')" class="action-btn">↗ Partilhar</button>
+              <button onclick="sendGift('${post.id}')" class="action-btn">🎁 ${Number(post.gift_count || 0)}</button>
+              ${canDelete ? `<button onclick="boostPost('${post.id}')" class="action-btn text-yellow-300 border-yellow-400/25 bg-yellow-400/10">⚡ Boost</button>` : ""}
               ${state.user && state.user.id !== post.user_id ? `<button onclick="toggleFollow('${post.user_id}')" class="action-btn">${state.followingIds.has(post.user_id) ? "✓ A seguir" : "➕ Seguir"}</button>` : ""}
               <span class="action-btn">👥 ${state.followCounts[post.user_id] || 0}</span>
               ${canDelete ? `<button onclick="deletePost('${post.id}')" class="action-btn danger">🗑️ Eliminar</button>` : ""}
@@ -743,6 +784,60 @@
           showToast("Não foi possível partilhar.", "error");
         }
       }
+    };
+
+
+    window.claimWelcomeBonus = async function() {
+      if (!state.user) return openAuth("login");
+      const { data, error } = await supabase.rpc("claim_welcome_coins");
+      if (error) return showToast(error.message || "Não foi possível receber o bónus.", "error");
+      if (data === false) return showToast("Bónus já recebido.", "error");
+      showToast("Recebeste 500 ShitCoins™.", "success");
+      await getProfile();
+      updateAuthUI();
+      await loadCoinHistory();
+    };
+
+    window.claimFreePack = async function(amount = 100, label = "Pack grátis") {
+      if (!state.user) return openAuth("login");
+      const { data, error } = await supabase.rpc("claim_free_coin_pack", {
+        p_amount: amount,
+        p_reason: label
+      });
+      if (error) return showToast(error.message || "Não foi possível receber moedas.", "error");
+      showToast(`Recebeste ${Number(data || amount).toLocaleString("pt-PT")} ShitCoins™.`, "success");
+      await getProfile();
+      updateAuthUI();
+      await loadCoinHistory();
+    };
+
+    window.sendGift = async function(postId) {
+      if (!state.user) {
+        openAuth("login");
+        showToast("Faz login para enviar presentes.", "error");
+        return;
+      }
+      const { data, error } = await supabase.rpc("send_post_gift", {
+        p_post_id: postId,
+        p_gift_type: "poop_award"
+      });
+      if (error) return showToast(error.message || "Erro ao enviar presente.", "error");
+      showToast("Presente enviado. -20 ShitCoins™", "success");
+      await getProfile();
+      updateAuthUI();
+      await loadAll();
+    };
+
+    window.boostPost = async function(postId) {
+      if (!state.user) return openAuth("login");
+      const ok = confirm("Queres destacar este mico por 24h por 100 ShitCoins™?");
+      if (!ok) return;
+      const { data, error } = await supabase.rpc("boost_own_post", { p_post_id: postId });
+      if (error) return showToast(error.message || "Erro ao aplicar boost.", "error");
+      showToast("Mico destacado por 24h. -100 ShitCoins™", "success");
+      await getProfile();
+      updateAuthUI();
+      await loadAll();
     };
 
     window.deletePost = async function(postId) {
@@ -1080,8 +1175,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean3";
-      $("versionBadge2").textContent = "vClean3";
+      $("versionBadge").textContent = "vClean4";
+      $("versionBadge2").textContent = "vClean4";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -1157,6 +1252,7 @@
           <button data-nav="feed" onclick="goTab('feed')" class="nav-active w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🏠 Feed</button>
           <button data-nav="clips" onclick="goTab('clips')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🎬 ShitClips™</button>
           <button data-nav="notifications" onclick="goTab('notifications')" class="relative w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🔔 Notificações <span id="notifBadge" class="hidden absolute right-3 top-3 rounded-full bg-yellow-400 text-black text-[10px] px-2 py-0.5">0</span></button>
+          <button data-nav="coins" onclick="goTab('coins')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🪙 ShitCoins™ <span id="topCoinsNav" class="text-yellow-400">0</span></button>
           <button data-nav="publish" onclick="goTab('publish')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">➕ Publicar</button>
           <button data-nav="profile" onclick="goTab('profile')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">👤 Perfil</button>
           <button id="mobileLogoutBtn" onclick="logout()" class="hidden w-full text-left rounded-2xl px-4 py-3 font-black text-red-400 border border-red-400/20 bg-red-400/10">Sair</button>
@@ -1178,6 +1274,12 @@
               <div class="card p-5">
                 <h3 class="text-yellow-400 text-xs font-black uppercase tracking-widest">Modo beta</h3>
                 <p class="mt-3 text-sm text-zinc-400">Explorar é livre. Publicar, reagir e comentar exige conta.</p>
+              </div>
+              <div class="card p-5">
+                <h3 class="font-black text-xl">ShitCoins™</h3>
+                <p class="mt-2 text-3xl font-black text-yellow-400"><span id="topCoins">0</span> 🪙</p>
+                <p class="mt-2 text-sm text-zinc-400">Usa moedas para enviar presentes e destacar os teus micos.</p>
+                <button onclick="goTab('coins')" class="mt-4 w-full rounded-2xl bg-yellow-400 text-black py-3 font-black">Abrir loja grátis</button>
               </div>
               <div class="card p-5">
                 <h3 class="font-black text-xl">Convidar amigos</h3>
@@ -1273,6 +1375,59 @@
           </div>
         </div>
 
+
+        <div id="page-coins" data-page class="hidden">
+          <div class="grid lg:grid-cols-[1fr_320px] gap-6">
+            <div class="space-y-5">
+              <div class="card p-6">
+                <h2 class="text-3xl font-black">ShitCoins™</h2>
+                <p class="mt-2 text-zinc-400">Moedas internas grátis para presentes e boosts. Sem pagamentos reais.</p>
+                <div class="mt-6 rounded-3xl bg-yellow-400 text-black p-6">
+                  <p class="text-xs font-black uppercase tracking-widest">Saldo atual</p>
+                  <p class="mt-1 text-5xl font-black"><span id="coinBalanceMain">0</span> 🪙</p>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-3 gap-4">
+                <button onclick="claimWelcomeBonus()" class="card p-5 text-left hover:border-yellow-400/40">
+                  <p class="text-4xl">🎁</p>
+                  <h3 class="mt-3 font-black text-xl">Bónus inicial</h3>
+                  <p class="mt-2 text-yellow-400 font-black">+500 🪙</p>
+                  <p class="mt-1 text-xs text-zinc-500">Só pode ser recebido uma vez.</p>
+                </button>
+                <button onclick="claimFreePack(100, 'Pack diário grátis')" class="card p-5 text-left hover:border-yellow-400/40">
+                  <p class="text-4xl">🪙</p>
+                  <h3 class="mt-3 font-black text-xl">Pack grátis</h3>
+                  <p class="mt-2 text-yellow-400 font-black">+100 🪙</p>
+                  <p class="mt-1 text-xs text-zinc-500">Para testar a loja interna.</p>
+                </button>
+                <button onclick="claimFreePack(250, 'Pack beta grátis')" class="card p-5 text-left hover:border-yellow-400/40">
+                  <p class="text-4xl">🚀</p>
+                  <h3 class="mt-3 font-black text-xl">Pack beta</h3>
+                  <p class="mt-2 text-yellow-400 font-black">+250 🪙</p>
+                  <p class="mt-1 text-xs text-zinc-500">Sem dinheiro real.</p>
+                </button>
+              </div>
+
+              <div class="card p-6">
+                <h3 class="font-black text-xl">Histórico</h3>
+                <div id="coinHistory" class="mt-4 space-y-2"></div>
+              </div>
+            </div>
+
+            <aside class="space-y-5">
+              <div class="card p-5">
+                <h3 class="text-yellow-400 text-xs font-black uppercase tracking-widest">Como gastar</h3>
+                <div class="mt-4 space-y-3 text-sm text-zinc-300">
+                  <p>🎁 Presente num post: <b>20 ShitCoins™</b></p>
+                  <p>⚡ Boost no teu post: <b>100 ShitCoins™</b></p>
+                  <p>💡 Nesta fase, as moedas são grátis e servem para validar a mecânica.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
         <div id="page-profile" data-page class="hidden">
           <div class="max-w-2xl">
             <div class="card p-6">
@@ -1284,8 +1439,9 @@
                   <p class="mt-1 text-xs text-yellow-400 font-black"><span id="profileLevel">Visitante</span> · <span id="profileXp">0</span> XP</p>
                 </div>
               </div>
-              <div class="grid grid-cols-2 gap-3 mt-6">
+              <div class="grid grid-cols-3 gap-3 mt-6">
                 <div class="rounded-2xl bg-black/40 border border-white/10 p-4 text-center"><p id="profilePosts" class="text-2xl font-black">0</p><p class="text-xs text-zinc-500 font-black uppercase">Posts</p></div>
+                <div class="rounded-2xl bg-black/40 border border-white/10 p-4 text-center"><p id="profileCoins" class="text-2xl font-black text-yellow-400">0</p><p class="text-xs text-zinc-500 font-black uppercase">Coins</p></div>
                 <div class="rounded-2xl bg-black/40 border border-white/10 p-4 text-center"><p class="text-2xl font-black">Beta</p><p class="text-xs text-zinc-500 font-black uppercase">Estado</p></div>
               </div>
               <form onsubmit="saveProfile(event)" class="mt-6 space-y-4">
@@ -1300,11 +1456,12 @@
       </section>
     </main>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-5 gap-1 px-3 py-2">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-6 gap-1 px-2 py-2">
       <button data-nav="feed" onclick="goTab('feed')" class="nav-active rounded-2xl py-3 text-xs font-black">🏠<br>Feed</button>
       <button data-nav="clips" onclick="goTab('clips')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🎬<br>Clips</button>
       <button data-nav="publish" onclick="goTab('publish')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">➕<br>Publicar</button>
       <button data-nav="notifications" onclick="goTab('notifications')" class="relative rounded-2xl py-3 text-xs font-black text-zinc-400">🔔<br>Notif.<span id="notifBadgeMobile" class="hidden absolute right-1 top-1 rounded-full bg-yellow-400 text-black text-[9px] px-1.5">0</span></button>
+      <button data-nav="coins" onclick="goTab('coins')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🪙<br>Moedas</button>
       <button data-nav="profile" onclick="goTab('profile')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">👤<br>Perfil</button>
     </nav>
 
