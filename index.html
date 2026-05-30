@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - Social Estável</title>
+  <title>SHITAGRAM™ - Social Estável Auth Final</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
   </style>
 </head>
 <body>
-  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vStableNoArena1</div>
+  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vStableAuthFinal1</div>
   <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
 
   <!-- ONBOARDING / VISITANTE -->
@@ -613,41 +613,28 @@
       setMessage("registerMessage","info","A criar conta...");
       setBusy("registerBtn",true,"A criar...");
 
-      let finished=false;
-      const safetyTimer=setTimeout(()=>{
-        if(!finished){
-          setBusy("registerBtn",false);
-          $("registerBtn").innerText="Criar conta";
-          setMessage("registerMessage","error","O pedido está a demorar demasiado. Se a conta aparecer no Supabase, tenta fazer login. Caso contrário, atualiza a página e tenta novamente.");
-        }
-      },30000);
-
       try{
-        console.log("[SHITAGRAM vStableNoArena1] signUp start", email);
-        const {data,error}=await withTimeout(
-          supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
-          30000,
-          "Registo"
-        );
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vStableNoArena1] signUp result", {data,error});
+        console.log("[SHITAGRAM vStableAuthFinal1] signUp start", email);
+        const {data,error}=await supabase.auth.signUp({
+          email,
+          password,
+          options:{emailRedirectTo:APP_URL,data:{username}}
+        });
+        console.log("[SHITAGRAM vStableAuthFinal1] signUp result", {data,error});
         if(error){
           setMessage("registerMessage","error",error.message);
           return;
         }
+
         setMessage("registerMessage","success","Conta criada. Confirma o email se for pedido e entra com o teu email.");
         showToast("Conta criada. Agora faz login.");
         event.target.reset();
         switchAuthTab("login");
         $("loginEmail").value=email;
       }catch(err){
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vStableNoArena1] signUp error",err);
-        setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
+        console.error("[SHITAGRAM vStableAuthFinal1] signUp error",err);
+        setMessage("registerMessage","error",err?.message||"Erro inesperado ao criar conta.");
       }finally{
-        clearTimeout(safetyTimer);
         setBusy("registerBtn",false);
         $("registerBtn").innerText="Criar conta";
       }
@@ -660,35 +647,27 @@
       setMessage("loginMessage","info","A entrar...");
       setBusy("loginBtn",true,"A entrar...");
 
-      let finished=false;
-      const safetyTimer=setTimeout(()=>{
-        if(!finished){
-          setBusy("loginBtn",false);
-          $("loginBtn").innerText="Entrar com email";
-          setMessage("loginMessage","error","O login está a demorar demasiado. Aguarda mais uns segundos ou verifica a ligação/password/confirmação do email.");
-        }
-      },30000);
-
       try{
-        console.log("[SHITAGRAM vStableNoArena1] login start", email);
-        const {data,error}=await withTimeout(
-          supabase.auth.signInWithPassword({email,password}),
-          30000,
-          "Login"
-        );
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vStableNoArena1] login result", {data,error});
+        console.log("[SHITAGRAM vStableAuthFinal1] login start", email);
+
+        const {data,error}=await supabase.auth.signInWithPassword({email,password});
+
+        console.log("[SHITAGRAM vStableAuthFinal1] login result", {data,error});
+
         if(error){
-          setMessage("loginMessage","error",error.message);
+          let msg=error.message||"Erro no login.";
+          if(msg.toLowerCase().includes("invalid login credentials")) msg="Email ou password incorretos.";
+          if(msg.toLowerCase().includes("email not confirmed")) msg="Ainda tens de confirmar o email antes de entrar.";
+          setMessage("loginMessage","error",msg);
           return;
         }
 
-        currentUser=data.user;
+        currentUser=data?.user||null;
+
         try{
-          await withTimeout(ensureProfile(),12000,"Carregamento do perfil");
+          await ensureProfile();
         }catch(profileErr){
-          console.warn("[SHITAGRAM vStableNoArena1] profile load skipped",profileErr);
+          console.warn("[SHITAGRAM vStableAuthFinal1] profile load skipped",profileErr);
         }
 
         localStorage.setItem("shitagram_seen_onboarding","1");
@@ -697,16 +676,13 @@
         updateAuthUI();
         updateProfileUI();
         updatePublishGate();
-        Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications()]);
+        Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications(),fetchInbox()]);
         goTab("feed");
         showToast("Login feito com sucesso.");
       }catch(err){
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vStableNoArena1] login error",err);
-        setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
+        console.error("[SHITAGRAM vStableAuthFinal1] login error",err);
+        setMessage("loginMessage","error",err?.message||"Erro inesperado no login.");
       }finally{
-        clearTimeout(safetyTimer);
         setBusy("loginBtn",false);
         $("loginBtn").innerText="Entrar com email";
       }
@@ -1653,6 +1629,6 @@
     window.showSearchSoon=showSearchSoon;
   </script>
 <button onclick="copyInviteLink()" class="fixed bottom-24 right-2 z-[999] rounded-full bg-yellow-400 text-black px-4 py-2 text-xs font-black shadow-2xl">Convidar amigos</button>
-<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vStableNoArena1</div>
+<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vStableAuthFinal1</div>
 </body>
 </html>
