@@ -24,8 +24,24 @@
       followCounts: {},
       followingIds: new Set(),
       notifications: [],
-      activeTab: "feed"
+      activeTab: "feed",
+      activeGiftPostId: null
     };
+
+    const giftCatalog = [
+      { type: "mico", emoji: "💩", name: "Mico", cost: 1 },
+      { type: "morri_rir", emoji: "😂", name: "Morri a rir", cost: 5 },
+      { type: "vergonha_alheia", emoji: "🫣", name: "Vergonha alheia", cost: 10 },
+      { type: "isto_ardeu", emoji: "🔥", name: "Isto ardeu", cost: 25 },
+      { type: "abraco_moral", emoji: "❤️", name: "Abraço moral", cost: 50 },
+      { type: "respeito", emoji: "🌹", name: "Respeito", cost: 99 },
+      { type: "caixa_surpresa", emoji: "🎁", name: "Caixa surpresa", cost: 199 },
+      { type: "rei_mico", emoji: "👑", name: "Rei do mico", cost: 499 },
+      { type: "trauma_publico", emoji: "🚨", name: "Trauma público", cost: 999 },
+      { type: "lenda_vergonha", emoji: "🏆", name: "Lenda da vergonha", cost: 1999 },
+      { type: "mico_raro", emoji: "💎", name: "Mico raro", cost: 2999 },
+      { type: "patrao_vergonha", emoji: "🦁", name: "Patrão da vergonha", cost: 5999 }
+    ];
 
     const $ = (id) => document.getElementById(id);
 
@@ -614,7 +630,7 @@
               <button onclick="toggleReaction('${post.id}')" class="action-btn ${reacted ? "active" : ""}">💩 ${state.reactionsByPost[post.id] || 0}</button>
               <button onclick="openComments('${post.id}')" class="action-btn">💬 ${state.commentsByPost[post.id] || 0}</button>
               <button onclick="sharePost('${post.id}')" class="action-btn">↗ Partilhar</button>
-              <button onclick="sendGift('${post.id}')" class="action-btn">🎁 ${Number(post.gift_count || 0)}</button>
+              <button onclick="openGiftStore('${post.id}')" class="action-btn">🎁 ${Number(post.gift_count || 0)}</button>
               ${canDelete ? `<button onclick="boostPost('${post.id}')" class="action-btn text-yellow-300 border-yellow-400/25 bg-yellow-400/10">⚡ Boost</button>` : ""}
               ${state.user && state.user.id !== post.user_id ? `<button onclick="toggleFollow('${post.user_id}')" class="action-btn">${state.followingIds.has(post.user_id) ? "✓ A seguir" : "➕ Seguir"}</button>` : ""}
               <span class="action-btn">👥 ${state.followCounts[post.user_id] || 0}</span>
@@ -811,18 +827,54 @@
       await loadCoinHistory();
     };
 
-    window.sendGift = async function(postId) {
+    window.openGiftStore = function(postId) {
       if (!state.user) {
         openAuth("login");
         showToast("Faz login para enviar presentes.", "error");
         return;
       }
+
+      const post = state.posts.find(p => p.id === postId);
+      if (!post) return showToast("Post não encontrado.", "error");
+      if (post.user_id === state.user.id) return showToast("Não podes enviar presente ao teu próprio post.", "error");
+
+      state.activeGiftPostId = postId;
+      const grid = $("giftGrid");
+      grid.innerHTML = giftCatalog.map(g => `
+        <button onclick="sendGift('${g.type}')" class="rounded-3xl border border-white/10 bg-white/[.03] p-4 text-center hover:border-yellow-400/50 hover:bg-yellow-400/10 transition">
+          <div class="text-4xl">${g.emoji}</div>
+          <div class="mt-3 text-sm font-black text-white">${escapeHtml(g.name)}</div>
+          <div class="mt-1 text-xs font-black text-yellow-400">🪙 ${Number(g.cost).toLocaleString("pt-PT")}</div>
+        </button>
+      `).join("");
+      $("giftBalance").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+      $("giftModal").classList.add("open");
+    };
+
+    window.closeGiftStore = function() {
+      state.activeGiftPostId = null;
+      $("giftModal").classList.remove("open");
+    };
+
+    window.sendGift = async function(giftType) {
+      if (!state.user) return openAuth("login");
+      if (!state.activeGiftPostId) return showToast("Escolhe um post primeiro.", "error");
+
+      const gift = giftCatalog.find(g => g.type === giftType);
+      if (!gift) return showToast("Presente inválido.", "error");
+
+      if (Number(state.profile?.coins || 0) < gift.cost) {
+        return showToast("ShitCoins insuficientes.", "error");
+      }
+
       const { data, error } = await supabase.rpc("send_post_gift", {
-        p_post_id: postId,
-        p_gift_type: "poop_award"
+        p_post_id: state.activeGiftPostId,
+        p_gift_type: giftType
       });
       if (error) return showToast(error.message || "Erro ao enviar presente.", "error");
-      showToast("Presente enviado. -20 ShitCoins™", "success");
+
+      showToast(`${gift.emoji} ${gift.name} enviado. -${gift.cost} ShitCoins™`, "success");
+      closeGiftStore();
       await getProfile();
       updateAuthUI();
       await loadAll();
@@ -948,7 +1000,8 @@
             <p class="mt-1 text-xs text-zinc-500 font-bold">👥 ${followersCount || 0} seguidores · ${followingCount || 0} a seguir</p>
           </div>
         </div>
-        ${canFollow ? `<button onclick="toggleFollow('${userId}'); closePublicProfile();" class="mt-5 rounded-2xl bg-yellow-400 text-black px-6 py-3 font-black">${followLabel}</button>` : ""}
+        ${canFollow ? `<button onclick="toggleFollow('${userId}'); closePublicProfile();
+          closeGiftStore();" class="mt-5 rounded-2xl bg-yellow-400 text-black px-6 py-3 font-black">${followLabel}</button>` : ""}
         <p class="mt-4 text-sm text-zinc-300">${escapeHtml(profile.bio || "Sem bio.")}</p>
         <h4 class="mt-6 text-yellow-400 text-xs font-black uppercase tracking-widest">Micos recentes</h4>
         <div class="mt-3 space-y-3">
@@ -1175,8 +1228,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean4";
-      $("versionBadge2").textContent = "vClean4";
+      $("versionBadge").textContent = "vClean4.1";
+      $("versionBadge2").textContent = "vClean4.1";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -1191,6 +1244,7 @@
           closeAuth();
           closeComments();
           closePublicProfile();
+          closeGiftStore();
         }
       });
     });
@@ -1532,6 +1586,23 @@
         <input id="commentBody" required maxlength="300" placeholder="Escreve um comentário..." class="min-w-0 flex-1 rounded-2xl bg-black border border-white/10 px-4 py-3 outline-none">
         <button class="rounded-2xl bg-yellow-400 text-black px-5 font-black">Enviar</button>
       </form>
+    </div>
+  </div>
+
+  <div id="giftModal" class="modal fixed inset-0 z-[225] bg-black/80 backdrop-blur-xl px-5 py-8 overflow-y-auto items-center justify-center">
+    <div class="w-full max-w-3xl card p-6">
+      <div class="flex justify-between items-start gap-4">
+        <div>
+          <p class="text-yellow-400 text-xs font-black uppercase tracking-widest">Presentes</p>
+          <h2 class="mt-1 text-2xl font-black">Loja de presentes</h2>
+          <p class="mt-2 text-sm text-zinc-400">Usa ShitCoins™ para enviar uma reação especial a este mico.</p>
+        </div>
+        <button onclick="closeGiftStore()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
+      </div>
+      <div class="mt-4 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 p-3 text-sm font-black text-yellow-300">
+        Saldo disponível: 🪙 <span id="giftBalance">0</span>
+      </div>
+      <div id="giftGrid" class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
     </div>
   </div>
 
