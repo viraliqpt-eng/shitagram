@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SHITAGRAM™ — A vergonha agora dá XP</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística para partilhar micos, falhanços e histórias embaraçosas." />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=nB2lp3F9su-fJaoctRF4awXGaTtvKTUQWvdKzlaskeZ8CvOk9FM_VHV1OnuMAsz8FrZ-vifEXm9jHo9FJxepxKLK0dmz3z1oZDj6iyE8DyR5CMrq_ntTCuwWL0uT7ZSBAVeZNyDhKJu8X0cQFV59SUdB8xyKNMkrmX4d7fOxg5GZPDHmYV6CvDn5lhcQbix_ct_EXOmhAMhte7pBDjF3U-Wx5JhcxHPnoUs7jBVYP781Mo9Nf7Ki8NqrW-7Ff6fND9mqlH5NZn8H6qa8mWLDzg" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -17,6 +17,7 @@
       user: null,
       profile: null,
       posts: [],
+      clips: [],
       commentsByPost: {},
       reactionsByPost: {},
       myReactions: new Set(),
@@ -152,6 +153,8 @@
       $("profilePosts").textContent = state.profile?.posts_count || 0;
       $("composerLock").classList.toggle("hidden", logged);
       $("composerForm").classList.toggle("hidden", !logged);
+      if ($("clipLock")) $("clipLock").classList.toggle("hidden", logged);
+      if ($("clipForm")) $("clipForm").classList.toggle("hidden", !logged);
     }
 
     window.openAuth = function(tab = "login") {
@@ -294,6 +297,7 @@
     async function loadAll() {
       await Promise.allSettled([
         loadPosts(),
+        loadClips(),
         state.user ? loadMyReactions() : Promise.resolve()
       ]);
       renderPosts();
@@ -689,6 +693,187 @@
       $("publicProfileModal").classList.remove("open");
     };
 
+
+    async function loadClips() {
+      const list = $("clipsList");
+      if (list) list.innerHTML = `<div class="card p-6 text-zinc-500 text-sm">A carregar ShitClips™...</div>`;
+
+      const { data, error } = await supabase
+        .from("clips")
+        .select("id,user_id,video_url,storage_path,caption,category,status,created_at,profiles(id,username,display_name,avatar_url)")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (error) {
+        console.warn("[clean v2] loadClips warning", error);
+        if (list) list.innerHTML = `<div class="card p-6 text-red-400 font-bold">${escapeHtml(error.message)}</div>`;
+        return;
+      }
+
+      state.clips = data || [];
+      renderClips();
+    }
+
+    function renderClips() {
+      const list = $("clipsList");
+      if (!list) return;
+
+      if (!state.clips.length) {
+        list.innerHTML = `
+          <div class="card p-8 text-center">
+            <div class="text-5xl">🎬</div>
+            <h3 class="mt-3 text-xl font-black">Ainda não há ShitClips™.</h3>
+            <p class="mt-2 text-zinc-500 text-sm">Publica o primeiro vídeo curto da vergonha.</p>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = state.clips.map(clip => {
+        const username = clip.profiles?.username || "utilizador";
+        const display = clip.profiles?.display_name || username;
+        const canDelete = !!state.user && state.user.id === clip.user_id;
+        const avatar = clip.profiles?.avatar_url
+          ? `<img src="${escapeHtml(clip.profiles.avatar_url)}" class="w-10 h-10 rounded-full object-cover border border-yellow-400/30">`
+          : `<div class="w-10 h-10 rounded-full bg-yellow-400 text-black grid place-items-center text-lg">💩</div>`;
+
+        return `
+          <article class="card p-5">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                ${avatar}
+                <div class="min-w-0">
+                  <button onclick="openPublicProfile('${clip.user_id}')" class="font-black text-left hover:text-yellow-400 truncate">@${escapeHtml(username)}</button>
+                  <p class="text-xs text-zinc-500 truncate">${escapeHtml(display)} · ${formatDate(clip.created_at)}</p>
+                </div>
+              </div>
+              <span class="shrink-0 rounded-full border border-yellow-400/20 bg-yellow-400/10 px-3 py-1 text-[10px] text-yellow-300 font-black">${escapeHtml(clip.category || "Clip")}</span>
+            </div>
+
+            <video class="mt-4 w-full max-h-[520px] rounded-3xl bg-black border border-white/10 object-contain" controls playsinline preload="metadata" src="${escapeHtml(clip.video_url)}"></video>
+
+            ${clip.caption ? `<p class="mt-4 text-zinc-200 text-sm leading-relaxed">${escapeHtml(clip.caption)}</p>` : ""}
+
+            <div class="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-2">
+              <button onclick="shareClip('${clip.id}')" class="action-btn font-black">↗ Partilhar</button>
+              ${canDelete ? `<button onclick="deleteClip('${clip.id}')" class="action-btn text-red-300 border-red-400/20 bg-red-400/10 font-black">🗑️ Eliminar</button>` : ""}
+            </div>
+          </article>`;
+      }).join("");
+    }
+
+    window.publishClip = async function(event) {
+      event.preventDefault();
+      if (!state.user) {
+        openAuth("login");
+        showToast("Faz login para publicar ShitClips™.", "error");
+        return;
+      }
+
+      const file = $("clipFile").files?.[0];
+      const caption = $("clipCaption").value.trim();
+      const category = $("clipCategory").value;
+
+      if (!file) return showToast("Escolhe um vídeo primeiro.", "error");
+      if (!file.type.startsWith("video/")) return showToast("O ficheiro tem de ser vídeo.", "error");
+      if (file.size > 80 * 1024 * 1024) return showToast("Vídeo demasiado grande. Máximo: 80 MB.", "error");
+
+      const btn = event.submitter;
+      setButtonLoading(btn, true, "A enviar...");
+
+      const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]/g, "-").slice(-90);
+      const storagePath = `${state.user.id}/${Date.now()}-${safeName}`;
+
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from("clips")
+          .upload(storagePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: file.type
+          });
+
+        if (uploadError) {
+          showToast(uploadError.message, "error");
+          return;
+        }
+
+        const { data: publicData } = supabase.storage.from("clips").getPublicUrl(storagePath);
+        const videoUrl = publicData?.publicUrl;
+
+        const { error: insertError } = await supabase.from("clips").insert({
+          user_id: state.user.id,
+          video_url: videoUrl,
+          storage_path: storagePath,
+          caption,
+          category,
+          status: "active"
+        });
+
+        if (insertError) {
+          await supabase.storage.from("clips").remove([storagePath]);
+          showToast(insertError.message, "error");
+          return;
+        }
+
+        event.target.reset();
+        showToast("ShitClip™ publicado.", "success");
+        await loadClips();
+        goTab("clips");
+      } catch (err) {
+        console.error("[clean v2] publishClip crash", err);
+        showToast("Erro ao publicar clip.", "error");
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    };
+
+    window.deleteClip = async function(clipId) {
+      if (!state.user) {
+        openAuth("login");
+        showToast("Faz login para eliminar.", "error");
+        return;
+      }
+
+      const clip = state.clips.find(c => c.id === clipId);
+      if (!clip || clip.user_id !== state.user.id) {
+        showToast("Só podes eliminar os teus próprios clips.", "error");
+        return;
+      }
+
+      const ok = confirm("Tens a certeza que queres eliminar este ShitClip™?");
+      if (!ok) return;
+
+      const { data, error } = await supabase.rpc("delete_own_clip", {
+        p_clip_id: clipId
+      });
+
+      if (error) return showToast(error.message || "Erro ao eliminar clip.", "error");
+      if (!data) return showToast("Não foi possível eliminar este clip.", "error");
+
+      showToast("Clip eliminado.", "success");
+      await loadClips();
+    };
+
+    window.shareClip = async function(clipId) {
+      const url = `${window.location.origin}${window.location.pathname}#clip-${clipId}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: "SHITAGRAM™", text: "Vi este ShitClip™ no SHITAGRAM™ 💩", url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          showToast("Link copiado.", "success");
+        }
+      } catch {
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast("Link copiado.", "success");
+        } catch {
+          showToast("Não foi possível partilhar.", "error");
+        }
+      }
+    };
+
     window.goTab = function(tab) {
       state.activeTab = tab;
       document.querySelectorAll("[data-page]").forEach(el => el.classList.add("hidden"));
@@ -697,6 +882,7 @@
         btn.classList.toggle("nav-active", btn.dataset.nav === tab);
       });
       if (tab === "feed") loadAll();
+      if (tab === "clips") loadClips();
       if (tab === "profile") updateAuthUI();
     };
 
@@ -719,8 +905,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean1.2";
-      $("versionBadge2").textContent = "vClean1.2";
+      $("versionBadge").textContent = "vClean2";
+      $("versionBadge2").textContent = "vClean2";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -794,6 +980,7 @@
       <aside class="hidden lg:block">
         <nav class="card p-4 sticky top-24 space-y-2">
           <button data-nav="feed" onclick="goTab('feed')" class="nav-active w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🏠 Feed</button>
+          <button data-nav="clips" onclick="goTab('clips')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🎬 ShitClips™</button>
           <button data-nav="publish" onclick="goTab('publish')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">➕ Publicar</button>
           <button data-nav="profile" onclick="goTab('profile')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">👤 Perfil</button>
           <button id="mobileLogoutBtn" onclick="logout()" class="hidden w-full text-left rounded-2xl px-4 py-3 font-black text-red-400 border border-red-400/20 bg-red-400/10">Sair</button>
@@ -820,6 +1007,50 @@
                 <h3 class="font-black text-xl">Convidar amigos</h3>
                 <p class="mt-2 text-sm text-zinc-400">Partilha o SHITAGRAM™ com quem também tem histórias vergonhosas.</p>
                 <button onclick="copyInviteLink()" class="mt-4 w-full rounded-2xl bg-yellow-400 text-black py-3 font-black">Copiar convite</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <div id="page-clips" data-page class="hidden">
+          <div class="grid lg:grid-cols-[1fr_320px] gap-6">
+            <div class="space-y-5">
+              <div class="card p-5">
+                <h2 class="text-3xl font-black">ShitClips™</h2>
+                <p class="mt-1 text-zinc-400">Vídeos curtos de micos e momentos embaraçosos.</p>
+              </div>
+              <div id="clipsList" class="space-y-5"></div>
+            </div>
+
+            <aside class="space-y-5">
+              <div class="card p-5">
+                <h3 class="text-yellow-400 text-xs font-black uppercase tracking-widest">Publicar clip</h3>
+                <p class="mt-3 text-sm text-zinc-400">Vídeos curtos, sem expor terceiros, dados pessoais ou bullying.</p>
+
+                <div id="clipLock" class="mt-5 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5 text-center">
+                  <div class="text-4xl">🔒</div>
+                  <h3 class="mt-3 font-black text-lg">Entra para publicar</h3>
+                  <button onclick="openAuth('login')" class="mt-4 rounded-2xl bg-yellow-400 text-black px-5 py-3 font-black">Entrar</button>
+                </div>
+
+                <form id="clipForm" onsubmit="publishClip(event)" class="hidden mt-5 space-y-4">
+                  <input id="clipFile" required type="file" accept="video/*" class="w-full rounded-2xl bg-black border border-white/10 px-4 py-3 text-sm outline-none">
+                  <textarea id="clipCaption" maxlength="220" rows="4" placeholder="Legenda do clip..." class="w-full rounded-2xl bg-black border border-white/10 px-4 py-3 outline-none resize-none focus:border-yellow-400"></textarea>
+                  <select id="clipCategory" class="w-full rounded-2xl bg-black border border-white/10 px-4 py-3 outline-none">
+                    <option>Clip Geral</option>
+                    <option>Falhanço</option>
+                    <option>Date</option>
+                    <option>Trabalho</option>
+                    <option>Redes sociais</option>
+                    <option>Vida real</option>
+                  </select>
+                  <button class="w-full rounded-2xl bg-yellow-400 text-black py-4 font-black uppercase">Publicar ShitClip™</button>
+                </form>
+              </div>
+
+              <div class="card p-5">
+                <h3 class="font-black text-xl">Regras rápidas</h3>
+                <p class="mt-2 text-sm text-zinc-400">Não publiques rostos de terceiros sem autorização. Humor sim, exposição não.</p>
               </div>
             </aside>
           </div>
@@ -879,8 +1110,9 @@
       </section>
     </main>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-3 gap-1 px-3 py-2">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-4 gap-1 px-3 py-2">
       <button data-nav="feed" onclick="goTab('feed')" class="nav-active rounded-2xl py-3 text-xs font-black">🏠<br>Feed</button>
+      <button data-nav="clips" onclick="goTab('clips')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🎬<br>Clips</button>
       <button data-nav="publish" onclick="goTab('publish')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">➕<br>Publicar</button>
       <button data-nav="profile" onclick="goTab('profile')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">👤<br>Perfil</button>
     </nav>
