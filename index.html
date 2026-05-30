@@ -354,7 +354,18 @@
         return;
       }
 
-      state.posts = data || [];
+      const now = Date.now();
+      state.posts = (data || []).map(post => ({
+        ...post,
+        boost_active: !!post.is_boosted && post.boosted_until && new Date(post.boosted_until).getTime() > now
+      })).sort((a, b) => {
+        if (a.boost_active !== b.boost_active) return a.boost_active ? -1 : 1;
+        if (a.boost_active && b.boost_active) {
+          return new Date(b.boosted_until).getTime() - new Date(a.boosted_until).getTime();
+        }
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+
       await Promise.allSettled([
         loadReactionCounts(),
         loadCommentCounts(),
@@ -620,8 +631,8 @@
           ? `<img src="${escapeHtml(post.profiles.avatar_url)}" class="w-11 h-11 rounded-full object-cover border border-yellow-400/30">`
           : `<div class="w-11 h-11 rounded-full bg-yellow-400 text-black grid place-items-center text-xl">💩</div>`;
         return `
-          <article class="card p-5 ${post.is_boosted ? 'ring-2 ring-yellow-400/40 shadow-[0_0_40px_rgba(250,204,21,.12)]' : ''}">
-            ${post.is_boosted ? `<div class="mb-3 inline-flex rounded-full bg-yellow-400 text-black px-3 py-1 text-[10px] font-black uppercase tracking-widest">⚡ Mico destacado</div>` : ""}
+          <article class="card p-5 ${post.boost_active ? 'ring-2 ring-yellow-400/50 shadow-[0_0_45px_rgba(250,204,21,.16)]' : ''}">
+            ${post.boost_active ? `<div class="mb-3 inline-flex rounded-full bg-yellow-400 text-black px-3 py-1 text-[10px] font-black uppercase tracking-widest">🚀 Mico em destaque · ${boostTimeLeft(post.boosted_until)}</div>` : ""}
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 ${avatar}
@@ -640,13 +651,23 @@
               <button onclick="openComments('${post.id}')" class="action-btn">💬 ${state.commentsByPost[post.id] || 0}</button>
               <button onclick="sharePost('${post.id}')" class="action-btn">↗ Partilhar</button>
               <button onclick="openGiftStore('${post.id}')" class="action-btn">🎁 ${Number(post.gift_count || 0)}</button>
-              ${canDelete ? `<button onclick="boostPost('${post.id}')" class="action-btn text-yellow-300 border-yellow-400/25 bg-yellow-400/10">⚡ Boost</button>` : ""}
+              ${canDelete ? `<button onclick="boostPost('${post.id}')" class="action-btn text-yellow-300 border-yellow-400/25 bg-yellow-400/10">${post.boost_active ? "🚀 Boost ativo" : "🚀 Boost 24h"}</button>` : ""}
               ${state.user && state.user.id !== post.user_id ? `<button onclick="toggleFollow('${post.user_id}')" class="action-btn">${state.followingIds.has(post.user_id) ? "✓ A seguir" : "➕ Seguir"}</button>` : ""}
               <span class="action-btn">👥 ${state.followCounts[post.user_id] || 0}</span>
               ${canDelete ? `<button onclick="deletePost('${post.id}')" class="action-btn danger">🗑️ Eliminar</button>` : ""}
             </div>
           </article>`;
       }).join("");
+    }
+
+    function boostTimeLeft(value) {
+      if (!value) return "";
+      const ms = new Date(value).getTime() - Date.now();
+      if (ms <= 0) return "a terminar";
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      if (h >= 1) return `mais ${h}h`;
+      return `mais ${Math.max(1, m)}min`;
     }
 
     function formatDate(value) {
@@ -914,11 +935,18 @@
 
     window.boostPost = async function(postId) {
       if (!state.user) return openAuth("login");
-      const ok = confirm("Queres destacar este mico por 24h por 100 ShitCoins™?");
+      const post = state.posts.find(p => p.id === postId);
+      if (post?.boost_active) {
+        showToast("Este mico já está em destaque.", "info");
+        return;
+      }
+
+      const ok = confirm("Queres destacar este mico durante 24h por 100 ShitCoins™?");
       if (!ok) return;
+
       const { data, error } = await supabase.rpc("boost_own_post", { p_post_id: postId });
       if (error) return showToast(error.message || "Erro ao aplicar boost.", "error");
-      showToast("Mico destacado por 24h. -100 ShitCoins™", "success");
+      showToast("🚀 Mico em destaque por 24h. -100 ShitCoins™", "success");
       await getProfile();
       updateAuthUI();
       await loadAll();
@@ -1260,8 +1288,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean4.2";
-      $("versionBadge2").textContent = "vClean4.2";
+      $("versionBadge").textContent = "vClean4.3";
+      $("versionBadge2").textContent = "vClean4.3";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
