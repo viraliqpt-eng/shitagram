@@ -25,22 +25,31 @@
       followingIds: new Set(),
       notifications: [],
       activeTab: "feed",
-      activeGiftPostId: null
+      activeGiftPostId: null,
+      activeGiftCategory: "todos"
     };
 
     const giftCatalog = [
-      { type: "mico", emoji: "💩", name: "Mico", cost: 1 },
-      { type: "morri_rir", emoji: "😂", name: "Morri a rir", cost: 5 },
-      { type: "vergonha_alheia", emoji: "🫣", name: "Vergonha alheia", cost: 10 },
-      { type: "isto_ardeu", emoji: "🔥", name: "Isto ardeu", cost: 25 },
-      { type: "abraco_moral", emoji: "❤️", name: "Abraço moral", cost: 50 },
-      { type: "respeito", emoji: "🌹", name: "Respeito", cost: 99 },
-      { type: "caixa_surpresa", emoji: "🎁", name: "Caixa surpresa", cost: 199 },
-      { type: "rei_mico", emoji: "👑", name: "Rei do mico", cost: 499 },
-      { type: "trauma_publico", emoji: "🚨", name: "Trauma público", cost: 999 },
-      { type: "lenda_vergonha", emoji: "🏆", name: "Lenda da vergonha", cost: 1999 },
-      { type: "mico_raro", emoji: "💎", name: "Mico raro", cost: 2999 },
-      { type: "patrao_vergonha", emoji: "🦁", name: "Patrão da vergonha", cost: 5999 }
+      { type: "mico", emoji: "💩", name: "Mico", cost: 1, category: "baratos" },
+      { type: "morri_rir", emoji: "😂", name: "Morri a rir", cost: 5, category: "baratos" },
+      { type: "vergonha_alheia", emoji: "🫣", name: "Vergonha alheia", cost: 10, category: "baratos" },
+      { type: "isto_ardeu", emoji: "🔥", name: "Isto ardeu", cost: 25, category: "populares" },
+      { type: "abraco_moral", emoji: "❤️", name: "Abraço moral", cost: 50, category: "populares" },
+      { type: "respeito", emoji: "🌹", name: "Respeito", cost: 99, category: "populares" },
+      { type: "caixa_surpresa", emoji: "🎁", name: "Caixa surpresa", cost: 199, category: "epicos" },
+      { type: "rei_mico", emoji: "👑", name: "Rei do mico", cost: 499, category: "epicos" },
+      { type: "trauma_publico", emoji: "🚨", name: "Trauma público", cost: 999, category: "epicos" },
+      { type: "lenda_vergonha", emoji: "🏆", name: "Lenda da vergonha", cost: 1999, category: "lendarios" },
+      { type: "mico_raro", emoji: "💎", name: "Mico raro", cost: 2999, category: "lendarios" },
+      { type: "patrao_vergonha", emoji: "🦁", name: "Patrão da vergonha", cost: 5999, category: "lendarios" }
+    ];
+
+    const giftCategories = [
+      { id: "todos", label: "Todos" },
+      { id: "baratos", label: "Baratos" },
+      { id: "populares", label: "Populares" },
+      { id: "epicos", label: "Épicos" },
+      { id: "lendarios", label: "Lendários" }
     ];
 
     const $ = (id) => document.getElementById(id);
@@ -827,6 +836,36 @@
       await loadCoinHistory();
     };
 
+    window.renderGiftGrid = function() {
+      const grid = $("giftGrid");
+      const active = state.activeGiftCategory || "todos";
+      const items = active === "todos"
+        ? giftCatalog
+        : giftCatalog.filter(g => g.category === active);
+
+      $("giftTabs").innerHTML = giftCategories.map(cat => `
+        <button onclick="setGiftCategory('${cat.id}')"
+          class="rounded-full px-4 py-2 text-xs font-black border transition ${active === cat.id ? 'bg-yellow-400 text-black border-yellow-400' : 'bg-white/5 text-zinc-300 border-white/10 hover:border-yellow-400/40'}">
+          ${cat.label}
+        </button>
+      `).join("");
+
+      grid.innerHTML = items.map(g => `
+        <button onclick="sendGift('${g.type}')" class="group rounded-3xl border border-white/10 bg-gradient-to-b from-white/[.06] to-white/[.02] p-4 text-center hover:border-yellow-400/60 hover:bg-yellow-400/10 transition">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-black/30 text-4xl ring-1 ring-white/10 group-hover:scale-105 transition">${g.emoji}</div>
+          <div class="mt-3 text-sm font-black text-white">${escapeHtml(g.name)}</div>
+          <div class="mt-1 inline-flex items-center gap-1 rounded-full bg-yellow-400/10 px-3 py-1 text-xs font-black text-yellow-400">🪙 ${Number(g.cost).toLocaleString("pt-PT")}</div>
+        </button>
+      `).join("");
+
+      $("giftBalance").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+    };
+
+    window.setGiftCategory = function(categoryId) {
+      state.activeGiftCategory = categoryId;
+      renderGiftGrid();
+    };
+
     window.openGiftStore = function(postId) {
       if (!state.user) {
         openAuth("login");
@@ -839,15 +878,8 @@
       if (post.user_id === state.user.id) return showToast("Não podes enviar presente ao teu próprio post.", "error");
 
       state.activeGiftPostId = postId;
-      const grid = $("giftGrid");
-      grid.innerHTML = giftCatalog.map(g => `
-        <button onclick="sendGift('${g.type}')" class="rounded-3xl border border-white/10 bg-white/[.03] p-4 text-center hover:border-yellow-400/50 hover:bg-yellow-400/10 transition">
-          <div class="text-4xl">${g.emoji}</div>
-          <div class="mt-3 text-sm font-black text-white">${escapeHtml(g.name)}</div>
-          <div class="mt-1 text-xs font-black text-yellow-400">🪙 ${Number(g.cost).toLocaleString("pt-PT")}</div>
-        </button>
-      `).join("");
-      $("giftBalance").textContent = Number(state.profile?.coins || 0).toLocaleString("pt-PT");
+      state.activeGiftCategory = "todos";
+      renderGiftGrid();
       $("giftModal").classList.add("open");
     };
 
@@ -1228,8 +1260,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean4.1";
-      $("versionBadge2").textContent = "vClean4.1";
+      $("versionBadge").textContent = "vClean4.2";
+      $("versionBadge2").textContent = "vClean4.2";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -1599,9 +1631,15 @@
         </div>
         <button onclick="closeGiftStore()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
       </div>
-      <div class="mt-4 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 p-3 text-sm font-black text-yellow-300">
-        Saldo disponível: 🪙 <span id="giftBalance">0</span>
+      <div class="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div class="rounded-2xl bg-yellow-400/10 border border-yellow-400/20 p-3 text-sm font-black text-yellow-300">
+          Saldo disponível: 🪙 <span id="giftBalance">0</span>
+        </div>
+        <button onclick="claimFreePack(100, 'Pack grátis da loja')" class="rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm font-black hover:border-yellow-400/50 transition">
+          +100 grátis
+        </button>
       </div>
+      <div id="giftTabs" class="mt-5 flex flex-wrap gap-2"></div>
       <div id="giftGrid" class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
     </div>
   </div>
