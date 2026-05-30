@@ -201,7 +201,7 @@
       }
 
       try {
-        console.log("[SHITAGRAM clean v1.1] signUp start", email);
+        console.log("[SHITAGRAM clean v1.2] signUp start", email);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -210,7 +210,7 @@
             emailRedirectTo: window.location.origin + window.location.pathname
           }
         });
-        console.log("[SHITAGRAM clean v1.1] signUp result", { data, error });
+        console.log("[SHITAGRAM clean v1.2] signUp result", { data, error });
 
         if (error) {
           setMsg("registerMsg", translateSupabaseError(error.message), "error");
@@ -222,7 +222,7 @@
         event.target.reset();
         switchAuth("login");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1.1] signUp crash", err);
+        console.error("[SHITAGRAM clean v1.2] signUp crash", err);
         setMsg("registerMsg", "Erro inesperado ao criar conta. Tenta novamente.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -239,9 +239,9 @@
       const password = $("loginPassword").value;
 
       try {
-        console.log("[SHITAGRAM clean v1.1] login start", email);
+        console.log("[SHITAGRAM clean v1.2] login start", email);
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        console.log("[SHITAGRAM clean v1.1] login result", { data, error });
+        console.log("[SHITAGRAM clean v1.2] login result", { data, error });
 
         if (error) {
           setMsg("loginMsg", translateSupabaseError(error.message), "error");
@@ -257,7 +257,7 @@
         showToast("Login feito com sucesso.", "success");
         goTab("feed");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1.1] login crash", err);
+        console.error("[SHITAGRAM clean v1.2] login crash", err);
         setMsg("loginMsg", "Erro inesperado no login. Verifica a consola.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -595,14 +595,17 @@
       const ok = confirm("Tens a certeza que queres eliminar este mico? Esta ação remove o post do feed.");
       if (!ok) return;
 
-      const { error } = await supabase
-        .from("posts")
-        .update({ status: "deleted", deleted_at: new Date().toISOString() })
-        .eq("id", postId)
-        .eq("user_id", state.user.id);
+      const { data, error } = await supabase.rpc("delete_own_post", {
+        p_post_id: postId
+      });
 
       if (error) {
         showToast(error.message || "Erro ao eliminar post.", "error");
+        return;
+      }
+
+      if (!data) {
+        showToast("Não foi possível eliminar este post.", "error");
         return;
       }
 
@@ -716,8 +719,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean1.1";
-      $("versionBadge2").textContent = "vClean1.1";
+      $("versionBadge").textContent = "vClean1.2";
+      $("versionBadge2").textContent = "vClean1.2";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
