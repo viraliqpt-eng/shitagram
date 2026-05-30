@@ -1,1942 +1,295 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram Arena - Ultimate AI & Cloud Edition</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com/"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brandPink: '#ff3fb7',
-            brandPinkDark: '#ff167f',
-            brandPurple: '#6f35ff',
-            darkBg: '#070710',
-          },
-          boxShadow: {
-            neonPink: '0 0 20px rgba(255, 63, 183, 0.4)',
-            neonPinkHeavy: '0 0 35px rgba(255, 63, 183, 0.7)',
-            neonPurple: '0 0 20px rgba(111, 53, 255, 0.4)',
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Firebase Compat Libraries -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(255, 0, 170, 0.15), transparent 45%),
-        radial-gradient(circle at bottom, rgba(111, 53, 255, 0.15), transparent 45%),
-        #070710;
-    }
-    
-    .app-scrollbar::-webkit-scrollbar {
-      width: 4px;
-    }
-    .app-scrollbar::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-    }
-    .app-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 63, 183, 0.3);
-      border-radius: 4px;
-    }
-
-    .screen {
-      display: none;
-      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .screen.active {
-      display: flex;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    @keyframes cringeShake {
-      0%, 100% { transform: rotate(0deg); }
-      15% { transform: rotate(-3deg) scale(1.02); }
-      30% { transform: rotate(4deg) scale(1.02); }
-      45% { transform: rotate(-4deg); }
-      60% { transform: rotate(3deg); }
-      75% { transform: rotate(-2deg); }
-    }
-    .animate-cringe {
-      animation: cringeShake 0.6s ease-in-out;
-    }
-    
-    @keyframes neonPulse {
-      0%, 100% { border-color: rgba(255, 63, 183, 0.4); box-shadow: 0 0 10px rgba(255, 63, 183, 0.2); }
-      50% { border-color: rgba(255, 63, 183, 1); box-shadow: 0 0 25px rgba(255, 63, 183, 0.6); }
-    }
-    .neon-pulse-border {
-      animation: neonPulse 2s infinite;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shitagram Arena</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{min-height:100vh;background:#070710;color:white;display:flex;justify-content:center;align-items:center;padding:16px}
+.phone{width:390px;max-width:100%;height:820px;max-height:96vh;background:linear-gradient(180deg,#11111f,#070711);border:1px solid #ffffff22;border-radius:34px;overflow:hidden;position:relative;box-shadow:0 0 60px #ff00aa44}
+.screen{display:none;height:100%;padding:24px 20px 92px;overflow:auto}
+.screen.active{display:block}
+.logo{font-size:28px;font-weight:900;text-shadow:0 0 18px #ff2fb3}
+.pink{color:#ff3fb7}
+.card{background:#ffffff12;border:1px solid #ffffff22;border-radius:22px;padding:18px;margin:14px 0}
+.btn{width:100%;border:0;border-radius:18px;padding:16px;margin-top:12px;color:white;font-weight:900;font-size:16px;background:linear-gradient(135deg,#ff167f,#ff4dc4);cursor:pointer}
+.btn.secondary{background:#ffffff12;border:1px solid #ffffff22}
+input,textarea{width:100%;background:#00000055;border:1px solid #ffffff33;border-radius:16px;color:white;padding:14px;margin:8px 0;font-size:16px}
+textarea{height:180px;resize:none}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.nav{position:absolute;bottom:0;left:0;right:0;height:76px;background:#05050cee;border-top:1px solid #ffffff22;display:grid;grid-template-columns:repeat(5,1fr);text-align:center;align-items:center}
+.nav button{background:none;border:0;color:#aaa;font-size:11px}
+.nav span{display:block;font-size:22px}
+.nav .active{color:#ff3fb7}
+.post{background:#111827;border:1px solid #ffffff22;border-radius:22px;padding:16px;margin:14px 0}
+.small{font-size:12px;color:#bbb}
+.badge{display:inline-block;background:#ff3fb733;border:1px solid #ff3fb7;border-radius:999px;padding:6px 10px;margin-top:8px}
+</style>
 </head>
 
-<body class="min-h-screen text-white flex justify-center items-center p-0 md:p-4 overflow-hidden select-none">
-
-  <!-- Mobile Simulator Frame -->
-  <main class="relative w-full h-screen md:w-[412px] md:h-[860px] md:max-h-[95vh] md:rounded-[42px] md:border-4 md:border-white/10 md:shadow-[0_0_60px_rgba(111,53,255,0.25)] bg-gradient-to-b from-[#111122] to-[#070712] overflow-hidden flex flex-col">
-    
-    <!-- Top Notch simulated -->
-    <div class="hidden md:flex absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-black rounded-b-2xl z-50 items-center justify-center gap-1.5">
-      <div class="w-3 h-3 bg-zinc-800 rounded-full"></div>
-      <div class="w-12 h-1.5 bg-zinc-850 rounded-full"></div>
-    </div>
-
-    <!-- Header / Status Bar -->
-    <header class="flex justify-between items-center px-6 pt-5 pb-3 bg-[#111122]/60 backdrop-blur-md border-b border-white/5 shrink-0 z-40">
-      <div class="flex items-center gap-2">
-        <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-brandPink to-brandPurple bg-clip-text text-transparent">SHITAGRAM</span>
-        <span class="text-xs px-1.5 py-0.5 rounded bg-brandPink/20 text-brandPink font-bold uppercase tracking-widest text-[9px] border border-brandPink/30">ARENA</span>
-      </div>
-      
-      <!-- Top Actions -->
-      <div class="flex items-center gap-3">
-        <button id="soundToggle" onclick="toggleMute()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
-          <span id="soundIcon">🔊</span>
-        </button>
-        <div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full shadow-inner">
-          <span class="text-sm">🪙</span>
-          <span id="walletCoins" class="text-xs font-black text-amber-400">1,500</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- MAIN APP SCREENS CONTAINER -->
-    <div class="flex-1 overflow-y-auto app-scrollbar pb-24 z-10">
-
-      <!-- SCREEN 1: FEED PRINCIPAL (Sincronizado na Nuvem) -->
-      <section id="screen-feed" class="screen active flex-col p-5 gap-4">
-        <!-- Cloud Sync Badge -->
-        <div class="flex justify-between items-center text-[11px] text-zinc-400 font-bold bg-white/5 border border-white/10 rounded-lg px-3 py-1">
-          <span id="cloudStatus">A ligar à Nuvem...</span>
-          <span class="text-brandPink">Multijogador Ativo 👥</span>
-        </div>
-
-        <!-- Daily Welcome Banner -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brandPink/20 to-brandPurple/20 border border-brandPink/30 p-5 shadow-neonPink">
-          <div class="absolute -right-6 -bottom-6 text-7xl opacity-25 select-none rotate-12">💩</div>
-          <span class="text-[10px] uppercase font-bold tracking-wider text-brandPink">Desafio do Dia</span>
-          <h3 class="text-xl font-extrabold mt-1">Arena dos Micos Reais</h3>
-          <p class="text-xs text-zinc-300 mt-2 leading-relaxed">Partilha as tuas piores vergonhas, vota no cringe alheio e ganha recompensas globais!</p>
-          <button onclick="go('screen-arena-select')" class="mt-4 px-4 py-2 bg-gradient-to-r from-brandPink to-brandPinkDark rounded-xl text-xs font-bold shadow-lg shadow-brandPink/20 hover:scale-[1.02] transition-transform flex items-center gap-1">
-            <span>⚔️ Entrar na Arena</span>
-          </button>
-        </div>
-
-        <!-- Global Stats Row -->
-        <div class="grid grid-cols-2 gap-3 text-center">
-          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col justify-center">
-            <span class="text-2xl font-bold text-brandPink" id="totalMicosShared">--</span>
-            <span class="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Micos na Nuvem</span>
-          </div>
-          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col justify-center">
-            <span class="text-2xl font-bold text-brandPurple" id="arenaActiveCount">Ligado</span>
-            <span class="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Estado do Servidor</span>
-          </div>
-        </div>
-
-        <!-- Scrollable Feed Title -->
-        <div class="flex justify-between items-center mt-2">
-          <h4 class="font-extrabold text-xs tracking-wider uppercase text-zinc-400">Vergonhas da Comunidade 🌍</h4>
-          <span class="text-xs text-brandPink flex items-center gap-1 cursor-pointer" onclick="refreshFeed()">
-            🔄 Recarregar
-          </span>
-        </div>
-
-        <!-- Dynamic Feed List -->
-        <div id="feedList" class="flex flex-col gap-3">
-          <div class="text-center py-8 text-zinc-500 text-xs">A carregar micos partilhados...</div>
-        </div>
-      </section>
-
-      <!-- SCREEN 2: SELEÇÃO DE ARENA -->
-      <section id="screen-arena-select" class="screen flex-col p-5 gap-4">
-        <div class="flex items-center gap-2 mb-2">
-          <button onclick="go('screen-feed')" class="text-zinc-400 hover:text-white">◀ Voltar</button>
-          <h2 class="text-lg font-black">ESCOLHE A ARENA</h2>
-        </div>
-        <p class="text-xs text-zinc-400 leading-relaxed mb-2">Seleciona o tema da competição para enfrentar os bots e o Árbitro de IA:</p>
-        <div class="flex flex-col gap-3" id="themesList"></div>
-      </section>
-
-      <!-- SCREEN 3: LOBBY DE JOGADORES -->
-      <section id="screen-arena-lobby" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center">
-          <div>
-            <span class="text-[10px] font-bold tracking-widest text-brandPink uppercase">Sala de Competição</span>
-            <h2 class="text-xl font-black" id="lobbyRoomId">SALA #1337</h2>
-          </div>
-          <div class="px-2 py-1 bg-white/10 rounded-lg text-xs font-semibold">Lobby</div>
-        </div>
-
-        <!-- Theme Card Box -->
-        <div class="bg-gradient-to-br from-brandPurple/30 to-brandPink/20 border border-brandPurple/40 rounded-2xl p-4 text-center shadow-lg relative overflow-hidden">
-          <div class="absolute top-2 right-2 text-xs bg-black/40 px-2 py-0.5 rounded-full text-brandPink font-bold">Tema Ativo</div>
-          <p class="text-xs text-zinc-300 uppercase tracking-wider font-bold mb-1">Ronda Única</p>
-          <h3 class="text-lg font-extrabold text-white leading-snug" id="lobbyThemeText">Pior situação num primeiro encontro</h3>
-          <p class="text-[11px] text-zinc-400 mt-2">⏱️ Tempo limite de escrita: 60s</p>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-xs font-semibold text-zinc-400 mb-2">
-            <span>Competidores conectados:</span>
-            <span id="readyCount">1 / 8 Prontos</span>
-          </div>
-          <div class="grid grid-cols-4 gap-3 text-center" id="lobbyPlayersGrid"></div>
-        </div>
-
-        <button id="startWriteBtn" onclick="go('screen-publish')" class="w-full py-4 mt-2 rounded-xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-brandPink to-brandPurple hover:opacity-90 shadow-lg shadow-brandPink/15 transition-all text-white">
-          ✍️ Escrever Minha História
-        </button>
-      </section>
-
-      <!-- SCREEN 4: ESCREVER O MICO -->
-      <section id="screen-publish" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center mb-1">
-          <h2 class="text-lg font-black">CONTA A TUA VERGONHA</h2>
-          <span class="text-xs px-2.5 py-1 rounded bg-zinc-800 text-zinc-300 border border-zinc-700" id="currentWriteThemeLabel">Encontro</span>
-        </div>
-
-        <div class="bg-white/5 border border-white/10 p-3.5 rounded-xl">
-          <span class="text-[10px] text-brandPink font-bold uppercase tracking-wider">Tema de resposta obrigatório:</span>
-          <p class="text-xs font-bold text-zinc-200 mt-1" id="publishThemePrompt">Pior situação num primeiro encontro</p>
-        </div>
-
-        <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-zinc-400 flex justify-between">
-            <span>A tua história anónima:</span>
-            <span id="charCount" class="text-[10px]">0 / 180 chars</span>
-          </label>
-          <textarea id="micoText" class="w-full h-32 bg-black/40 border border-white/15 rounded-xl p-4 text-xs text-white placeholder-zinc-500 focus:border-brandPink outline-none resize-none" maxlength="180" oninput="updateCharCount()" placeholder="Escreve aqui o teu vexame real ou inventado..."></textarea>
-        </div>
-
-        <div class="bg-brandPurple/10 border border-brandPurple/30 rounded-xl p-3.5 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-zinc-100">🤖 Julgamento Avançado por IA</span>
-            <label class="relative inline-flex items-center cursor-pointer select-none">
-              <input type="checkbox" id="useGeminiToggle" checked class="sr-only peer">
-              <div class="w-9 h-5 bg-zinc-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandPink"></div>
-            </label>
-          </div>
-          <p class="text-[10px] text-zinc-400 leading-normal">Se ativado, a inteligência artificial Gemini 2.5 criará os teus concorrentes e julgará com precisão o teu nível de Cringe.</p>
-        </div>
-
-        <button id="submitStoryBtn" onclick="submitStory()" class="w-full py-4 mt-2 rounded-xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-brandPink to-brandPinkDark shadow-lg shadow-brandPink/20 hover:scale-[1.01] transition-transform">
-          🚀 Submeter e Guardar no Feed
-        </button>
-
-        <!-- Loading HUD Overlay -->
-        <div id="aiLoadingHud" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 text-center">
-          <div class="w-16 h-16 rounded-full border-4 border-brandPink border-t-transparent animate-spin mb-4"></div>
-          <h3 class="text-lg font-bold text-white mb-2" id="aiLoadingTitle">Análise SHITAGRAM ARENA..</h3>
-          <p class="text-xs text-zinc-400 max-w-xs leading-relaxed" id="aiLoadingMessage">Analisando o teu mico na base de dados de vergonha...</p>
-        </div>
-      </section>
-
-      <!-- SCREEN 5: JULGAMENTO DOS MICOS -->
-      <section id="screen-judge" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center">
-          <div>
-            <span class="text-[10px] font-bold tracking-widest text-brandPink uppercase">Fase 1: Votação</span>
-            <h2 class="text-lg font-black">JULGAR EMBARAÇO</h2>
-          </div>
-          <span class="px-2.5 py-1 text-xs bg-zinc-800 rounded-full border border-zinc-700" id="judgeProgress">História 1/3</span>
-        </div>
-
-        <p class="text-xs text-zinc-400">Classifica sinceramente o embaraço da história abaixo:</p>
-
-        <!-- Elegant Post-it style -->
-        <div id="judgeCardContainer" class="relative min-h-[160px] bg-amber-50 text-neutral-900 rounded-2xl p-6 flex flex-col justify-between shadow-2xl border-2 border-amber-100/50 transform -rotate-1 hover:rotate-0 transition-transform duration-200">
-          <p id="judgeStoryText" class="text-xs font-extrabold text-neutral-800 leading-snug py-2">“Carregando...”</p>
-          <div class="flex justify-between items-center border-t border-amber-200/50 pt-2 text-[10px] text-neutral-500 font-bold tracking-wider">
-            <span>👤 Autor Anónimo</span>
-            <span class="bg-neutral-200/80 text-neutral-700 px-2 py-0.5 rounded uppercase">Ronda Ativa</span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2 mt-2">
-          <span class="text-xs text-zinc-400 text-center font-semibold">Como classificas isto?</span>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button onclick="castUserVote('🔥 Muito Mau', 1)" class="flex items-center gap-2 justify-center bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-brandPink/10 hover:border-brandPink/40 transition-colors text-xs font-bold">
-              <span>🔥</span> Muito Mau
-            </button>
-            <button onclick="castUserVote('💀 Vergonha', 2)" class="flex items-center gap-2 justify-center bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-brandPink/10 hover:border-brandPink/40 transition-colors text-xs font-bold">
-              <span>💀</span> Vergonha
-            </button>
-            <button onclick="castUserVote('🤡 Hilariante', 3)" class="flex items-center gap-2 justify-center bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-brandPink/10 hover:border-brandPink/40 transition-colors text-xs font-bold">
-              <span>🤡</span> Hilariante
-            </button>
-            <button onclick="castUserVote('🧢 Fake', 0)" class="flex items-center gap-2 justify-center bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-brandPink/10 hover:border-brandPink/40 transition-colors text-xs font-bold">
-              <span>🧢</span> É Mentira
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SCREEN 6: APOSTAS DA VERGONHA -->
-      <section id="screen-bet" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center">
-          <div>
-            <span class="text-[10px] font-bold tracking-widest text-brandPurple uppercase">Fase 2: Bolsa de Cringe</span>
-            <h2 class="text-lg font-black">APOSTA DE RISCO</h2>
-          </div>
-          <span class="text-xs text-brandPink font-bold">Multiplicador: 2.0x</span>
-        </div>
-        <p class="text-xs text-zinc-400 leading-relaxed">Os bots votaram! Em qual destas duas histórias finalistas vais apostar as tuas ShitCoins?</p>
-
-        <div class="flex flex-col gap-3 my-1" id="betOptionsContainer"></div>
-
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-2">
-          <div class="flex justify-between items-center text-xs">
-            <span class="text-zinc-400 font-bold">Valor da Aposta</span>
-            <span class="text-brandPink font-extrabold text-sm"><span id="betCoinsVal">50</span> 🪙</span>
-          </div>
-          <input type="range" id="betAmountSlider" min="10" max="250" step="10" value="50" oninput="updateBetSliderValue()" class="w-full accent-brandPink bg-zinc-800 h-2 rounded-lg appearance-none cursor-pointer">
-          <div class="flex justify-between text-[9px] text-zinc-500 font-bold uppercase mt-1">
-            <span>Min: 10</span>
-            <span id="betMaxLimit">Max: 250</span>
-          </div>
-        </div>
-
-        <button onclick="confirmBetAndGoToDuel()" class="w-full py-4 mt-1 rounded-xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-brandPurple to-brandPink shadow-lg hover:opacity-95 transition-all">
-          💰 Confirmar Aposta
-        </button>
-      </section>
-
-      <!-- SCREEN 7: GRANDE DUELO DE MICOS -->
-      <section id="screen-duel" class="screen flex-col p-5 gap-4">
-        <div class="text-center">
-          <span class="text-[10px] font-extrabold tracking-widest text-amber-400 uppercase bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">⚔️ O GRANDE DUELO ⚔️</span>
-          <h2 class="text-xl font-black mt-2">VOTAÇÃO AO VIVO</h2>
-          <p class="text-xs text-zinc-400 mt-1">Os bots e a comunidade global estão a votar!</p>
-        </div>
-
-        <div class="flex flex-col gap-4 mt-2">
-          <!-- Card A -->
-          <div id="duelCardA" class="relative overflow-hidden bg-gradient-to-r from-brandPurple/20 to-brandPurple/5 border border-brandPurple/30 rounded-2xl p-4 flex flex-col gap-1.5 transition-all">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-brandPurple">MICO A</span>
-              <span id="duelVotesA" class="text-xs font-extrabold text-white">0 Votos</span>
-            </div>
-            <p id="duelTextA" class="text-xs font-bold text-zinc-200">Carregando...</p>
-            <div class="w-full bg-black/40 h-2.5 rounded-full overflow-hidden mt-1 border border-white/5">
-              <div id="duelProgressFillA" class="h-full bg-brandPurple transition-all duration-300" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <div class="text-center font-black text-xl text-amber-400 flex justify-center items-center gap-2 animate-pulse my-[-6px]">
-            <span>⚡</span> VS <span>⚡</span>
-          </div>
-
-          <!-- Card B -->
-          <div id="duelCardB" class="relative overflow-hidden bg-gradient-to-r from-brandPink/20 to-brandPink/5 border border-brandPink/30 rounded-2xl p-4 flex flex-col gap-1.5 transition-all">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-brandPink">MICO B</span>
-              <span id="duelVotesB" class="text-xs font-extrabold text-white">0 Votos</span>
-            </div>
-            <p id="duelTextB" class="text-xs font-bold text-zinc-200">Carregando...</p>
-            <div class="w-full bg-black/40 h-2.5 rounded-full overflow-hidden mt-1 border border-white/5">
-              <div id="duelProgressFillB" class="h-full bg-brandPink transition-all duration-300" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-
-        <button id="cheerBtn" onclick="boostDuelVote()" class="w-full py-4 mt-2 rounded-xl font-extrabold text-sm uppercase tracking-wider bg-gradient-to-r from-amber-500 to-yellow-400 text-neutral-900 shadow-lg active:scale-95 transition-all">
-          📣 Torcer &amp; Impulsionar (+1 Voto)
-        </button>
-      </section>
-
-      <!-- SCREEN 8: VENCEDOR & ILUSTRAÇÃO IA (Imagen-4 / Fallback de Caricatura Retro) -->
-      <section id="screen-winner" class="screen flex-col p-5 gap-4">
-        <div class="text-center flex flex-col items-center">
-          <span class="text-5xl animate-bounce">👑</span>
-          <h1 class="text-xl font-black mt-2 bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent uppercase">Vencedor Revelado</h1>
-        </div>
-
-        <!-- Winning Story Display -->
-        <div class="bg-gradient-to-br from-brandPink/20 via-zinc-900 to-brandPurple/20 border-2 border-brandPink/40 rounded-2xl p-4 shadow-neonPink">
-          <div class="flex justify-between items-center border-b border-white/10 pb-2 mb-2">
-            <span class="text-[10px] font-extrabold text-brandPink tracking-wider uppercase">História Campeã</span>
-            <span id="winningVotesLabel" class="text-xs px-2 py-0.5 rounded bg-black/40 font-bold">1,245 🔥</span>
-          </div>
-          <p id="winningStoryText" class="text-xs font-bold text-zinc-100 italic leading-relaxed">
-            "Carregando história vencedora..."
-          </p>
-          <p id="winningAuthorLabel" class="text-[10px] text-zinc-400 mt-2 text-right">Por: Anónimo</p>
-        </div>
-
-        <!-- IMAGEN-4 IA ILLUSTRATION ZONE (With Automatic Hand-Drawn Retro Fallback) -->
-        <div class="bg-zinc-950/60 border border-brandPink/30 rounded-2xl p-4 text-center flex flex-col gap-3 relative overflow-hidden">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] text-amber-400 font-extrabold uppercase tracking-widest">🎨 Ilustrador por IA (Imagen-4)</span>
-            <span class="text-[9px] bg-brandPink/20 text-brandPink px-2 py-0.5 rounded font-black">REFORÇADO</span>
-          </div>
-          
-          <div id="micoIllustrationContainer" class="hidden min-h-[220px] flex items-center justify-center bg-black/40 rounded-xl overflow-hidden">
-            <!-- Loaded base64 image or fallback Canvas dynamically -->
-          </div>
-
-          <button id="generateIllustrationBtn" onclick="generateMicoIllustration()" class="w-full py-2.5 rounded-xl font-black text-xs uppercase bg-gradient-to-r from-brandPink to-brandPurple text-white shadow-lg shadow-brandPink/25 hover:opacity-90 active:scale-[0.98] transition-all">
-            ✨ Gerar Desenho da Vergonha
-          </button>
-        </div>
-
-        <!-- AI Critique Section -->
-        <div class="bg-zinc-950/80 border border-white/10 rounded-xl p-3 flex flex-col gap-1 shadow-inner">
-          <span class="text-[9px] text-brandPurple font-bold uppercase tracking-widest">✨ Crítica do Árbitro de IA</span>
-          <p id="aiCritiqueText" class="text-xs text-zinc-300 leading-relaxed italic">
-            "Isso sim é um desastre de alto nível!"
-          </p>
-        </div>
-
-        <!-- Bet Result Card -->
-        <div id="betOutcomeCard" class="bg-white/5 border border-white/10 rounded-xl p-3 text-center flex flex-col gap-1">
-          <span id="betOutcomeState" class="text-[10px] text-zinc-400 uppercase font-bold">Aposta</span>
-          <span id="betOutcomeMessage" class="text-xs font-black text-emerald-400">+100 ShitCoins</span>
-        </div>
-
-        <!-- Actions -->
-        <div class="grid grid-cols-2 gap-3 mt-1">
-          <button onclick="go('screen-feed')" class="py-3 rounded-xl font-bold text-xs uppercase bg-white/5 border border-white/10 text-white">
-            🏠 Voltar ao Feed
-          </button>
-          <button onclick="go('screen-arena-select')" class="py-3 rounded-xl font-extrabold text-xs uppercase bg-gradient-to-r from-brandPink to-brandPurple text-white">
-            ⚔️ Jogar Novamente
-          </button>
-        </div>
-      </section>
-
-      <!-- SCREEN 9: MISSÕES DIÁRIAS -->
-      <section id="screen-missions" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center mb-1">
-          <div>
-            <span class="text-[10px] font-bold tracking-widest text-brandPink uppercase">Sessão Ativa</span>
-            <h2 class="text-lg font-black">MISSÕES DA SEMANA</h2>
-          </div>
-          <div class="w-8 h-8 rounded-full bg-brandPink/10 text-brandPink flex items-center justify-center text-sm font-black border border-brandPink/20">🎁</div>
-        </div>
-        <p class="text-xs text-zinc-400">Completa as missões para ganhares moedas e subir na classificação global!</p>
-        <div class="flex flex-col gap-3" id="missionsList"></div>
-      </section>
-
-      <!-- SCREEN 10: PERFIL DE JOGADOR (Sincronizado Cloud) -->
-      <section id="screen-profile" class="screen flex-col p-5 gap-4">
-        <div class="flex justify-between items-center mb-1">
-          <h2 class="text-lg font-black">PERFIL DO CRINGE</h2>
-          <button onclick="toggleEditProfile()" class="text-xs text-brandPink font-bold bg-brandPink/10 px-2.5 py-1 rounded-lg border border-brandPink/20">Editar</button>
-        </div>
-
-        <div class="bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-2xl p-5 text-center relative flex flex-col items-center">
-          <div class="relative">
-            <div id="profileAvatarDisplay" class="w-24 h-24 rounded-full bg-gradient-to-tr from-brandPink to-brandPurple flex items-center justify-center text-5xl shadow-neonPink border-4 border-brandPink/40">
-              🍅
-            </div>
-            <button onclick="openAvatarSelector()" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brandPink text-white border-2 border-[#111122] flex items-center justify-center text-xs font-bold shadow-lg">✏️</button>
-          </div>
-
-          <h3 id="profileNameDisplay" class="text-base font-extrabold mt-3">Ernesto Tomate</h3>
-          <p id="profileTitleDisplay" class="text-xs text-zinc-400 font-semibold">Mestre Cringe Iniciado</p>
-
-          <div class="w-full mt-4 bg-white/5 border border-white/10 rounded-xl p-3 text-left">
-            <div class="flex justify-between items-center text-xs mb-1.5 font-bold">
-              <span class="text-zinc-300">Nível <span id="profileLevel">17</span></span>
-              <span class="text-brandPink"><span id="profileCurrentXP">7,850</span> / 10,000 XP</span>
-            </div>
-            <div class="w-full bg-black/40 h-2 rounded-full overflow-hidden">
-              <div id="profileXPFill" class="h-full bg-gradient-to-r from-brandPink to-brandPurple" style="width: 78.5%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Editable Profile Fields Box -->
-        <div id="profileEditBox" class="hidden bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-3">
-          <h4 class="text-xs font-bold text-zinc-300">Alterar Nome</h4>
-          <div class="flex flex-col gap-1">
-            <input type="text" id="editUsernameInput" class="bg-black/40 border border-white/15 rounded-lg p-2 text-xs text-white outline-none focus:border-brandPink">
-          </div>
-          <button onclick="saveProfileChanges()" class="w-full py-2 bg-brandPink text-white text-xs font-bold rounded-lg shadow-lg">Salvar</button>
-        </div>
-
-        <!-- Avatar Selector Box -->
-        <div id="avatarSelectorBox" class="hidden bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-2">
-          <h4 class="text-xs font-bold text-zinc-300">Escolhe o teu Avatar Emoji</h4>
-          <div class="grid grid-cols-6 gap-2 text-2xl p-1" id="avatarGridList"></div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2.5 text-center">
-          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col justify-center">
-            <span class="text-base font-bold text-brandPink" id="statMicosCount">152</span>
-            <span class="text-[9px] text-zinc-400 font-bold uppercase mt-0.5">Micos</span>
-          </div>
-          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col justify-center">
-            <span class="text-base font-bold text-brandPurple" id="statDuelosWins">38</span>
-            <span class="text-[9px] text-zinc-400 font-bold uppercase mt-0.5">Vitórias</span>
-          </div>
-          <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex flex-col justify-center">
-            <span class="text-base font-bold text-amber-400" id="statCoinsCollected">1.5K</span>
-            <span class="text-[9px] text-zinc-400 font-bold uppercase mt-0.5">Coins</span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <h4 class="text-xs font-bold text-zinc-400 uppercase tracking-wide">Minhas Conquistas (Badges)</h4>
-          <div class="grid grid-cols-4 gap-3 text-center" id="badgesDisplayGrid"></div>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- MAIN BOTTOM TAB NAVIGATION BAR -->
-    <nav class="absolute left-0 right-0 bottom-0 height-[84px] bg-[#05050c]/95 backdrop-blur-md border-t border-white/10 grid grid-cols-5 items-center justify-center text-center py-2.5 z-40 shadow-[0_-5px_25px_rgba(0,0,0,0.5)]">
-      <button onclick="go('screen-feed')" id="nav-screen-feed" class="flex flex-col items-center justify-center gap-1 text-zinc-400 active text-xs font-semibold">
-        <span class="text-xl">🏠</span>
-        <span>Feed</span>
-      </button>
-      <button onclick="go('screen-arena-select')" id="nav-screen-arena-select" class="flex flex-col items-center justify-center gap-1 text-zinc-400 text-xs font-semibold">
-        <span class="text-xl">⚔️</span>
-        <span>Arena</span>
-      </button>
-      
-      <!-- Big Centered Submit button -->
-      <button onclick="go('screen-publish')" id="nav-screen-publish" class="relative -top-3 w-14 h-14 rounded-full bg-gradient-to-tr from-brandPink to-brandPinkDark flex items-center justify-center text-3xl font-extrabold text-white shadow-neonPinkHeavy border-4 border-[#070712]">
-        +
-      </button>
-      
-      <button onclick="go('screen-missions')" id="nav-screen-missions" class="flex flex-col items-center justify-center gap-1 text-zinc-400 text-xs font-semibold">
-        <span class="text-xl">🎁</span>
-        <span>Missões</span>
-      </button>
-      <button onclick="go('screen-profile')" id="nav-screen-profile" class="flex flex-col items-center justify-center gap-1 text-zinc-400 text-xs font-semibold">
-        <span class="text-xl">👤</span>
-        <span>Perfil</span>
-      </button>
-    </nav>
-
-    <!-- Custom Toast Notification Box -->
-    <div id="toastNotification" class="fixed top-16 left-1/2 -translate-x-1/2 px-4 py-2.5 bg-zinc-900 border border-brandPink/40 rounded-xl text-xs font-bold text-white shadow-xl z-50 flex items-center gap-2 max-w-[90%] opacity-0 pointer-events-none transition-all duration-300">
-      <span id="toastIcon">✨</span>
-      <span id="toastMessage">Iniciando...</span>
-    </div>
-
-  </main>
-
-  <script>
-    // ==========================================================
-    // AUDIO SYNTHESIZER (Web Audio API)
-    // ==========================================================
-    class SoundFX {
-      constructor() {
-        this.ctx = null;
-        this.muted = false;
-      }
-      
-      init() {
-        if (!this.ctx) {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (AudioCtx) this.ctx = new AudioCtx();
-        }
-      }
-
-      playTone(freq, type, duration, slideTo = 0) {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        if (slideTo > 0) {
-          osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
-        }
-
-        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start();
-        osc.stop(this.ctx.currentTime + duration);
-      }
-
-      playPop() { this.playTone(150, 'sine', 0.15, 350); }
-      playCringe() { this.playTone(320, 'sawtooth', 0.5, 90); }
-
-      playCoin() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const playToneAtTime = (freq, time, dur) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(freq, time);
-          gain.gain.setValueAtTime(0.08, time);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(time);
-          osc.stop(time + dur);
-        };
-        playToneAtTime(587.33, now, 0.1);
-        playToneAtTime(880, now + 0.08, 0.18);
-      }
-
-      playSuccess() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const notes = [261.63, 329.63, 392.00, 523.25];
-        notes.forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
-          gain.gain.setValueAtTime(0.1, now + (idx * 0.08));
-          gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.3);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now + (idx * 0.08));
-          osc.stop(now + (idx * 0.08) + 0.3);
-        });
-      }
-
-      playDrumroll() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        for (let i = 0; i < 12; i++) {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(80 + Math.random() * 20, now + (i * 0.06));
-          gain.gain.setValueAtTime(0.08, now + (i * 0.06));
-          gain.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.06) + 0.05);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now + (i * 0.06));
-          osc.stop(now + (i * 0.06) + 0.05);
-        }
-      }
-    }
-
-    const sfx = new SoundFX();
-
-    function toggleMute() {
-      sfx.muted = !sfx.muted;
-      document.getElementById('soundIcon').innerText = sfx.muted ? '🔇' : '🔊';
-      showToast(sfx.muted ? 'Sons mutados' : 'Sons ativados', '🔈');
-    }
-
-    // ==========================================================
-    // GEMINI TEXT & IMAGEN API KEY & FALLBACKS
-    // ==========================================================
-    const apiKey = ""; // A plataforma preenche automaticamente no runtime
-
-    async function callGemini(prompt, systemInstruction = null, isJson = false) {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-      const payload = { contents: [{ parts: [{ text: prompt }] }] };
-      if (systemInstruction) {
-        payload.systemInstruction = { parts: [{ text: systemInstruction }] };
-      }
-      if (isJson) {
-        payload.generationConfig = { responseMimeType: "application/json" };
-      }
-
-      let delay = 1000;
-      for (let attempt = 1; attempt <= 5; attempt++) {
-        try {
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (!response.ok) throw new Error(`Status ${response.status}`);
-          const result = await response.json();
-          const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (responseText) return isJson ? JSON.parse(responseText) : responseText;
-        } catch (e) {
-          if (attempt === 5) throw e;
-          await new Promise(r => setTimeout(r, delay));
-          delay *= 2;
-        }
-      }
-    }
-
-    // Call Imagen 4.0 API to generate dynamic illustrations
-    // Improved with Dual-Payload format fallback logic for maximum resilience
-    async function callImagen4(promptText) {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-      
-      const payloads = [
-        {
-          instances: { prompt: promptText },
-          parameters: { sampleCount: 1 }
-        },
-        {
-          instances: [{ prompt: promptText }],
-          parameters: { sampleCount: 1 }
-        }
-      ];
-
-      for (const payload of payloads) {
-        try {
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          
-          if (response.ok) {
-            const result = await response.json();
-            const predictions = result.predictions;
-            if (predictions) {
-              const base64Bytes = Array.isArray(predictions)
-                ? predictions[0]?.bytesBase64Encoded
-                : predictions.bytesBase64Encoded;
-              
-              if (base64Bytes) {
-                return `data:image/png;base64,${base64Bytes}`;
-              }
-            }
-          }
-        } catch (e) {
-          console.warn("Payload try failed:", e);
-        }
-      }
-      throw new Error("Ambos os formatos de payload da API de Imagem falharam.");
-    }
-
-    // ==========================================================
-    // STATE & FIREBASE SYNC MANAGEMENT (Strict Paths & Rule 1-3)
-    // ==========================================================
-    const gameState = {
-      player: {
-        username: "Ernesto Tomate",
-        avatar: "🍅",
-        title: "Iniciante do Cringe",
-        coins: 1500,
-        xp: 1350,
-        level: 1,
-        micosSubmitted: 4,
-        duelsWon: 1,
-        badges: ["💀", "🤡"]
-      },
-      currentRoom: null,
-      currentTheme: null,
-      lobbyPlayers: [],
-      userStory: "",
-      opponentStories: [],
-      judgingStories: [],
-      judgingIndex: 0,
-      userVotes: {},
-      duelContenders: [],
-      selectedBetTarget: null,
-      userBetAmount: 50,
-      aiScore: 7,
-      aiCritiqueText: "",
-      winningStoryObj: null,
-      missions: [
-        { id: 1, text: "Publicar 1 mico vergonhoso", progress: 0, target: 1, xpReward: 50, coinsReward: 100, completed: false },
-        { id: 2, text: "Votar em 5 histórias no feed", progress: 2, target: 5, xpReward: 30, coinsReward: 50, completed: false },
-        { id: 3, text: "Apostar moedas num duelo", progress: 0, target: 1, xpReward: 40, coinsReward: 80, completed: false },
-        { id: 4, text: "Ganhar o duelo principal", progress: 0, target: 1, xpReward: 100, coinsReward: 200, completed: false }
-      ],
-      feedStories: [
-        { id: "s1", author: "Miga 👩", text: "Fiquei com o batom borrado nos dentes a noite toda num encontro.", votes: 45, reacted: false },
-        { id: "s2", author: "Pipoca 😎", text: "Enviei uma foto antiga de pijama para o grupo de condomínio por engano.", votes: 122, reacted: false }
-      ]
-    };
-
-    const gameThemes = [
-      { id: "date", name: "Pior azar num Primeiro Encontro", icon: "🍷" },
-      { id: "work", name: "Tragédia Profissional / Na frente do Chefe", icon: "💼" },
-      { id: "public", name: "Fiasco em Público ou nos Transportes", icon: "🚌" },
-      { id: "school", name: "Humilhação na Escola ou Faculdade", icon: "🏫" }
-    ];
-
-    const localOpponentsDatabase = [
-      { name: "Batata", emoji: "😱" }, { name: "Xico", emoji: "🐶" },
-      { name: "Noodles", emoji: "🍜" }, { name: "Miga", emoji: "👩" },
-      { name: "Pipoca", emoji: "😎" }, { name: "Zé", emoji: "🤓" }
-    ];
-
-    const fallbackStoriesByTheme = {
-      "date": [
-        "O cartão foi recusado 3 vezes e a pessoa teve que pagar o jantar inteiro com moedas.",
-        "Confundi o garçom com o sogro e abracei-o com força gritando 'sogrinho!'."
-      ],
-      "work": [
-        "Partilhei o ecrã no Teams mostrando o meu histórico com 'como fingir trabalhar sem ser despedido'.",
-        "Confundi o diretor com a minha mãe e terminei o telefonema sério dizendo 'beijo amo-te'."
-      ],
-      "public": [
-        "Abracei um estranho no comboio pelas costas achando que era a minha namorada."
-      ],
-      "school": [
-        "Adormeci na aula online com o microfone ligado a ressonar como um camião."
-      ]
-    };
-
-    // Firebase variables
-    let db = null;
-    let auth = null;
-    let appId = 'shitagram-arena-default';
-    let userId = null;
-
-    // RULE 3 - Initialize Auth and Firebase FIRST before queries
-    async function initFirebaseAndAuth() {
-      // Robust AppId Fallback and check to prevent double slash path errors
-      appId = 'shitagram-arena-default';
-      if (typeof __app_id !== 'undefined' && __app_id && __app_id.trim() !== '') {
-        appId = __app_id.trim();
-      }
-
-      if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-        document.getElementById('cloudStatus').innerText = "🔴 Nuvem indisponível (Mock Mode)";
-        return;
-      }
-      try {
-        const config = JSON.parse(__firebase_config);
-        
-        // Check if already initialized to prevent duplicate errors
-        const firebaseApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(config);
-        auth = firebaseApp.auth();
-        db = firebaseApp.firestore();
-
-        // Authenticaton Sequence (Strictly follow priority: Custom token with absolute fallback to Anonymous)
-        try {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && __initial_auth_token.trim() !== '') {
-            await auth.signInWithCustomToken(__initial_auth_token.trim());
-          } else {
-            await auth.signInAnonymously();
-          }
-        } catch (authError) {
-          console.warn("Custom token auth failed, falling back to anonymous:", authError);
-          await auth.signInAnonymously();
-        }
-
-        auth.onAuthStateChanged(async (user) => {
-          if (user) {
-            userId = user.uid;
-            document.getElementById('cloudStatus').innerText = "🟢 Nuvem Sincronizada";
-            // Once auth is completed, we load state safely
-            await syncFromCloud();
-          }
-        });
-      } catch (err) {
-        console.error("Firebase init failed:", err);
-        document.getElementById('cloudStatus').innerText = "🔴 Erro de Nuvem";
-      }
-    }
-
-    // RULE 1 & 2 - Strict paths and Memory Filter queries
-    async function syncFromCloud() {
-      if (!db || !userId) return;
-      try {
-        // Load Profile Private State using collection/doc chains to avoid string manipulation / slash issues
-        const profileRef = db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('profile').doc('state');
-        const profileDoc = await profileRef.get();
-        
-        if (profileDoc.exists) {
-          const cloudData = profileDoc.data();
-          gameState.player = { ...gameState.player, ...cloudData };
-          updateWalletUI();
-          renderProfile();
-        } else {
-          await saveProfileToCloud();
-        }
-
-        // Load Public Shared Global Feed
-        await loadPublicGlobalFeed();
-      } catch (e) {
-        console.error("Sync error:", e);
-      }
-    }
-
-    async function saveProfileToCloud() {
-      if (!db || !userId) return;
-      try {
-        const profileRef = db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('profile').doc('state');
-        await profileRef.set({
-          username: gameState.player.username,
-          avatar: gameState.player.avatar,
-          title: gameState.player.title,
-          coins: gameState.player.coins,
-          xp: gameState.player.xp,
-          level: gameState.player.level,
-          micosSubmitted: gameState.player.micosSubmitted,
-          duelsWon: gameState.player.duelsWon,
-          badges: gameState.player.badges
-        }, { merge: true });
-        document.getElementById('cloudStatus').innerText = "🟢 Nuvem Sincronizada";
-      } catch (e) {
-        console.error("Cloud Save error:", e);
-      }
-    }
-
-    async function loadPublicGlobalFeed() {
-      if (!db) return;
-      try {
-        const feedColl = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed');
-        const snapshot = await feedColl.limit(40).get();
-        const loadedStories = [];
-        snapshot.forEach(doc => {
-          loadedStories.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (loadedStories.length > 0) {
-          // Sort manually in memory (newest first) to avoid compound query index requirement
-          loadedStories.sort((a, b) => {
-            const timeA = a.createdAt?.seconds || 0;
-            const timeB = b.createdAt?.seconds || 0;
-            return timeB - timeA;
-          });
-          gameState.feedStories = loadedStories;
-        }
-        
-        document.getElementById('totalMicosShared').innerText = gameState.feedStories.length;
-        renderFeed();
-      } catch (e) {
-        console.error("Load Global Feed failed:", e);
-      }
-    }
-
-    async function uploadToGlobalFeed(storyText) {
-      if (!db) return;
-      try {
-        const feedColl = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed');
-        await feedColl.add({
-          author: gameState.player.username + " " + gameState.player.avatar,
-          text: storyText,
-          votes: 0,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await loadPublicGlobalFeed();
-      } catch (e) {
-        console.error("Upload to global feed error:", e);
-      }
-    }
-
-    // ==========================================================
-    // INITIALIZATION & FEED RENDER
-    // ==========================================================
-    function go(screenId) {
-      sfx.playPop();
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
-
-      document.querySelectorAll('nav button').forEach(b => {
-        b.classList.remove('text-brandPink');
-        b.classList.add('text-zinc-400');
-      });
-      
-      const matchedNavButton = document.getElementById(`nav-${screenId}`);
-      if (matchedNavButton) {
-        matchedNavButton.classList.add('text-brandPink');
-        matchedNavButton.classList.remove('text-zinc-400');
-      }
-
-      if (screenId === 'screen-feed') {
-        renderFeed();
-      } else if (screenId === 'screen-arena-select') {
-        renderArenaSelection();
-      } else if (screenId === 'screen-missions') {
-        renderMissions();
-      } else if (screenId === 'screen-profile') {
-        renderProfile();
-      }
-    }
-
-    window.onload = function() {
-      initFirebaseAndAuth();
-      updateWalletUI();
-      renderFeed();
-      showToast("Pronto para o Cringe!", "💩");
-    };
-
-    function updateWalletUI() {
-      document.getElementById('walletCoins').innerText = Number(gameState.player.coins).toLocaleString();
-    }
-
-    function showToast(message, icon = "✨") {
-      const toast = document.getElementById('toastNotification');
-      document.getElementById('toastIcon').innerText = icon;
-      document.getElementById('toastMessage').innerText = message;
-      
-      toast.style.opacity = "1";
-      toast.style.pointerEvents = "auto";
-      
-      setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.pointerEvents = "none";
-      }, 3000);
-    }
-
-    function renderFeed() {
-      const container = document.getElementById('feedList');
-      container.innerHTML = "";
-      
-      gameState.feedStories.forEach((st) => {
-        const item = document.createElement('div');
-        item.className = "bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-2.5 hover:border-brandPink/30 transition-colors";
-        item.innerHTML = `
-          <div class="flex justify-between items-center text-[11px]">
-            <span class="font-bold text-zinc-300">${st.author || 'Anónimo'}</span>
-            <span class="text-zinc-500 font-semibold">🔥 ${st.votes || 0} reações</span>
-          </div>
-          <p class="text-xs text-zinc-200 leading-relaxed italic">"${st.text}"</p>
-          <div class="flex gap-2 border-t border-white/5 pt-2 mt-1">
-            <button onclick="reactToFeedStory('${st.id}')" class="text-[10px] bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-brandPink/20 transition-colors ${st.reacted ? 'bg-brandPink/10 border-brandPink/40' : ''}">
-              <span>💩</span> Dar Cringe
-            </button>
-          </div>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    async function reactToFeedStory(storyId) {
-      sfx.playTone(280, 'sine', 0.1, 400);
-      const story = gameState.feedStories.find(s => s.id === storyId);
-      if (story && !story.reacted) {
-        story.votes = (story.votes || 0) + 1;
-        story.reacted = true;
-        
-        incrementMissionProgress(2);
-        showToast("Reagido com sucesso!", "💩");
-        
-        // Update vote securely in cloud using merge to prevent missing document errors
-        if (db) {
-          try {
-            const storyRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('globalFeed').doc(storyId);
-            await storyRef.set({
-              votes: story.votes
-            }, { merge: true });
-          } catch(e) {
-            console.error("React Feed error:", e);
-          }
-        }
-        renderFeed();
-      } else {
-        showToast("Já reagiste!", "⚠️");
-      }
-    }
-
-    async function refreshFeed() {
-      sfx.playPop();
-      showToast("A sincronizar com a nuvem...", "🔄");
-      await loadPublicGlobalFeed();
-    }
-
-    // ==========================================================
-    // SCREEN: ARENA LOBBY
-    // ==========================================================
-    function renderArenaSelection() {
-      const container = document.getElementById('themesList');
-      container.innerHTML = "";
-      
-      gameThemes.forEach((th) => {
-        const row = document.createElement('div');
-        row.className = "bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-brandPink/50 hover:bg-brandPink/5 transition-all";
-        row.onclick = () => selectThemeAndJoinLobby(th);
-        row.innerHTML = `
-          <div class="flex items-center gap-3.5">
-            <span class="text-3xl">${th.icon}</span>
-            <div class="flex flex-col">
-              <h4 class="text-xs font-extrabold text-white">${th.name}</h4>
-              <span class="text-[9px] text-zinc-400 uppercase tracking-wider font-semibold">8 Competidores • Sala Pronta</span>
-            </div>
-          </div>
-          <span class="text-brandPink font-bold text-xs">Entrar ➡️</span>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    function selectThemeAndJoinLobby(themeObj) {
-      gameState.currentTheme = themeObj;
-      gameState.currentRoom = "SALA #" + Math.floor(Math.random() * 9000 + 1000);
-      go('screen-arena-lobby');
-      
-      document.getElementById('lobbyRoomId').innerText = gameState.currentRoom;
-      document.getElementById('lobbyThemeText').innerText = themeObj.name;
-      setupSimulatedLobby();
-    }
-
-    function setupSimulatedLobby() {
-      const grid = document.getElementById('lobbyPlayersGrid');
-      grid.innerHTML = "";
-      
-      const playerCard = document.createElement('div');
-      playerCard.className = "flex flex-col items-center";
-      playerCard.innerHTML = `
-        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brandPink to-brandPurple flex items-center justify-center text-2xl border-2 border-brandPink shadow-neonPink">
-          ${gameState.player.avatar}
-        </div>
-        <span class="text-[9px] font-bold text-white mt-1">Tu (🔥)</span>
-        <span class="text-[8px] text-brandPink font-black uppercase">Pronto</span>
-      `;
-      grid.appendChild(playerCard);
-
-      gameState.lobbyPlayers = [{ name: "Tu", avatar: gameState.player.avatar, ready: true }];
-      let connectedCount = 1;
-      document.getElementById('readyCount').innerText = `${connectedCount} / 8 Prontos`;
-      
-      const shuffledBots = [...localOpponentsDatabase].sort(() => 0.5 - Math.random());
-      
-      shuffledBots.forEach((bot, index) => {
-        const botId = index + 1;
-        const botCard = document.createElement('div');
-        botCard.className = "flex flex-col items-center opacity-40 transition-opacity duration-300";
-        botCard.id = `bot-lobby-${botId}`;
-        botCard.innerHTML = `
-          <div class="w-12 h-12 rounded-full bg-zinc-850 flex items-center justify-center text-2xl border border-white/10">
-            ${bot.emoji}
-          </div>
-          <span class="text-[9px] font-bold text-zinc-400 mt-1">${bot.name}</span>
-          <span class="text-[8px] text-zinc-500 font-bold" id="bot-status-${botId}">Ligando...</span>
-        `;
-        grid.appendChild(botCard);
-
-        setTimeout(() => {
-          const el = document.getElementById(`bot-lobby-${botId}`);
-          if (el) {
-            el.classList.remove('opacity-40');
-            el.querySelector('div').className = "w-12 h-12 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-900 flex items-center justify-center text-2xl border-2 border-brandPurple/60";
-            document.getElementById(`bot-status-${botId}`).innerText = "Escrevendo...";
-            document.getElementById(`bot-status-${botId}`).className = "text-[8px] text-brandPurple font-semibold animate-pulse";
-            sfx.playTone(400, 'sine', 0.05);
-          }
-        }, botId * 300);
-
-        setTimeout(() => {
-          const statusEl = document.getElementById(`bot-status-${botId}`);
-          if (statusEl) {
-            statusEl.innerText = "Pronto";
-            statusEl.className = "text-[8px] text-emerald-400 font-bold uppercase";
-            connectedCount++;
-            document.getElementById('readyCount').innerText = `${connectedCount} / 8 Prontos`;
-            sfx.playTone(600, 'sine', 0.05);
-            gameState.lobbyPlayers.push({ name: bot.name, avatar: bot.emoji, ready: true });
-          }
-        }, botId * 600 + 200);
-      });
-
-      document.getElementById('currentWriteThemeLabel').innerText = gameState.currentTheme.icon + " " + gameState.currentTheme.name.split('/')[0];
-      document.getElementById('publishThemePrompt').innerText = gameState.currentTheme.name;
-    }
-
-    // ==========================================================
-    // SCREEN: SUBMIT & GEMINI EVALUATION
-    // ==========================================================
-    function updateCharCount() {
-      const txt = document.getElementById('micoText').value;
-      document.getElementById('charCount').innerText = `${txt.length} / 180 chars`;
-    }
-
-    async function submitStory() {
-      const inputVal = document.getElementById('micoText').value.trim();
-      if (inputVal.length < 15) {
-        sfx.playCringe();
-        showToast("Muito curto! Conta mais detalhes do teu vexame.", "⚠️");
-        return;
-      }
-
-      gameState.userStory = inputVal;
-      const useGemini = document.getElementById('useGeminiToggle').checked;
-      
-      const loadingHud = document.getElementById('aiLoadingHud');
-      loadingHud.classList.remove('hidden');
-      sfx.playDrumroll();
-
-      try {
-        if (useGemini) {
-          document.getElementById('aiLoadingTitle').innerText = "Análise SHITAGRAM ARENA..";
-          document.getElementById('aiLoadingMessage').innerText = "O Árbitro está a analisar o teu mico na base de dados de vergonha...";
-          
-          const themeName = gameState.currentTheme.name;
-          const aiPrompt = `
-            O tema atual é: "${themeName}".
-            A história do jogador é: "${inputVal}".
-            
-            Gera em formato JSON:
-            1. Duas histórias concorrentes hilariantes em português de Portugal (curtas de 1-2 frases informais com emojis).
-            2. Pontuação cringeScore de 1 a 10.
-            3. Crítica satírica muito engraçada (aiCritique) em Português de Portugal com 1 frase.
-            
-            Esquema:
-            {
-              "rivalStories": ["mico rival 1", "mico rival 2"],
-              "cringeScore": 8,
-              "aiCritique": "Critica humorística sarcástica"
-            }
-          `;
-
-          const aiData = await callGemini(aiPrompt, "És o Árbitro do Cringe da Shitagram Arena, um humorista de Lisboa altamente satírico.", true);
-          
-          gameState.opponentStories = aiData.rivalStories || [];
-          gameState.aiScore = aiData.cringeScore || 7;
-          gameState.aiCritiqueText = aiData.aiCritique || "Um desastre assinalável! Bravo pela coragem.";
-        } else {
-          throw new Error("Gemini AI Desativado.");
-        }
-      } catch (err) {
-        // Fallback Local
-        await new Promise(r => setTimeout(r, 1500));
-        const availableFallbacks = fallbackStoriesByTheme[gameState.currentTheme.id] || fallbackStoriesByTheme["date"];
-        const shuffledFallbacks = [...availableFallbacks].sort(() => 0.5 - Math.random());
-        gameState.opponentStories = [
-          shuffledFallbacks[0] || "O cartão foi rejeitado 3 vezes no primeiro encontro.",
-          shuffledFallbacks[1] || "Abanei um refrigerante e abri-o em cima da camisa branca do patrão."
-        ];
-        gameState.aiScore = Math.floor(Math.random() * 4) + 6;
-        gameState.aiCritiqueText = "Excelente nível de vergonha. Dignificaste o desporto do mico público!";
-      } finally {
-        loadingHud.classList.add('hidden');
-      }
-
-      // Upload to real Global Database to share with other real players (Rule 1-3 path validation)
-      if (db) {
-        await uploadToGlobalFeed(inputVal);
-      }
-
-      // Blend stories
-      gameState.judgingStories = [
-        { text: gameState.userStory, isUser: true, author: "Tu", score: gameState.aiScore },
-        { text: gameState.opponentStories[0], isUser: false, author: "Pipoca", score: Math.floor(Math.random() * 3) + 6 },
-        { text: gameState.opponentStories[1], isUser: false, author: "Noodles", score: Math.floor(Math.random() * 3) + 6 }
-      ].sort(() => 0.5 - Math.random());
-
-      gameState.judgingIndex = 0;
-      gameState.userVotes = {};
-      
-      incrementMissionProgress(1);
-      go('screen-judge');
-      displayNextJudgingStory();
-    }
-
-    // ==========================================================
-    // SCREEN: JULGAMENTO & VOTOS
-    // ==========================================================
-    function displayNextJudgingStory() {
-      if (gameState.judgingIndex >= gameState.judgingStories.length) {
-        setupBettingStage();
-        return;
-      }
-
-      const idx = gameState.judgingIndex;
-      const total = gameState.judgingStories.length;
-      document.getElementById('judgeProgress').innerText = `História ${idx + 1} / ${total}`;
-      
-      const story = gameState.judgingStories[idx];
-      document.getElementById('judgeStoryText').innerText = `“${story.text}”`;
-      
-      const card = document.getElementById('judgeCardContainer');
-      card.classList.remove('animate-cringe');
-      void card.offsetWidth;
-      card.classList.add('animate-cringe');
-    }
-
-    function castUserVote(reactionName, weight) {
-      sfx.playTone(300 + (weight * 60), 'triangle', 0.15);
-      gameState.userVotes[gameState.judgingIndex] = reactionName;
-      gameState.judgingIndex++;
-      
-      showToast(`Julgaste: ${reactionName}`, "🗳️");
-      setTimeout(() => { displayNextJudgingStory(); }, 400);
-    }
-
-    // ==========================================================
-    // SCREEN: APOSTAS & DUELO LIVE
-    // ==========================================================
-    function setupBettingStage() {
-      go('screen-bet');
-      
-      gameState.duelContenders = [
-        { ...gameState.judgingStories[0], letter: "A", baseVotes: 1200 + Math.floor(Math.random()*400) },
-        { ...gameState.judgingStories[1], letter: "B", baseVotes: 1100 + Math.floor(Math.random()*400) }
-      ];
-
-      const container = document.getElementById('betOptionsContainer');
-      container.innerHTML = "";
-
-      gameState.duelContenders.forEach((c) => {
-        const option = document.createElement('div');
-        option.id = `bet-opt-${c.letter}`;
-        option.onclick = () => selectBetTarget(c.letter);
-        option.className = "flex justify-between items-center p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:border-brandPink/30 transition-all";
-        option.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brandPurple to-brandPink flex items-center justify-center font-black text-white text-sm">
-              ${c.letter}
-            </div>
-            <div class="flex flex-col pr-4 max-w-[200px]">
-              <p class="text-xs font-bold text-zinc-100 truncate">${c.text}</p>
-              <span class="text-[9px] text-zinc-400 font-semibold">${c.isUser ? 'Teu Mico' : 'Rival'}</span>
-            </div>
-          </div>
-          <span class="text-xs font-black text-brandPink">Apostar ➡️</span>
-        `;
-        container.appendChild(option);
-      });
-
-      const maxSlider = Math.min(gameState.player.coins, 500);
-      const slider = document.getElementById('betAmountSlider');
-      slider.max = maxSlider;
-      slider.value = Math.min(50, maxSlider);
-      
-      document.getElementById('betMaxLimit').innerText = `Max: ${maxSlider}`;
-      updateBetSliderValue();
-    }
-
-    function selectBetTarget(letter) {
-      sfx.playPop();
-      gameState.selectedBetTarget = letter;
-      
-      document.querySelectorAll('[id^="bet-opt-"]').forEach(el => {
-        el.className = "flex justify-between items-center p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer transition-all";
-      });
-
-      const selectedEl = document.getElementById(`bet-opt-${letter}`);
-      if (selectedEl) {
-        selectedEl.className = "flex justify-between items-center p-4 rounded-xl bg-brandPink/10 border-2 border-brandPink/80 shadow-neonPink cursor-pointer transition-all";
-      }
-    }
-
-    function updateBetSliderValue() {
-      const val = document.getElementById('betAmountSlider').value;
-      document.getElementById('betCoinsVal').innerText = val;
-      gameState.userBetAmount = parseInt(val);
-    }
-
-    function confirmBetAndGoToDuel() {
-      if (!gameState.selectedBetTarget) {
-        sfx.playCringe();
-        showToast("Escolhe uma das histórias finalistas!", "⚠️");
-        return;
-      }
-      if (gameState.player.coins < gameState.userBetAmount) {
-        sfx.playCringe();
-        showToast("Não tens ShitCoins suficientes!", "❌");
-        return;
-      }
-
-      gameState.player.coins -= gameState.userBetAmount;
-      updateWalletUI();
-      incrementMissionProgress(3);
-
-      showToast(`Aposta de ${gameState.userBetAmount} confirmed!`, "💰");
-      setTimeout(() => { startLiveDuel(); }, 600);
-    }
-
-    function startLiveDuel() {
-      go('screen-duel');
-
-      const contenderA = gameState.duelContenders[0];
-      const contenderB = gameState.duelContenders[1];
-
-      document.getElementById('duelTextA').innerText = contenderA.text;
-      document.getElementById('duelTextB').innerText = contenderB.text;
-
-      let currentVotesA = 0;
-      let currentVotesB = 0;
-      const targetVotesA = contenderA.baseVotes;
-      const targetVotesB = contenderB.baseVotes;
-
-      document.getElementById('duelVotesA').innerText = "0 Votos";
-      document.getElementById('duelVotesB').innerText = "0 Votos";
-      document.getElementById('duelProgressFillA').style.width = "0%";
-      document.getElementById('duelProgressFillB').style.width = "0%";
-
-      sfx.playDrumroll();
-
-      let ticks = 0;
-      const duelInterval = setInterval(() => {
-        ticks++;
-        currentVotesA += Math.floor(targetVotesA / 20) + Math.floor(Math.random()*40);
-        currentVotesB += Math.floor(targetVotesB / 20) + Math.floor(Math.random()*40);
-
-        if (currentVotesA >= targetVotesA) currentVotesA = targetVotesA;
-        if (currentVotesB >= targetVotesB) currentVotesB = targetVotesB;
-
-        const total = currentVotesA + currentVotesB;
-        const pctA = total > 0 ? (currentVotesA / total) * 100 : 0;
-        const pctB = total > 0 ? (currentVotesB / total) * 100 : 0;
-
-        document.getElementById('duelVotesA').innerText = `${currentVotesA.toLocaleString()} Votos`;
-        document.getElementById('duelVotesB').innerText = `${currentVotesB.toLocaleString()} Votos`;
-
-        document.getElementById('duelProgressFillA').style.width = `${pctA}%`;
-        document.getElementById('duelProgressFillB').style.width = `${pctB}%`;
-
-        if (ticks % 3 === 0) sfx.playTone(450 + (pctA * 25), 'sine', 0.03);
-
-        if (currentVotesA === targetVotesA && currentVotesB === targetVotesB) {
-          clearInterval(duelInterval);
-          finishDuelAndShowWinner();
-        }
-      }, 100);
-    }
-
-    function boostDuelVote() {
-      sfx.playTone(900, 'sine', 0.05);
-      const randomBoost = Math.floor(Math.random() * 50) + 20;
-      if (gameState.selectedBetTarget === "A") {
-        gameState.duelContenders[0].baseVotes += randomBoost;
-      } else {
-        gameState.duelContenders[1].baseVotes += randomBoost;
-      }
-      showToast(`Impulsionaste o teu mico! (+${randomBoost} Votos)`, "📣");
-    }
-
-    function finishDuelAndShowWinner() {
-      const contenderA = gameState.duelContenders[0];
-      const contenderB = gameState.duelContenders[1];
-
-      let winningContender = contenderA.baseVotes > contenderB.baseVotes ? contenderA : contenderB;
-      gameState.winningStoryObj = winningContender;
-
-      const playerWonDuelo = winningContender.isUser;
-      const playerWonBet = gameState.selectedBetTarget === winningContender.letter;
-
-      let xpEarned = 100;
-      let coinsEarned = 0;
-
-      if (playerWonDuelo) {
-        xpEarned += 300;
-        coinsEarned += 250;
-        incrementMissionProgress(4);
-        gameState.player.duelsWon += 1;
-      }
-      if (playerWonBet) {
-        coinsEarned += gameState.userBetAmount * 2;
-      }
-
-      gameState.player.coins += coinsEarned;
-      gameState.player.xp += xpEarned;
-      gameState.player.micosSubmitted += 1;
-      
-      checkLevelUp();
-      updateWalletUI();
-      saveProfileToCloud();
-
-      // Reset dynamic illustration zone for new generation
-      document.getElementById('micoIllustrationContainer').classList.add('hidden');
-      document.getElementById('micoIllustrationContainer').innerHTML = "";
-      document.getElementById('generateIllustrationBtn').innerText = "✨ Gerar Desenho da Vergonha";
-      document.getElementById('generateIllustrationBtn').disabled = false;
-
-      go('screen-winner');
-
-      if (playerWonDuelo || playerWonBet) {
-        sfx.playSuccess();
-      } else {
-        sfx.playCringe();
-      }
-
-      document.getElementById('winningVotesLabel').innerText = `${winningContender.baseVotes.toLocaleString()} 🔥`;
-      document.getElementById('winningStoryText').innerText = `“${winningContender.text}”`;
-      document.getElementById('winningAuthorLabel').innerText = `Autor: ${winningContender.isUser ? 'Tu (Anónimo)' : 'Competidor'}`;
-      document.getElementById('aiCritiqueText').innerText = `"${gameState.aiCritiqueText}"`;
-
-      const betOutcomeState = document.getElementById('betOutcomeState');
-      const betOutcomeMessage = document.getElementById('betOutcomeMessage');
-      
-      if (playerWonBet) {
-        betOutcomeState.innerText = "💰 APOSTA VENCEDORA!";
-        betOutcomeState.className = "text-[10px] text-emerald-400 uppercase font-extrabold tracking-wider";
-        betOutcomeMessage.innerText = `Ganhaste +${coinsEarned} ShitCoins & +${xpEarned} XP!`;
-        betOutcomeMessage.className = "text-xs font-black text-emerald-300";
-      } else {
-        betOutcomeState.innerText = "💸 APOSTA PERDIDA";
-        betOutcomeState.className = "text-[10px] text-rose-400 uppercase font-bold tracking-wider";
-        betOutcomeMessage.innerText = `Perbeste ${gameState.userBetAmount} ShitCoins. Recebeste +${xpEarned} XP!`;
-        betOutcomeMessage.className = "text-xs font-medium text-zinc-400";
-      }
-
-      evaluateAchievements();
-    }
-
-    // ==========================================================
-    // IMAGEN 4: GENERATE ILLUSTRATION & HAND-DRAWN RETRO FALLBACK
-    // ==========================================================
-    async function generateMicoIllustration() {
-      if (!gameState.winningStoryObj) return;
-      
-      sfx.playPop();
-      const btn = document.getElementById('generateIllustrationBtn');
-      const container = document.getElementById('micoIllustrationContainer');
-      
-      btn.innerText = "🎨 A desenhar mico com IA (Imagen-4)...";
-      btn.disabled = true;
-      container.innerHTML = `
-        <div class="flex flex-col items-center gap-2 py-8 text-center px-4 w-full">
-          <div class="w-10 h-10 border-4 border-brandPink border-t-transparent animate-spin rounded-full"></div>
-          <p class="text-[10px] text-zinc-300 animate-pulse">Transformando embaraço extremo em arte cómico-humorística...</p>
-        </div>
-      `;
-      container.classList.remove('hidden');
-
-      const rawStory = gameState.winningStoryObj.text;
-      
-      // Call Gemini to quickly translate & optimize prompt for Imagen-4
-      let translatedPrompt = `A funny comic style vector cartoon illustration of this awkward scenario: ${rawStory}. Bright pop colors, funny style, white background margin.`;
-      
-      try {
-        const translationPrompt = `Translate this awkward Portuguese scenario to an English image generation prompt focusing on hilarious cartoon characters: "${rawStory}". Output ONLY the English prompt.`;
-        const translated = await callGemini(translationPrompt, "You are a professional image generation prompt engineer.");
-        if (translated && translated.length > 10) {
-          translatedPrompt = `A hilarious vector cartoon of: ${translated}. Funny facial expressions, vibrant colors, clean design.`;
-        }
-      } catch (err) {
-        console.warn("Translation failed, using default prompt", err);
-      }
-
-      try {
-        const imageUrl = await callImagen4(translatedPrompt);
-        if (imageUrl) {
-          container.innerHTML = `<img src="${imageUrl}" class="w-full h-auto rounded-xl shadow-neonPink animate-fade" alt="Mico Ilustrado">`;
-          btn.innerText = "🎨 Redesenhar com IA";
-          btn.disabled = false;
-          sfx.playSuccess();
-        } else {
-          throw new Error("Formato de imagem inválido.");
-        }
-      } catch (err) {
-        console.error("Imagen failed, using premium canvas generator fallback:", err);
-        
-        // Premium Procedural HTML5 Canvas Fallback! (Guarantees zero-error state)
-        container.innerHTML = `
-          <div class="flex flex-col items-center gap-3 p-2 w-full">
-            <canvas id="fallbackProceduralCanvas" class="w-full rounded-xl border border-brandPink/30" width="340" height="240"></canvas>
-            <div class="text-center text-[10px] text-zinc-400 bg-brandPink/10 border border-brandPink/20 p-2 rounded-lg w-full">
-              ⚠️ <b>Caricatura Retro Ativada:</b> O servidor da IA está ocupado ou sem quotas diárias. Desenhámos a tua vergonha à mão!
-            </div>
-          </div>
-        `;
-        
-        const canvas = document.getElementById('fallbackProceduralCanvas');
-        if (canvas) {
-          drawProceduralCartoon(canvas, gameState.currentTheme?.id || 'date', rawStory);
-        }
-        
-        btn.innerText = "🔄 Tentar IA Novamente";
-        btn.disabled = false;
-        sfx.playSuccess(); 
-      }
-    }
-
-    // Dynamic procedural funny sketch drawer for HTML5 Canvas fallback
-    function drawProceduralCartoon(canvas, themeId, rawStory) {
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-      
-      // 1. Draw a retro starburst/comic background
-      const grad = ctx.createRadialGradient(w/2, h/2, 10, w/2, h/2, w);
-      grad.addColorStop(0, '#fef08a'); // Yellow
-      grad.addColorStop(1, '#f97316'); // Orange
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-      
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-      ctx.lineWidth = 14;
-      const rays = 12;
-      ctx.save();
-      ctx.translate(w/2, h/2);
-      for (let i = 0; i < rays; i++) {
-        ctx.rotate((Math.PI * 2) / rays);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, Math.max(w, h));
-        ctx.stroke();
-      }
-      ctx.restore();
-      
-      // Border
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 5;
-      ctx.strokeRect(0, 0, w, h);
-      
-      // 2. Draw situation elements based on category
-      ctx.save();
-      if (themeId === 'date') {
-        // Red wine spilling, sweating face, broken heart
-        drawSmileyFace(ctx, w/2 - 45, h/2 + 15, 30, 'embarrassed');
-        
-        // Spill pool
-        ctx.fillStyle = '#ef4444';
-        ctx.beginPath();
-        ctx.ellipse(w/2 + 45, h/2 + 35, 20, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Spilling glass
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2.5;
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.beginPath();
-        ctx.moveTo(w/2 + 35, h/2 + 10);
-        ctx.lineTo(w/2 + 55, h/2 + 10);
-        ctx.lineTo(w/2 + 50, h/2 + 25);
-        ctx.lineTo(w/2 + 40, h/2 + 25);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        
-        // Broken Heart
-        drawBrokenHeart(ctx, w - 50, 45, 20);
-        
-      } else if (themeId === 'work') {
-        // exploding screen, panicked blush face
-        drawExplosionCloud(ctx, w/2 + 35, h/2 + 20, 38);
-        drawSmileyFace(ctx, w/2 - 50, h/2 + 15, 30, 'panicked');
-        
-        // Computer box
-        ctx.fillStyle = '#4b5563';
-        ctx.fillRect(w/2 + 10, h/2 + 10, 40, 26);
-        ctx.strokeRect(w/2 + 10, h/2 + 10, 40, 26);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(w/2 + 14, h/2 + 13, 32, 20);
-        
-      } else if (themeId === 'public') {
-        // Banana skin slip line, giant eyes
-        ctx.fillStyle = '#eab308';
-        ctx.beginPath();
-        ctx.arc(w/2 + 30, h/2 + 40, 8, Math.PI, 0);
-        ctx.fill();
-        
-        // Slipping figure
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 3.5;
-        ctx.beginPath();
-        ctx.arc(w/2 - 10, h/2 + 5, 10, 0, Math.PI*2); // head
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(w/2 - 10, h/2 + 15);
-        ctx.lineTo(w/2 + 10, h/2 + 28); // spine
-        ctx.lineTo(w/2 + 25, h/2 + 15); // leg
-        ctx.moveTo(w/2 - 10, h/2 + 18);
-        ctx.lineTo(w/2 - 25, h/2 + 10); // arm wave
-        ctx.stroke();
-        
-        drawGiantEyes(ctx, w - 50, 45, 16);
-        
-      } else {
-        // School / Grade F blackboard, sleepy face
-        ctx.fillStyle = '#065f46';
-        ctx.fillRect(w/2, h/2 - 15, 90, 50);
-        ctx.strokeRect(w/2, h/2 - 15, 90, 50);
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 24px sans-serif';
-        ctx.fillText('F--', w/2 + 25, h/2 + 20);
-        
-        drawSmileyFace(ctx, w/2 - 50, h/2 + 15, 30, 'sleeping');
-        ctx.fillStyle = '#2563eb';
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText('Zzz', w/2 - 20, h/2 - 15);
-      }
-      ctx.restore();
-      
-      // Splash Action Text (POW / OPS)
-      const splash = themeId === 'date' ? 'CRINGE!' : themeId === 'work' ? 'BOOM!' : themeId === 'public' ? 'OPS!!' : 'VEXAME!';
-      drawComicSplashText(ctx, 45, 45, splash);
-      
-      // Speech Bubble with Story highlight
-      let storySnippet = rawStory;
-      if (storySnippet.length > 45) {
-        storySnippet = storySnippet.substring(0, 42) + "...";
-      }
-      drawSpeechBubble(ctx, 35, h - 65, w - 70, 40, storySnippet);
-    }
-
-    function drawSmileyFace(ctx, cx, cy, r, state) {
-      ctx.save();
-      ctx.fillStyle = '#ff7be0'; // custom dynamic face blush
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      
-      // Cheeks
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.4)';
-      ctx.beginPath();
-      ctx.arc(cx - r/2, cy + 4, 6, 0, Math.PI*2);
-      ctx.arc(cx + r/2, cy + 4, 6, 0, Math.PI*2);
-      ctx.fill();
-
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      
-      if (state === 'embarrassed') {
-        // drop
-        ctx.fillStyle = '#38bdf8';
-        ctx.beginPath();
-        ctx.moveTo(cx - r + 3, cy - r/2);
-        ctx.bezierCurveTo(cx - r - 2, cy, cx - r - 4, cy + 8, cx - r - 6, cy);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        
-        ctx.beginPath();
-        ctx.moveTo(cx - 12, cy - 8);
-        ctx.lineTo(cx - 4, cy - 4);
-        ctx.moveTo(cx + 12, cy - 8);
-        ctx.lineTo(cx + 4, cy - 4);
-        ctx.stroke();
-        
-        // Wavy mouth
-        ctx.beginPath();
-        ctx.moveTo(cx - 10, cy + 12);
-        ctx.bezierCurveTo(cx - 5, cy + 8, cx + 5, cy + 16, cx + 10, cy + 12);
-        ctx.stroke();
-        
-      } else if (state === 'panicked') {
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(cx - 8, cy - 6, 6, 0, Math.PI*2);
-        ctx.arc(cx + 8, cy - 6, 6, 0, Math.PI*2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#000000';
-        ctx.beginPath();
-        ctx.arc(cx - 8, cy - 6, 2, 0, Math.PI*2);
-        ctx.fill();
-        
-        ctx.fillStyle = '#7f1d1d';
-        ctx.beginPath();
-        ctx.arc(cx, cy + 12, 8, 0, Math.PI*2);
-        ctx.fill();
-        ctx.stroke();
-        
-      } else if (state === 'sleeping') {
-        ctx.beginPath();
-        ctx.moveTo(cx - 12, cy - 6);
-        ctx.lineTo(cx - 4, cy - 6);
-        ctx.moveTo(cx + 4, cy - 6);
-        ctx.lineTo(cx + 12, cy - 6);
-        ctx.stroke();
-        
-        ctx.beginPath();
-        ctx.arc(cx, cy + 10, 5, 0, Math.PI);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    function drawBrokenHeart(ctx, cx, cy, r) {
-      ctx.save();
-      ctx.fillStyle = '#ef4444';
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - r/2);
-      ctx.bezierCurveTo(cx - r, cy - r, cx - r, cy + r/2, cx, cy + r);
-      ctx.bezierCurveTo(cx + r, cy + r/2, cx + r, cy - r, cx, cy - r/2);
-      ctx.fill();
-      ctx.stroke();
-      
-      // crack line
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - r/2);
-      ctx.lineTo(cx - 3, cy);
-      ctx.lineTo(cx + 3, cy + r/3);
-      ctx.lineTo(cx, cy + r);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // ==========================================================
-    // MISSIONS & REWARDS
-    // ==========================================================
-    function renderMissions() {
-      const container = document.getElementById('missionsList');
-      container.innerHTML = "";
-
-      gameState.missions.forEach((m) => {
-        const pct = Math.min(100, Math.floor((m.progress / m.target) * 100));
-        const item = document.createElement('div');
-        item.className = `p-4 rounded-xl border transition-all ${m.completed ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-white/5 border-white/10'}`;
-        item.innerHTML = `
-          <div class="flex justify-between items-start mb-1.5">
-            <div class="flex flex-col">
-              <span class="text-xs font-extrabold ${m.completed ? 'text-emerald-400 line-through' : 'text-zinc-200'}">${m.text}</span>
-              <span class="text-[10px] text-zinc-400">Recompensa: 🪙 ${m.coinsReward} • ${m.xpReward} XP</span>
-            </div>
-            <span class="text-xs font-bold ${m.completed ? 'text-emerald-400' : 'text-brandPink'}">${m.progress}/${m.target}</span>
-          </div>
-          <div class="w-full bg-black/40 h-2 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-brandPink to-brandPurple transition-all" style="width: ${pct}%"></div>
-          </div>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function incrementMissionProgress(missionId) {
-      const mission = gameState.missions.find(m => m.id === missionId);
-      if (mission && !mission.completed) {
-        mission.progress += 1;
-        if (mission.progress >= mission.target) {
-          mission.completed = true;
-          gameState.player.coins += mission.coinsReward;
-          gameState.player.xp += mission.xpReward;
-          sfx.playSuccess();
-          showToast(`Missão Concluída: +${mission.coinsReward} 🪙!`, "🎁");
-          checkLevelUp();
-        }
-      }
-    }
-
-    function checkLevelUp() {
-      const xpNeeded = gameState.player.level * 2000;
-      if (gameState.player.xp >= xpNeeded) {
-        gameState.player.xp -= xpNeeded;
-        gameState.player.level += 1;
-        
-        const titles = ["Iniciante do Cringe", "Humilhado Amador", "Profissional do Vexame", "Mestre da Vergonha", "Lenda Absoluta"];
-        const titleIndex = Math.min(titles.length - 1, Math.floor(gameState.player.level / 2));
-        gameState.player.title = titles[titleIndex];
-
-        sfx.playSuccess();
-        setTimeout(() => {
-          showToast(`Subiste para o Nível ${gameState.player.level}! 👑`, "🎉");
-        }, 800);
-      }
-    }
-
-    // ==========================================================
-    // PROFILE & BADGES
-    // ==========================================================
-    function renderProfile() {
-      document.getElementById('profileAvatarDisplay').innerText = gameState.player.avatar;
-      document.getElementById('profileNameDisplay').innerText = gameState.player.username;
-      document.getElementById('profileTitleDisplay').innerText = gameState.player.title;
-      document.getElementById('profileLevel').innerText = gameState.player.level;
-      
-      const xpNeeded = gameState.player.level * 2000;
-      document.getElementById('profileCurrentXP').innerText = gameState.player.xp.toLocaleString();
-      document.getElementById('profileXPFill').style.width = `${(gameState.player.xp / xpNeeded) * 100}%`;
-
-      document.getElementById('statMicosCount').innerText = gameState.player.micosSubmitted;
-      document.getElementById('statDuelosWins').innerText = gameState.player.duelsWon;
-      document.getElementById('statCoinsCollected').innerText = `${(gameState.player.coins / 1000).toFixed(1)}k`;
-
-      renderBadgesGrid();
-    }
-
-    const gameBadges = [
-      { emoji: "💀", name: "Morto de Vergonha", desc: "Sube o primeiro mico humilhante.", unlocked: true },
-      { emoji: "🤡", name: "Coringa da Noite", desc: "Vota em 3 micos alheios.", unlocked: true },
-      { emoji: "🔥", name: "Lendário", desc: "Ganha o teu primeiro duelo de votos.", unlocked: false },
-      { emoji: "🚽", name: "Sanitário de Ouro", desc: "Aposta e ganha mais de 200 moedas.", unlocked: false }
-    ];
-
-    function renderBadgesGrid() {
-      const container = document.getElementById('badgesDisplayGrid');
-      container.innerHTML = "";
-
-      gameBadges[2].unlocked = gameState.player.duelsWon >= 1;
-      gameBadges[3].unlocked = gameState.player.coins > 1800;
-
-      gameBadges.forEach((b) => {
-        const div = document.createElement('div');
-        div.className = `p-3 rounded-xl border flex flex-col items-center justify-center cursor-help group relative ${b.unlocked ? 'bg-white/5 border-white/10 opacity-100' : 'bg-black/40 border-dashed border-white/5 opacity-40'}`;
-        div.innerHTML = `
-          <span class="text-3xl">${b.emoji}</span>
-          <span class="text-[9px] font-bold text-zinc-300 mt-1 truncate max-w-full">${b.name}</span>
-          <div class="absolute bottom-full mb-2 w-36 hidden group-hover:flex flex-col p-2 bg-zinc-950 text-[10px] text-zinc-300 rounded-lg shadow-xl border border-white/15 text-center z-50">
-            <span class="font-bold text-white mb-0.5">${b.name}</span>
-            <span>${b.desc}</span>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function toggleEditProfile() {
-      sfx.playPop();
-      const el = document.getElementById('profileEditBox');
-      el.classList.toggle('hidden');
-      document.getElementById('editUsernameInput').value = gameState.player.username;
-    }
-
-    async function saveProfileChanges() {
-      const val = document.getElementById('editUsernameInput').value.trim();
-      if (val.length >= 3) {
-        gameState.player.username = val;
-        document.getElementById('profileNameDisplay').innerText = val;
-        document.getElementById('profileEditBox').classList.add('hidden');
-        sfx.playSuccess();
-        showToast("Nome atualizado!", "👤");
-        await saveProfileToCloud();
-      }
-    }
-
-    const emojiAvatars = ["🍅", "😱", "🐶", "🍜", "👩", "😎", "🤓", "🌶️", "💩", "🦄", "👽", "🥑"];
-    function openAvatarSelector() {
-      sfx.playPop();
-      const el = document.getElementById('avatarSelectorBox');
-      el.classList.toggle('hidden');
-      
-      const grid = document.getElementById('avatarGridList');
-      grid.innerHTML = "";
-      
-      emojiAvatars.forEach((em) => {
-        const btn = document.createElement('button');
-        btn.className = "w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xl hover:bg-brandPink/20 transition-colors";
-        btn.onclick = async () => {
-          gameState.player.avatar = em;
-          document.getElementById('profileAvatarDisplay').innerText = em;
-          document.getElementById('avatarSelectorBox').classList.add('hidden');
-          sfx.playSuccess();
-          showToast("Avatar atualizado!", em);
-          await saveProfileToCloud();
-        };
-        btn.innerText = em;
-        grid.appendChild(btn);
-      });
-    }
-
-    function evaluateAchievements() {
-      if (gameState.player.duelsWon === 1 && !gameBadges[2].unlocked) {
-        gameBadges[2].unlocked = true;
-        showToast("Conquista Desbloqueada: Lendário 🔥!", "🏆");
-      }
-    }
-  </script>
+<body>
+<div class="phone">
+
+<section id="auth" class="screen active">
+  <div class="logo">SHITAGRAM<span class="pink">™</span></div>
+  <div class="card">
+    <h2>Entrar / Criar Conta</h2>
+    <p class="small">Usa email e password para entrar na Arena.</p>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button class="btn" onclick="signUp()">CRIAR CONTA</button>
+    <button class="btn secondary" onclick="signIn()">ENTRAR</button>
+  </div>
+</section>
+
+<section id="feed" class="screen">
+  <div class="top">
+    <div class="logo">SHITAGRAM<span class="pink">™</span></div>
+    <button class="btn secondary" style="width:auto;padding:10px 14px" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="card">
+    <h2>🔥 Feed de Micos</h2>
+    <p>Todos os micos publicados aparecem aqui.</p>
+  </div>
+
+  <div id="postsList"></div>
+</section>
+
+<section id="arena" class="screen">
+  <div class="top"><h2>⚔️ Arena</h2></div>
+  <div class="card">
+    <h2>Batalha dos Micos</h2>
+    <p>Em breve: duelos automáticos entre posts reais.</p>
+    <button class="btn" onclick="loadPosts()">Atualizar Feed</button>
+  </div>
+</section>
+
+<section id="publish" class="screen">
+  <div class="top"><h2>Publicar Mico</h2></div>
+  <div class="card">
+    <p>Quanto mais vergonha, mais XP.</p>
+    <textarea id="micoText" placeholder="Conta aqui o teu mico..."></textarea>
+    <button class="btn" onclick="publishMico()">PUBLICAR MICO +50 XP</button>
+  </div>
+</section>
+
+<section id="ranking" class="screen">
+  <div class="top"><h2>🏆 Ranking</h2></div>
+  <div id="rankingList"></div>
+</section>
+
+<section id="profile" class="screen">
+  <div class="top"><h2>👤 Perfil</h2></div>
+  <div class="card">
+    <h2 id="profileName">Utilizador</h2>
+    <p id="profileXP">XP: 0</p>
+    <p id="profileCoins">Coins: 0</p>
+    <span class="badge">Mestre do Mico</span>
+  </div>
+</section>
+
+<nav class="nav">
+  <button onclick="go('feed')" id="nav-feed" class="active"><span>🏠</span>Feed</button>
+  <button onclick="go('arena')" id="nav-arena"><span>⚔️</span>Arena</button>
+  <button onclick="go('publish')" id="nav-publish"><span>➕</span>Publicar</button>
+  <button onclick="go('ranking')" id="nav-ranking"><span>🏆</span>Ranking</button>
+  <button onclick="go('profile')" id="nav-profile"><span>👤</span>Perfil</button>
+</nav>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const nav=document.getElementById('nav-'+id);
+  if(nav) nav.classList.add('active');
+
+  if(id==="feed") loadPosts();
+  if(id==="ranking") loadRanking();
+  if(id==="profile") loadProfile();
+}
+
+async function signUp(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value.trim();
+
+  const { data, error } = await client.auth.signUp({ email, password });
+
+  if(error){ alert(error.message); return; }
+
+  alert("Conta criada. Confirma o email se o Supabase pedir.");
+}
+
+async function signIn(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value.trim();
+
+  const { data, error } = await client.auth.signInWithPassword({ email, password });
+
+  if(error){ alert(error.message); return; }
+
+  currentUser = data.user;
+  await ensureProfile();
+  go("feed");
+}
+
+async function logout(){
+  await client.auth.signOut();
+  currentUser=null;
+  go("auth");
+}
+
+async function checkSession(){
+  const { data } = await client.auth.getSession();
+
+  if(data.session){
+    currentUser=data.session.user;
+    await ensureProfile();
+    go("feed");
+  } else {
+    go("auth");
+  }
+}
+
+async function ensureProfile(){
+  if(!currentUser) return;
+
+  const username = currentUser.email.split("@")[0];
+
+  await client.from("profiles").upsert({
+    id: currentUser.id,
+    username,
+    xp: 0,
+    coins: 250,
+    level: 1
+  }, { onConflict: "id" });
+}
+
+async function publishMico(){
+  if(!currentUser){ alert("Tens de entrar primeiro."); return; }
+
+  const content=document.getElementById("micoText").value.trim();
+
+  if(!content){
+    alert("Escreve um mico primeiro.");
+    return;
+  }
+
+  const { error } = await client.from("posts").insert({
+    user_id: currentUser.id,
+    content,
+    post_type: "text",
+    xp_earned: 50
+  });
+
+  if(error){
+    alert("Erro ao publicar: " + error.message);
+    return;
+  }
+
+  await client.rpc("increment_user_xp", { user_id_input: currentUser.id, xp_input: 50 }).catch(()=>{});
+
+  document.getElementById("micoText").value="";
+  alert("Mico publicado com sucesso!");
+  go("feed");
+}
+
+async function loadPosts(){
+  const { data, error } = await client
+    .from("posts")
+    .select("id, content, created_at, profiles(username)")
+    .order("created_at", { ascending:false })
+    .limit(20);
+
+  const box=document.getElementById("postsList");
+  box.innerHTML="";
+
+  if(error){
+    box.innerHTML="<div class='card'>Erro ao carregar posts.</div>";
+    return;
+  }
+
+  if(!data || data.length===0){
+    box.innerHTML="<div class='card'>Ainda não há micos reais. Publica o primeiro.</div>";
+    return;
+  }
+
+  data.forEach(post=>{
+    const div=document.createElement("div");
+    div.className="post";
+    div.innerHTML=`
+      <strong>@${post.profiles?.username || "anónimo"}</strong>
+      <p style="margin-top:10px">${escapeHtml(post.content)}</p>
+      <p class="small" style="margin-top:10px">🔥 Cringe · 💀 Morri · 🤡 Palhaçada</p>
+    `;
+    box.appendChild(div);
+  });
+}
+
+async function loadRanking(){
+  const { data, error } = await client
+    .from("profiles")
+    .select("username, xp, coins, level")
+    .order("xp", { ascending:false })
+    .limit(10);
+
+  const box=document.getElementById("rankingList");
+  box.innerHTML="";
+
+  if(error){
+    box.innerHTML="<div class='card'>Erro ao carregar ranking.</div>";
+    return;
+  }
+
+  data.forEach((u,i)=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <h3>${i+1}. ${u.username || "Utilizador"}</h3>
+      <p>${u.xp || 0} XP · Nível ${u.level || 1}</p>
+    `;
+    box.appendChild(div);
+  });
+}
+
+async function loadProfile(){
+  if(!currentUser) return;
+
+  const { data } = await client
+    .from("profiles")
+    .select("*")
+    .eq("id", currentUser.id)
+    .single();
+
+  if(data){
+    document.getElementById("profileName").innerText = data.username || "Utilizador";
+    document.getElementById("profileXP").innerText = "XP: " + (data.xp || 0);
+    document.getElementById("profileCoins").innerText = "Coins: " + (data.coins || 0);
+  }
+}
+
+function escapeHtml(text){
+  return text.replace(/[&<>"']/g, m => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#039;'
+  })[m]);
+}
+
+checkSession();
+</script>
 </body>
 </html>
