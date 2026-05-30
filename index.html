@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SHITAGRAM™ — A vergonha agora dá XP</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística para partilhar micos, falhanços e histórias embaraçosas." />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=2mjO-G-0GdH_Ny06G4WTca9mH8c6hcBf58is7BJ3WAPt5GztQreh2BMuKQNimqL2mXrPdpvFaZ2YEknTRSpkBka_11ssSuWKX9aNROTKGKfZBK1EdRONK8UPfb--Md5V7U1r3IiV69g_hGeWjx2sn9kl-6v2tSNvne3B94JNswOekUlrJtvOjc_A0E_gRV4xRPA16cMC4cpqGixG_8B5e32sDkemUSH9HdAcfai12QgTrEZYWmvY7_ucmYt8X_-2nr_ghDuHv_NKeLTYa2PAZw" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -201,7 +201,7 @@
       }
 
       try {
-        console.log("[SHITAGRAM clean v1] signUp start", email);
+        console.log("[SHITAGRAM clean v1.1] signUp start", email);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -210,7 +210,7 @@
             emailRedirectTo: window.location.origin + window.location.pathname
           }
         });
-        console.log("[SHITAGRAM clean v1] signUp result", { data, error });
+        console.log("[SHITAGRAM clean v1.1] signUp result", { data, error });
 
         if (error) {
           setMsg("registerMsg", translateSupabaseError(error.message), "error");
@@ -222,7 +222,7 @@
         event.target.reset();
         switchAuth("login");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1] signUp crash", err);
+        console.error("[SHITAGRAM clean v1.1] signUp crash", err);
         setMsg("registerMsg", "Erro inesperado ao criar conta. Tenta novamente.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -239,9 +239,9 @@
       const password = $("loginPassword").value;
 
       try {
-        console.log("[SHITAGRAM clean v1] login start", email);
+        console.log("[SHITAGRAM clean v1.1] login start", email);
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        console.log("[SHITAGRAM clean v1] login result", { data, error });
+        console.log("[SHITAGRAM clean v1.1] login result", { data, error });
 
         if (error) {
           setMsg("loginMsg", translateSupabaseError(error.message), "error");
@@ -257,7 +257,7 @@
         showToast("Login feito com sucesso.", "success");
         goTab("feed");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1] login crash", err);
+        console.error("[SHITAGRAM clean v1.1] login crash", err);
         setMsg("loginMsg", "Erro inesperado no login. Verifica a consola.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -388,6 +388,7 @@
         const username = post.profiles?.username || "utilizador";
         const display = post.profiles?.display_name || username;
         const reacted = state.myReactions.has(post.id);
+        const canDelete = !!state.user && state.user.id === post.user_id;
         const avatar = post.profiles?.avatar_url
           ? `<img src="${escapeHtml(post.profiles.avatar_url)}" class="w-11 h-11 rounded-full object-cover border border-yellow-400/30">`
           : `<div class="w-11 h-11 rounded-full bg-yellow-400 text-black grid place-items-center text-xl">💩</div>`;
@@ -410,6 +411,7 @@
               <button onclick="toggleReaction('${post.id}')" class="action-btn ${reacted ? "active" : ""}">💩 ${state.reactionsByPost[post.id] || 0}</button>
               <button onclick="openComments('${post.id}')" class="action-btn">💬 ${state.commentsByPost[post.id] || 0}</button>
               <button onclick="sharePost('${post.id}')" class="action-btn">↗ Partilhar</button>
+              ${canDelete ? `<button onclick="deletePost('${post.id}')" class="action-btn danger">🗑️ Eliminar</button>` : ""}
             </div>
           </article>`;
       }).join("");
@@ -504,7 +506,7 @@
 
       const { data, error } = await supabase
         .from("comments")
-        .select("id,body,created_at,user_id,profiles(username,display_name,avatar_url)")
+        .select("id,body,content,created_at,user_id,profiles(username,display_name,avatar_url)")
         .eq("post_id", postId)
         .eq("status", "active")
         .order("created_at", { ascending: true });
@@ -525,7 +527,7 @@
             <p class="text-sm font-black">@${escapeHtml(c.profiles?.username || "user")}</p>
             <p class="text-[10px] text-zinc-500">${formatDate(c.created_at)}</p>
           </div>
-          <p class="mt-2 text-sm text-zinc-300">${escapeHtml(c.body)}</p>
+          <p class="mt-2 text-sm text-zinc-300">${escapeHtml(c.body || c.content || "")}</p>
         </div>`).join("");
     };
 
@@ -546,7 +548,7 @@
 
       const { error } = await supabase
         .from("comments")
-        .insert({ post_id: postId, user_id: state.user.id, body, status: "active" });
+        .insert({ post_id: postId, user_id: state.user.id, body, content: body, status: "active" });
 
       setButtonLoading(btn, false);
 
@@ -575,6 +577,37 @@
           showToast("Não foi possível partilhar.", "error");
         }
       }
+    };
+
+    window.deletePost = async function(postId) {
+      if (!state.user) {
+        openAuth("login");
+        showToast("Faz login para eliminar.", "error");
+        return;
+      }
+
+      const post = state.posts.find(p => p.id === postId);
+      if (!post || post.user_id !== state.user.id) {
+        showToast("Só podes eliminar os teus próprios posts.", "error");
+        return;
+      }
+
+      const ok = confirm("Tens a certeza que queres eliminar este mico? Esta ação remove o post do feed.");
+      if (!ok) return;
+
+      const { error } = await supabase
+        .from("posts")
+        .update({ status: "deleted", deleted_at: new Date().toISOString() })
+        .eq("id", postId)
+        .eq("user_id", state.user.id);
+
+      if (error) {
+        showToast(error.message || "Erro ao eliminar post.", "error");
+        return;
+      }
+
+      showToast("Post eliminado.", "success");
+      await loadAll();
     };
 
     window.saveProfile = async function(event) {
@@ -683,8 +716,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean1";
-      $("versionBadge2").textContent = "vClean1";
+      $("versionBadge").textContent = "vClean1.1";
+      $("versionBadge2").textContent = "vClean1.1";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -712,6 +745,8 @@
     .modal.open, .sheet.open { display: flex; }
     .action-btn { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); border-radius: 999px; padding: .55rem .9rem; font-size: .78rem; font-weight: 900; color: rgb(212 212 216); }
     .action-btn.active { background: rgba(250,204,21,.18); color: rgb(250 204 21); border-color: rgba(250,204,21,.35); }
+    .action-btn.danger { background: rgba(239,68,68,.12); color: rgb(248 113 113); border-color: rgba(239,68,68,.3); }
+    .action-btn.danger:hover { background: rgba(239,68,68,.2); }
     .nav-active { color: rgb(250 204 21) !important; background: rgba(250,204,21,.12) !important; border-color: rgba(250,204,21,.25) !important; }
     #toast { opacity: 0; }
     input, textarea, select { color: white; }
