@@ -1,1613 +1,687 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - Social + Gamificação</title>
-  <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root{--gold:#ffcb05;--gold2:#ffb800;--bg:#050505;--card:#0d0d0d;--line:rgba(255,255,255,.12);}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:#fff;font-family:"Inter",system-ui,sans-serif;scroll-behavior:smooth}
-    body{overflow-x:hidden;background:radial-gradient(circle at 20% 0%,rgba(255,203,5,.12),transparent 28%),#050505}
-    button,input,textarea,select{font-family:inherit}
-    input,textarea,select{color:#fff}
-    input:-webkit-autofill,textarea:-webkit-autofill{-webkit-text-fill-color:#111!important}
-    .gold{color:var(--gold)}.bg-gold{background:var(--gold)}
-    .screen{min-height:100dvh}
-    .glass{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.022));border:1px solid var(--line);border-radius:28px}
-    .soft{background:rgba(255,255,255,.045);border:1px solid var(--line)}
-    .modal{display:none}.modal.open{display:flex}
-    .toast{opacity:0;transform:translateY(-18px);pointer-events:none;transition:.25s ease}.toast.show{opacity:1;transform:translateY(0)}
-    .tab.active{color:#ffcb05}.tab.active svg{stroke:#ffcb05}.tab.active .tab-line{opacity:1}
-    .pill.active{background:#ffcb05;color:#000;border-color:#ffcb05}
-    .scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{scrollbar-width:none}
-    .safe-bottom{padding-bottom:max(88px,env(safe-area-inset-bottom))}
-    .phone-max{max-width:520px}
-    .post-img{aspect-ratio:4/3;background:linear-gradient(135deg,rgba(255,203,5,.18),rgba(255,255,255,.04));}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shitagram Arena MVP</title>
 
-    .reels-feed{height:calc(100dvh - 158px);overflow-y:auto;scroll-snap-type:y mandatory;border-radius:32px}
-    .reel-card{min-height:calc(100dvh - 158px);scroll-snap-align:start;position:relative;background:#050505;overflow:hidden;border-radius:32px;border:1px solid rgba(255,255,255,.1)}
-    .reel-video{width:100%;height:calc(100dvh - 158px);object-fit:cover;background:#000}
-    .reel-gradient{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.22),transparent 28%,rgba(0,0,0,.88));pointer-events:none}
-    .reel-actions{position:absolute;right:14px;bottom:92px;display:flex;flex-direction:column;gap:14px;z-index:5}
-    .reel-action{width:52px;height:52px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
-    .reel-info{position:absolute;left:16px;right:82px;bottom:28px;z-index:5}
-    .comment-sheet{max-height:78dvh}
-    @media(min-width:900px){.desktop-shell{display:grid;grid-template-columns:280px minmax(0,680px) 320px;gap:24px}.safe-bottom{padding-bottom:40px}}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(255, 0, 170, .28), transparent 35%),
+        radial-gradient(circle at bottom, rgba(91, 40, 255, .28), transparent 40%),
+        #070710;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .phone {
+      width: 390px;
+      max-width: 100%;
+      height: 820px;
+      max-height: 96vh;
+      background: linear-gradient(180deg, #11111f, #070711);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 36px;
+      box-shadow: 0 0 60px rgba(255, 0, 180, .25);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      height: 100%;
+      padding: 24px 20px 92px;
+      animation: fade .25s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-shadow: 0 0 18px #ff2fb3;
+    }
+
+    .pink {
+      color: #ff3fb7;
+    }
+
+    .coins {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 34px 12px;
+    }
+
+    .poop {
+      font-size: 78px;
+      filter: drop-shadow(0 0 18px #ff3fb7);
+    }
+
+    h1 {
+      font-size: 38px;
+      line-height: 1;
+      margin-top: 10px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #cfcfe6;
+      line-height: 1.45;
+    }
+
+    .card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 18px;
+      margin: 14px 0;
+      box-shadow: inset 0 0 25px rgba(255,255,255,.02);
+    }
+
+    .big-card {
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 14px;
+      color: white;
+      font-weight: 900;
+      font-size: 16px;
+      background: linear-gradient(135deg, #ff167f, #ff4dc4);
+      box-shadow: 0 0 24px rgba(255, 47, 179, .35);
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,.08);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .players {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff3fb7, #752fff);
+      display: grid;
+      place-items: center;
+      margin: 0 auto 6px;
+      font-size: 28px;
+      border: 2px solid rgba(255,255,255,.25);
+    }
+
+    .small {
+      font-size: 12px;
+      color: #bdbdd5;
+    }
+
+    textarea {
+      width: 100%;
+      height: 210px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 20px;
+      color: white;
+      padding: 18px;
+      font-size: 17px;
+      resize: none;
+      outline: none;
+    }
+
+    .story-paper {
+      background: #f7ead1;
+      color: #181818;
+      border-radius: 12px;
+      padding: 28px 22px;
+      min-height: 230px;
+      display: flex;
+      align-items: center;
+      font-size: 25px;
+      font-weight: 800;
+      line-height: 1.25;
+      transform: rotate(-2deg);
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+
+    .reaction {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 15px;
+      border-radius: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .bet-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-radius: 18px;
+      margin: 12px 0;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      cursor: pointer;
+    }
+
+    .letter {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff3fb7, #6f35ff);
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .duel {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .duel-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #622fff, #ff2f9f);
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .vs {
+      text-align: center;
+      font-size: 42px;
+      font-weight: 1000;
+      color: #ffcf42;
+      text-shadow: 0 0 14px #ff3fb7;
+    }
+
+    .winner {
+      text-align: center;
+      padding-top: 30px;
+    }
+
+    .winner .crown {
+      font-size: 82px;
+      margin-bottom: 18px;
+    }
+
+    .reward {
+      font-size: 22px;
+      margin: 16px 0;
+      color: #ff7be0;
+      font-weight: 800;
+    }
+
+    .mission {
+      margin: 12px 0;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff3fb7, #6f35ff);
+      border-radius: 999px;
+    }
+
+    .profile {
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff3fb7, #6f35ff);
+      display: grid;
+      place-items: center;
+      font-size: 62px;
+      margin: 12px auto;
+      border: 4px solid #ff3fb7;
+      box-shadow: 0 0 26px rgba(255,63,183,.6);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 14px 8px;
+    }
+
+    .badges {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      font-size: 34px;
+      background: rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      background: rgba(5,5,12,.92);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(255,255,255,.12);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: #aaaac1;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .nav span {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 3px;
+    }
+
+    .nav button.active {
+      color: #ff3fb7;
+    }
+
+    .center-plus {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff167f, #ff4dc4);
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      font-size: 32px !important;
+      color: white;
+      box-shadow: 0 0 22px rgba(255,63,183,.7);
+    }
   </style>
 </head>
+
 <body>
-  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vReels1</div>
-  <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
+  <main class="phone">
 
-  <!-- ONBOARDING / VISITANTE -->
-  <section id="welcomeScreen" class="screen flex items-center justify-center px-6 py-10">
-    <div class="phone-max w-full mx-auto text-center">
-      <div class="mx-auto w-36 h-36 rounded-full bg-yellow-400 flex items-center justify-center text-7xl shadow-[0_0_70px_rgba(255,203,5,.22)]">💩</div>
-      <h1 class="mt-8 text-5xl font-black tracking-tight">SHITA<span class="gold">GRAM</span><sup class="text-base gold">™</sup></h1>
-      <p class="mt-4 text-2xl font-black">A vergonha agora dá <span class="gold">XP.</span></p>
-      <p class="mt-6 text-zinc-300 leading-relaxed max-w-sm mx-auto">Partilha micos, falhanços e histórias embaraçosas. A comunidade reage, tu ganhas XP e sobes no ranking.</p>
-      <div class="mt-8 grid grid-cols-3 gap-3">
-        <div class="rounded-2xl p-3"><div class="text-3xl gold">☺</div><p class="mt-2 text-[10px] font-black uppercase">Publica</p><p class="text-[10px] text-zinc-500">os teus micos</p></div>
-        <div class="rounded-2xl p-3"><div class="text-3xl gold">🔥</div><p class="mt-2 text-[10px] font-black uppercase">Reações</p><p class="text-[10px] text-zinc-500">da comunidade</p></div>
-        <div class="rounded-2xl p-3"><div class="text-3xl gold">🏆</div><p class="mt-2 text-[10px] font-black uppercase">XP</p><p class="text-[10px] text-zinc-500">e ranking</p></div>
+    <!-- FEED / LANDING -->
+    <section class="screen active" id="feed">
+      <div class="top">
+        <div class="logo">SHITAGRAM<span class="pink">™</span></div>
+        <div class="coins">🪙 12.5K</div>
       </div>
-      <div class="mt-10 space-y-3">
-        <button onclick="openAuthModal('register')" class="w-full rounded-[24px] bg-yellow-400 py-5 text-black text-sm font-black uppercase tracking-wide shadow-[0_0_40px_rgba(255,203,5,.2)]">Começar</button>
-        <button onclick="enterGuestMode()" class="w-full rounded-[24px] border border-yellow-400/50 py-5 text-yellow-400 text-sm font-black uppercase tracking-wide">Ver micos primeiro</button>
+
+      <div class="hero">
+        <div class="poop">💩</div>
+        <h1>ARENA<br><span class="pink">DOS MICOS</span></h1>
+        <p>Partilha. Vota. Aposta. Humilha-te com estilo.</p>
       </div>
-      <p class="mt-8 text-sm text-zinc-300">Já tens conta? <button onclick="openAuthModal('login')" class="gold font-black">Entrar</button></p>
-    </div>
-  </section>
 
-  <!-- APP SOCIAL -->
-  <section id="appShell" class="hidden min-h-screen safe-bottom">
-    <header class="sticky top-0 z-40 bg-black/90 backdrop-blur-xl border-b border-white/10">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-yellow-400 flex items-center justify-center text-2xl">💩</div>
-          <h2 class="text-xl font-black tracking-tight text-yellow-400">SHITAGRAM<sup class="text-[9px]">™</sup></h2>
+      <div class="card">
+        <strong>👑 Temporada 1</strong>
+        <p>Rei da Vergonha termina em 12d 08h.</p>
+      </div>
+
+      <button class="btn" onclick="go('arena')">ENTRAR NA ARENA</button>
+      <button class="btn secondary" onclick="alert('Objetivo: escrever micos, votar, apostar e ganhar XP.')">COMO JOGAR</button>
+    </section>
+
+    <!-- ARENA -->
+    <section class="screen" id="arena">
+      <div class="top">
+        <h2>SALA #4281</h2>
+        <div>⚙️</div>
+      </div>
+
+      <p><strong>Jogadores 8/8</strong> <span class="pink">Prontos!</span></p>
+
+      <div class="players">
+        <div><div class="avatar">🍅</div><span class="small">Tomate</span></div>
+        <div><div class="avatar">😱</div><span class="small">Batata</span></div>
+        <div><div class="avatar">🐶</div><span class="small">Xico</span></div>
+        <div><div class="avatar">🍜</div><span class="small">Noodles</span></div>
+        <div><div class="avatar">👩</div><span class="small">Miga</span></div>
+        <div><div class="avatar">😎</div><span class="small">Pipoca</span></div>
+        <div><div class="avatar">🤓</div><span class="small">Zé</span></div>
+        <div><div class="avatar">🔥</div><span class="small">Tu</span></div>
+      </div>
+
+      <div class="card big-card">
+        <p>TEMA DA RONDA</p>
+        <h2>Pior situação num primeiro encontro</h2>
+        <p>⏱️ 01:00</p>
+      </div>
+
+      <button class="btn" onclick="go('publish')">ESCREVER MEU MICO</button>
+    </section>
+
+    <!-- PUBLICAR -->
+    <section class="screen" id="publish">
+      <div class="top">
+        <h2>ESCREVE O TEU MICO</h2>
+        <div>💬</div>
+      </div>
+
+      <div class="card">
+        <p><strong>Quanto mais vergonhoso, mais XP podes ganhar.</strong></p>
+      </div>
+
+      <textarea id="micoText">Eu derrubei vinho na camisa do pai dela e tentei disfarçar bebendo mais vinho... 🥴🏆</textarea>
+
+      <button class="btn" onclick="go('judge')">ENVIAR MICO</button>
+      <p class="small" style="text-align:center;margin-top:12px;">Anónimo durante a ronda.</p>
+    </section>
+
+    <!-- JULGAMENTO -->
+    <section class="screen" id="judge">
+      <div class="top">
+        <h2>JULGAMENTO ANÓNIMO</h2>
+        <div>00:35</div>
+      </div>
+
+      <p style="text-align:center;margin-bottom:18px;">História 2 de 8</p>
+
+      <div class="story-paper">
+        “Fui pedir a conta e o cartão foi recusado 3x.”
+      </div>
+
+      <p style="text-align:center;margin:26px 0 8px;">Qual a tua reação?</p>
+
+      <div class="reaction" onclick="go('bet')">🔥 Muito Mau</div>
+      <div class="reaction" onclick="go('bet')">💀 Morri de Vergonha</div>
+      <div class="reaction" onclick="go('bet')">🤡 Não Acredito</div>
+      <div class="reaction" onclick="go('bet')">🧢 Parece Fake</div>
+    </section>
+
+    <!-- APOSTA -->
+    <section class="screen" id="bet">
+      <div class="top">
+        <h2>APOSTA DA VERGONHA</h2>
+        <div>00:40</div>
+      </div>
+
+      <div class="card">
+        <h2>Em qual história vais apostar?</h2>
+      </div>
+
+      <div class="bet-option" onclick="selectBet('A')">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div class="letter">A</div>
+          <span>“Fui expulso do date por falar do ex.”</span>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="openSearchModal()" class="w-10 h-10 rounded-full soft flex items-center justify-center">🔍</button>
-          <button onclick="goTab('messages')" class="relative w-10 h-10 rounded-full soft flex items-center justify-center">💬<span id="msgBadge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 rounded-full bg-yellow-400 px-1 text-[10px] font-black text-black items-center justify-center">0</span></button>
-          <button onclick="goTab('notifications')" class="relative w-10 h-10 rounded-full soft flex items-center justify-center">🔔<span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-5 h-5 rounded-full bg-red-500 px-1 text-[10px] font-black text-white items-center justify-center">0</span></button>
-          <button onclick="goTab('profile')" class="w-10 h-10 rounded-full bg-yellow-400 text-black flex items-center justify-center font-black">👤</button>
-          <button id="topAdminBtn" onclick="goTab('admin')" class="hidden w-10 h-10 rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-400 flex items-center justify-center font-black">🛡️</button>
+        <strong>35%</strong>
+      </div>
+
+      <div class="bet-option" onclick="selectBet('B')">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div class="letter">B</div>
+          <span>“Caí no chão ao levantar da cadeira.”</span>
+        </div>
+        <strong>50%</strong>
+      </div>
+
+      <div class="bet-option" onclick="selectBet('C')">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div class="letter">C</div>
+          <span>“Mensagem íntima enviada para a mãe.”</span>
+        </div>
+        <strong>15%</strong>
+      </div>
+
+      <div class="card">
+        <p>Tu tens 🪙 <strong>250</strong></p>
+        <h2 style="margin-top:8px;">Aposta: 50 Coins</h2>
+      </div>
+
+      <button class="btn" onclick="go('duel')">APOSTAR</button>
+    </section>
+
+    <!-- DUELO -->
+    <section class="screen" id="duel">
+      <div class="top">
+        <h2>DUELO NA COMUNIDADE</h2>
+        <div>23:45:12</div>
+      </div>
+
+      <p style="text-align:center;">As 2 histórias mais votadas estão em duelo.</p>
+
+      <div class="duel">
+        <div class="duel-card">
+          <strong>A 🔥 8.742</strong>
+          <h2>“Fui expulso do date por falar do ex.”</h2>
+          <p>por Anónimo</p>
+        </div>
+
+        <div class="vs">VS</div>
+
+        <div class="duel-card">
+          <strong>B 🔥 12.965</strong>
+          <h2>“Caí no chão ao levantar da cadeira.”</h2>
+          <p>por Anónimo</p>
         </div>
       </div>
-    </header>
 
-    <div class="desktop-shell max-w-7xl mx-auto px-4 py-5">
-      <aside class="hidden lg:block">
-        <div class="sticky top-24 card p-4">
-          <button onclick="goTab('feed')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🏠</span> Feed</button>
-          <button onclick="goTab('clips')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🎬</span> ShitClips™</button>
-          <button onclick="goTab('publish')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>➕</span> Publicar</button>
-          <button onclick="goTab('ranking')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🏆</span> Ranking</button>
-          <button onclick="goTab('messages')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>💬</span> Mensagens</button>
-          <button onclick="goTab('notifications')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>🔔</span> Notificações</button>
-          <button id="sideAdminNav" onclick="goTab('admin')" class="hidden w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-yellow-400/10 text-yellow-400 font-black"><span>🛡️</span> Moderação</button>
-          <button onclick="goTab('profile')" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 hover:bg-white/5 font-black"><span>👤</span> Perfil</button>
-          <button id="sideLoginBtn" onclick="openAuthModal('login')" class="mt-4 w-full rounded-2xl bg-yellow-400 py-3 text-black text-sm font-black uppercase">Entrar</button>
-          <button id="sideLogoutBtn" onclick="logoutUser()" class="hidden mt-4 w-full rounded-2xl bg-red-500 py-3 text-white text-sm font-black uppercase">Sair</button>
-        </div>
-      </aside>
+      <button class="btn" onclick="go('winner')">VOTAR AGORA</button>
+    </section>
 
-      <main class="min-w-0">
-        <!-- FEED -->
-        <div id="tab-feed" class="app-tab space-y-5">
-          <div class="flex gap-3 overflow-x-auto scrollbar-none pb-1">
-            <button onclick="gateAction('publicar a tua história')" class="min-w-[76px] text-center">
-              <div class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-3xl bg-black">＋</div>
-              <p class="mt-2 text-[11px] text-zinc-300">A tua vez</p>
-            </button>
-            <div id="storiesList" class="flex gap-3"></div>
-          </div>
+    <!-- VENCEDOR -->
+    <section class="screen" id="winner">
+      <div class="winner">
+        <div class="crown">👑</div>
+        <h1>VENCEDOR</h1>
 
-          <div class="card p-4">
-            <div class="flex gap-3">
-              <div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl">💩</div>
-              <button onclick="goTab('publish')" class="flex-1 rounded-2xl bg-black border border-white/10 px-4 text-left text-sm text-zinc-500">Conta o teu mico...</button>
-              <button onclick="goTab('publish')" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Publicar</button>
-            </div>
-          </div>
-
-          <div id="postsList" class="space-y-4"><p class="text-sm text-zinc-500">A carregar posts...</p></div>
+        <div class="card">
+          <h2>“Caí no chão ao levantar da cadeira.”</h2>
+          <p>por Anónimo</p>
         </div>
 
-        <!-- CLIPS / REELS -->
-        <div id="tab-clips" class="app-tab hidden space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-black text-yellow-400">SHITCLIPS<sup class="text-xs">™</sup></h2>
-              <p class="text-xs text-zinc-500 font-bold">Scroll vertical, reações, comentários e criadores em destaque.</p>
-            </div>
-            <div class="flex gap-2">
-              <button class="pill active rounded-full border border-white/10 px-4 py-2 text-xs font-black">Para ti</button>
-              <button onclick="gateAction('seguir criadores')" class="pill rounded-full border border-white/10 px-4 py-2 text-xs font-black text-zinc-400">A seguir</button>
-            </div>
-          </div>
-          <div class="card p-4">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <p class="text-[10px] text-yellow-400 font-black uppercase tracking-[.25em]">Em alta</p>
-                <p class="text-sm text-zinc-400">Clips com mais reação e conversa.</p>
-              </div>
-              <button onclick="goTab('publish');switchPublishMode('clip')" class="rounded-2xl bg-yellow-400 px-4 py-3 text-black text-xs font-black uppercase">Publicar clip</button>
-            </div>
-            <div id="clipsHotList" class="mt-4 flex gap-3 overflow-x-auto scrollbar-none"><p class="text-sm text-zinc-500">A carregar destaques...</p></div>
-          </div>
-          <div id="clipsList" class="reels-feed"><p class="text-sm text-zinc-500">A carregar ShitClips™...</p></div>
-        </div>
+        <div class="reward">+500 XP</div>
+        <div class="reward">+1.000 ShitCoins</div>
+        <div class="reward">+Badge Cringe Master</div>
 
-        <!-- PUBLICAR -->
-        <div id="tab-publish" class="app-tab hidden space-y-5">
-          <div class="card p-5">
-            <h2 class="text-2xl font-black">Publicar</h2>
-            <p class="mt-1 text-sm text-zinc-500">Partilha o teu mico com a comunidade.</p>
-            <div id="publishGate" class="hidden mt-5 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5 text-center">
-              <p class="font-black">Para publicar tens de criar conta.</p>
-              <p class="mt-2 text-sm text-zinc-400">Cria conta grátis e começa a ganhar XP.</p>
-              <button onclick="openAuthModal('register')" class="mt-4 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Criar conta</button>
-            </div>
-
-            <div id="publishForms">
-              <div class="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-black border border-white/10 p-1">
-                <button id="postModeBtn" onclick="switchPublishMode('post')" class="pill active rounded-xl py-3 text-xs font-black uppercase">Mico</button>
-                <button id="clipModeBtn" onclick="switchPublishMode('clip')" class="pill rounded-xl py-3 text-xs font-black uppercase">Clip</button>
-              </div>
-
-              <form id="postForm" onsubmit="publishPost(event)" class="mt-5 space-y-4">
-                <input id="postTitle" required maxlength="120" placeholder="O que aconteceu de vergonhoso hoje?" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-                <textarea id="postDescription" required maxlength="600" rows="5" placeholder="Conta o teu mico em detalhe..." class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400 resize-none"></textarea>
-                <div class="grid grid-cols-2 gap-3">
-                  <select id="postCategory" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option>Mico Geral</option><option>Trabalho</option><option>Dates</option><option>Casa de banho</option><option>Família</option><option>Vida adulta</option><option>Redes sociais</option></select>
-                  <select id="postTrauma" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option value="5">Trauma 5</option><option value="6">Trauma 6</option><option value="7">Trauma 7</option><option value="8">Trauma 8</option><option value="9">Trauma 9</option><option value="10">Trauma 10</option></select>
-                </div>
-                <button id="publishPostBtn" class="w-full rounded-2xl bg-yellow-400 py-4 text-black text-sm font-black uppercase">Publicar mico</button>
-                <p id="publishMessage" class="hidden text-sm font-bold text-center"></p>
-              </form>
-
-              <form id="clipForm" onsubmit="publishClip(event)" class="hidden mt-5 space-y-4">
-                <input id="clipFile" required type="file" accept="video/mp4,video/webm,video/quicktime" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-                <p id="clipDurationHint" class="text-xs text-zinc-500">Escolhe um vídeo vertical curto. Aceite: 5s a 10s, máx. 30 MB.</p>
-                <input id="clipCaption" maxlength="140" placeholder="Legenda curta para o teu ShitClip™..." class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-                <div class="grid grid-cols-2 gap-3">
-                  <select id="clipCategory" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option>Mico Geral</option><option>Trabalho</option><option>Dates</option><option>Casa de banho</option><option>Família</option><option>Vida adulta</option><option>Redes sociais</option></select>
-                  <select id="clipTrauma" class="bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"><option value="5">Trauma 5</option><option value="6">Trauma 6</option><option value="7">Trauma 7</option><option value="8">Trauma 8</option><option value="9">Trauma 9</option><option value="10">Trauma 10</option></select>
-                </div>
-                <button id="publishClipBtn" class="w-full rounded-2xl bg-yellow-400 py-4 text-black text-sm font-black uppercase">Publicar ShitClip™</button>
-                <p id="clipMessage" class="hidden text-sm font-bold text-center"></p>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- RANKING -->
-        <div id="tab-ranking" class="app-tab hidden space-y-4">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-black text-yellow-400">Ranking</h2>
-            <button onclick="fetchRanking()" class="rounded-xl soft px-4 py-2 text-xs font-black uppercase">Atualizar</button>
-          </div>
-          <div id="rankingList" class="space-y-3"></div>
-        </div>
-
-
-
-        <!-- MENSAGENS -->
-        <div id="tab-messages" class="app-tab hidden space-y-5">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-black text-yellow-400">Mensagens</h2>
-              <p class="mt-1 text-sm text-zinc-500">Conversa em privado com outros sobreviventes sociais.</p>
-            </div>
-            <button onclick="fetchConversations()" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
-          </div>
-
-          <div id="messagesGate" class="hidden card p-6 text-center">
-            <div class="text-4xl">💬</div>
-            <h3 class="mt-3 text-xl font-black">Entra para enviares mensagens</h3>
-            <p class="mt-2 text-sm text-zinc-500">Podes ver perfis públicos, mas só utilizadores com conta podem conversar em privado.</p>
-            <button onclick="openAuthModal('login')" class="mt-5 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Entrar</button>
-          </div>
-
-          <div id="messagesApp" class="grid lg:grid-cols-[360px_1fr] gap-4">
-            <div class="card overflow-hidden">
-              <div class="p-4 border-b border-white/10">
-                <p class="text-xs text-yellow-400 font-black uppercase tracking-[.2em]">Caixa de entrada</p>
-                <input id="conversationSearchInput" oninput="filterConversationList()" placeholder="Pesquisar conversas..." class="mt-3 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-              </div>
-              <div id="conversationsList" class="max-h-[62vh] overflow-y-auto divide-y divide-white/10">
-                <p class="p-5 text-sm text-zinc-500">A carregar conversas...</p>
-              </div>
-            </div>
-
-            <div class="card overflow-hidden min-h-[520px] flex flex-col">
-              <div id="chatHeader" class="p-4 border-b border-white/10 flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-yellow-400 font-black uppercase tracking-[.2em]">Chat privado</p>
-                  <h3 class="mt-1 text-xl font-black">Seleciona uma conversa</h3>
-                </div>
-              </div>
-              <div id="messagesList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-black/20">
-                <div class="h-full flex items-center justify-center text-center">
-                  <div>
-                    <div class="text-5xl">💬</div>
-                    <p class="mt-3 text-sm text-zinc-500">Abre uma conversa ou entra num perfil e clica em “Mensagem”.</p>
-                  </div>
-                </div>
-              </div>
-              <form id="messageForm" onsubmit="sendMessage(event)" class="hidden p-4 border-t border-white/10 flex gap-2">
-                <input id="messageInput" maxlength="800" placeholder="Escreve uma mensagem..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                <button id="sendMessageBtn" class="rounded-2xl bg-yellow-400 px-5 text-black text-xs font-black uppercase">Enviar</button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- NOTIFICAÇÕES -->
-        <div id="tab-notifications" class="app-tab hidden space-y-5">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-black text-yellow-400">Notificações</h2>
-              <p class="mt-1 text-sm text-zinc-500">Segue a atividade nos teus micos e no teu perfil.</p>
-            </div>
-            <button onclick="markNotificationsRead()" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Marcar como lidas</button>
-          </div>
-          <div id="notificationsGate" class="hidden card p-6 text-center">
-            <div class="text-4xl">🔔</div>
-            <h3 class="mt-3 text-xl font-black">Entra para veres notificações</h3>
-            <p class="mt-2 text-sm text-zinc-500">Recebe avisos quando alguém te segue, reage ou comenta nos teus micos.</p>
-            <button onclick="openAuthModal('login')" class="mt-5 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Entrar</button>
-          </div>
-          <div id="notificationsList" class="space-y-3"></div>
-        </div>
-
-        <!-- PERFIL -->
-        <div id="tab-profile" class="app-tab hidden space-y-5">
-          <div class="card p-5">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-4">
-                <div id="profileAvatarView" class="w-20 h-20 rounded-full avatar flex items-center justify-center text-4xl overflow-hidden">💩</div>
-                <div>
-                  <p id="profileUsernameView" class="text-2xl font-black">@visitante</p>
-                  <p id="profileEmailView" class="text-sm text-zinc-500">sem sessão</p>
-                  <span id="profileLevelView" class="mt-2 inline-flex rounded-full bg-purple-500/20 border border-purple-400/30 px-3 py-1 text-xs text-purple-200 font-black">Visitante</span>
-                </div>
-              </div>
-              <button id="profileLogoutBtn" onclick="logoutUser()" class="hidden rounded-xl bg-red-500 px-4 py-2 text-xs font-black uppercase">Sair</button>
-            </div>
-            <div class="grid grid-cols-3 gap-3 mt-6">
-              <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p id="profilePostsView" class="text-xl font-black">0</p><p class="text-[10px] text-zinc-500 font-black uppercase">Micos</p></div>
-              <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p id="profileClipsView" class="text-xl font-black">0</p><p class="text-[10px] text-zinc-500 font-black uppercase">Clips</p></div>
-              <div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p id="profileXpView" class="text-xl font-black text-yellow-400">0</p><p class="text-[10px] text-zinc-500 font-black uppercase">XP</p></div>
-            </div>
-
-            <div id="profileGuestBox" class="mt-6 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5 text-center">
-              <p class="font-black">Estás a explorar como visitante.</p>
-              <p class="mt-2 text-sm text-zinc-400">Cria conta para publicar, reagir e guardar micos.</p>
-              <button onclick="openAuthModal('register')" class="mt-4 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Criar conta</button>
-            </div>
-
-            <form id="profileForm" onsubmit="saveUserProfile(event)" class="hidden mt-6 space-y-4">
-              <div class="rounded-3xl border border-white/10 bg-black/35 p-4">
-                <label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Avatar</label>
-                <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-                <button type="button" onclick="uploadAvatar()" class="mt-3 w-full rounded-2xl border border-yellow-400/40 bg-yellow-400/10 py-3 text-yellow-400 text-xs font-black uppercase">Atualizar avatar</button>
-                <p class="mt-2 text-xs text-zinc-500">Aceita PNG, JPG ou WebP até 3 MB.</p>
-              </div>
-              <input id="profileUsernameInput" placeholder="Nome de utilizador" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-              <input id="profileDisplayNameInput" placeholder="Nome visível" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-              <textarea id="profileBioInput" rows="4" maxlength="180" placeholder="Bio" class="w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400 resize-none"></textarea>
-              <button id="saveProfileBtn" class="w-full rounded-2xl bg-yellow-400 py-4 text-black text-sm font-black uppercase">Guardar perfil</button>
-              <p id="profileMessage" class="hidden text-sm font-bold text-center"></p>
-            </form>
-          </div>
-
-          <div id="gamificationCard" class="card p-5">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Gamificação</p>
-                <h3 class="mt-2 text-2xl font-black">Conquistas e missões</h3>
-                <p class="mt-2 text-sm text-zinc-500">Ganha XP extra, desbloqueia badges e mantém a tua streak diária.</p>
-              </div>
-              <button onclick="fetchGamification()" class="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
-            </div>
-
-            <div id="gamificationGuestBox" class="mt-5 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5 text-center hidden">
-              <p class="font-black">Cria conta para ganhar XP e badges.</p>
-              <p class="mt-2 text-sm text-zinc-400">As missões diárias desbloqueiam recompensas e níveis.</p>
-              <button onclick="openAuthModal('register')" class="mt-4 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Começar</button>
-            </div>
-
-            <div id="gamificationContent" class="mt-5 space-y-5">
-              <div class="rounded-3xl border border-white/10 bg-black/40 p-5">
-                <div class="flex items-center justify-between gap-4">
-                  <div>
-                    <p id="gameLevelName" class="text-xl font-black text-yellow-400">Nível</p>
-                    <p id="gameLevelHint" class="mt-1 text-sm text-zinc-500">A carregar progresso...</p>
-                  </div>
-                  <div class="text-right">
-                    <p id="gameStreak" class="text-2xl font-black">🔥 0</p>
-                    <p class="text-[10px] text-zinc-500 font-black uppercase">Streak</p>
-                  </div>
-                </div>
-                <div class="mt-4 h-3 rounded-full bg-white/10 overflow-hidden">
-                  <div id="gameProgressBar" class="h-full bg-yellow-400 rounded-full" style="width:0%"></div>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex items-center justify-between">
-                  <h4 class="font-black">Missões de hoje</h4>
-                  <span class="text-[10px] text-zinc-500 font-black uppercase">XP extra</span>
-                </div>
-                <div id="dailyMissionsList" class="mt-3 grid md:grid-cols-2 gap-3">
-                  <p class="text-sm text-zinc-500">A carregar missões...</p>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex items-center justify-between">
-                  <h4 class="font-black">Badges</h4>
-                  <span id="badgesCount" class="text-[10px] text-zinc-500 font-black uppercase">0 desbloqueadas</span>
-                </div>
-                <div id="badgesList" class="mt-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  <p class="text-sm text-zinc-500">A carregar conquistas...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <aside class="hidden lg:block">
-        <div class="sticky top-24 space-y-4">
-          <div class="card p-5">
-            <h3 class="font-black text-yellow-400">Modo beta</h3>
-            <p class="mt-2 text-sm text-zinc-400">Explorar é livre. Publicar, reagir e comentar exige conta.</p>
-          </div>
-          <div class="card p-5">
-            <h3 class="font-black">Regras rápidas</h3>
-            <ul class="mt-3 space-y-2 text-sm text-zinc-400">
-              <li>Não expor terceiros.</li>
-              <li>Não publicar dados pessoais.</li>
-              <li>Humor sim, bullying não.</li>
-            </ul>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-black/95 backdrop-blur-xl border-t border-white/10 px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2">
-      <div class="grid grid-cols-7 gap-1 text-[9px] font-black">
-        <button id="nav-feed" onclick="goTab('feed')" class="tab active rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🏠</span><span>Feed</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-clips" onclick="goTab('clips')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🎬</span><span>Clips</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-publish" onclick="goTab('publish')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl bg-yellow-400 text-black w-11 h-11 -mt-5 rounded-full flex items-center justify-center border-4 border-black">＋</span><span>Publicar</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-ranking" onclick="goTab('ranking')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🏆</span><span>Ranking</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-messages" onclick="goTab('messages')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">💬</span><span>Chat</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-notifications" onclick="goTab('notifications')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">🔔</span><span>Alertas</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
-        <button id="nav-profile" onclick="goTab('profile')" class="tab rounded-2xl py-2 flex flex-col items-center gap-1 text-zinc-500"><span class="text-xl">👤</span><span>Perfil</span><span class="tab-line w-6 h-0.5 bg-yellow-400 rounded-full opacity-0"></span></button>
+        <button class="btn" onclick="go('missions')">VER RESULTADOS</button>
       </div>
+    </section>
+
+    <!-- MISSÕES -->
+    <section class="screen" id="missions">
+      <div class="top">
+        <h2>MISSÕES</h2>
+        <div>🎁</div>
+      </div>
+
+      <div class="mission">
+        <strong>Publicar 1 mico</strong>
+        <p>1/1 +50 XP ✅</p>
+        <div class="bar"><div class="fill" style="width:100%"></div></div>
+      </div>
+
+      <div class="mission">
+        <strong>Votar em 10 histórias</strong>
+        <p>6/10 +30 XP</p>
+        <div class="bar"><div class="fill" style="width:60%"></div></div>
+      </div>
+
+      <div class="mission">
+        <strong>Apostar em 3 rodadas</strong>
+        <p>2/3 +40 XP</p>
+        <div class="bar"><div class="fill" style="width:66%"></div></div>
+      </div>
+
+      <div class="mission">
+        <strong>Ganhar 1 duelo</strong>
+        <p>0/1 +100 XP</p>
+        <div class="bar"><div class="fill" style="width:20%"></div></div>
+      </div>
+
+      <div class="card">
+        <h2>STREAK DE MERDAS 🔥</h2>
+        <p>7 dias seguidos +150 XP</p>
+      </div>
+    </section>
+
+    <!-- PERFIL -->
+    <section class="screen" id="profile">
+      <div class="top">
+        <h2>MEU PERFIL</h2>
+        <div>⚙️</div>
+      </div>
+
+      <div class="profile">
+        <div class="profile-avatar">🍅</div>
+        <h2>Ernesto Tomate</h2>
+        <p>Mestre do Mico</p>
+
+        <div class="card">
+          <strong>NÍVEL 17</strong>
+          <div class="bar"><div class="fill" style="width:78%"></div></div>
+          <p>7.850 / 10.000 XP</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><strong>152</strong><br><span class="small">Micos</span></div>
+          <div class="stat"><strong>38</strong><br><span class="small">Duelos</span></div>
+          <div class="stat"><strong>4.821</strong><br><span class="small">Reações</span></div>
+        </div>
+
+        <div class="badges">
+          <div class="badge">💀</div>
+          <div class="badge">🤡</div>
+          <div class="badge">🔥</div>
+          <div class="badge">🚽</div>
+        </div>
+
+        <div class="card">
+          <h2>🪙 12.540</h2>
+          <p>ShitCoins disponíveis</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <button onclick="go('feed')" id="nav-feed" class="active"><span>🏠</span>Feed</button>
+      <button onclick="go('arena')" id="nav-arena"><span>⚔️</span>Arena</button>
+      <button onclick="go('publish')" id="nav-publish"><span class="center-plus">+</span></button>
+      <button onclick="go('missions')" id="nav-missions"><span>🎁</span>Missões</button>
+      <button onclick="go('profile')" id="nav-profile"><span>👤</span>Perfil</button>
     </nav>
-  </section>
+  </main>
 
-  <!-- MODAL AUTH -->
+  <script>
+    function go(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
 
-  <div id="clipCommentsModal" class="modal fixed inset-0 z-[235] bg-black/70 backdrop-blur-xl px-3 py-3 items-end justify-center">
-    <div class="comment-sheet w-full max-w-xl rounded-t-[32px] md:rounded-[32px] border border-white/10 bg-zinc-950 shadow-2xl flex flex-col overflow-hidden">
-      <div class="p-5 border-b border-white/10 flex items-center justify-between">
-        <div>
-          <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Comentários</p>
-          <h3 class="text-2xl font-black">ShitClip™</h3>
-        </div>
-        <button onclick="closeClipComments()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
-      </div>
-      <div id="clipCommentsList" class="flex-1 overflow-y-auto p-5 space-y-3">
-        <p class="text-sm text-zinc-500">A carregar comentários...</p>
-      </div>
-      <div class="p-4 border-t border-white/10 flex gap-2">
-        <input id="clipCommentInput" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-        <button onclick="addClipCommentActive()" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Enviar</button>
-      </div>
-    </div>
-  </div>
+      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
 
-  <div id="authModal" class="modal fixed inset-0 z-[200] bg-black/85 backdrop-blur-xl px-5 py-8 overflow-y-auto items-center justify-center">
-    <div class="w-full max-w-md rounded-[32px] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">SHITAGRAM™</p>
-          <h3 id="authTitle" class="mt-2 text-3xl font-black">Entrar</h3>
-          <p id="authSubtitle" class="mt-2 text-sm text-zinc-500">Login real ligado ao Supabase Auth.</p>
-        </div>
-        <button onclick="closeAuthModal()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
-      </div>
-      <div class="mt-6 grid grid-cols-2 gap-2 rounded-2xl bg-black border border-white/10 p-1">
-        <button id="registerTab" onclick="switchAuthTab('register')" class="pill rounded-xl py-3 text-xs font-black uppercase">Registo</button>
-        <button id="loginTab" onclick="switchAuthTab('login')" class="pill rounded-xl py-3 text-xs font-black uppercase active">Login</button>
-      </div>
+      const map = {
+        feed: 'nav-feed',
+        arena: 'nav-arena',
+        publish: 'nav-publish',
+        missions: 'nav-missions',
+        profile: 'nav-profile'
+      };
 
-      <form id="registerForm" onsubmit="registerUser(event)" class="hidden mt-6 space-y-4">
-        <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Nome de utilizador</label><input id="registerUsername" required placeholder="ex: teu_nome" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"></div>
-        <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Email</label><input id="registerEmail" required type="email" placeholder="ex: contacto@email.com" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"></div>
-        <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Password</label><input id="registerPassword" required type="password" placeholder="mínimo 6 caracteres" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"></div>
-        <button id="registerBtn" class="w-full bg-yellow-400 text-black rounded-2xl py-4 text-sm font-black uppercase hover:bg-yellow-300">Criar conta</button>
-        <p id="registerMessage" class="hidden text-sm font-bold text-center"></p>
-      </form>
-
-      <form id="loginForm" onsubmit="loginUser(event)" class="mt-6 space-y-4">
-        <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Email</label><input id="loginEmail" required type="email" placeholder="ex: contacto@email.com" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"></div>
-        <div><label class="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Password</label><input id="loginPassword" required type="password" placeholder="A tua password" class="mt-2 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400"></div>
-        <button id="loginBtn" class="w-full bg-white text-black rounded-2xl py-4 text-sm font-black uppercase hover:bg-zinc-200">Entrar com email</button>
-        <p id="loginMessage" class="hidden text-sm font-bold text-center"></p>
-      </form>
-    </div>
-  </div>
-
-  
-  <div id="searchModal" class="sheet">
-    <div class="sheet-panel w-full rounded-t-[34px] border border-white/10 bg-zinc-950 p-5 shadow-2xl">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Pesquisar</p>
-          <h3 class="text-2xl font-black mt-1">Encontrar micos e pessoas</h3>
-        </div>
-        <button onclick="closeSearchModal()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10">✕</button>
-      </div>
-      <input id="searchInput" oninput="runSearch()" placeholder="Pesquisar utilizadores, micos ou categorias..." class="mt-5 w-full bg-black border border-white/10 rounded-2xl px-4 py-4 text-sm outline-none focus:border-yellow-400">
-      <div id="searchResults" class="mt-5 space-y-3"><p class="text-sm text-zinc-500">Escreve pelo menos 2 caracteres.</p></div>
-    </div>
-  </div>
-
-  <div id="publicProfileModal" class="sheet">
-    <div class="sheet-panel w-full rounded-t-[34px] border border-white/10 bg-zinc-950 p-5 shadow-2xl max-h-[88vh] overflow-y-auto">
-      <div class="flex justify-between items-start gap-3">
-        <div id="publicProfileHeader" class="min-w-0"></div>
-        <button onclick="closePublicProfile()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 shrink-0">✕</button>
-      </div>
-      <div id="publicProfileStats" class="grid grid-cols-3 gap-3 mt-5"></div>
-      <div id="publicProfilePosts" class="mt-5 space-y-3"></div>
-    </div>
-  </div>
-
-<script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-    const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
-    const APP_URL = "https://viraliqpt-eng.github.io/shitagram/";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let currentUser = null;
-    let currentProfile = null;
-    let currentTab = "feed";
-    let realtimeChannel = null;
-    const reservedUsernames = new Set(["admin","administrator","moderador","moderadora","suporte","support","shitagram","oficial","official","root","null","undefined"]);
-
-    function $(id){return document.getElementById(id)}
-    function escapeHtml(value){return String(value||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
-    function normalizeUsername(value){return String(value||"").trim().replace(/^@+/,"").toLowerCase().replace(/[^a-z0-9_.]/g,"");}
-    function validateUsername(username){
-      if(!/^[a-z0-9_.]{3,20}$/.test(username)) return "O nome de utilizador deve ter 3 a 20 caracteres: letras, números, _ ou .";
-      if(username.startsWith(".")||username.endsWith(".")||username.includes("..")) return "O nome de utilizador não pode começar/terminar com ponto nem ter dois pontos seguidos.";
-      if(reservedUsernames.has(username)) return "Este nome de utilizador está reservado.";
-      return "";
-    }
-    function showToast(text){const t=$("toast");$("toastText").innerText=text;t.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),3200);}
-    function setMessage(id,type,text){const el=$(id); if(!el) return; el.classList.remove("hidden","text-red-400","text-yellow-400","text-green-400"); el.classList.add(type==="error"?"text-red-400":type==="success"?"text-green-400":"text-yellow-400"); el.innerText=text;}
-    function setBusy(btnId,busy,text){const b=$(btnId);if(!b)return;if(busy){if(!b.dataset.oldText)b.dataset.oldText=b.innerText;b.innerText=text||"Aguarda...";b.disabled=true;b.classList.add("opacity-70");}else{b.innerText=b.dataset.defaultText||b.dataset.oldText||b.innerText;b.disabled=false;b.classList.remove("opacity-70");delete b.dataset.oldText;}}
-    function withTimeout(promise,ms=15000,label="Pedido"){return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" demorou demasiado. Verifica a ligação e tenta novamente.")),ms))]);}
-    function showSearchSoon(){showToast("Pesquisa em breve.");}
-
-    window.openAuthModal=function(tab="login"){$("authModal").classList.add("open");document.body.style.overflow="hidden";switchAuthTab(tab);};
-    window.closeAuthModal=function(){$("authModal").classList.remove("open");document.body.style.overflow="";};
-    window.switchAuthTab=function(tab){
-      const reg=$("registerForm"),log=$("loginForm"),rt=$("registerTab"),lt=$("loginTab"),title=$("authTitle"),sub=$("authSubtitle");
-      if(tab==="register"){reg.classList.remove("hidden");log.classList.add("hidden");rt.classList.add("active");lt.classList.remove("active");title.innerText="Criar conta";sub.innerText="É rápido, fácil e grátis.";}
-      else{reg.classList.add("hidden");log.classList.remove("hidden");rt.classList.remove("active");lt.classList.add("active");title.innerText="Entrar";sub.innerText="Bem-vindo de volta.";}
-    };
-
-    window.enterGuestMode=function(){localStorage.setItem("shitagram_seen_onboarding","1");$("welcomeScreen").classList.add("hidden");$("appShell").classList.remove("hidden");goTab("feed");fetchAll();};
-
-    function showCorrectShell(){
-      const seen=localStorage.getItem("shitagram_seen_onboarding")==="1";
-      if(currentUser || seen){$("welcomeScreen").classList.add("hidden");$("appShell").classList.remove("hidden");}
-      else{$("welcomeScreen").classList.remove("hidden");$("appShell").classList.add("hidden");}
-    }
-
-    window.goTab=function(tab){
-      if(tab==="admin" && !(currentProfile && ["admin","moderator"].includes(currentProfile.role||""))){
-        showToast("Área exclusiva para moderação.");
-        return;
-      }
-      currentTab=tab;
-      document.querySelectorAll(".app-tab").forEach(el=>el.classList.add("hidden"));
-      $("tab-"+tab)?.classList.remove("hidden");
-      document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
-      $("nav-"+tab)?.classList.add("active");
-      if(tab==="clips") { fetchClips(); setTimeout(setupReelAutoplay,120); }
-      if(tab==="ranking") fetchRanking();
-      if(tab==="notifications") fetchNotifications();
-      if(tab==="messages") fetchConversations();
-      if(tab==="admin") fetchAdminDashboard();
-      if(tab==="profile") { updateProfileUI(); fetchGamification(); }
-      if(tab==="publish") updatePublishGate();
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
-    window.gateAction=function(action){
-      if(currentUser){goTab("publish");return;}
-      showToast(`Para ${action}, cria conta grátis.`);
-      openAuthModal("register");
-    }
-
-    function updatePublishGate(){
-      const guest=!currentUser;
-      $("publishGate")?.classList.toggle("hidden",!guest);
-      $("publishForms")?.classList.toggle("hidden",guest);
-    }
-
-    async function ensureProfile(){
-      if(!currentUser){currentProfile=null;return;}
-      const {data:existing,error:e}=await supabase.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
-      if(existing){currentProfile=existing;return;}
-      const username=normalizeUsername(currentUser.user_metadata?.username||currentUser.email?.split("@")[0]||"user");
-      const safeUsername=validateUsername(username) ? "user_"+currentUser.id.slice(0,8) : username;
-      const {data:created,error}=await supabase.from("profiles").insert({id:currentUser.id,username:safeUsername,display_name:safeUsername,bio:"",xp:0,level:"Humano Real",posts_count:0}).select("*").single();
-      if(error){console.error(error); currentProfile={id:currentUser.id,username:safeUsername,display_name:safeUsername,xp:0,level:"Humano Real",posts_count:0}; return;}
-      currentProfile=created;
-    }
-
-    async function refreshSession(){
-      const {data}=await supabase.auth.getUser();
-      currentUser=data.user||null;
-      if(currentUser) await ensureProfile();
-      showCorrectShell();
-      updateAuthUI();
-      updateProfileUI();
-      fetchGamification();
-      updatePublishGate();
-    }
-
-    function updateAuthUI(){
-      const logged=!!currentUser;
-      const moderator = !!(currentProfile && ["admin","moderator"].includes(currentProfile.role||""));
-      $("sideLoginBtn")?.classList.toggle("hidden",logged);
-      $("sideLogoutBtn")?.classList.toggle("hidden",!logged);
-      $("profileLogoutBtn")?.classList.toggle("hidden",!logged);
-      $("topAdminBtn")?.classList.toggle("hidden",!moderator);
-      $("sideAdminNav")?.classList.toggle("hidden",!moderator);
-    }
-
-    function updateProfileUI(){
-      const fields=[$("profileUsernameInput"),$("profileDisplayNameInput"),$("profileBioInput")];
-      if(!currentUser||!currentProfile){
-        $("profileUsernameView").innerText="@visitante";$("profileEmailView").innerText="a explorar micos";$("profileLevelView").innerText="Visitante";$("profileXpView").innerText="0";$("profilePostsView").innerText="0";$("profileClipsView").innerText="0"; if($("profileAvatarView")) $("profileAvatarView").innerHTML="💩";
-        $("profileGuestBox")?.classList.remove("hidden");$("profileForm")?.classList.add("hidden");return;
-      }
-      $("profileUsernameView").innerText="@"+(currentProfile.username||"user");
-      $("profileEmailView").innerText=currentUser.email||"";
-      $("profileLevelView").innerText=currentProfile.level||"Humano Real";
-      $("profileXpView").innerText=currentProfile.xp||0;
-      $("profilePostsView").innerText=currentProfile.posts_count||0;
-      $("profileClipsView").innerText=currentProfile.clips_count||0;
-      const av=$("profileAvatarView");
-      if(av){av.innerHTML=currentProfile.avatar_url?`<img src="${escapeHtml(currentProfile.avatar_url)}" class="w-full h-full object-cover" alt="Avatar">`:"💩";}
-      fields[0].value=currentProfile.username||"";fields[1].value=currentProfile.display_name||"";fields[2].value=currentProfile.bio||"";
-      $("profileGuestBox")?.classList.add("hidden");$("profileForm")?.classList.remove("hidden");
-    }
-
-    window.registerUser=async function(event){
-      event.preventDefault();
-      const username=normalizeUsername($("registerUsername").value);
-      const email=$("registerEmail").value.trim();
-      const password=$("registerPassword").value.trim();
-      const usernameError=validateUsername(username);
-      if(usernameError){setMessage("registerMessage","error",usernameError);return;}
-      if(password.length<6){setMessage("registerMessage","error","A password deve ter pelo menos 6 caracteres.");return;}
-      setMessage("registerMessage","info","A criar conta...");
-      setBusy("registerBtn",true,"A criar...");
-
-      let finished=false;
-      const safetyTimer=setTimeout(()=>{
-        if(!finished){
-          setBusy("registerBtn",false);
-          $("registerBtn").innerText="Criar conta";
-          setMessage("registerMessage","error","O pedido está a demorar demasiado. Se a conta aparecer no Supabase, tenta fazer login. Caso contrário, atualiza a página e tenta novamente.");
-        }
-      },8000);
-
-      try{
-        console.log("[SHITAGRAM vReels1] signUp start", email);
-        const {data,error}=await withTimeout(
-          supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
-          8000,
-          "Registo"
-        );
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vReels1] signUp result", {data,error});
-        if(error){
-          setMessage("registerMessage","error",error.message);
-          return;
-        }
-        setMessage("registerMessage","success","Conta criada. Confirma o email se for pedido e entra com o teu email.");
-        showToast("Conta criada. Agora faz login.");
-        event.target.reset();
-        switchAuthTab("login");
-        $("loginEmail").value=email;
-      }catch(err){
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vReels1] signUp error",err);
-        setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
-      }finally{
-        clearTimeout(safetyTimer);
-        setBusy("registerBtn",false);
-        $("registerBtn").innerText="Criar conta";
-      }
-    };
-
-    window.loginUser=async function(event){
-      event.preventDefault();
-      const email=$("loginEmail").value.trim();
-      const password=$("loginPassword").value.trim();
-      setMessage("loginMessage","info","A entrar...");
-      setBusy("loginBtn",true,"A entrar...");
-
-      let finished=false;
-      const safetyTimer=setTimeout(()=>{
-        if(!finished){
-          setBusy("loginBtn",false);
-          $("loginBtn").innerText="Entrar com email";
-          setMessage("loginMessage","error","O login está a demorar demasiado. Atualiza a página e tenta novamente. Se continuar, verifica a password ou confirmação do email.");
-        }
-      },8000);
-
-      try{
-        console.log("[SHITAGRAM vReels1] login start", email);
-        const {data,error}=await withTimeout(
-          supabase.auth.signInWithPassword({email,password}),
-          8000,
-          "Login"
-        );
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vReels1] login result", {data,error});
-        if(error){
-          setMessage("loginMessage","error",error.message);
-          return;
-        }
-
-        currentUser=data.user;
-        try{
-          await withTimeout(ensureProfile(),5000,"Carregamento do perfil");
-        }catch(profileErr){
-          console.warn("[SHITAGRAM vReels1] profile load skipped",profileErr);
-        }
-
-        localStorage.setItem("shitagram_seen_onboarding","1");
-        closeAuthModal();
-        showCorrectShell();
-        updateAuthUI();
-        updateProfileUI();
-        updatePublishGate();
-        Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications()]);
-        goTab("feed");
-        showToast("Login feito com sucesso.");
-      }catch(err){
-        finished=true;
-        clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vReels1] login error",err);
-        setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
-      }finally{
-        clearTimeout(safetyTimer);
-        setBusy("loginBtn",false);
-        $("loginBtn").innerText="Entrar com email";
-      }
-    };
-
-    window.logoutUser=async function(){
-      await supabase.auth.signOut();currentUser=null;currentProfile=null;updateAuthUI();updateProfileUI();updatePublishGate();showToast("Sessão terminada.");goTab("feed");
-    };
-
-
-    function levelInfoFromXp(xp){
-      xp = Number(xp||0);
-      const levels=[
-        {min:0,name:"Nível 1 — Recém-Envergonhado",next:500},
-        {min:500,name:"Nível 2 — Sobrevivente Social",next:1500},
-        {min:1500,name:"Nível 3 — Mico Profissional",next:3500},
-        {min:3500,name:"Nível 4 — Lenda da Vergonha",next:7500},
-        {min:7500,name:"Nível 5 — Património Nacional do Embaraço",next:null}
-      ];
-      let current=levels[0];
-      for(const level of levels){ if(xp>=level.min) current=level; }
-      const next=current.next;
-      const percent = next ? Math.max(0,Math.min(100,((xp-current.min)/(next-current.min))*100)) : 100;
-      return {name:current.name,next,percent,remaining:next?Math.max(0,next-xp):0};
-    }
-
-    async function ensureDailyMissions(){
-      if(!currentUser) return;
-      try{ await supabase.rpc("refresh_daily_missions"); }catch(err){ console.warn("refresh_daily_missions",err); }
-    }
-
-    window.fetchGamification=async function(){
-      const guest=!currentUser;
-      $("gamificationGuestBox")?.classList.toggle("hidden",!guest);
-      $("gamificationContent")?.classList.toggle("hidden",guest);
-      if(guest) return;
-
-      const xp=Number(currentProfile?.xp||0);
-      const level=levelInfoFromXp(xp);
-      if($("gameLevelName")) $("gameLevelName").innerText=currentProfile?.level_name || currentProfile?.level || level.name;
-      if($("gameLevelHint")) $("gameLevelHint").innerText=level.next ? `${xp} XP · faltam ${level.remaining} XP para o próximo nível` : `${xp} XP · nível máximo beta`;
-      if($("gameProgressBar")) $("gameProgressBar").style.width=`${level.percent}%`;
-      if($("gameStreak")) $("gameStreak").innerText=`🔥 ${currentProfile?.current_streak||0}`;
-
-      await ensureDailyMissions();
-
-      const [{data:missions,error:missionsError},{data:badges,error:badgesError}] = await Promise.all([
-        supabase.from("user_daily_missions").select("*, daily_missions(*)").eq("user_id",currentUser.id).order("created_at",{ascending:true}),
-        supabase.from("badges").select("*, user_badges!left(user_id,unlocked_at)").order("sort_order",{ascending:true})
-      ]);
-
-      if($("dailyMissionsList")){
-        if(missionsError){$("dailyMissionsList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(missionsError.message)}</p>`;}
-        else if(!missions||!missions.length){$("dailyMissionsList").innerHTML=`<p class="text-sm text-zinc-500">Ainda não há missões. Atualiza ou volta amanhã.</p>`;}
-        else{
-          $("dailyMissionsList").innerHTML=missions.map(m=>{
-            const mission=m.daily_missions||{};
-            const done=!!m.completed_at;
-            const target=Number(mission.target||1);
-            const progress=Math.min(Number(m.progress||0),target);
-            const pct=Math.round((progress/target)*100);
-            return `<div class="rounded-3xl border ${done?"border-green-400/25 bg-green-400/10":"border-white/10 bg-black/35"} p-4">
-              <div class="flex items-start justify-between gap-3">
-                <div>
-                  <p class="font-black">${escapeHtml(mission.icon||"🎯")} ${escapeHtml(mission.title||"Missão")}</p>
-                  <p class="mt-1 text-xs text-zinc-500">${escapeHtml(mission.description||"")}</p>
-                </div>
-                <span class="rounded-full ${done?"bg-green-400 text-black":"bg-yellow-400 text-black"} px-3 py-1 text-[10px] font-black">+${escapeHtml(mission.reward_xp||0)} XP</span>
-              </div>
-              <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full ${done?"bg-green-400":"bg-yellow-400"}" style="width:${pct}%"></div></div>
-              <p class="mt-2 text-[11px] text-zinc-500 font-bold">${progress}/${target} ${done?"· concluída":"· em progresso"}</p>
-            </div>`;
-          }).join("");
-        }
-      }
-
-      if($("badgesList")){
-        if(badgesError){$("badgesList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(badgesError.message)}</p>`;}
-        else{
-          const unlocked=(badges||[]).filter(b=>(b.user_badges||[]).some(ub=>ub.user_id===currentUser.id));
-          $("badgesCount").innerText=`${unlocked.length} desbloqueadas`;
-          $("badgesList").innerHTML=(badges||[]).map(b=>{
-            const isUnlocked=(b.user_badges||[]).some(ub=>ub.user_id===currentUser.id);
-            return `<div class="rounded-3xl border ${isUnlocked?"border-yellow-400/30 bg-yellow-400/10":"border-white/10 bg-black/35 opacity-55"} p-4">
-              <div class="text-3xl">${escapeHtml(b.icon||"🏅")}</div>
-              <p class="mt-3 font-black">${escapeHtml(b.name||"Badge")}</p>
-              <p class="mt-1 text-xs text-zinc-500">${escapeHtml(b.description||"")}</p>
-              <p class="mt-3 text-[10px] font-black uppercase ${isUnlocked?"text-yellow-400":"text-zinc-600"}">${isUnlocked?"Desbloqueada":"Bloqueada"}</p>
-            </div>`;
-          }).join("") || `<p class="text-sm text-zinc-500">Ainda não há badges configuradas.</p>`;
-        }
+      if (map[id]) {
+        document.getElementById(map[id]).classList.add('active');
       }
     }
 
-    async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications(), currentUser ? fetchConversations() : Promise.resolve(), currentUser ? fetchGamification() : Promise.resolve()]);}
+    function selectBet(letter) {
+      document.querySelectorAll('.bet-option').forEach(el => {
+        el.style.borderColor = 'rgba(255,255,255,.1)';
+        el.style.boxShadow = 'none';
+      });
 
-    function avatarMarkup(profile,size="w-11 h-11",textSize="text-2xl"){
-      const url=profile?.avatar_url;
-      if(url) return `<img src="${escapeHtml(url)}" alt="Avatar de @${escapeHtml(profile?.username||"user")}" class="${size} rounded-full avatar shrink-0 border border-yellow-400/30">`;
-      return `<div class="${size} rounded-full avatar flex items-center justify-center ${textSize} shrink-0 border border-yellow-400/30">💩</div>`;
+      event.currentTarget.style.borderColor = '#ff3fb7';
+      event.currentTarget.style.boxShadow = '0 0 18px rgba(255,63,183,.35)';
     }
-
-    function renderStories(profiles){
-      const seen=new Set();
-      const base=(profiles||[]).filter(p=>p?.id && !seen.has(p.id) && seen.add(p.id)).slice(0,10);
-      $("storiesList").innerHTML = base.length ? base.map(p=>`<button onclick="openPublicProfile('${p.id}')" class="min-w-[76px] text-center">${avatarMarkup(p,"w-16 h-16","text-3xl")}<p class="mt-2 text-[11px] truncate max-w-[76px]">@${escapeHtml(p.username||"user")}</p><p class="text-[10px] text-yellow-400">XP ${escapeHtml(p.xp||0)}</p></button>`).join("") : "";
-    }
-
-    window.fetchPosts=async function(){
-      const box=$("postsList"); if(!box)return; box.innerHTML=`<p class="text-sm text-zinc-500">A carregar posts...</p>`;
-      const {data,error}=await supabase.from("posts").select("*,profiles(id,username,display_name,xp,avatar_url,bio)").eq("status","active").order("created_at",{ascending:false}).limit(30);
-      if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-      const posts=data||[];
-      const profiles=posts.map(p=>p.profiles).filter(Boolean); renderStories(profiles);
-      if(!posts.length){box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🙂</div><p class="mt-3 text-sm text-zinc-500">Ainda não há posts reais. Publica o primeiro mico.</p></div>`;return;}
-
-      const ids=posts.map(p=>p.id);
-      const authorIds=[...new Set(posts.map(p=>p.user_id).filter(Boolean))];
-      const [reactionsRes, commentsRes, myReactionsRes, followingRes] = await Promise.allSettled([
-        supabase.from("post_reactions").select("post_id").in("post_id",ids),
-        supabase.from("comments").select("id,post_id,user_id,body,created_at,profiles(username,display_name,avatar_url)").in("post_id",ids).eq("status","active").order("created_at",{ascending:true}),
-        currentUser ? supabase.from("post_reactions").select("post_id").eq("user_id",currentUser.id).in("post_id",ids) : Promise.resolve({data:[]}),
-        currentUser && authorIds.length ? supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",authorIds) : Promise.resolve({data:[]})
-      ]);
-
-      const reactions=(reactionsRes.status==="fulfilled" && !reactionsRes.value.error) ? (reactionsRes.value.data||[]) : [];
-      const comments=(commentsRes.status==="fulfilled" && !commentsRes.value.error) ? (commentsRes.value.data||[]) : [];
-      const myReactions=(myReactionsRes.status==="fulfilled" && !myReactionsRes.value.error) ? (myReactionsRes.value.data||[]) : [];
-
-      const reactionCount={}; reactions.forEach(r=>reactionCount[r.post_id]=(reactionCount[r.post_id]||0)+1);
-      const commentCount={}; comments.forEach(c=>commentCount[c.post_id]=(commentCount[c.post_id]||0)+1);
-      const mySet=new Set(myReactions.map(r=>r.post_id));
-      const commentsByPost={}; comments.forEach(c=>{(commentsByPost[c.post_id] ||= []).push(c);});
-
-      box.innerHTML=posts.map(p=>renderPostCard(p,reactionCount[p.id]||0,commentCount[p.id]||0,mySet.has(p.id),commentsByPost[p.id]||[])).join("");
-    };
-
-    function renderPostCard(p,reactions,commentsCount,reacted,comments){
-      const latest=comments.slice(-3);
-      return `<article class="card overflow-hidden">
-        <div class="p-4">
-          <div class="flex items-start justify-between">
-            <div class="flex gap-3 items-center min-w-0"><button onclick="openPublicProfile(\'${p.user_id}\')" class="shrink-0">${avatarMarkup(p.profiles)}</button><div class="min-w-0"><button onclick="openPublicProfile(\'${p.user_id}\')" class="text-left text-sm font-black hover:text-yellow-400">@${escapeHtml(p.profiles?.username||"user")}</button> <span class="text-zinc-600 font-medium text-sm">· ${timeAgo(p.created_at)}</span><p class="mt-1 text-[10px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(p.category||"Mico Geral")}</p></div></div>
-            <div class="flex flex-col items-end gap-2">${followButton(p.user_id)}<span class="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-[10px] text-purple-200 font-black">Trauma ${escapeHtml(p.trauma_level||5)}</span></div>
-          </div>
-          <h4 class="mt-4 text-lg font-black">${escapeHtml(p.title)}</h4>
-          <p class="mt-2 text-sm text-zinc-300 leading-relaxed">${escapeHtml(p.description)}</p>
-        </div>
-        <div class="post-img mx-4 rounded-3xl flex items-center justify-center text-6xl">🙈</div>
-        <div class="px-4 pt-4 flex items-center justify-between text-sm">
-          <button onclick="reactPost('${p.id}')" class="font-black ${reacted?'text-yellow-400':'text-zinc-300'}">💩 ${reactions}</button>
-          <button onclick="toggleComments('${p.id}')" class="font-black text-zinc-300">💬 ${commentsCount}</button>
-          <button onclick="shareCurrent()" class="font-black text-zinc-300">↗ Partilhar</button>
-          <button onclick="reportContent('post','${p.id}')" class="font-black text-zinc-500">⋯</button>
-        </div>
-        <div id="comments-${p.id}" class="hidden mx-4 my-4 rounded-3xl border border-white/10 bg-black/35 p-4">
-          <div class="space-y-3">${latest.length ? latest.map(c=>`<div class="rounded-2xl bg-white/[.04] border border-white/10 px-4 py-3"><div class="flex gap-2 items-start">${avatarMarkup(c.profiles,"w-8 h-8","text-base")}<div><p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p><p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p></div></div></div>`).join("") : `<p class="text-sm text-zinc-500">Ainda sem comentários. Sê o primeiro a responder.</p>`}</div>
-          <div class="mt-4 flex gap-2">
-            <input id="commentInput-${p.id}" maxlength="240" placeholder="Escreve um comentário..." class="flex-1 min-w-0 bg-black border border-white/10 rounded-2xl px-4 py-3 text-sm outline-none focus:border-yellow-400">
-            <button onclick="addComment('${p.id}')" class="rounded-2xl bg-yellow-400 px-4 text-black text-xs font-black uppercase">Enviar</button>
-          </div>
-        </div>
-      </article>`;
-    }
-
-
-    function followButton(userId){
-      if(!userId || (currentUser && currentUser.id===userId)) return "";
-      const active=followingIds.has(userId);
-      return `<button onclick="toggleFollow('${userId}')" class="rounded-full ${active?'bg-white/10 text-zinc-200 border border-white/10':'bg-yellow-400 text-black'} px-3 py-1 text-[10px] font-black uppercase">${active?'A seguir':'Seguir'}</button>`;
-    }
-
-    window.toggleFollow=async function(userId){
-      if(!currentUser){gateAction("seguir utilizadores");return;}
-      if(!userId || userId===currentUser.id)return;
-      const already=followingIds.has(userId);
-      if(already){
-        const {error}=await supabase.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",userId);
-        if(error){showToast("Erro ao deixar de seguir: "+error.message);return;}
-        followingIds.delete(userId);showToast("Deixaste de seguir.");
-      }else{
-        const {error}=await supabase.from("follows").insert({follower_id:currentUser.id,following_id:userId});
-        if(error){showToast("Erro ao seguir: "+error.message);return;}
-        followingIds.add(userId);showToast("Agora estás a seguir.");
-      }
-      fetchPosts();fetchRanking();updateProfileUI();
-    }
-
-    window.reactPost=async function(postId){
-      if(!currentUser){gateAction("reagir a este mico");return;}
-      try{
-        const {data:existing,error:findError}=await supabase.from("post_reactions").select("id").eq("post_id",postId).eq("user_id",currentUser.id).maybeSingle();
-        if(findError){showToast("Erro ao reagir: "+findError.message);return;}
-        if(existing){
-          const {error}=await supabase.from("post_reactions").delete().eq("id",existing.id).eq("user_id",currentUser.id);
-          if(error){showToast("Erro ao remover reação: "+error.message);return;}
-        }else{
-          const {error}=await supabase.from("post_reactions").insert({post_id:postId,user_id:currentUser.id,reaction_type:"same"});
-          if(error){showToast("Erro ao reagir: "+error.message);return;}
-        }
-        await fetchPosts();
-      }catch(err){console.error(err);showToast("Erro inesperado ao reagir.");}
-    };
-
-    window.toggleComments=function(postId){
-      const el=$("comments-"+postId); if(!el)return;
-      el.classList.toggle("hidden");
-      if(!el.classList.contains("hidden")){
-        setTimeout(()=>$("commentInput-"+postId)?.focus(),80);
-      }
-    };
-
-    window.addComment=async function(postId){
-      if(!currentUser){gateAction("comentar");return;}
-      const input=$("commentInput-"+postId); const body=(input?.value||"").trim();
-      if(body.length<2){showToast("Escreve pelo menos 2 caracteres.");return;}
-      try{
-        const {error}=await supabase.from("comments").insert({post_id:postId,user_id:currentUser.id,body,status:"active"});
-        if(error){showToast("Erro ao comentar: "+error.message);return;}
-        input.value="";
-        await fetchPosts();
-        setTimeout(()=>{$("comments-"+postId)?.classList.remove("hidden");},80);
-      }catch(err){console.error(err);showToast("Erro inesperado ao comentar.");}
-    };
-
-    function timeAgo(value){if(!value)return ""; const d=(Date.now()-new Date(value).getTime())/1000; if(d<60)return "agora"; if(d<3600)return Math.floor(d/60)+"m"; if(d<86400)return Math.floor(d/3600)+"h"; return Math.floor(d/86400)+"d";}
-
-    window.switchPublishMode=function(mode){
-      $("postModeBtn").classList.toggle("active",mode==="post");$("clipModeBtn").classList.toggle("active",mode==="clip");
-      $("postForm").classList.toggle("hidden",mode!=="post");$("clipForm").classList.toggle("hidden",mode!=="clip");
-    }
-
-    window.publishPost=async function(event){
-      event.preventDefault(); if(!currentUser){gateAction("publicar");return;}
-      const title=$("postTitle").value.trim(),description=$("postDescription").value.trim();
-      if(!title||!description){setMessage("publishMessage","error","Preenche o título e descrição.");return;}
-      setMessage("publishMessage","info","A publicar...");setBusy("publishPostBtn",true,"A publicar...");
-      try{
-        const {error}=await supabase.from("posts").insert({user_id:currentUser.id,title,description,category:$("postCategory").value,trauma_level:Number($("postTrauma").value),status:"active"});
-        if(error){setMessage("publishMessage","error",error.message);return;}
-        setMessage("publishMessage","success","Publicado com sucesso.");event.target.reset();await ensureProfile();updateProfileUI();await fetchPosts();goTab("feed");
-      }catch(err){console.error(err);setMessage("publishMessage","error","Erro inesperado ao publicar.");}
-      finally{setBusy("publishPostBtn",false);}
-    }
-
-    function getVideoDuration(file){return new Promise((resolve,reject)=>{const video=document.createElement("video");video.preload="metadata";video.onloadedmetadata=()=>{URL.revokeObjectURL(video.src);resolve(video.duration);};video.onerror=reject;video.src=URL.createObjectURL(file);});}
-    $("clipFile")?.addEventListener("change",async function(){const file=this.files?.[0]; const hint=$("clipDurationHint"); if(!file||!hint)return; try{const d=await getVideoDuration(file); hint.innerText=`Duração detetada: ${d.toFixed(1)}s. ${d>=5&&d<=10.5?"Pronto para publicar.":"Tem de ter entre 5 e 10 segundos."}`; hint.className=d>=5&&d<=10.5?"text-xs text-green-400":"text-xs text-red-400";}catch{hint.innerText="Não foi possível ler a duração do vídeo."; hint.className="text-xs text-red-400";}});
-
-    window.publishClip=async function(event){
-      event.preventDefault(); if(!currentUser){gateAction("publicar clip");return;}
-      const file=$("clipFile").files?.[0]; if(!file){setMessage("clipMessage","error","Escolhe um vídeo.");return;}
-      if(!["video/mp4","video/webm","video/quicktime"].includes(file.type)){setMessage("clipMessage","error","Formato aceite: MP4, WebM ou MOV.");return;}
-      if(file.size>30*1024*1024){setMessage("clipMessage","error","O vídeo deve ter no máximo 30 MB.");return;}
-      const duration=await getVideoDuration(file); if(duration<5||duration>10.5){setMessage("clipMessage","error","O vídeo deve ter entre 5 e 10 segundos.");return;}
-      setMessage("clipMessage","info","A enviar vídeo...");setBusy("publishClipBtn",true,"A enviar...");
-      const ext=(file.name.split(".").pop()||"mp4").toLowerCase(); const path=`${currentUser.id}/${Date.now()}.${ext}`;
-      try{
-        const {error:uploadError}=await supabase.storage.from("clips").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
-        if(uploadError){setMessage("clipMessage","error",uploadError.message);return;}
-        const {data:pub}=supabase.storage.from("clips").getPublicUrl(path);
-        const {error}=await supabase.from("clips").insert({user_id:currentUser.id,video_url:pub.publicUrl,storage_path:path,caption:$("clipCaption").value.trim(),category:$("clipCategory").value,trauma_level:Number($("clipTrauma").value),status:"active"});
-        if(error){await supabase.storage.from("clips").remove([path]);setMessage("clipMessage","error",error.message);return;}
-        setMessage("clipMessage","success","ShitClip™ publicado.");event.target.reset();await fetchClips();goTab("clips");
-      }catch(err){console.error(err);setMessage("clipMessage","error","Erro inesperado ao publicar clip.");}
-      finally{setBusy("publishClipBtn",false);}
-    }
-
-    let activeClipId = null;
-    let clipCommentsCache = {};
-    let clipReelObserver = null;
-
-    function setupReelAutoplay(){
-      const videos=[...document.querySelectorAll(".reel-video")];
-      if(clipReelObserver){clipReelObserver.disconnect();}
-      clipReelObserver=new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{
-          const v=entry.target;
-          if(entry.isIntersecting && entry.intersectionRatio>0.65){
-            v.muted=true;
-            v.play().catch(()=>{});
-          }else{
-            v.pause();
-          }
-        });
-      },{threshold:[0.35,0.65,0.9]});
-      videos.forEach(v=>clipReelObserver.observe(v));
-    }
-
-    window.fetchClips=async function(){
-      const box=$("clipsList"); if(!box)return;
-      box.innerHTML=`<div class="card p-8 text-center"><p class="text-sm text-zinc-500">A carregar ShitClips™...</p></div>`;
-      const {data,error}=await supabase.from("clips").select("id,user_id,video_url,storage_path,caption,category,trauma_level,status,created_at").eq("status","active").order("created_at",{ascending:false}).limit(30);
-      if(error){box.innerHTML=`<p class="text-sm text-red-400">Erro ao carregar ShitClips™: ${escapeHtml(error.message)}</p>`;return;}
-      const clips=data||[];
-      if(!clips.length){
-        $("clipsHotList").innerHTML=`<p class="text-sm text-zinc-500">Sem destaques ainda.</p>`;
-        box.className="grid gap-4";
-        box.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🎬</div><p class="mt-3 text-sm text-zinc-500">Ainda não há ShitClips™. Publica o primeiro.</p><button onclick="goTab('publish');switchPublishMode('clip')" class="mt-5 rounded-2xl bg-yellow-400 px-5 py-3 text-black text-xs font-black uppercase">Publicar clip</button></div>`;
-        return;
-      }
-
-      const clipIds=clips.map(c=>c.id);
-      const authorIds=[...new Set(clips.map(c=>c.user_id).filter(Boolean))];
-
-      const [profilesRes,reactionsRes,commentsRes,myReactionsRes,followingRes] = await Promise.allSettled([
-        authorIds.length ? supabase.from("profiles").select("id,username,display_name,avatar_url,xp,bio").in("id",authorIds) : Promise.resolve({data:[]}),
-        supabase.from("clip_reactions").select("clip_id").in("clip_id",clipIds),
-        supabase.from("clip_comments").select("id,clip_id,user_id,body,created_at,profiles(username,display_name,avatar_url)").in("clip_id",clipIds).eq("status","active").order("created_at",{ascending:true}),
-        currentUser ? supabase.from("clip_reactions").select("clip_id").eq("user_id",currentUser.id).in("clip_id",clipIds) : Promise.resolve({data:[]}),
-        currentUser && authorIds.length ? supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",authorIds) : Promise.resolve({data:[]})
-      ]);
-
-      const profiles=(profilesRes.value?.data)||[];
-      const reactions=(reactionsRes.value?.data)||[];
-      const comments=(commentsRes.value?.data)||[];
-      const myReactions=(myReactionsRes.value?.data)||[];
-      const follows=(followingRes.value?.data)||[];
-
-      const profileMap={}; profiles.forEach(p=>profileMap[p.id]=p);
-      followingIds=new Set(follows.map(f=>f.following_id));
-
-      const reactionCount={}; reactions.forEach(r=>reactionCount[r.clip_id]=(reactionCount[r.clip_id]||0)+1);
-      const commentCount={}; comments.forEach(c=>commentCount[c.clip_id]=(commentCount[c.clip_id]||0)+1);
-      const mySet=new Set(myReactions.map(r=>r.clip_id));
-      const commentsByClip={}; comments.forEach(c=>{(commentsByClip[c.clip_id] ||= []).push(c);});
-      clipCommentsCache=commentsByClip;
-
-      const hot=clips.slice().sort((a,b)=>{
-        const sa=(reactionCount[a.id]||0)*3+(commentCount[a.id]||0)*2+(Number(a.trauma_level)||0);
-        const sb=(reactionCount[b.id]||0)*3+(commentCount[b.id]||0)*2+(Number(b.trauma_level)||0);
-        return sb-sa;
-      }).slice(0,8);
-
-      $("clipsHotList").innerHTML=hot.map((c,i)=>{
-        const p=profileMap[c.user_id]||{};
-        return `<button onclick="document.getElementById('clip-${c.id}')?.scrollIntoView({behavior:'smooth',block:'start'})" class="min-w-[164px] rounded-3xl border border-white/10 bg-black/40 p-3 text-left hover:border-yellow-400/40">
-          <div class="flex items-center justify-between"><span class="text-xl">${i===0?'🔥':'🎬'}</span><span class="text-[10px] text-yellow-400 font-black">💩 ${reactionCount[c.id]||0}</span></div>
-          <p class="mt-3 text-xs font-black truncate">@${escapeHtml(p.username||"utilizador")}</p>
-          <p class="mt-1 text-[11px] text-zinc-400 line-clamp-2">${escapeHtml(c.caption||"ShitClip™ em destaque")}</p>
-        </button>`;
-      }).join("");
-
-      box.className="reels-feed";
-      box.innerHTML=clips.map(c=>renderClipReel(c,profileMap[c.user_id]||{},reactionCount[c.id]||0,commentCount[c.id]||0,mySet.has(c.id),commentsByClip[c.id]||[])).join("");
-      setTimeout(setupReelAutoplay,150);
-    }
-
-    function renderClipReel(clip,p,reactions,commentsCount,reacted,comments){
-      const owner=currentUser&&currentUser.id===clip.user_id;
-      const caption=clip.caption||"Um mico em vídeo, para veres e fingires que não te identificaste.";
-      return `<article id="clip-${clip.id}" class="reel-card">
-        <video src="${escapeHtml(clip.video_url)}" controls playsinline muted loop preload="metadata" class="reel-video"></video>
-        <div class="reel-gradient"></div>
-
-        <div class="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-          <span class="rounded-full bg-black/55 border border-white/10 px-4 py-2 text-[10px] font-black uppercase text-yellow-400 backdrop-blur-xl">🔥 Em alta</span>
-          <span class="rounded-full bg-red-500/20 border border-red-400/30 px-4 py-2 text-[10px] font-black text-red-100 backdrop-blur-xl">Trauma ${escapeHtml(clip.trauma_level||5)}</span>
-        </div>
-
-        <div class="reel-actions">
-          <button onclick="toggleClipReaction('${clip.id}')" class="reel-action ${reacted?'text-yellow-400':'text-white'}" title="Também me aconteceu">💩</button>
-          <p class="-mt-3 text-center text-[11px] font-black">${reactions}</p>
-          <button onclick="openClipComments('${clip.id}')" class="reel-action" title="Comentários">💬</button>
-          <p class="-mt-3 text-center text-[11px] font-black">${commentsCount}</p>
-          <button onclick="shareCurrent()" class="reel-action" title="Partilhar">↗</button>
-          <button onclick="reportContent('clip','${clip.id}')" class="reel-action text-sm" title="Denunciar">⚠</button>
-          ${owner?`<button onclick="deleteClip('${clip.id}','${escapeHtml(clip.storage_path||"")}')" class="reel-action text-sm text-red-300" title="Excluir">🗑</button>`:""}
-        </div>
-
-        <div class="reel-info">
-          <div class="flex items-center gap-3 min-w-0">
-            <button onclick="openPublicProfile('${clip.user_id}')" class="shrink-0">${avatarMarkup(p,"w-12 h-12","text-2xl")}</button>
-            <div class="min-w-0">
-              <button onclick="openPublicProfile('${clip.user_id}')" class="text-left font-black hover:text-yellow-400">@${escapeHtml(p.username||"utilizador")}</button>
-              <p class="text-[11px] text-yellow-400 font-black uppercase tracking-widest">${escapeHtml(clip.category||"Mico Geral")} · ${timeAgo(clip.created_at)}</p>
-            </div>
-            <div class="ml-auto">${followButton(clip.user_id)}</div>
-          </div>
-          <p class="mt-4 text-sm text-zinc-100 leading-relaxed">${escapeHtml(caption)}</p>
-          <div class="mt-4 flex items-center gap-2 text-[11px] text-zinc-300 font-black">
-            <span class="rounded-full bg-white/10 border border-white/10 px-3 py-1">💩 ${reactions} também sentiram isto</span>
-            <button onclick="openClipComments('${clip.id}')" class="rounded-full bg-white/10 border border-white/10 px-3 py-1">💬 ${commentsCount}</button>
-          </div>
-        </div>
-      </article>`;
-    }
-
-    window.toggleClipReaction=async function(clipId){
-      if(!currentUser){gateAction("reagir ao ShitClip™");return;}
-      try{
-        const {data:existing,error:findError}=await supabase.from("clip_reactions").select("id").eq("clip_id",clipId).eq("user_id",currentUser.id).maybeSingle();
-        if(findError){showToast("Erro ao reagir: "+findError.message);return;}
-        if(existing){
-          const {error}=await supabase.from("clip_reactions").delete().eq("id",existing.id).eq("user_id",currentUser.id);
-          if(error){showToast("Erro ao remover reação: "+error.message);return;}
-        }else{
-          const {error}=await supabase.from("clip_reactions").insert({clip_id:clipId,user_id:currentUser.id,reaction_type:"same"});
-          if(error){showToast("Erro ao reagir: "+error.message);return;}
-        }
-        await fetchClips();
-      }catch(err){console.error(err);showToast("Erro inesperado ao reagir.");}
-    }
-
-    window.openClipComments=function(clipId){
-      activeClipId=clipId;
-      $("clipCommentsModal").classList.add("open");
-      document.body.style.overflow="hidden";
-      renderClipComments(clipId);
-      setTimeout(()=>$("clipCommentInput")?.focus(),120);
-    }
-
-    window.closeClipComments=function(){
-      $("clipCommentsModal").classList.remove("open");
-      document.body.style.overflow="";
-      activeClipId=null;
-    }
-
-    function renderClipComments(clipId){
-      const list=$("clipCommentsList"); if(!list)return;
-      const comments=clipCommentsCache[clipId]||[];
-      list.innerHTML=comments.length ? comments.map(c=>`<div class="rounded-3xl bg-white/[.04] border border-white/10 px-4 py-3">
-        <div class="flex gap-3 items-start">${avatarMarkup(c.profiles,"w-9 h-9","text-base")}<div class="min-w-0">
-          <p class="text-xs font-black text-yellow-400">@${escapeHtml(c.profiles?.username||"user")} <span class="text-zinc-600 font-medium">· ${timeAgo(c.created_at)}</span></p>
-          <p class="mt-1 text-sm text-zinc-300">${escapeHtml(c.body)}</p>
-        </div></div>
-      </div>`).join("") : `<div class="text-center py-10"><div class="text-4xl">💬</div><p class="mt-3 text-sm text-zinc-500">Ainda sem comentários neste ShitClip™.</p></div>`;
-    }
-
-    window.addClipCommentActive=async function(){
-      if(!activeClipId){return;}
-      if(!currentUser){gateAction("comentar este ShitClip™");return;}
-      const input=$("clipCommentInput"); const body=(input?.value||"").trim();
-      if(body.length<2){showToast("Escreve pelo menos 2 caracteres.");return;}
-      try{
-        const {error}=await supabase.from("clip_comments").insert({clip_id:activeClipId,user_id:currentUser.id,body,status:"active"});
-        if(error){showToast("Erro ao comentar: "+error.message);return;}
-        input.value="";
-        await fetchClips();
-        renderClipComments(activeClipId);
-        showToast("Comentário publicado.");
-      }catch(err){console.error(err);showToast("Erro inesperado ao comentar.");}
-    }
-
-    window.fetchRanking=async function(){
-      const box=$("rankingList"); if(!box)return;
-      const {data,error}=await supabase.from("profiles").select("id,username,display_name,xp,level,posts_count,avatar_url,bio").order("xp",{ascending:false}).limit(20);
-      if(error){box.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-      if(!data||!data.length){box.innerHTML=`<div class="card p-8 text-center text-zinc-500">Ainda não há ranking.</div>`;return;}
-      if(currentUser){
-        const ids=data.map(p=>p.id).filter(id=>id!==currentUser.id);
-        if(ids.length){
-          const {data:f}=await supabase.from("follows").select("following_id").eq("follower_id",currentUser.id).in("following_id",ids);
-          followingIds=new Set((f||[]).map(x=>x.following_id));
-        }
-      }
-      box.innerHTML=data.map((p,i)=>`<article class="card p-4 flex items-center justify-between gap-3 ${currentUser&&p.id===currentUser.id?"border-yellow-400/40 bg-yellow-400/5":""}">
-        <div class="flex items-center gap-4 min-w-0"><div class="relative shrink-0"><button onclick="openPublicProfile(\'${p.id}\')">${avatarMarkup(p,"w-12 h-12","text-xl")}</button><span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-black border border-white/10 flex items-center justify-center text-xs">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</span></div><div class="min-w-0"><button onclick="openPublicProfile(\'${p.id}\')" class="font-black truncate hover:text-yellow-400">@${escapeHtml(p.username||"user")}</button><p class="text-[11px] text-zinc-500 font-black uppercase">${escapeHtml(p.level||"Humano Real")}</p></div></div><div class="text-right shrink-0"><p class="text-yellow-400 font-black">XP ${escapeHtml(p.xp||0)}</p>${followButton(p.id)}</div>
-      </article>`).join("");
-    }
-
-
-    function notificationText(n){
-      const actor="@"+escapeHtml(n.actor?.username||n.actor?.display_name||"alguém");
-      const target=n.clip_id?"ShitClip™":"mico";
-      if(n.type==="follow") return `${actor} começou a seguir-te.`;
-      if(n.type==="reaction") return `${actor} reagiu ao teu ${target}.`;
-      if(n.type==="comment") return `${actor} comentou no teu ${target}.`;
-      if(n.type==="message") return `${actor} enviou-te uma mensagem privada.`;
-      return `${actor} interagiu contigo.`;
-    }
-
-    window.fetchNotifications=async function(){
-      const gate=$("notificationsGate"), list=$("notificationsList");
-      if(!gate||!list)return;
-      const guest=!currentUser;
-      gate.classList.toggle("hidden",!guest);
-      list.classList.toggle("hidden",guest);
-      if(guest){updateNotifBadge(0);return;}
-      list.innerHTML=`<p class="text-sm text-zinc-500">A carregar notificações...</p>`;
-      const {data,error}=await supabase.from("notifications").select("id,type,post_id,clip_id,comment_id,read_at,created_at,actor:actor_id(username,display_name)").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(50);
-      if(error){list.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-      if(!data||!data.length){list.innerHTML=`<div class="card p-8 text-center"><div class="text-4xl">🔕</div><p class="mt-3 text-sm text-zinc-500">Ainda não tens notificações.</p></div>`;updateNotifBadge(0);return;}
-      const unread=data.filter(n=>!n.read_at).length; updateNotifBadge(unread);
-      list.innerHTML=data.map(n=>`<article class="card p-4 flex items-start gap-3 ${!n.read_at?'border-yellow-400/30 bg-yellow-400/5':''}">
-        <div class="w-11 h-11 rounded-full bg-yellow-400 flex items-center justify-center text-2xl">${n.type==="follow"?"👋":n.type==="comment"?"💬":"💩"}</div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-bold">${notificationText(n)}</p>
-          <p class="mt-1 text-xs text-zinc-500">${timeAgo(n.created_at)}</p>
-        </div>
-        ${!n.read_at?'<span class="w-2.5 h-2.5 rounded-full bg-yellow-400 mt-2"></span>':''}
-      </article>`).join("");
-    }
-
-    function updateNotifBadge(count){
-      const b=$("notifBadge"); if(!b)return;
-      b.textContent=count>9?"9+":String(count);
-      b.classList.toggle("hidden",!count);
-      b.classList.toggle("flex",!!count);
-    }
-
-    window.markNotificationsRead=async function(){
-      if(!currentUser){gateAction("ver notificações");return;}
-      const {error}=await supabase.from("notifications").update({read_at:new Date().toISOString()}).eq("user_id",currentUser.id).is("read_at",null);
-      if(error){showToast("Erro: "+error.message);return;}
-      showToast("Notificações marcadas como lidas.");fetchNotifications();
-    }
-
-    window.deleteClip=async function(clipId,storagePath){
-      if(!currentUser){gateAction("excluir clip");return;}
-      if(!confirm("Tens a certeza que queres excluir este ShitClip™?"))return;
-      try{
-        if(storagePath){const {error:stError}=await supabase.storage.from("clips").remove([storagePath]); if(stError){showToast("Erro no Storage: "+stError.message);return;}}
-        const {error}=await supabase.from("clips").delete().eq("id",clipId).eq("user_id",currentUser.id);
-        if(error){showToast("Erro ao excluir: "+error.message);return;}
-        showToast("ShitClip™ excluído.");fetchClips();
-      }catch(err){console.error(err);showToast("Erro ao excluir vídeo.");}
-    }
-
-    window.reportContent=async function(type,id){
-      if(!currentUser){gateAction("denunciar conteúdo");return;}
-      const reason=prompt("Motivo da denúncia: dados pessoais, bullying, nudez, ódio, spam ou outro.");
-      if(!reason)return;
-      const {error}=await supabase.from("reports").insert({reporter_id:currentUser.id,content_type:type,content_id:id,reason});
-      if(error){showToast("Erro ao denunciar: "+error.message);return;}
-      showToast("Denúncia enviada. Obrigado.");
-    }
-
-    window.shareCurrent=async function(){
-      const url=window.location.href.split("#")[0];
-      try{if(navigator.share){await navigator.share({title:"SHITAGRAM™",text:"Vê este mico no SHITAGRAM™",url});}else{await navigator.clipboard.writeText(url);showToast("Link copiado.");}}catch{}
-    }
-
-    window.saveUserProfile=async function(event){
-      event.preventDefault(); if(!currentUser){gateAction("editar perfil");return;}
-      const username=normalizeUsername($("profileUsernameInput").value); const displayName=$("profileDisplayNameInput").value.trim(); const bio=$("profileBioInput").value.trim();
-      const usernameError=validateUsername(username); if(usernameError){setMessage("profileMessage","error",usernameError);return;}
-      setMessage("profileMessage","info","A guardar perfil...");setBusy("saveProfileBtn",true,"A guardar...");
-      try{
-        const {data,error}=await supabase.from("profiles").update({username,display_name:displayName||username,bio}).eq("id",currentUser.id).select("*").single();
-        if(error){setMessage("profileMessage","error",error.message);return;}
-        currentProfile=data;updateProfileUI();fetchPosts();fetchClips();setMessage("profileMessage","success","Perfil atualizado.");
-      }catch(err){console.error(err);setMessage("profileMessage","error","Erro inesperado ao guardar.");}
-      finally{setBusy("saveProfileBtn",false);}
-    }
-
-    
-    window.uploadAvatar=async function(){
-      if(!currentUser){gateAction("atualizar avatar");return;}
-      const file=$("avatarFile")?.files?.[0];
-      if(!file){showToast("Escolhe uma imagem primeiro.");return;}
-      if(!["image/png","image/jpeg","image/webp"].includes(file.type)){showToast("Formato aceite: PNG, JPG ou WebP.");return;}
-      if(file.size>3*1024*1024){showToast("A imagem deve ter no máximo 3 MB.");return;}
-      try{
-        setMessage("profileMessage","info","A enviar avatar...");
-        const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-        const path=`${currentUser.id}/avatar-${Date.now()}.${ext}`;
-        const {error:uploadError}=await supabase.storage.from("avatars").upload(path,file,{cacheControl:"3600",upsert:true,contentType:file.type});
-        if(uploadError){setMessage("profileMessage","error",uploadError.message);return;}
-        const {data:pub}=supabase.storage.from("avatars").getPublicUrl(path);
-        const {data,error}=await supabase.from("profiles").update({avatar_url:pub.publicUrl}).eq("id",currentUser.id).select("*").single();
-        if(error){setMessage("profileMessage","error",error.message);return;}
-        currentProfile=data;
-        updateProfileUI();
-        await Promise.allSettled([fetchPosts(),fetchRanking()]);
-        setMessage("profileMessage","success","Avatar atualizado.");
-        showToast("Avatar atualizado.");
-      }catch(err){console.error(err);setMessage("profileMessage","error","Erro inesperado ao atualizar avatar.");}
-    };
-
-    window.openSearchModal=function(){
-      $("searchModal").classList.add("open");
-      setTimeout(()=>$("searchInput")?.focus(),80);
-      runSearch();
-    };
-    window.closeSearchModal=function(){$("searchModal").classList.remove("open");};
-    window.runSearch=async function(){
-      const q=($("searchInput")?.value||"").trim().toLowerCase();
-      const box=$("searchResults"); if(!box)return;
-      if(q.length<2){box.innerHTML=`<p class="text-sm text-zinc-500">Escreve pelo menos 2 caracteres.</p>`;return;}
-      box.innerHTML=`<p class="text-sm text-zinc-500">A pesquisar...</p>`;
-      try{
-        const like=`%${q.replaceAll("%","").replaceAll("_","")}%`;
-        const [profilesRes, postsRes]=await Promise.allSettled([
-          supabase.from("profiles").select("id,username,display_name,bio,xp,avatar_url").or(`username.ilike.${like},display_name.ilike.${like}`).limit(8),
-          supabase.from("posts").select("id,user_id,title,description,category,created_at,profiles(id,username,avatar_url)").eq("status","active").or(`title.ilike.${like},description.ilike.${like},category.ilike.${like}`).limit(8)
-        ]);
-        const profiles=(profilesRes.status==="fulfilled"&&!profilesRes.value.error)?profilesRes.value.data||[]:[];
-        const posts=(postsRes.status==="fulfilled"&&!postsRes.value.error)?postsRes.value.data||[]:[];
-        const people=profiles.map(p=>`<button onclick="openPublicProfile('${p.id}');closeSearchModal();" class="w-full rounded-2xl border border-white/10 bg-white/[.03] p-3 flex items-center gap-3 text-left">${avatarMarkup(p,"w-11 h-11","text-xl")}<div class="min-w-0"><p class="font-black">@${escapeHtml(p.username||"user")}</p><p class="text-xs text-zinc-500 truncate">${escapeHtml(p.bio||"XP "+(p.xp||0))}</p></div></button>`).join("");
-        const micos=posts.map(p=>`<button onclick="closeSearchModal();goTab('feed');" class="w-full rounded-2xl border border-white/10 bg-white/[.03] p-3 text-left"><p class="text-xs text-yellow-400 font-black">@${escapeHtml(p.profiles?.username||"user")} · ${escapeHtml(p.category||"Mico Geral")}</p><p class="mt-1 font-black">${escapeHtml(p.title)}</p><p class="mt-1 text-sm text-zinc-500 line-clamp-2">${escapeHtml(p.description)}</p></button>`).join("");
-        box.innerHTML = `${people?`<p class="text-xs text-zinc-500 font-black uppercase">Pessoas</p>${people}`:""}${micos?`<p class="pt-3 text-xs text-zinc-500 font-black uppercase">Micos</p>${micos}`:""}${!people&&!micos?`<p class="text-sm text-zinc-500">Sem resultados.</p>`:""}`;
-      }catch(err){console.error(err);box.innerHTML=`<p class="text-sm text-red-400">Erro ao pesquisar.</p>`;}
-    };
-
-    window.openPublicProfile=async function(userId){
-      if(!userId){return;}
-      $("publicProfileModal").classList.add("open");
-      $("publicProfileHeader").innerHTML=`<p class="text-sm text-zinc-500">A carregar perfil...</p>`;
-      $("publicProfileStats").innerHTML="";
-      $("publicProfilePosts").innerHTML="";
-      try{
-        const [{data:p,error:pe},{data:posts,error:po},{data:followers},{data:following}]=await Promise.all([
-          supabase.from("profiles").select("id,username,display_name,bio,xp,level,posts_count,clips_count,avatar_url").eq("id",userId).maybeSingle(),
-          supabase.from("posts").select("id,title,description,category,trauma_level,created_at").eq("user_id",userId).eq("status","active").order("created_at",{ascending:false}).limit(10),
-          supabase.from("follows").select("id").eq("following_id",userId),
-          supabase.from("follows").select("id").eq("follower_id",userId)
-        ]);
-        if(pe||!p){$("publicProfileHeader").innerHTML=`<p class="text-sm text-red-400">Perfil não encontrado.</p>`;return;}
-        $("publicProfileHeader").innerHTML=`<div class="flex items-center gap-4 min-w-0">${avatarMarkup(p,"w-20 h-20","text-4xl")}<div class="min-w-0"><p class="text-2xl font-black truncate">@${escapeHtml(p.username||"user")}</p><p class="text-sm text-zinc-400 truncate">${escapeHtml(p.display_name||"")}</p><p class="mt-2 text-sm text-zinc-300">${escapeHtml(p.bio||"Sem bio ainda.")}</p><div class="mt-3 flex flex-wrap gap-2">${followButton(p.id)}${messageButton(p.id)}</div></div></div>`;
-        $("publicProfileStats").innerHTML=`<div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black text-yellow-400">${escapeHtml(p.xp||0)}</p><p class="text-[10px] text-zinc-500 font-black uppercase">XP</p></div><div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black">${(followers||[]).length}</p><p class="text-[10px] text-zinc-500 font-black uppercase">Seguidores</p></div><div class="rounded-2xl border border-white/10 bg-black/40 p-4 text-center"><p class="text-xl font-black">${(following||[]).length}</p><p class="text-[10px] text-zinc-500 font-black uppercase">A seguir</p></div>`;
-        $("publicProfilePosts").innerHTML=`<p class="text-xs text-zinc-500 font-black uppercase">Micos recentes</p>`+((posts||[]).length?(posts||[]).map(x=>`<article class="rounded-3xl border border-white/10 bg-black/35 p-4"><p class="text-xs text-yellow-400 font-black uppercase">${escapeHtml(x.category||"Mico Geral")} · Trauma ${escapeHtml(x.trauma_level||5)}</p><h4 class="mt-2 font-black">${escapeHtml(x.title)}</h4><p class="mt-1 text-sm text-zinc-400">${escapeHtml(x.description)}</p></article>`).join(""):`<div class="rounded-3xl border border-white/10 bg-black/35 p-6 text-center text-sm text-zinc-500">Ainda sem micos públicos.</div>`);
-      }catch(err){console.error(err);$("publicProfileHeader").innerHTML=`<p class="text-sm text-red-400">Erro ao carregar perfil.</p>`;}
-    };
-    window.closePublicProfile=function(){$("publicProfileModal").classList.remove("open");};
-
-
-
-    function messageButton(userId){
-      if(!userId || (currentUser && currentUser.id===userId)) return "";
-      return `<button onclick="startConversation('${userId}')" class="rounded-full border border-yellow-400/30 bg-yellow-400/10 text-yellow-400 px-3 py-1 text-[10px] font-black uppercase">Mensagem</button>`;
-    }
-
-    let activeConversationId=null;
-    let activeChatUserId=null;
-    let conversationsCache=[];
-
-    window.startConversation=async function(userId){
-      if(!currentUser){gateAction("enviar mensagens");return;}
-      if(!userId || userId===currentUser.id){return;}
-      try{
-        closePublicProfile();
-        showToast("A abrir conversa...");
-        const {data,error}=await supabase.rpc("start_conversation",{other_user:userId});
-        if(error){showToast("Erro ao abrir conversa: "+error.message);return;}
-        goTab("messages");
-        await fetchConversations();
-        await openConversation(data,userId);
-      }catch(err){console.error(err);showToast("Erro ao abrir conversa.");}
-    }
-
-    window.fetchConversations=async function(){
-      const gate=$("messagesGate"), app=$("messagesApp"), list=$("conversationsList");
-      if(!gate||!app||!list)return;
-      const guest=!currentUser;
-      gate.classList.toggle("hidden",!guest);
-      app.classList.toggle("hidden",guest);
-      if(guest){updateMsgBadge(0);return;}
-      list.innerHTML=`<p class="p-5 text-sm text-zinc-500">A carregar conversas...</p>`;
-
-      const {data:mine,error}=await supabase.from("conversation_members").select("conversation_id,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false});
-      if(error){list.innerHTML=`<p class="p-5 text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-      const ids=[...new Set((mine||[]).map(x=>x.conversation_id).filter(Boolean))];
-      if(!ids.length){
-        conversationsCache=[];
-        list.innerHTML=`<div class="p-8 text-center"><div class="text-4xl">📭</div><p class="mt-3 text-sm text-zinc-500">Ainda não tens conversas. Abre um perfil público e clica em “Mensagem”.</p></div>`;
-        updateMsgBadge(0);
-        return;
-      }
-
-      const [{data:members},{data:messages}] = await Promise.all([
-        supabase.from("conversation_members").select("conversation_id,user_id,profiles(id,username,display_name,avatar_url)").in("conversation_id",ids),
-        supabase.from("messages").select("id,conversation_id,sender_id,body,status,created_at,read_at").in("conversation_id",ids).order("created_at",{ascending:false}).limit(250)
-      ]);
-
-      const latestByConv={};
-      (messages||[]).forEach(m=>{ if(!latestByConv[m.conversation_id]) latestByConv[m.conversation_id]=m; });
-      const unread=(messages||[]).filter(m=>m.sender_id!==currentUser.id && !m.read_at && m.status==="active").length;
-      updateMsgBadge(unread);
-
-      conversationsCache=ids.map(cid=>{
-        const other=(members||[]).find(m=>m.conversation_id===cid && m.user_id!==currentUser.id);
-        return {conversation_id:cid, other:other?.profiles||{id:other?.user_id,username:"utilizador"}, latest:latestByConv[cid]||null};
-      }).sort((a,b)=>new Date(b.latest?.created_at||0)-new Date(a.latest?.created_at||0));
-
-      renderConversationList(conversationsCache);
-    }
-
-    function renderConversationList(items){
-      const list=$("conversationsList"); if(!list)return;
-      if(!items.length){list.innerHTML=`<p class="p-5 text-sm text-zinc-500">Nenhuma conversa encontrada.</p>`;return;}
-      list.innerHTML=items.map(c=>{
-        const p=c.other||{};
-        const latest=c.latest;
-        const active=activeConversationId===c.conversation_id;
-        return `<button data-conv-search="${escapeHtml((p.username||'')+' '+(p.display_name||'')+' '+(latest?.body||''))}" onclick="openConversation('${c.conversation_id}','${p.id||''}')" class="w-full p-4 flex gap-3 text-left hover:bg-white/[.04] ${active?'bg-yellow-400/10':''}">
-          ${avatarMarkup(p,"w-12 h-12","text-xl")}
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center justify-between gap-2">
-              <p class="font-black truncate">@${escapeHtml(p.username||"utilizador")}</p>
-              <span class="text-[10px] text-zinc-600">${latest?timeAgo(latest.created_at):""}</span>
-            </div>
-            <p class="mt-1 text-sm text-zinc-500 truncate">${latest?escapeHtml(latest.body):"Conversa criada. Envia a primeira mensagem."}</p>
-          </div>
-        </button>`;
-      }).join("");
-    }
-
-    window.filterConversationList=function(){
-      const q=($("conversationSearchInput")?.value||"").toLowerCase().trim();
-      if(!q){renderConversationList(conversationsCache);return;}
-      renderConversationList(conversationsCache.filter(c=>{
-        const p=c.other||{};
-        return `${p.username||""} ${p.display_name||""} ${c.latest?.body||""}`.toLowerCase().includes(q);
-      }));
-    }
-
-    window.openConversation=async function(conversationId,otherUserId){
-      if(!currentUser){gateAction("abrir mensagens");return;}
-      activeConversationId=conversationId;
-      activeChatUserId=otherUserId||activeChatUserId;
-      const header=$("chatHeader"), list=$("messagesList"), form=$("messageForm");
-      list.innerHTML=`<p class="text-sm text-zinc-500">A carregar mensagens...</p>`;
-      form.classList.remove("hidden");
-
-      let otherProfile=null;
-      if(otherUserId){
-        const {data:p}=await supabase.from("profiles").select("id,username,display_name,avatar_url").eq("id",otherUserId).maybeSingle();
-        otherProfile=p;
-      }
-      if(!otherProfile){
-        const {data:members}=await supabase.from("conversation_members").select("user_id,profiles(id,username,display_name,avatar_url)").eq("conversation_id",conversationId);
-        otherProfile=(members||[]).find(m=>m.user_id!==currentUser.id)?.profiles||null;
-        activeChatUserId=otherProfile?.id||null;
-      }
-
-      header.innerHTML=`<div class="flex items-center gap-3 min-w-0">${avatarMarkup(otherProfile,"w-12 h-12","text-xl")}<div class="min-w-0"><p class="text-xs text-yellow-400 font-black uppercase tracking-[.2em]">Chat privado</p><h3 class="text-xl font-black truncate">@${escapeHtml(otherProfile?.username||"utilizador")}</h3></div></div><div class="flex gap-2"><button onclick="openPublicProfile('${activeChatUserId||''}')" class="rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs font-black">Perfil</button><button onclick="blockActiveUser()" class="rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 px-3 py-2 text-xs font-black">Bloquear</button></div>`;
-
-      const {data,error}=await supabase.from("messages").select("id,conversation_id,sender_id,body,status,created_at,read_at").eq("conversation_id",conversationId).eq("status","active").order("created_at",{ascending:true}).limit(200);
-      if(error){list.innerHTML=`<p class="text-sm text-red-400">${escapeHtml(error.message)}</p>`;return;}
-
-      await supabase.from("messages").update({read_at:new Date().toISOString()}).eq("conversation_id",conversationId).neq("sender_id",currentUser.id).is("read_at",null);
-
-      list.innerHTML=(data||[]).length ? (data||[]).map(m=>{
-        const mine=m.sender_id===currentUser.id;
-        return `<div class="flex ${mine?'justify-end':'justify-start'}"><div class="max-w-[78%] rounded-3xl px-4 py-3 ${mine?'bg-yellow-400 text-black':'bg-white/[.06] border border-white/10 text-zinc-100'}"><p class="text-sm whitespace-pre-wrap">${escapeHtml(m.body)}</p><p class="mt-1 text-[10px] ${mine?'text-black/50':'text-zinc-600'}">${timeAgo(m.created_at)}</p></div></div>`;
-      }).join("") : `<div class="h-full flex items-center justify-center text-center"><div><div class="text-5xl">👋</div><p class="mt-3 text-sm text-zinc-500">Ainda não há mensagens. Começa a conversa.</p></div></div>`;
-      list.scrollTop=list.scrollHeight;
-      fetchConversations();
-    }
-
-    window.sendMessage=async function(event){
-      event.preventDefault();
-      if(!currentUser){gateAction("enviar mensagens");return;}
-      if(!activeConversationId){showToast("Seleciona uma conversa.");return;}
-      const input=$("messageInput"); const body=input.value.trim();
-      if(body.length<1){return;}
-      if(body.length>800){showToast("Mensagem demasiado longa.");return;}
-      setBusy("sendMessageBtn",true,"...");
-      const {error}=await supabase.from("messages").insert({conversation_id:activeConversationId,sender_id:currentUser.id,body,status:"active"});
-      setBusy("sendMessageBtn",false); $("sendMessageBtn").innerText="Enviar";
-      if(error){showToast("Erro ao enviar: "+error.message);return;}
-      input.value="";
-      await openConversation(activeConversationId,activeChatUserId);
-    }
-
-    window.blockActiveUser=async function(){
-      if(!currentUser || !activeChatUserId){return;}
-      if(!confirm("Bloquear este utilizador? Ele deixa de te poder enviar mensagens."))return;
-      const {error}=await supabase.from("user_blocks").insert({blocker_id:currentUser.id,blocked_id:activeChatUserId});
-      if(error){showToast("Erro ao bloquear: "+error.message);return;}
-      showToast("Utilizador bloqueado.");
-      activeConversationId=null;activeChatUserId=null;
-      fetchConversations();
-      $("messageForm")?.classList.add("hidden");
-      $("messagesList").innerHTML=`<div class="h-full flex items-center justify-center text-center"><p class="text-sm text-zinc-500">Utilizador bloqueado.</p></div>`;
-    }
-
-    function updateMsgBadge(count){
-      const b=$("msgBadge"); if(!b)return;
-      b.textContent=count>9?"9+":String(count);
-      b.classList.toggle("hidden",!count);
-      b.classList.toggle("flex",!!count);
-    }
-
-
-    function adminCanModerate(){ return !!(currentProfile && ["admin","moderator"].includes(currentProfile.role||"")); }
-    function shortText(value, max=90){ const s=String(value||""); return s.length>max ? s.slice(0,max)+"…" : s; }
-    function adminActionButtons(type,id,status){
-      return `<div class="mt-3 flex flex-wrap gap-2">
-        ${status!=="hidden"?`<button onclick="adminModerate('${type}','${id}','hidden')" class="rounded-xl border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-[10px] text-yellow-400 font-black uppercase">Ocultar</button>`:""}
-        ${status!=="active"?`<button onclick="adminModerate('${type}','${id}','active')" class="rounded-xl border border-green-400/20 bg-green-400/10 px-3 py-2 text-[10px] text-green-400 font-black uppercase">Restaurar</button>`:""}
-        ${status!=="deleted"?`<button onclick="adminModerate('${type}','${id}','deleted')" class="rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-[10px] text-red-400 font-black uppercase">Remover</button>`:""}
-      </div>`;
-    }
-
-    window.fetchAdminDashboard=async function(){
-      if(!adminCanModerate()){
-        $("adminGate")?.classList.remove("hidden");
-        $("adminContent")?.classList.add("hidden");
-        return;
-      }
-      $("adminGate")?.classList.add("hidden");
-      $("adminContent")?.classList.remove("hidden");
-      ["adminReportsList","adminUsersList","adminPostsList","adminClipsList","adminCommentsList"].forEach(id=>{ if($(id)) $(id).innerHTML=`<p class="text-sm text-zinc-500">A carregar...</p>`; });
-
-      const reportFilter=$("adminReportFilter")?.value||"open";
-      let reportsQuery=supabase.from("reports").select("*").order("created_at",{ascending:false}).limit(30);
-      if(reportFilter==="open") reportsQuery=reportsQuery.in("status",["open","pending","new"]);
-      if(reportFilter==="resolved") reportsQuery=reportsQuery.eq("status","resolved");
-
-      const [reportsRes, usersRes, postsRes, clipsRes, commentsRes]=await Promise.allSettled([
-        reportsQuery,
-        supabase.from("profiles").select("id,username,display_name,avatar_url,xp,role,account_status,created_at").order("created_at",{ascending:false}).limit(30),
-        supabase.from("posts").select("id,title,description,category,status,created_at,user_id,profiles(username)").order("created_at",{ascending:false}).limit(30),
-        supabase.from("clips").select("id,caption,category,status,created_at,user_id,video_url,profiles(username)").order("created_at",{ascending:false}).limit(20),
-        supabase.from("comments").select("id,body,status,created_at,user_id,post_id,profiles(username)").order("created_at",{ascending:false}).limit(30)
-      ]);
-
-      const reports=reportsRes.value?.data||[];
-      const users=usersRes.value?.data||[];
-      const posts=postsRes.value?.data||[];
-      const clips=clipsRes.value?.data||[];
-      const comments=commentsRes.value?.data||[];
-
-      if($("adminReportsCount")) $("adminReportsCount").innerText=reports.length;
-      if($("adminUsersCount")) $("adminUsersCount").innerText=users.length;
-      if($("adminPostsCount")) $("adminPostsCount").innerText=posts.length;
-      if($("adminClipsCount")) $("adminClipsCount").innerText=clips.length;
-
-      if(reportsRes.value?.error && $("adminReportsList")) $("adminReportsList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(reportsRes.value.error.message)}</p>`;
-      else if($("adminReportsList")) $("adminReportsList").innerHTML=reports.length?reports.map(r=>`<article class="rounded-3xl border border-white/10 bg-black/40 p-4">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <p class="text-xs text-yellow-400 font-black uppercase">${escapeHtml(r.target_type||r.content_type||"conteúdo")} · ${escapeHtml(r.status||"open")}</p>
-            <p class="mt-2 text-sm text-zinc-300">${escapeHtml(shortText(r.reason||r.description||"Sem motivo indicado",120))}</p>
-            <p class="mt-2 text-[11px] text-zinc-500">Target: ${escapeHtml(r.target_id||r.content_id||"-")}</p>
-          </div>
-          <button onclick="adminResolveReport('${r.id}')" class="rounded-xl bg-yellow-400 px-3 py-2 text-[10px] text-black font-black uppercase">Resolver</button>
-        </div>
-      </article>`).join(""):`<p class="text-sm text-zinc-500">Sem denúncias para este filtro.</p>`;
-
-      if(usersRes.value?.error && $("adminUsersList")) $("adminUsersList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(usersRes.value.error.message)}</p>`;
-      else if($("adminUsersList")) $("adminUsersList").innerHTML=users.length?users.map(u=>`<article class="rounded-3xl border border-white/10 bg-black/40 p-4">
-        <div class="flex items-center gap-3">
-          ${avatarMarkup(u,"w-11 h-11","text-xl")}
-          <div class="min-w-0 flex-1">
-            <p class="font-black truncate">@${escapeHtml(u.username||"user")}</p>
-            <p class="text-[11px] text-zinc-500">XP ${escapeHtml(u.xp||0)} · ${escapeHtml(u.role||"user")} · ${escapeHtml(u.account_status||"active")}</p>
-          </div>
-        </div>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <button onclick="openPublicProfile('${u.id}')" class="rounded-xl border border-white/10 px-3 py-2 text-[10px] font-black uppercase">Ver</button>
-          ${u.role==="admin"?"":`<button onclick="adminSetRole('${u.id}','moderator')" class="rounded-xl border border-yellow-400/20 bg-yellow-400/10 px-3 py-2 text-[10px] text-yellow-400 font-black uppercase">Moderador</button>`}
-          ${u.role==="user"?"":`<button onclick="adminSetRole('${u.id}','user')" class="rounded-xl border border-white/10 px-3 py-2 text-[10px] font-black uppercase">Remover cargo</button>`}
-          ${u.account_status==="blocked"?`<button onclick="adminSetAccount('${u.id}','active')" class="rounded-xl border border-green-400/20 bg-green-400/10 px-3 py-2 text-[10px] text-green-400 font-black uppercase">Desbloquear</button>`:`<button onclick="adminSetAccount('${u.id}','blocked')" class="rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-[10px] text-red-400 font-black uppercase">Bloquear</button>`}
-        </div>
-      </article>`).join(""):`<p class="text-sm text-zinc-500">Sem utilizadores.</p>`;
-
-      if($("adminPostsList")) $("adminPostsList").innerHTML=postsRes.value?.error?`<p class="text-sm text-red-400">${escapeHtml(postsRes.value.error.message)}</p>`:posts.length?posts.map(p=>`<article class="rounded-3xl border border-white/10 bg-black/40 p-4"><p class="text-[10px] text-yellow-400 font-black uppercase">@${escapeHtml(p.profiles?.username||"user")} · ${escapeHtml(p.status||"active")}</p><p class="mt-2 text-sm font-black">${escapeHtml(shortText(p.title,60))}</p><p class="mt-1 text-xs text-zinc-500">${escapeHtml(shortText(p.description,100))}</p>${adminActionButtons("posts",p.id,p.status||"active")}</article>`).join(""):`<p class="text-sm text-zinc-500">Sem posts.</p>`;
-      if($("adminClipsList")) $("adminClipsList").innerHTML=clipsRes.value?.error?`<p class="text-sm text-red-400">${escapeHtml(clipsRes.value.error.message)}</p>`:clips.length?clips.map(c=>`<article class="rounded-3xl border border-white/10 bg-black/40 p-4"><p class="text-[10px] text-yellow-400 font-black uppercase">@${escapeHtml(c.profiles?.username||"user")} · ${escapeHtml(c.status||"active")}</p><p class="mt-2 text-sm">${escapeHtml(shortText(c.caption||"ShitClip™ sem legenda",90))}</p>${adminActionButtons("clips",c.id,c.status||"active")}</article>`).join(""):`<p class="text-sm text-zinc-500">Sem clips.</p>`;
-      if($("adminCommentsList")) $("adminCommentsList").innerHTML=commentsRes.value?.error?`<p class="text-sm text-red-400">${escapeHtml(commentsRes.value.error.message)}</p>`:comments.length?comments.map(c=>`<article class="rounded-3xl border border-white/10 bg-black/40 p-4"><p class="text-[10px] text-yellow-400 font-black uppercase">@${escapeHtml(c.profiles?.username||"user")} · ${escapeHtml(c.status||"active")}</p><p class="mt-2 text-sm">${escapeHtml(shortText(c.body,120))}</p>${adminActionButtons("comments",c.id,c.status||"active")}</article>`).join(""):`<p class="text-sm text-zinc-500">Sem comentários.</p>`;
-    };
-
-    window.adminModerate=async function(type,id,status){
-      if(!adminCanModerate()) return showToast("Sem permissão.");
-      const allowed={posts:"posts",clips:"clips",comments:"comments"};
-      const table=allowed[type]; if(!table) return showToast("Tipo inválido.");
-      const {error}=await supabase.from(table).update({status}).eq("id",id);
-      if(error){showToast(error.message);return;}
-      await supabase.from("moderation_actions").insert({moderator_id:currentUser.id,target_type:type,target_id:id,action:status});
-      showToast("Ação aplicada.");
-      fetchAdminDashboard(); if(type==="posts") fetchPosts(); if(type==="clips") fetchClips();
-    };
-
-    window.adminResolveReport=async function(id){
-      if(!adminCanModerate()) return showToast("Sem permissão.");
-      const {error}=await supabase.from("reports").update({status:"resolved",resolved_by:currentUser.id,resolved_at:new Date().toISOString()}).eq("id",id);
-      if(error){showToast(error.message);return;}
-      showToast("Denúncia resolvida.");
-      fetchAdminDashboard();
-    };
-
-    window.adminSetRole=async function(userId,role){
-      if(!adminCanModerate()) return showToast("Sem permissão.");
-      const {error}=await supabase.from("profiles").update({role}).eq("id",userId);
-      if(error){showToast(error.message);return;}
-      await supabase.from("moderation_actions").insert({moderator_id:currentUser.id,target_type:"profile",target_id:userId,action:"set_role_"+role});
-      showToast("Cargo atualizado.");
-      fetchAdminDashboard();
-    };
-
-    window.adminSetAccount=async function(userId,status){
-      if(!adminCanModerate()) return showToast("Sem permissão.");
-      const {error}=await supabase.from("profiles").update({account_status:status}).eq("id",userId);
-      if(error){showToast(error.message);return;}
-      await supabase.from("moderation_actions").insert({moderator_id:currentUser.id,target_type:"profile",target_id:userId,action:"account_"+status});
-      showToast("Estado da conta atualizado.");
-      fetchAdminDashboard();
-    };
-
-    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).on("postgres_changes",{event:"*",schema:"public",table:"follows"},()=>{fetchPosts();fetchRanking();fetchNotifications();}).on("postgres_changes",{event:"*",schema:"public",table:"notifications"},fetchNotifications).on("postgres_changes",{event:"*",schema:"public",table:"messages"},()=>{fetchNotifications(); if(currentTab==="messages"){fetchConversations(); if(activeConversationId) openConversation(activeConversationId,activeChatUserId);}}).on("postgres_changes",{event:"*",schema:"public",table:"conversation_members"},()=>{if(currentTab==="messages") fetchConversations();}).on("postgres_changes",{event:"*",schema:"public",table:"user_daily_missions"},()=>{if(currentTab==="profile") fetchGamification();}).on("postgres_changes",{event:"*",schema:"public",table:"user_badges"},()=>{if(currentTab==="profile") fetchGamification();}).subscribe();}
-
-    async function init(){await refreshSession(); if(!$("appShell").classList.contains("hidden")) await fetchAll(); startRealtime();}
-    supabase.auth.onAuthStateChange(async()=>{await refreshSession(); if(currentUser) await fetchAll();});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAuthModal();closeSearchModal();closePublicProfile();}});
-    init();
-
-    window.showSearchSoon=showSearchSoon;
   </script>
-<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vGame1</div>
 </body>
 </html>
