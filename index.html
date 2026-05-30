@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ - Social + Admin</title>
+  <title>SHITAGRAM™ - Social + Gamificação</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -310,6 +310,61 @@
               <p id="profileMessage" class="hidden text-sm font-bold text-center"></p>
             </form>
           </div>
+
+          <div id="gamificationCard" class="card p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-yellow-400 text-xs font-black uppercase tracking-[.25em]">Gamificação</p>
+                <h3 class="mt-2 text-2xl font-black">Conquistas e missões</h3>
+                <p class="mt-2 text-sm text-zinc-500">Ganha XP extra, desbloqueia badges e mantém a tua streak diária.</p>
+              </div>
+              <button onclick="fetchGamification()" class="rounded-xl bg-white/5 border border-white/10 px-4 py-2 text-xs font-black uppercase hover:bg-white/10">Atualizar</button>
+            </div>
+
+            <div id="gamificationGuestBox" class="mt-5 rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-5 text-center hidden">
+              <p class="font-black">Cria conta para ganhar XP e badges.</p>
+              <p class="mt-2 text-sm text-zinc-400">As missões diárias desbloqueiam recompensas e níveis.</p>
+              <button onclick="openAuthModal('register')" class="mt-4 rounded-2xl bg-yellow-400 px-6 py-3 text-black text-sm font-black uppercase">Começar</button>
+            </div>
+
+            <div id="gamificationContent" class="mt-5 space-y-5">
+              <div class="rounded-3xl border border-white/10 bg-black/40 p-5">
+                <div class="flex items-center justify-between gap-4">
+                  <div>
+                    <p id="gameLevelName" class="text-xl font-black text-yellow-400">Nível</p>
+                    <p id="gameLevelHint" class="mt-1 text-sm text-zinc-500">A carregar progresso...</p>
+                  </div>
+                  <div class="text-right">
+                    <p id="gameStreak" class="text-2xl font-black">🔥 0</p>
+                    <p class="text-[10px] text-zinc-500 font-black uppercase">Streak</p>
+                  </div>
+                </div>
+                <div class="mt-4 h-3 rounded-full bg-white/10 overflow-hidden">
+                  <div id="gameProgressBar" class="h-full bg-yellow-400 rounded-full" style="width:0%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between">
+                  <h4 class="font-black">Missões de hoje</h4>
+                  <span class="text-[10px] text-zinc-500 font-black uppercase">XP extra</span>
+                </div>
+                <div id="dailyMissionsList" class="mt-3 grid md:grid-cols-2 gap-3">
+                  <p class="text-sm text-zinc-500">A carregar missões...</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between">
+                  <h4 class="font-black">Badges</h4>
+                  <span id="badgesCount" class="text-[10px] text-zinc-500 font-black uppercase">0 desbloqueadas</span>
+                </div>
+                <div id="badgesList" class="mt-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <p class="text-sm text-zinc-500">A carregar conquistas...</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
@@ -482,7 +537,7 @@
       if(tab==="notifications") fetchNotifications();
       if(tab==="messages") fetchConversations();
       if(tab==="admin") fetchAdminDashboard();
-      if(tab==="profile") updateProfileUI();
+      if(tab==="profile") { updateProfileUI(); fetchGamification(); }
       if(tab==="publish") updatePublishGate();
       window.scrollTo({top:0,behavior:"smooth"});
     }
@@ -517,6 +572,7 @@
       showCorrectShell();
       updateAuthUI();
       updateProfileUI();
+      fetchGamification();
       updatePublishGate();
     }
 
@@ -662,7 +718,92 @@
       await supabase.auth.signOut();currentUser=null;currentProfile=null;updateAuthUI();updateProfileUI();updatePublishGate();showToast("Sessão terminada.");goTab("feed");
     };
 
-    async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications(), currentUser ? fetchConversations() : Promise.resolve()]);}
+
+    function levelInfoFromXp(xp){
+      xp = Number(xp||0);
+      const levels=[
+        {min:0,name:"Nível 1 — Recém-Envergonhado",next:500},
+        {min:500,name:"Nível 2 — Sobrevivente Social",next:1500},
+        {min:1500,name:"Nível 3 — Mico Profissional",next:3500},
+        {min:3500,name:"Nível 4 — Lenda da Vergonha",next:7500},
+        {min:7500,name:"Nível 5 — Património Nacional do Embaraço",next:null}
+      ];
+      let current=levels[0];
+      for(const level of levels){ if(xp>=level.min) current=level; }
+      const next=current.next;
+      const percent = next ? Math.max(0,Math.min(100,((xp-current.min)/(next-current.min))*100)) : 100;
+      return {name:current.name,next,percent,remaining:next?Math.max(0,next-xp):0};
+    }
+
+    async function ensureDailyMissions(){
+      if(!currentUser) return;
+      try{ await supabase.rpc("refresh_daily_missions"); }catch(err){ console.warn("refresh_daily_missions",err); }
+    }
+
+    window.fetchGamification=async function(){
+      const guest=!currentUser;
+      $("gamificationGuestBox")?.classList.toggle("hidden",!guest);
+      $("gamificationContent")?.classList.toggle("hidden",guest);
+      if(guest) return;
+
+      const xp=Number(currentProfile?.xp||0);
+      const level=levelInfoFromXp(xp);
+      if($("gameLevelName")) $("gameLevelName").innerText=currentProfile?.level_name || currentProfile?.level || level.name;
+      if($("gameLevelHint")) $("gameLevelHint").innerText=level.next ? `${xp} XP · faltam ${level.remaining} XP para o próximo nível` : `${xp} XP · nível máximo beta`;
+      if($("gameProgressBar")) $("gameProgressBar").style.width=`${level.percent}%`;
+      if($("gameStreak")) $("gameStreak").innerText=`🔥 ${currentProfile?.current_streak||0}`;
+
+      await ensureDailyMissions();
+
+      const [{data:missions,error:missionsError},{data:badges,error:badgesError}] = await Promise.all([
+        supabase.from("user_daily_missions").select("*, daily_missions(*)").eq("user_id",currentUser.id).order("created_at",{ascending:true}),
+        supabase.from("badges").select("*, user_badges!left(user_id,unlocked_at)").order("sort_order",{ascending:true})
+      ]);
+
+      if($("dailyMissionsList")){
+        if(missionsError){$("dailyMissionsList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(missionsError.message)}</p>`;}
+        else if(!missions||!missions.length){$("dailyMissionsList").innerHTML=`<p class="text-sm text-zinc-500">Ainda não há missões. Atualiza ou volta amanhã.</p>`;}
+        else{
+          $("dailyMissionsList").innerHTML=missions.map(m=>{
+            const mission=m.daily_missions||{};
+            const done=!!m.completed_at;
+            const target=Number(mission.target||1);
+            const progress=Math.min(Number(m.progress||0),target);
+            const pct=Math.round((progress/target)*100);
+            return `<div class="rounded-3xl border ${done?"border-green-400/25 bg-green-400/10":"border-white/10 bg-black/35"} p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="font-black">${escapeHtml(mission.icon||"🎯")} ${escapeHtml(mission.title||"Missão")}</p>
+                  <p class="mt-1 text-xs text-zinc-500">${escapeHtml(mission.description||"")}</p>
+                </div>
+                <span class="rounded-full ${done?"bg-green-400 text-black":"bg-yellow-400 text-black"} px-3 py-1 text-[10px] font-black">+${escapeHtml(mission.reward_xp||0)} XP</span>
+              </div>
+              <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden"><div class="h-full ${done?"bg-green-400":"bg-yellow-400"}" style="width:${pct}%"></div></div>
+              <p class="mt-2 text-[11px] text-zinc-500 font-bold">${progress}/${target} ${done?"· concluída":"· em progresso"}</p>
+            </div>`;
+          }).join("");
+        }
+      }
+
+      if($("badgesList")){
+        if(badgesError){$("badgesList").innerHTML=`<p class="text-sm text-red-400">${escapeHtml(badgesError.message)}</p>`;}
+        else{
+          const unlocked=(badges||[]).filter(b=>(b.user_badges||[]).some(ub=>ub.user_id===currentUser.id));
+          $("badgesCount").innerText=`${unlocked.length} desbloqueadas`;
+          $("badgesList").innerHTML=(badges||[]).map(b=>{
+            const isUnlocked=(b.user_badges||[]).some(ub=>ub.user_id===currentUser.id);
+            return `<div class="rounded-3xl border ${isUnlocked?"border-yellow-400/30 bg-yellow-400/10":"border-white/10 bg-black/35 opacity-55"} p-4">
+              <div class="text-3xl">${escapeHtml(b.icon||"🏅")}</div>
+              <p class="mt-3 font-black">${escapeHtml(b.name||"Badge")}</p>
+              <p class="mt-1 text-xs text-zinc-500">${escapeHtml(b.description||"")}</p>
+              <p class="mt-3 text-[10px] font-black uppercase ${isUnlocked?"text-yellow-400":"text-zinc-600"}">${isUnlocked?"Desbloqueada":"Bloqueada"}</p>
+            </div>`;
+          }).join("") || `<p class="text-sm text-zinc-500">Ainda não há badges configuradas.</p>`;
+        }
+      }
+    }
+
+    async function fetchAll(){await Promise.allSettled([fetchPosts(),fetchClips(),fetchRanking(),fetchNotifications(), currentUser ? fetchConversations() : Promise.resolve(), currentUser ? fetchGamification() : Promise.resolve()]);}
 
     function avatarMarkup(profile,size="w-11 h-11",textSize="text-2xl"){
       const url=profile?.avatar_url;
@@ -1458,7 +1599,7 @@
       fetchAdminDashboard();
     };
 
-    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).on("postgres_changes",{event:"*",schema:"public",table:"follows"},()=>{fetchPosts();fetchRanking();fetchNotifications();}).on("postgres_changes",{event:"*",schema:"public",table:"notifications"},fetchNotifications).on("postgres_changes",{event:"*",schema:"public",table:"messages"},()=>{fetchNotifications(); if(currentTab==="messages"){fetchConversations(); if(activeConversationId) openConversation(activeConversationId,activeChatUserId);}}).on("postgres_changes",{event:"*",schema:"public",table:"conversation_members"},()=>{if(currentTab==="messages") fetchConversations();}).subscribe();}
+    function startRealtime(){if(realtimeChannel)return;realtimeChannel=supabase.channel("shitagram-social-realtime").on("postgres_changes",{event:"*",schema:"public",table:"posts"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"post_reactions"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"comments"},fetchPosts).on("postgres_changes",{event:"*",schema:"public",table:"clips"},fetchClips).on("postgres_changes",{event:"*",schema:"public",table:"profiles"},fetchRanking).on("postgres_changes",{event:"*",schema:"public",table:"follows"},()=>{fetchPosts();fetchRanking();fetchNotifications();}).on("postgres_changes",{event:"*",schema:"public",table:"notifications"},fetchNotifications).on("postgres_changes",{event:"*",schema:"public",table:"messages"},()=>{fetchNotifications(); if(currentTab==="messages"){fetchConversations(); if(activeConversationId) openConversation(activeConversationId,activeChatUserId);}}).on("postgres_changes",{event:"*",schema:"public",table:"conversation_members"},()=>{if(currentTab==="messages") fetchConversations();}).on("postgres_changes",{event:"*",schema:"public",table:"user_daily_missions"},()=>{if(currentTab==="profile") fetchGamification();}).on("postgres_changes",{event:"*",schema:"public",table:"user_badges"},()=>{if(currentTab==="profile") fetchGamification();}).subscribe();}
 
     async function init(){await refreshSession(); if(!$("appShell").classList.contains("hidden")) await fetchAll(); startRealtime();}
     supabase.auth.onAuthStateChange(async()=>{await refreshSession(); if(currentUser) await fetchAll();});
@@ -1467,6 +1608,6 @@
 
     window.showSearchSoon=showSearchSoon;
   </script>
-<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vAdmin1</div>
+<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vGame1</div>
 </body>
 </html>
