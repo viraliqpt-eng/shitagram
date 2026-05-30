@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SHITAGRAM™ - Social + Viral + Arena</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística onde micos, falhanços e momentos embaraçosos viram XP, ranking e conteúdo viral." />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=66Vq-U_LEavqyHos-Dba9hk8tB6jacrzQRoXCI9uO5Br5vo3q-XsEB8rUbnbSuDnFtYtnILRPVNDrYffpkw1wzd8K5uAlx-dt4n48lNGaO5iH7u9SGBi1dq9OgnJbiyGPS8WlcLYOC_lftgl2EyeDMgfcbiSI_2QNMjYh-9fGSdLsreKXRVMTlJmD_SHuMIII7CyRf2Q6bDvvZazJwUGtRRJdp6PeHnpTPotwOkLLbZgxj7PJBo_ZUwLxiLxaZFZa6y9vXnxmcystyD7BYfk6A" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -43,7 +43,7 @@
   </style>
 </head>
 <body>
-  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vReels1</div>
+  <div id="versionMarker" style="position:fixed;left:8px;bottom:8px;z-index:9999;color:#555;font-size:10px">vArenaAuthFix1</div>
   <div id="toast" class="toast fixed top-5 left-1/2 -translate-x-1/2 z-[999] max-w-md w-[calc(100%-32px)] rounded-2xl border border-yellow-400/30 bg-black/95 px-4 py-3 text-sm font-bold shadow-2xl"><span id="toastText">Mensagem</span></div>
 
   <!-- ONBOARDING / VISITANTE -->
@@ -598,7 +598,7 @@
     function showToast(text){const t=$("toast");$("toastText").innerText=text;t.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),3200);}
     function setMessage(id,type,text){const el=$(id); if(!el) return; el.classList.remove("hidden","text-red-400","text-yellow-400","text-green-400"); el.classList.add(type==="error"?"text-red-400":type==="success"?"text-green-400":"text-yellow-400"); el.innerText=text;}
     function setBusy(btnId,busy,text){const b=$(btnId);if(!b)return;if(busy){if(!b.dataset.oldText)b.dataset.oldText=b.innerText;b.innerText=text||"Aguarda...";b.disabled=true;b.classList.add("opacity-70");}else{b.innerText=b.dataset.defaultText||b.dataset.oldText||b.innerText;b.disabled=false;b.classList.remove("opacity-70");delete b.dataset.oldText;}}
-    function withTimeout(promise,ms=15000,label="Pedido"){return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" demorou demasiado. Verifica a ligação e tenta novamente.")),ms))]);}
+    function withTimeout(promise,ms=30000,label="Pedido"){return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+" demorou demasiado. Verifica a ligação e tenta novamente.")),ms))]);}
     function showSearchSoon(){showToast("Pesquisa em breve.");}
 
     window.openAuthModal=function(tab="login"){$("authModal").classList.add("open");document.body.style.overflow="hidden";switchAuthTab(tab);};
@@ -718,18 +718,18 @@
           $("registerBtn").innerText="Criar conta";
           setMessage("registerMessage","error","O pedido está a demorar demasiado. Se a conta aparecer no Supabase, tenta fazer login. Caso contrário, atualiza a página e tenta novamente.");
         }
-      },8000);
+      },30000);
 
       try{
-        console.log("[SHITAGRAM vReels1] signUp start", email);
+        console.log("[SHITAGRAM vArenaAuthFix1] signUp start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signUp({email,password,options:{emailRedirectTo:APP_URL,data:{username}}}),
-          8000,
+          30000,
           "Registo"
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vReels1] signUp result", {data,error});
+        console.log("[SHITAGRAM vArenaAuthFix1] signUp result", {data,error});
         if(error){
           setMessage("registerMessage","error",error.message);
           return;
@@ -742,7 +742,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vReels1] signUp error",err);
+        console.error("[SHITAGRAM vArenaAuthFix1] signUp error",err);
         setMessage("registerMessage","error",err.message||"Erro inesperado ao criar conta.");
       }finally{
         clearTimeout(safetyTimer);
@@ -763,20 +763,20 @@
         if(!finished){
           setBusy("loginBtn",false);
           $("loginBtn").innerText="Entrar com email";
-          setMessage("loginMessage","error","O login está a demorar demasiado. Atualiza a página e tenta novamente. Se continuar, verifica a password ou confirmação do email.");
+          setMessage("loginMessage","error","O login está a demorar demasiado. Aguarda mais uns segundos ou verifica a ligação/password/confirmação do email.");
         }
-      },8000);
+      },30000);
 
       try{
-        console.log("[SHITAGRAM vReels1] login start", email);
+        console.log("[SHITAGRAM vArenaAuthFix1] login start", email);
         const {data,error}=await withTimeout(
           supabase.auth.signInWithPassword({email,password}),
-          8000,
+          30000,
           "Login"
         );
         finished=true;
         clearTimeout(safetyTimer);
-        console.log("[SHITAGRAM vReels1] login result", {data,error});
+        console.log("[SHITAGRAM vArenaAuthFix1] login result", {data,error});
         if(error){
           setMessage("loginMessage","error",error.message);
           return;
@@ -784,9 +784,9 @@
 
         currentUser=data.user;
         try{
-          await withTimeout(ensureProfile(),5000,"Carregamento do perfil");
+          await withTimeout(ensureProfile(),12000,"Carregamento do perfil");
         }catch(profileErr){
-          console.warn("[SHITAGRAM vReels1] profile load skipped",profileErr);
+          console.warn("[SHITAGRAM vArenaAuthFix1] profile load skipped",profileErr);
         }
 
         localStorage.setItem("shitagram_seen_onboarding","1");
@@ -801,7 +801,7 @@
       }catch(err){
         finished=true;
         clearTimeout(safetyTimer);
-        console.error("[SHITAGRAM vReels1] login error",err);
+        console.error("[SHITAGRAM vArenaAuthFix1] login error",err);
         setMessage("loginMessage","error",err.message||"Erro inesperado no login.");
       }finally{
         clearTimeout(safetyTimer);
@@ -1941,6 +1941,6 @@
     window.showSearchSoon=showSearchSoon;
   </script>
 <button onclick="copyInviteLink()" class="fixed bottom-24 right-2 z-[999] rounded-full bg-yellow-400 text-black px-4 py-2 text-xs font-black shadow-2xl">Convidar amigos</button>
-<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vArena1</div>
+<div class="fixed bottom-24 left-2 z-[999] text-[10px] text-zinc-600 bg-black/60 border border-white/10 rounded px-2 py-1">vArenaAuthFix1</div>
 </body>
 </html>
