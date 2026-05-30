@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SHITAGRAM™ — A vergonha agora dá XP</title>
   <meta name="description" content="SHITAGRAM™ é uma rede social humorística para partilhar micos, falhanços e histórias embaraçosas." />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=nB2lp3F9su-fJaoctRF4awXGaTtvKTUQWvdKzlaskeZ8CvOk9FM_VHV1OnuMAsz8FrZ-vifEXm9jHo9FJxepxKLK0dmz3z1oZDj6iyE8DyR5CMrq_ntTCuwWL0uT7ZSBAVeZNyDhKJu8X0cQFV59SUdB8xyKNMkrmX4d7fOxg5GZPDHmYV6CvDn5lhcQbix_ct_EXOmhAMhte7pBDjF3U-Wx5JhcxHPnoUs7jBVYP781Mo9Nf7Ki8NqrW-7Ff6fND9mqlH5NZn8H6qa8mWLDzg" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -21,6 +21,9 @@
       commentsByPost: {},
       reactionsByPost: {},
       myReactions: new Set(),
+      followCounts: {},
+      followingIds: new Set(),
+      notifications: [],
       activeTab: "feed"
     };
 
@@ -155,6 +158,7 @@
       $("composerForm").classList.toggle("hidden", !logged);
       if ($("clipLock")) $("clipLock").classList.toggle("hidden", logged);
       if ($("clipForm")) $("clipForm").classList.toggle("hidden", !logged);
+      updateNotificationBadge();
     }
 
     window.openAuth = function(tab = "login") {
@@ -204,7 +208,7 @@
       }
 
       try {
-        console.log("[SHITAGRAM clean v1.2] signUp start", email);
+        console.log("[SHITAGRAM clean v3] signUp start", email);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -213,7 +217,7 @@
             emailRedirectTo: window.location.origin + window.location.pathname
           }
         });
-        console.log("[SHITAGRAM clean v1.2] signUp result", { data, error });
+        console.log("[SHITAGRAM clean v3] signUp result", { data, error });
 
         if (error) {
           setMsg("registerMsg", translateSupabaseError(error.message), "error");
@@ -225,7 +229,7 @@
         event.target.reset();
         switchAuth("login");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1.2] signUp crash", err);
+        console.error("[SHITAGRAM clean v3] signUp crash", err);
         setMsg("registerMsg", "Erro inesperado ao criar conta. Tenta novamente.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -242,9 +246,9 @@
       const password = $("loginPassword").value;
 
       try {
-        console.log("[SHITAGRAM clean v1.2] login start", email);
+        console.log("[SHITAGRAM clean v3] login start", email);
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        console.log("[SHITAGRAM clean v1.2] login result", { data, error });
+        console.log("[SHITAGRAM clean v3] login result", { data, error });
 
         if (error) {
           setMsg("loginMsg", translateSupabaseError(error.message), "error");
@@ -260,7 +264,7 @@
         showToast("Login feito com sucesso.", "success");
         goTab("feed");
       } catch (err) {
-        console.error("[SHITAGRAM clean v1.2] login crash", err);
+        console.error("[SHITAGRAM clean v3] login crash", err);
         setMsg("loginMsg", "Erro inesperado no login. Verifica a consola.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -298,7 +302,9 @@
       await Promise.allSettled([
         loadPosts(),
         loadClips(),
-        state.user ? loadMyReactions() : Promise.resolve()
+        state.user ? loadMyReactions() : Promise.resolve(),
+        state.user ? loadFollowingIds() : Promise.resolve(),
+        state.user ? loadNotifications() : Promise.resolve()
       ]);
       renderPosts();
     }
@@ -318,7 +324,11 @@
       }
 
       state.posts = data || [];
-      await Promise.allSettled([loadReactionCounts(), loadCommentCounts()]);
+      await Promise.allSettled([
+        loadReactionCounts(),
+        loadCommentCounts(),
+        loadFollowCounts(state.posts.map(p => p.user_id))
+      ]);
     }
 
     async function loadReactionCounts() {
@@ -376,6 +386,156 @@
       });
     }
 
+
+    async function loadFollowCounts(userIds = []) {
+      state.followCounts = {};
+      const ids = [...new Set((userIds || []).filter(Boolean))];
+      if (!ids.length) return;
+
+      const { data, error } = await supabase
+        .from("follows")
+        .select("following_id")
+        .in("following_id", ids);
+
+      if (error) {
+        console.warn("[clean v3] loadFollowCounts warning", error);
+        return;
+      }
+
+      (data || []).forEach(f => {
+        state.followCounts[f.following_id] = (state.followCounts[f.following_id] || 0) + 1;
+      });
+    }
+
+    async function loadFollowingIds() {
+      state.followingIds = new Set();
+      if (!state.user) return;
+
+      const { data, error } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", state.user.id);
+
+      if (error) {
+        console.warn("[clean v3] loadFollowingIds warning", error);
+        return;
+      }
+
+      state.followingIds = new Set((data || []).map(f => f.following_id));
+    }
+
+    async function loadNotifications() {
+      state.notifications = [];
+      if (!state.user) return;
+
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("id,user_id,actor_id,type,entity_type,entity_id,body,is_read,created_at,profiles!notifications_actor_id_profiles_fkey(username,display_name,avatar_url)")
+        .eq("user_id", state.user.id)
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (error) {
+        console.warn("[clean v3] loadNotifications warning", error);
+        return;
+      }
+
+      state.notifications = data || [];
+      updateNotificationBadge();
+    }
+
+    function updateNotificationBadge() {
+      const count = state.notifications.filter(n => !n.is_read).length;
+      ["notifBadge", "notifBadgeMobile"].forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        el.textContent = count;
+        el.classList.toggle("hidden", count === 0);
+      });
+    }
+
+    function notificationText(n) {
+      const username = n.profiles?.username ? `@${n.profiles.username}` : "Alguém";
+      if (n.type === "follow") return `${username} começou a seguir-te.`;
+      if (n.type === "reaction") return `${username} reagiu ao teu post.`;
+      if (n.type === "comment") return `${username} comentou o teu post.`;
+      return n.body || "Nova notificação.";
+    }
+
+    function renderNotifications() {
+      const list = $("notificationsList");
+      if (!list) return;
+
+      if (!state.user) {
+        list.innerHTML = `<div class="card p-8 text-center"><p class="text-zinc-400">Entra para veres notificações.</p><button onclick="openAuth('login')" class="mt-4 rounded-2xl bg-yellow-400 text-black px-6 py-3 font-black">Entrar</button></div>`;
+        return;
+      }
+
+      if (!state.notifications.length) {
+        list.innerHTML = `<div class="card p-8 text-center"><div class="text-5xl">🔔</div><h3 class="mt-3 text-xl font-black">Sem notificações.</h3><p class="mt-2 text-zinc-500 text-sm">Quando alguém seguir, reagir ou comentar, aparece aqui.</p></div>`;
+        return;
+      }
+
+      list.innerHTML = state.notifications.map(n => `
+        <div class="card p-4 ${!n.is_read ? "border-yellow-400/30 bg-yellow-400/5" : ""}">
+          <div class="flex items-start gap-3">
+            ${n.profiles?.avatar_url ? `<img src="${escapeHtml(n.profiles.avatar_url)}" class="w-10 h-10 rounded-full object-cover">` : `<div class="w-10 h-10 rounded-full bg-yellow-400 text-black grid place-items-center">💩</div>`}
+            <div class="min-w-0">
+              <p class="text-sm font-bold text-zinc-200">${escapeHtml(notificationText(n))}</p>
+              <p class="mt-1 text-[11px] text-zinc-500">${formatDate(n.created_at)}</p>
+            </div>
+          </div>
+        </div>`).join("");
+    }
+
+    window.markNotificationsRead = async function() {
+      if (!state.user) return openAuth("login");
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq("user_id", state.user.id)
+        .eq("is_read", false);
+
+      if (error) return showToast(error.message, "error");
+      await loadNotifications();
+      renderNotifications();
+      showToast("Notificações marcadas como lidas.", "success");
+    };
+
+    window.toggleFollow = async function(userId) {
+      if (!state.user) {
+        openAuth("login");
+        showToast("Entra para seguir utilizadores.", "error");
+        return;
+      }
+      if (userId === state.user.id) {
+        showToast("Não podes seguir o teu próprio perfil.", "error");
+        return;
+      }
+
+      const already = state.followingIds.has(userId);
+      if (already) {
+        const { error } = await supabase
+          .from("follows")
+          .delete()
+          .eq("follower_id", state.user.id)
+          .eq("following_id", userId);
+        if (error) return showToast(error.message, "error");
+        state.followingIds.delete(userId);
+        showToast("Deixaste de seguir.", "success");
+      } else {
+        const { error } = await supabase
+          .from("follows")
+          .insert({ follower_id: state.user.id, following_id: userId });
+        if (error && !String(error.message).toLowerCase().includes("duplicate")) return showToast(error.message, "error");
+        state.followingIds.add(userId);
+        showToast("Agora estás a seguir.", "success");
+      }
+
+      await loadFollowCounts(state.posts.map(p => p.user_id));
+      renderPosts();
+    };
+
     function renderPosts() {
       const list = $("postsList");
       if (!state.posts.length) {
@@ -415,6 +575,8 @@
               <button onclick="toggleReaction('${post.id}')" class="action-btn ${reacted ? "active" : ""}">💩 ${state.reactionsByPost[post.id] || 0}</button>
               <button onclick="openComments('${post.id}')" class="action-btn">💬 ${state.commentsByPost[post.id] || 0}</button>
               <button onclick="sharePost('${post.id}')" class="action-btn">↗ Partilhar</button>
+              ${state.user && state.user.id !== post.user_id ? `<button onclick="toggleFollow('${post.user_id}')" class="action-btn">${state.followingIds.has(post.user_id) ? "✓ A seguir" : "➕ Seguir"}</button>` : ""}
+              <span class="action-btn">👥 ${state.followCounts[post.user_id] || 0}</span>
               ${canDelete ? `<button onclick="deletePost('${post.id}')" class="action-btn danger">🗑️ Eliminar</button>` : ""}
             </div>
           </article>`;
@@ -673,6 +835,14 @@
         .order("created_at", { ascending: false })
         .limit(5);
 
+      const [{ count: followersCount }, { count: followingCount }] = await Promise.all([
+        supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", userId),
+        supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", userId)
+      ]);
+
+      const canFollow = !!state.user && state.user.id !== userId;
+      const followLabel = state.followingIds.has(userId) ? "✓ A seguir" : "➕ Seguir";
+
       $("publicProfileBody").innerHTML = `
         <div class="flex items-center gap-4">
           ${profile.avatar_url ? `<img src="${escapeHtml(profile.avatar_url)}" class="w-20 h-20 rounded-full object-cover">` : `<div class="w-20 h-20 rounded-full bg-yellow-400 text-black grid place-items-center text-4xl">💩</div>`}
@@ -680,8 +850,10 @@
             <h3 class="text-2xl font-black">@${escapeHtml(profile.username)}</h3>
             <p class="text-sm text-zinc-400">${escapeHtml(profile.display_name || "")}</p>
             <p class="mt-1 text-xs text-yellow-400 font-black">${escapeHtml(profile.level || "Humano Real")} · ${escapeHtml(profile.xp || 0)} XP</p>
+            <p class="mt-1 text-xs text-zinc-500 font-bold">👥 ${followersCount || 0} seguidores · ${followingCount || 0} a seguir</p>
           </div>
         </div>
+        ${canFollow ? `<button onclick="toggleFollow('${userId}'); closePublicProfile();" class="mt-5 rounded-2xl bg-yellow-400 text-black px-6 py-3 font-black">${followLabel}</button>` : ""}
         <p class="mt-4 text-sm text-zinc-300">${escapeHtml(profile.bio || "Sem bio.")}</p>
         <h4 class="mt-6 text-yellow-400 text-xs font-black uppercase tracking-widest">Micos recentes</h4>
         <div class="mt-3 space-y-3">
@@ -706,7 +878,7 @@
         .limit(40);
 
       if (error) {
-        console.warn("[clean v2] loadClips warning", error);
+        console.warn("[clean v3] loadClips warning", error);
         if (list) list.innerHTML = `<div class="card p-6 text-red-400 font-bold">${escapeHtml(error.message)}</div>`;
         return;
       }
@@ -821,7 +993,7 @@
         await loadClips();
         goTab("clips");
       } catch (err) {
-        console.error("[clean v2] publishClip crash", err);
+        console.error("[clean v3] publishClip crash", err);
         showToast("Erro ao publicar clip.", "error");
       } finally {
         setButtonLoading(btn, false);
@@ -884,6 +1056,9 @@
       if (tab === "feed") loadAll();
       if (tab === "clips") loadClips();
       if (tab === "profile") updateAuthUI();
+      if (tab === "notifications") {
+        loadNotifications().then(renderNotifications);
+      }
     };
 
     window.searchPosts = function() {
@@ -905,8 +1080,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean2";
-      $("versionBadge2").textContent = "vClean2";
+      $("versionBadge").textContent = "vClean3";
+      $("versionBadge2").textContent = "vClean3";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -981,6 +1156,7 @@
         <nav class="card p-4 sticky top-24 space-y-2">
           <button data-nav="feed" onclick="goTab('feed')" class="nav-active w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🏠 Feed</button>
           <button data-nav="clips" onclick="goTab('clips')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🎬 ShitClips™</button>
+          <button data-nav="notifications" onclick="goTab('notifications')" class="relative w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🔔 Notificações <span id="notifBadge" class="hidden absolute right-3 top-3 rounded-full bg-yellow-400 text-black text-[10px] px-2 py-0.5">0</span></button>
           <button data-nav="publish" onclick="goTab('publish')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">➕ Publicar</button>
           <button data-nav="profile" onclick="goTab('profile')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">👤 Perfil</button>
           <button id="mobileLogoutBtn" onclick="logout()" class="hidden w-full text-left rounded-2xl px-4 py-3 font-black text-red-400 border border-red-400/20 bg-red-400/10">Sair</button>
@@ -1056,6 +1232,20 @@
           </div>
         </div>
 
+
+        <div id="page-notifications" data-page class="hidden">
+          <div class="space-y-5">
+            <div class="card p-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-3xl font-black">Notificações</h2>
+                <p class="mt-1 text-zinc-400">Segue o que acontece nos teus micos.</p>
+              </div>
+              <button onclick="markNotificationsRead()" class="rounded-2xl bg-yellow-400 text-black px-5 py-3 text-xs font-black uppercase">Marcar lidas</button>
+            </div>
+            <div id="notificationsList" class="space-y-4"></div>
+          </div>
+        </div>
+
         <div id="page-publish" data-page class="hidden">
           <div class="max-w-2xl">
             <div class="card p-6">
@@ -1110,10 +1300,11 @@
       </section>
     </main>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-4 gap-1 px-3 py-2">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-5 gap-1 px-3 py-2">
       <button data-nav="feed" onclick="goTab('feed')" class="nav-active rounded-2xl py-3 text-xs font-black">🏠<br>Feed</button>
       <button data-nav="clips" onclick="goTab('clips')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🎬<br>Clips</button>
       <button data-nav="publish" onclick="goTab('publish')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">➕<br>Publicar</button>
+      <button data-nav="notifications" onclick="goTab('notifications')" class="relative rounded-2xl py-3 text-xs font-black text-zinc-400">🔔<br>Notif.<span id="notifBadgeMobile" class="hidden absolute right-1 top-1 rounded-full bg-yellow-400 text-black text-[9px] px-1.5">0</span></button>
       <button data-nav="profile" onclick="goTab('profile')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">👤<br>Perfil</button>
     </nav>
 
