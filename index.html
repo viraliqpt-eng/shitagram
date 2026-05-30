@@ -24,6 +24,7 @@
       followCounts: {},
       followingIds: new Set(),
       notifications: [],
+      badges: [],
       activeTab: "feed",
       activeGiftPostId: null,
       activeGiftCategory: "todos"
@@ -162,6 +163,66 @@
       await loadAll();
     }
 
+
+    const badgeCatalog = [
+      { code: "first_post", icon: "💩", title: "Primeiro Mico", desc: "Publicou o primeiro post." },
+      { code: "first_comment", icon: "💬", title: "Primeiro Comentário", desc: "Comentou pela primeira vez." },
+      { code: "ten_reactions", icon: "🔥", title: "10 Reações", desc: "Recebeu 10 reações nos posts." },
+      { code: "first_gift", icon: "🎁", title: "Primeiro Presente", desc: "Enviou ou recebeu um presente." },
+      { code: "first_boost", icon: "🚀", title: "Mico em Destaque", desc: "Fez boost num post." },
+      { code: "first_clip", icon: "🎬", title: "Primeiro ShitClip™", desc: "Publicou o primeiro clip." },
+      { code: "first_follower", icon: "👥", title: "Primeiro Seguidor", desc: "Recebeu o primeiro seguidor." },
+      { code: "xp_500", icon: "🏆", title: "Lenda Inicial", desc: "Chegou a 500 XP." }
+    ];
+
+    async function recalcAndLoadBadges() {
+      if (!state.user) {
+        state.badges = [];
+        renderBadges();
+        return;
+      }
+
+      try {
+        await supabase.rpc("recalculate_user_badges");
+      } catch (err) {
+        console.warn("[clean v5] badge recalc warning", err);
+      }
+
+      const { data, error } = await supabase
+        .from("user_badges")
+        .select("badge_code, unlocked_at")
+        .eq("user_id", state.user.id);
+
+      if (error) {
+        console.warn("[clean v5] badges warning", error);
+        state.badges = [];
+      } else {
+        state.badges = data || [];
+      }
+
+      renderBadges();
+    }
+
+    function renderBadges() {
+      const grid = $("badgesGrid");
+      const summary = $("badgesSummary");
+      if (!grid) return;
+
+      const unlocked = new Set((state.badges || []).map(b => b.badge_code));
+      if (summary) summary.textContent = `${unlocked.size}/${badgeCatalog.length} desbloqueadas`;
+
+      grid.innerHTML = badgeCatalog.map(badge => {
+        const isUnlocked = unlocked.has(badge.code);
+        return `
+          <div class="rounded-3xl border ${isUnlocked ? "border-yellow-400/40 bg-yellow-400/10" : "border-white/10 bg-black/30 opacity-60"} p-4">
+            <div class="text-3xl">${badge.icon}</div>
+            <h4 class="mt-2 font-black text-sm">${escapeHtml(badge.title)}</h4>
+            <p class="mt-1 text-xs text-zinc-500">${escapeHtml(badge.desc)}</p>
+            <p class="mt-3 text-[10px] font-black uppercase ${isUnlocked ? "text-yellow-400" : "text-zinc-600"}">${isUnlocked ? "Desbloqueada" : "Bloqueada"}</p>
+          </div>`;
+      }).join("");
+    }
+
     function updateAuthUI() {
       const logged = !!state.user;
       $("guestShell").classList.toggle("hidden", logged);
@@ -189,6 +250,7 @@
       if ($("clipLock")) $("clipLock").classList.toggle("hidden", logged);
       if ($("clipForm")) $("clipForm").classList.toggle("hidden", !logged);
       updateNotificationBadge();
+      renderBadges();
     }
 
     window.openAuth = function(tab = "login") {
@@ -335,7 +397,8 @@
         state.user ? loadMyReactions() : Promise.resolve(),
         state.user ? loadFollowingIds() : Promise.resolve(),
         state.user ? loadNotifications() : Promise.resolve(),
-        state.user ? loadCoinHistory() : Promise.resolve()
+        state.user ? loadCoinHistory() : Promise.resolve(),
+        state.user ? recalcAndLoadBadges() : Promise.resolve()
       ]);
       renderPosts();
     }
@@ -484,6 +547,7 @@
 
       state.notifications = data || [];
       updateNotificationBadge();
+      renderBadges();
     }
 
     function updateNotificationBadge() {
@@ -1263,7 +1327,7 @@
       });
       if (tab === "feed") loadAll();
       if (tab === "clips") loadClips();
-      if (tab === "profile") updateAuthUI();
+      if (tab === "profile") { updateAuthUI(); if (state.user) recalcAndLoadBadges(); }
       if (tab === "notifications") {
         loadNotifications().then(renderNotifications);
       }
@@ -1288,8 +1352,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean4.3";
-      $("versionBadge2").textContent = "vClean4.3";
+      $("versionBadge").textContent = "vClean5";
+      $("versionBadge2").textContent = "vClean5";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -1564,6 +1628,17 @@
                 <textarea id="profileBio" rows="4" maxlength="180" placeholder="Bio" class="w-full rounded-2xl bg-black border border-white/10 px-4 py-3 outline-none resize-none"></textarea>
                 <button class="w-full rounded-2xl bg-yellow-400 text-black py-4 font-black uppercase">Guardar perfil</button>
               </form>
+
+              <div class="mt-8">
+                <div class="flex items-end justify-between gap-4">
+                  <div>
+                    <p class="text-yellow-400 text-xs font-black uppercase tracking-widest">Conquistas</p>
+                    <h3 class="mt-1 text-2xl font-black">Badges do perfil</h3>
+                  </div>
+                  <span id="badgesSummary" class="rounded-full bg-yellow-400/10 border border-yellow-400/20 px-3 py-1 text-xs text-yellow-400 font-black">0/8 desbloqueadas</span>
+                </div>
+                <div id="badgesGrid" class="mt-4 grid sm:grid-cols-2 gap-3"></div>
+              </div>
             </div>
           </div>
         </div>
