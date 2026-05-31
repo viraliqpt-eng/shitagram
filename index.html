@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.5</title>
+  <title>Shitagram™ vClean8.3</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -430,16 +430,7 @@
       object-fit: cover;
     }
 
-    
-    .media-container video {
-      width: 100%;
-      display: block;
-      max-height: 430px;
-      background: #050505;
-      object-fit: contain;
-    }
-
-.video-duration {
+    .video-duration {
       position: absolute;
       bottom: 12px;
       left: 12px;
@@ -528,21 +519,7 @@
       box-shadow: 0 30px 90px rgba(0,0,0,0.48);
     }
 
-        .clip-video-real {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: #050505;
-      z-index: 1;
-    }
-
-    .clip-video-real::after {
-      content: "";
-    }
-
-.clip-bg {
+    .clip-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
@@ -1173,13 +1150,11 @@
       display: block;
     }
 
-    .image-preview-wrap img,
-    .image-preview-wrap video {
+    .image-preview-wrap img {
       width: 100%;
       max-height: 260px;
       object-fit: cover;
       display: block;
-      background: #050505;
     }
 .modal-actions {
       display: flex;
@@ -1258,47 +1233,6 @@
 
     .danger-action {
       color: var(--danger);
-    }
-
-    .report-action {
-      color: #ff9f43;
-    }
-
-    .safety-note {
-      background: rgba(255,204,0,0.08);
-      border: 1px solid rgba(255,204,0,0.22);
-      color: #f4f4f4;
-      padding: 12px;
-      border-radius: 13px;
-      font-size: 13px;
-      line-height: 1.45;
-      font-weight: 700;
-    }
-
-    .report-reasons {
-      display: grid;
-      gap: 9px;
-      margin-top: 10px;
-    }
-
-    .report-reason {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #101010;
-      border: 1px solid #262626;
-      color: white;
-      padding: 12px;
-      border-radius: 13px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .report-reason input {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--brand-yellow);
     }
 
     .shop-grid {
@@ -2109,11 +2043,6 @@
           <textarea id="micoDescription" maxlength="260" placeholder="Escreve aqui o que aconteceu..." required></textarea>
         </div>
 
-        <div class="safety-note">
-          <i class="fa-solid fa-shield-halved"></i>
-          Publica micos sem expor dados pessoais, sem humilhar terceiros e sem incentivar bullying. Conteúdos denunciados podem ficar em análise.
-        </div>
-
         <div class="field">
           <label>Grau do mico</label>
           <div id="gradeGrid" class="grade-grid"></div>
@@ -2129,9 +2058,9 @@
           <select id="postType" onchange="handlePostTypeChange()">
             <option value="text">Texto</option>
             <option value="image">Imagem</option>
-            <option value="video">Vídeo / ShitClip™</option>
+            <option value="video" disabled>Vídeo / ShitClip™ — em breve</option>
           </select>
-          <div class="field-hint">Imagem e vídeo reais ativos. Os vídeos aparecem também em ShitClips™.</div>
+          <div class="field-hint">Imagem real ativa nesta versão. Vídeo/ShitClips™ entra no próximo módulo.</div>
         </div>
 
         <div id="imageUploadPanel" class="image-upload-panel">
@@ -2142,17 +2071,6 @@
           </div>
           <div id="postImagePreviewWrap" class="image-preview-wrap">
             <img id="postImagePreview" alt="Preview da imagem">
-          </div>
-        </div>
-
-        <div id="videoUploadPanel" class="image-upload-panel">
-          <div class="field">
-            <label>Vídeo / ShitClip™</label>
-            <input id="postVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="previewPostVideo()">
-            <div class="field-hint">Formatos aceites: MP4, WEBM ou MOV. Tamanho máximo: 50 MB. Recomendado: vertical 9:16.</div>
-          </div>
-          <div id="postVideoPreviewWrap" class="image-preview-wrap">
-            <video id="postVideoPreview" controls playsinline muted></video>
           </div>
         </div>
 
@@ -2273,48 +2191,8 @@
     </div>
   </div>
 
-
-  <div id="reportModal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <h2>🚩 Denunciar mico</h2>
-          <p id="reportModalSubtitle">Ajuda a manter a comunidade segura.</p>
-        </div>
-        <button class="close-modal" onclick="closeReportModal()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <form id="reportForm" class="form-grid">
-        <div class="field">
-          <label>Motivo da denúncia</label>
-          <div class="report-reasons">
-            <label class="report-reason"><input type="radio" name="reportReason" value="Bullying ou humilhação de terceiros" required> Bullying ou humilhação de terceiros</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Conteúdo sexual"> Conteúdo sexual</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Ódio ou discriminação"> Ódio ou discriminação</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Violência"> Violência</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Exposição de dados pessoais"> Exposição de dados pessoais</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Spam"> Spam</label>
-            <label class="report-reason"><input type="radio" name="reportReason" value="Outro"> Outro</label>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Detalhes opcionais</label>
-          <textarea id="reportDetails" maxlength="500" placeholder="Explica brevemente o problema, se quiseres."></textarea>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
-          <button type="submit" class="btn-primary">Enviar denúncia</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.5 denúncias e moderação básica -->
+  <!-- versão interna: vClean8.3 presentes, boosts e ShitCoins reais -->
 
   <script>
 
@@ -2424,7 +2302,6 @@
     let selectedEditPostId = null;
     let selectedEditGrade = 5;
     let selectedCommentPostId = null;
-    let selectedReportPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
     let coinTransactions = [];
@@ -2497,7 +2374,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.4] auth init", error);
+        console.error("[SHITAGRAM vClean8.3] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2516,7 +2393,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] profile load", error);
+        console.error("[SHITAGRAM vClean8.3] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2552,7 +2429,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.3] ensure profile", error);
         return;
       }
 
@@ -2585,9 +2462,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.4] login start", email);
+      console.log("[SHITAGRAM vClean8.3] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.4] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2611,7 +2488,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.4] signup start", email);
+      console.log("[SHITAGRAM vClean8.3] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2619,7 +2496,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.4] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2701,8 +2578,6 @@
     const featuredList = document.getElementById("featuredList");
     const publishModal = document.getElementById("publishModal");
     const giftModal = document.getElementById("giftModal");
-    const reportModal = document.getElementById("reportModal");
-    const reportForm = document.getElementById("reportForm");
     const commentsModal = document.getElementById("commentsModal");
     const editPostModal = document.getElementById("editPostModal");
     const commentsList = document.getElementById("commentsList");
@@ -2802,22 +2677,21 @@
       publishForm.reset();
       selectedGrade = 5;
       clearPostImagePreview();
-      clearPostVideoPreview();
-      handlePostTypeChange();
       initGrades();
       initEditGrades();
     }
 
     function handlePostTypeChange() {
       const type = document.getElementById("postType")?.value || "text";
-      const imagePanel = document.getElementById("imageUploadPanel");
-      const videoPanel = document.getElementById("videoUploadPanel");
+      const panel = document.getElementById("imageUploadPanel");
+      if (!panel) return;
 
-      if (imagePanel) imagePanel.classList.toggle("open", type === "image");
-      if (videoPanel) videoPanel.classList.toggle("open", type === "video");
-
-      if (type !== "image") clearPostImagePreview();
-      if (type !== "video") clearPostVideoPreview();
+      if (type === "image") {
+        panel.classList.add("open");
+      } else {
+        panel.classList.remove("open");
+        clearPostImagePreview();
+      }
     }
 
     function clearPostImagePreview() {
@@ -2826,25 +2700,7 @@
       const img = document.getElementById("postImagePreview");
 
       if (input) input.value = "";
-      if (img) {
-        if (img.src) URL.revokeObjectURL(img.src);
-        img.removeAttribute("src");
-      }
-      if (wrap) wrap.classList.remove("open");
-    }
-
-    function clearPostVideoPreview() {
-      const input = document.getElementById("postVideoFile");
-      const wrap = document.getElementById("postVideoPreviewWrap");
-      const video = document.getElementById("postVideoPreview");
-
-      if (input) input.value = "";
-      if (video) {
-        if (video.src) URL.revokeObjectURL(video.src);
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-      }
+      if (img) img.removeAttribute("src");
       if (wrap) wrap.classList.remove("open");
     }
 
@@ -2880,62 +2736,23 @@
       }
     }
 
-    function previewPostVideo() {
-      const input = document.getElementById("postVideoFile");
-      const file = input?.files?.[0];
-      const wrap = document.getElementById("postVideoPreviewWrap");
-      const video = document.getElementById("postVideoPreview");
-
-      if (!file) {
-        clearPostVideoPreview();
-        return;
-      }
-
-      const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
-      const maxSize = 50 * 1024 * 1024;
-
-      if (!allowedTypes.includes(file.type)) {
-        showToast("Formato inválido. Usa MP4, WEBM ou MOV.");
-        clearPostVideoPreview();
-        return;
-      }
-
-      if (file.size > maxSize) {
-        showToast("Vídeo demasiado grande. Máximo: 50 MB.");
-        clearPostVideoPreview();
-        return;
-      }
-
-      if (video && wrap) {
-        video.src = URL.createObjectURL(file);
-        wrap.classList.add("open");
-      }
-    }
-
-    async function uploadPostMedia(file, type) {
+    async function uploadPostImage(file) {
       if (!currentUser) throw new Error("É necessário iniciar sessão.");
 
-      const imageTypes = ["image/jpeg", "image/png", "image/webp"];
-      const videoTypes = ["video/mp4", "video/webm", "video/quicktime"];
-
-      const allowedTypes = type === "video" ? videoTypes : imageTypes;
-      const maxSize = type === "video" ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1024 * 1024;
 
       if (!allowedTypes.includes(file.type)) {
-        throw new Error(type === "video" ? "Formato inválido. Usa MP4, WEBM ou MOV." : "Formato inválido. Usa JPG, PNG ou WEBP.");
+        throw new Error("Formato inválido. Usa JPG, PNG ou WEBP.");
       }
 
       if (file.size > maxSize) {
-        throw new Error(type === "video" ? "Vídeo demasiado grande. Máximo: 50 MB." : "Imagem demasiado grande. Máximo: 5 MB.");
+        throw new Error("Imagem demasiado grande. Máximo: 5 MB.");
       }
 
-      const ext = (file.name.split(".").pop() || (type === "video" ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g, "");
-      const safeImageExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
-      const safeVideoExt = ["mp4", "webm", "mov"].includes(ext) ? ext : "mp4";
-      const safeExt = type === "video" ? safeVideoExt : safeImageExt;
-
-      const folder = type === "video" ? "videos" : "images";
-      const storagePath = `${currentUser.id}/${folder}/${Date.now()}-${Math.random().toString(16).slice(2)}.${safeExt}`;
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const safeExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
+      const storagePath = `${currentUser.id}/${Date.now()}-${Math.random().toString(16).slice(2)}.${safeExt}`;
 
       const { error: uploadError } = await sb.storage
         .from("post-media")
@@ -2951,18 +2768,11 @@
 
       return {
         media_url: data?.publicUrl || "",
-        media_type: type,
+        media_type: "image",
         storage_path: storagePath
       };
     }
 
-    async function uploadPostImage(file) {
-      return uploadPostMedia(file, "image");
-    }
-
-    async function uploadPostVideo(file) {
-      return uploadPostMedia(file, "video");
-    }
 
     function openGiftModal(postId) {
       selectedGiftPostId = postId;
@@ -2975,76 +2785,6 @@
     function closeGiftModal() {
       selectedGiftPostId = null;
       giftModal.classList.remove("open");
-    }
-
-
-    function openReportModal(postId) {
-      if (!currentUser) {
-        openAuthModal("login");
-        return;
-      }
-
-      const post = posts.find(p => p.id === postId);
-      if (!post) {
-        showToast("Post não encontrado.");
-        return;
-      }
-
-      if (post.user_id === currentUser.id) {
-        showToast("Não podes denunciar o teu próprio post.");
-        playSound("error");
-        return;
-      }
-
-      selectedReportPostId = postId;
-      document.getElementById("reportModalSubtitle").textContent = "Denunciar: " + (post.title || "mico");
-      reportForm.reset();
-      reportModal.classList.add("open");
-      playSound("tap");
-    }
-
-    function closeReportModal() {
-      selectedReportPostId = null;
-      reportModal.classList.remove("open");
-      reportForm.reset();
-    }
-
-    async function submitReport(e) {
-      e.preventDefault();
-
-      if (!currentUser) {
-        openAuthModal("login");
-        return;
-      }
-
-      if (!selectedReportPostId) return;
-
-      const formData = new FormData(reportForm);
-      const reason = formData.get("reportReason");
-      const details = document.getElementById("reportDetails").value.trim();
-
-      if (!reason) {
-        showToast("Escolhe um motivo.");
-        playSound("error");
-        return;
-      }
-
-      const { error } = await sb.rpc("report_post", {
-        p_post_id: selectedReportPostId,
-        p_reason: reason,
-        p_details: details || null
-      });
-
-      if (error) {
-        console.error("[SHITAGRAM vClean8.5] report", error);
-        showToast(error.message || "Não foi possível enviar a denúncia.");
-        playSound("error");
-        return;
-      }
-
-      closeReportModal();
-      showToast("Denúncia enviada. Obrigado por ajudares a moderar.");
-      playSound("success");
     }
 
     function showToast(message) {
@@ -3105,14 +2845,12 @@
     function renderPostCard(post) {
       const mediaHtml = post.type !== "text" && post.media ? `
         <div class="media-container">
+          <img src="${post.media}" alt="${escapeHtml(post.title)}">
           ${post.type === "video" ? `
-            <video src="${post.media}" controls playsinline preload="metadata"></video>
             <div class="video-duration">
-              <i class="fa-solid fa-play"></i> ShitClip™
+              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
             </div>
-          ` : `
-            <img src="${post.media}" alt="${escapeHtml(post.title)}">
-          `}
+          ` : ""}
         </div>
       ` : "";
 
@@ -3167,11 +2905,6 @@
               Enviar presente
             </button>
 
-            <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
-              <i class="fa-solid fa-flag"></i>
-              Denunciar
-            </button>
-
             <button class="action-btn share" onclick="sharePost('${post.id}')">
               <i class="fa-solid fa-share-nodes"></i>
               Partilhar
@@ -3195,7 +2928,7 @@
           <article class="post-card">
             <div class="post-content">
               <h2>Sem ShitClips™ ainda</h2>
-              <p>Publica um vídeo para aparecer aqui como ShitClip™.</p>
+              <p>Publica um mico em formato vídeo demo para aparecer aqui.</p>
             </div>
           </article>
         `;
@@ -3206,11 +2939,7 @@
       return `
         <article class="clip-card" data-post-id="${post.id}">
           <div class="clip-phone">
-            ${post.type === "video" && post.media ? `
-              <video class="clip-video-real" src="${post.media}" controls playsinline preload="metadata"></video>
-            ` : `
-              <div class="clip-bg" style="background-image:url('${post.media || demoImages[0]}')"></div>
-            `}
+            <div class="clip-bg" style="background-image:url('${post.media || demoImages[0]}')"></div>
 
             <div class="clip-top">
               <div class="clip-label"><strong>SHITCLIPS™</strong> • ${post.duration || "0:10"}</div>
@@ -3427,7 +3156,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean8.4: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.3: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -3436,12 +3165,6 @@
     giftModal.addEventListener("click", function(e) {
       if (e.target === giftModal) closeGiftModal();
     });
-
-    reportModal.addEventListener("click", function(e) {
-      if (e.target === reportModal) closeReportModal();
-    });
-
-    reportForm.addEventListener("submit", submitReport);
 
     editPostModal.addEventListener("click", function(e) {
       if (e.target === editPostModal) closeEditPostModal();
@@ -3572,7 +3295,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.4] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.3] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3692,7 +3415,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.4] feed real", error);
+        console.error("[SHITAGRAM vClean8.3] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -3798,14 +3521,12 @@
       const isOwner = currentUser && post.user_id === currentUser.id;
       const mediaHtml = post.type !== "text" && post.media ? `
         <div class="media-container">
+          <img src="${post.media}" alt="${escapeHtml(post.title)}">
           ${post.type === "video" ? `
-            <video src="${post.media}" controls playsinline preload="metadata"></video>
             <div class="video-duration">
-              <i class="fa-solid fa-play"></i> ShitClip™
+              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
             </div>
-          ` : `
-            <img src="${post.media}" alt="${escapeHtml(post.title)}">
-          `}
+          ` : ""}
         </div>
       ` : "";
 
@@ -3842,11 +3563,6 @@
         <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
           <i class="fa-solid fa-gift"></i>
           Enviar presente
-        </button>
-
-        <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
-          <i class="fa-solid fa-flag"></i>
-          Denunciar
         </button>
       `;
 
@@ -3992,7 +3708,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.4] edit post", error);
+          console.error("[SHITAGRAM vClean8.3] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -4028,7 +3744,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.4] react", error);
+          console.error("[SHITAGRAM vClean8.3] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -4074,7 +3790,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] load comments", error);
+        console.error("[SHITAGRAM vClean8.3] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -4171,7 +3887,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.4] submit comment", error);
+          console.error("[SHITAGRAM vClean8.3] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -4253,7 +3969,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] gift", error);
+        console.error("[SHITAGRAM vClean8.3] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -4280,7 +3996,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] boost", error);
+        console.error("[SHITAGRAM vClean8.3] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -4301,7 +4017,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] delete", error);
+        console.error("[SHITAGRAM vClean8.3] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -4422,7 +4138,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.4] coin transactions", error);
+        console.warn("[SHITAGRAM vClean8.3] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -4640,7 +4356,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.4] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean8.3] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -4664,7 +4380,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.4] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean8.3] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -4729,7 +4445,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.4] profile load", error);
+        console.error("[SHITAGRAM vClean8.3] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -4745,9 +4461,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.4] login start", email);
+      console.log("[SHITAGRAM vClean8.3] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.4] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -4797,7 +4513,6 @@
         const anonymous = document.getElementById("anonymousCheck").checked;
         const type = document.getElementById("postType")?.value || "text";
         const imageFile = document.getElementById("postImageFile")?.files?.[0] || null;
-        const videoFile = document.getElementById("postVideoFile")?.files?.[0] || null;
 
         if (!title || !description) {
           showToast("Preenche o título e a descrição.");
@@ -4809,18 +4524,9 @@
           return;
         }
 
-        if (type === "video" && !videoFile) {
-          showToast("Escolhe um vídeo para publicar no ShitClips™.");
-          return;
-        }
-
         let mediaPayload = {};
         if (type === "image") {
           mediaPayload = await uploadPostImage(imageFile);
-        }
-
-        if (type === "video") {
-          mediaPayload = await uploadPostVideo(videoFile);
         }
 
         const payload = {
@@ -4844,7 +4550,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.4] publish", error);
+          console.error("[SHITAGRAM vClean8.3] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
@@ -4876,6 +4582,5 @@
     updateSoundButtons();
     initAuth();
   </script>
-<!-- vClean8.5 reports moderation -->
 </body>
 </html>
