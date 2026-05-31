@@ -1214,6 +1214,69 @@
       font-weight: 800;
     }
 
+
+    .comments-list {
+      display: grid;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin: 12px 0 16px;
+    }
+
+    .comment-item {
+      background: #101010;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .comment-author {
+      color: var(--brand-yellow);
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .comment-body {
+      color: #e6e6e6;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-meta {
+      margin-top: 7px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .comment-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-form textarea {
+      width: 100%;
+      min-height: 82px;
+      resize: vertical;
+      background: #111;
+      border: 1px solid #2d2d2d;
+      color: white;
+      border-radius: 14px;
+      padding: 13px 14px;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .comment-form textarea:focus {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
+    }
+
     .mobile-bottom-nav {
       display: none;
     }
@@ -1392,7 +1455,70 @@
         border-radius: 24px;
       }
 
-      .mobile-bottom-nav {
+  
+    .comments-list {
+      display: grid;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin: 12px 0 16px;
+    }
+
+    .comment-item {
+      background: #101010;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .comment-author {
+      color: var(--brand-yellow);
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .comment-body {
+      color: #e6e6e6;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-meta {
+      margin-top: 7px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .comment-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .comment-form textarea {
+      width: 100%;
+      min-height: 82px;
+      resize: vertical;
+      background: #111;
+      border: 1px solid #2d2d2d;
+      color: white;
+      border-radius: 14px;
+      padding: 13px 14px;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .comment-form textarea:focus {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
+    }
+
+    .mobile-bottom-nav {
         position: fixed;
         z-index: 40;
         left: 12px;
@@ -1716,8 +1842,35 @@
     </div>
   </div>
 
+
+  <div id="commentsModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>💬 Comentários</h2>
+          <p id="commentsModalSubtitle">Conversa do mico.</p>
+        </div>
+        <button class="close-modal" onclick="closeCommentsModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="commentsList" class="comments-list">
+        <div class="inline-empty">A carregar comentários...</div>
+      </div>
+
+      <form id="commentForm" class="comment-form">
+        <textarea id="commentText" maxlength="800" placeholder="Escreve um comentário no post..." required></textarea>
+        <div class="modal-actions" style="margin-top:0;">
+          <button type="button" class="btn-secondary" onclick="closeCommentsModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Enviar comentário</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean7.9-feed -->
+  <!-- versão interna: vClean8.0-feed -->
 
   <script>
     const demoImages = [
@@ -1730,6 +1883,7 @@
     let currentView = "feed";
     let selectedGrade = 5;
     let selectedGiftPostId = null;
+    let selectedCommentPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
 
@@ -1801,7 +1955,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean7.9] auth init", error);
+        console.error("[SHITAGRAM vClean8.0] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -1820,7 +1974,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] profile load", error);
+        console.error("[SHITAGRAM vClean8.0] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -1856,7 +2010,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.0] ensure profile", error);
         return;
       }
 
@@ -1886,9 +2040,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean7.9] login start", email);
+      console.log("[SHITAGRAM vClean8.0] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean7.9] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.0] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -1912,7 +2066,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean7.9] signup start", email);
+      console.log("[SHITAGRAM vClean8.0] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -1920,7 +2074,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean7.9] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.0] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2001,6 +2155,10 @@
     const featuredList = document.getElementById("featuredList");
     const publishModal = document.getElementById("publishModal");
     const giftModal = document.getElementById("giftModal");
+    const commentsModal = document.getElementById("commentsModal");
+    const commentsList = document.getElementById("commentsList");
+    const commentForm = document.getElementById("commentForm");
+    const commentText = document.getElementById("commentText");
     const publishForm = document.getElementById("publishForm");
     const gradeGrid = document.getElementById("gradeGrid");
     const searchInput = document.getElementById("searchInput");
@@ -2451,7 +2609,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean7.9: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.0: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -2460,6 +2618,12 @@
     giftModal.addEventListener("click", function(e) {
       if (e.target === giftModal) closeGiftModal();
     });
+
+    commentsModal.addEventListener("click", function(e) {
+      if (e.target === commentsModal) closeCommentsModal();
+    });
+
+    commentForm.addEventListener("submit", submitRealComment);
 
     document.getElementById("authModal").addEventListener("click", function(e) {
       if (e.target === document.getElementById("authModal")) closeAuthModal();
@@ -2521,7 +2685,7 @@
 
 
     /*
-      vClean7.9-feed
+      vClean8.0-feed
       - marcador visual removido do site
       - Loja e Perfil ativados
       - Feed passa a ler posts reais do Supabase
@@ -2580,7 +2744,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean7.9] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.0] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -2699,7 +2863,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean7.9] feed real", error);
+        console.error("[SHITAGRAM vClean8.0] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -2910,7 +3074,7 @@
         if (String(error.message || "").toLowerCase().includes("duplicate")) {
           showToast("Já reagiste a este mico.");
         } else {
-          console.error("[SHITAGRAM vClean7.9] react", error);
+          console.error("[SHITAGRAM vClean8.0] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -2925,47 +3089,151 @@
     }
 
     async function commentPost(postId) {
+      await openCommentsModal(postId);
+    }
+
+    async function openCommentsModal(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      selectedCommentPostId = postId;
+      document.getElementById("commentsModalSubtitle").textContent = "Comentários: " + post.title;
+      commentsModal.classList.add("open");
+      commentsList.innerHTML = `<div class="inline-empty">A carregar comentários...</div>`;
+      commentText.value = "";
+
+      await loadPostComments(postId);
+      setTimeout(() => commentText.focus(), 100);
+    }
+
+    function closeCommentsModal() {
+      selectedCommentPostId = null;
+      commentsModal.classList.remove("open");
+      commentText.value = "";
+    }
+
+    async function loadPostComments(postId) {
+      const { data, error } = await sb
+        .from("comments")
+        .select("id, user_id, body, content, created_at, status")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean8.0] load comments", error);
+        commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
+        return;
+      }
+
+      const activeComments = (data || []).filter(c => !c.status || c.status === "active");
+      const userIds = [...new Set(activeComments.map(c => c.user_id).filter(Boolean))];
+      let profileMap = {};
+
+      if (userIds.length) {
+        const { data: profiles } = await sb
+          .from("profiles")
+          .select("id, username, display_name")
+          .in("id", userIds);
+
+        (profiles || []).forEach(profile => {
+          profileMap[profile.id] = profile;
+        });
+      }
+
+      if (!activeComments.length) {
+        commentsList.innerHTML = `<div class="inline-empty">Ainda não há comentários. Sê o primeiro.</div>`;
+        return;
+      }
+
+      commentsList.innerHTML = activeComments.map(comment => {
+        const profile = profileMap[comment.user_id];
+        const author = profile?.username ? "@" + String(profile.username).replace(/^@/, "") : "utilizador";
+        const body = comment.body || comment.content || "";
+        const createdAt = comment.created_at ? new Date(comment.created_at).toLocaleString("pt-PT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+        return `
+          <div class="comment-item">
+            <div class="comment-author">${escapeHtml(author)}</div>
+            <div class="comment-body">${escapeHtml(body)}</div>
+            ${createdAt ? `<div class="comment-meta">${createdAt}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function submitRealComment(e) {
+      e.preventDefault();
+
       if (!currentUser) {
         showToast("Entra para comentar.");
         openAuthModal("login");
         return;
       }
 
-      const body = prompt("Escreve o teu comentário:");
-      if (!body || !body.trim()) return;
+      if (!selectedCommentPostId) return;
 
-      let { error } = await sb
-        .from("comments")
-        .insert({
-          post_id: postId,
-          user_id: currentUser.id,
-          body: body.trim(),
-          content: body.trim(),
-          status: "active"
-        });
+      const body = commentText.value.trim();
+      if (!body) return;
 
-      if (error) {
-        const retry = await sb
+      const submitBtn = commentForm.querySelector(".btn-primary");
+      const originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "A enviar...";
+
+      try {
+        let { error } = await sb
           .from("comments")
           .insert({
-            post_id: postId,
+            post_id: selectedCommentPostId,
             user_id: currentUser.id,
-            body: body.trim(),
+            body,
+            content: body,
             status: "active"
           });
-        error = retry.error;
-      }
 
-      if (error) {
-        console.error("[SHITAGRAM vClean7.9] comment", error);
-        showToast(error.message || "Erro ao comentar.");
-        return;
-      }
+        if (error) {
+          const msg = String(error.message || "").toLowerCase();
 
-      realFeedLoaded = false;
-      await fetchRealFeed(true);
-      renderCurrentView();
-      showToast("Comentário publicado.");
+          if (msg.includes("body") && !msg.includes("content")) {
+            const retry = await sb
+              .from("comments")
+              .insert({
+                post_id: selectedCommentPostId,
+                user_id: currentUser.id,
+                content: body,
+                status: "active"
+              });
+            error = retry.error;
+          } else if (msg.includes("content") && !msg.includes("body")) {
+            const retry = await sb
+              .from("comments")
+              .insert({
+                post_id: selectedCommentPostId,
+                user_id: currentUser.id,
+                body,
+                status: "active"
+              });
+            error = retry.error;
+          }
+        }
+
+        if (error) {
+          console.error("[SHITAGRAM vClean8.0] submit comment", error);
+          showToast(error.message || "Erro ao comentar.");
+          return;
+        }
+
+        commentText.value = "";
+        await loadPostComments(selectedCommentPostId);
+        realFeedLoaded = false;
+        await fetchRealFeed(true);
+        if (currentView === "feed") renderFeed();
+        renderRanking();
+        renderFeatured();
+        showToast("Comentário publicado 💬");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
     }
 
     function openGiftModal(postId) {
@@ -3006,7 +3274,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] gift", error);
+        console.error("[SHITAGRAM vClean8.0] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -3025,7 +3293,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] boost", error);
+        console.error("[SHITAGRAM vClean8.0] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -3044,7 +3312,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] delete", error);
+        console.error("[SHITAGRAM vClean8.0] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         return;
       }
@@ -3199,7 +3467,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.9] profile load", error);
+        console.error("[SHITAGRAM vClean8.0] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -3214,9 +3482,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean7.9] login start", email);
+      console.log("[SHITAGRAM vClean8.0] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean7.9] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.0] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -3290,7 +3558,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean7.9.1] publish", error);
+          console.error("[SHITAGRAM vClean8.0] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
