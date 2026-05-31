@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™</title>
+  <title>Shitagram™ vClean8.2</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -2103,10 +2103,140 @@
     </div>
   </div>
 
+  
+  <div id="editPostModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>✏️ Editar mico</h2>
+          <p>Atualiza o título, descrição e grau do teu post.</p>
+        </div>
+        <button class="close-modal" onclick="closeEditPostModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="editPostForm" class="form-grid">
+        <div class="field">
+          <label>Título do mico</label>
+          <input id="editPostTitle" type="text" maxlength="70" placeholder="Título do mico" required>
+        </div>
+
+        <div class="field">
+          <label>Descrição da vergonha</label>
+          <textarea id="editPostDescription" maxlength="800" placeholder="Descrição da vergonha" required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Grau do mico</label>
+          <div id="editGradeGrid" class="grade-grid"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeEditPostModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.1 presentes, boosts e ShitCoins reais -->
+  <!-- versão interna: vClean8.2 presentes, boosts e ShitCoins reais -->
 
   <script>
+
+    // Sons leves da interface. Só tocam depois da primeira interação do utilizador.
+    const soundState = {
+      ctx: null,
+      muted: localStorage.getItem("shitagram_muted") === "1"
+    };
+
+    function getAudioContext() {
+      if (soundState.muted) return null;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!soundState.ctx) soundState.ctx = new AudioContextClass();
+      if (soundState.ctx.state === "suspended") soundState.ctx.resume().catch(() => {});
+      return soundState.ctx;
+    }
+
+    function playTone(freq = 440, duration = 0.08, type = "sine", volume = 0.045, slideTo = null) {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      if (slideTo) {
+        osc.frequency.exponentialRampToValueAtTime(Math.max(1, slideTo), ctx.currentTime + duration);
+      }
+
+      gain.gain.setValueAtTime(volume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    function playSound(name) {
+      if (soundState.muted) return;
+
+      if (name === "tap") {
+        playTone(420, 0.055, "sine", 0.035, 580);
+        return;
+      }
+
+      if (name === "success") {
+        playTone(523, 0.07, "triangle", 0.04);
+        setTimeout(() => playTone(784, 0.10, "triangle", 0.035), 70);
+        return;
+      }
+
+      if (name === "reaction") {
+        playTone(180, 0.09, "sine", 0.04, 340);
+        return;
+      }
+
+      if (name === "coin") {
+        playTone(660, 0.055, "square", 0.035);
+        setTimeout(() => playTone(990, 0.09, "square", 0.032), 60);
+        return;
+      }
+
+      if (name === "delete") {
+        playTone(260, 0.11, "sawtooth", 0.035, 120);
+        return;
+      }
+
+      if (name === "error") {
+        playTone(130, 0.13, "sawtooth", 0.035, 90);
+        return;
+      }
+
+      playTone();
+    }
+
+    function toggleSound() {
+      soundState.muted = !soundState.muted;
+      localStorage.setItem("shitagram_muted", soundState.muted ? "1" : "0");
+      const label = soundState.muted ? "Sons desligados" : "Sons ligados";
+      showToast(label);
+      if (!soundState.muted) playSound("success");
+      updateSoundButtons();
+    }
+
+    function updateSoundButtons() {
+      document.querySelectorAll("[data-sound-toggle]").forEach(btn => {
+        btn.innerHTML = soundState.muted
+          ? '<i class="fa-solid fa-volume-xmark"></i>'
+          : '<i class="fa-solid fa-volume-high"></i>';
+        btn.title = soundState.muted ? "Ligar sons" : "Desligar sons";
+      });
+    }
+
     const demoImages = [
       "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&auto=format&fit=crop",
@@ -2118,6 +2248,8 @@
     let currentShopTab = "presentes";
     let selectedGrade = 5;
     let selectedGiftPostId = null;
+    let selectedEditPostId = null;
+    let selectedEditGrade = 5;
     let selectedCommentPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
@@ -2191,7 +2323,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.1] auth init", error);
+        console.error("[SHITAGRAM vClean8.2] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2210,7 +2342,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] profile load", error);
+        console.error("[SHITAGRAM vClean8.2] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2246,7 +2378,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.2] ensure profile", error);
         return;
       }
 
@@ -2279,9 +2411,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.1] login start", email);
+      console.log("[SHITAGRAM vClean8.2] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.1] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.2] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2305,7 +2437,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.1] signup start", email);
+      console.log("[SHITAGRAM vClean8.2] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2313,7 +2445,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.1] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.2] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2338,6 +2470,7 @@
       currentProfile = null;
       updateAuthUi();
       showToast("Sessão terminada.");
+          playSound("tap");
     }
 
 
@@ -2395,8 +2528,11 @@
     const publishModal = document.getElementById("publishModal");
     const giftModal = document.getElementById("giftModal");
     const commentsModal = document.getElementById("commentsModal");
+    const editPostModal = document.getElementById("editPostModal");
     const commentsList = document.getElementById("commentsList");
     const commentForm = document.getElementById("commentForm");
+    const editPostForm = document.getElementById("editPostForm");
+    const editGradeGrid = document.getElementById("editGradeGrid");
     const commentText = document.getElementById("commentText");
     const publishForm = document.getElementById("publishForm");
     const gradeGrid = document.getElementById("gradeGrid");
@@ -2404,6 +2540,7 @@
     const searchArea = document.getElementById("searchArea");
 
     function setView(view) {
+      playSound("tap");
       currentView = view;
 
       document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
@@ -2467,12 +2604,14 @@
         btn.onclick = () => {
           selectedGrade = i;
           initGrades();
+    initEditGrades();
         };
         gradeGrid.appendChild(btn);
       }
     }
 
     function openPublishModal() {
+      playSound("tap");
       if (!currentUser) {
         showToast("Entra para publicar micos reais.");
         openAuthModal("login");
@@ -2487,6 +2626,7 @@
       publishForm.reset();
       selectedGrade = 5;
       initGrades();
+    initEditGrades();
     }
 
     function openGiftModal(postId) {
@@ -2871,7 +3011,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean8.1: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.2: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -2879,6 +3019,10 @@
 
     giftModal.addEventListener("click", function(e) {
       if (e.target === giftModal) closeGiftModal();
+    });
+
+    editPostModal.addEventListener("click", function(e) {
+      if (e.target === editPostModal) closeEditPostModal();
     });
 
     commentsModal.addEventListener("click", function(e) {
@@ -3006,7 +3150,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.1] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.2] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3125,7 +3269,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.1] feed real", error);
+        console.error("[SHITAGRAM vClean8.2] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -3133,6 +3277,7 @@
     }
 
     function setView(view) {
+      playSound("tap");
       currentView = view;
 
       document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
@@ -3259,6 +3404,11 @@
           Boost
         </button>
 
+        <button class="action-btn owner-action" onclick="openEditPostModal('${post.id}')">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Editar
+        </button>
+
         <button class="action-btn danger-action" onclick="deletePost('${post.id}')">
           <i class="fa-solid fa-trash"></i>
           Eliminar
@@ -3321,6 +3471,117 @@
       `;
     }
 
+
+    function initEditGrades() {
+      if (!editGradeGrid) return;
+      editGradeGrid.innerHTML = "";
+      for (let i = 1; i <= 10; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "grade-btn" + (i === selectedEditGrade ? " selected" : "");
+        btn.textContent = i;
+        btn.onclick = () => {
+          selectedEditGrade = i;
+          initEditGrades();
+          playSound("tap");
+        };
+        editGradeGrid.appendChild(btn);
+      }
+    }
+
+    function openEditPostModal(postId) {
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post || post.user_id !== currentUser.id) {
+        showToast("Só podes editar os teus próprios posts.");
+        playSound("error");
+        return;
+      }
+
+      selectedEditPostId = postId;
+      selectedEditGrade = Number(post.grade || 5);
+
+      document.getElementById("editPostTitle").value = post.title || "";
+      document.getElementById("editPostDescription").value = post.description || "";
+      initEditGrades();
+
+      editPostModal.classList.add("open");
+      playSound("tap");
+      setTimeout(() => document.getElementById("editPostTitle")?.focus(), 60);
+    }
+
+    function closeEditPostModal() {
+      selectedEditPostId = null;
+      editPostModal.classList.remove("open");
+      editPostForm.reset();
+      selectedEditGrade = 5;
+      initEditGrades();
+    }
+
+    async function submitEditPost(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      if (!selectedEditPostId) {
+        showToast("Post não selecionado.");
+        playSound("error");
+        return;
+      }
+
+      const title = document.getElementById("editPostTitle").value.trim();
+      const description = document.getElementById("editPostDescription").value.trim();
+
+      if (!title || !description) {
+        showToast("Preenche o título e a descrição.");
+        playSound("error");
+        return;
+      }
+
+      const submitBtn = editPostForm.querySelector(".btn-primary");
+      const originalLabel = submitBtn ? submitBtn.textContent : "";
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "A guardar...";
+      }
+
+      try {
+        const { error } = await sb.rpc("update_own_post", {
+          p_post_id: selectedEditPostId,
+          p_title: title,
+          p_description: description,
+          p_trauma_level: selectedEditGrade
+        });
+
+        if (error) {
+          console.error("[SHITAGRAM vClean8.2] edit post", error);
+          showToast(error.message || "Não foi possível editar o post.");
+          playSound("error");
+          return;
+        }
+
+        closeEditPostModal();
+        realFeedLoaded = false;
+        await fetchRealFeed(true);
+        renderCurrentView();
+        showToast("Post atualizado ✏️");
+        playSound("success");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel || "Guardar alterações";
+        }
+      }
+    }
+
     async function reactToPost(postId) {
       if (!currentUser) {
         showToast("Entra para reagir.");
@@ -3335,8 +3596,9 @@
       if (error) {
         if (String(error.message || "").toLowerCase().includes("duplicate")) {
           showToast("Já reagiste a este mico.");
+        playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.1] react", error);
+          console.error("[SHITAGRAM vClean8.2] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -3382,7 +3644,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] load comments", error);
+        console.error("[SHITAGRAM vClean8.2] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -3479,7 +3741,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.1] submit comment", error);
+          console.error("[SHITAGRAM vClean8.2] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -3492,6 +3754,7 @@
         renderRanking();
         renderFeatured();
         showToast("Comentário publicado 💬");
+        playSound("success");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalLabel;
@@ -3499,6 +3762,7 @@
     }
 
     function openGiftModal(postId) {
+      playSound("tap");
       if (!currentUser) {
         showToast("Entra para enviar presentes.");
         openAuthModal("login");
@@ -3559,7 +3823,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] gift", error);
+        console.error("[SHITAGRAM vClean8.2] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -3571,6 +3835,7 @@
       await fetchRealFeed(true);
       renderCurrentView();
       showToast(`${giftName} enviado 🎁`);
+        playSound("coin");
     }
 
     async function boostPost(postId) {
@@ -3585,7 +3850,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] boost", error);
+        console.error("[SHITAGRAM vClean8.2] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -3596,6 +3861,7 @@
       await fetchRealFeed(true);
       renderCurrentView();
       showToast("Boost aplicado por 24h 🚀");
+      playSound("success");
     }
 
     async function deletePost(postId) {
@@ -3605,8 +3871,9 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] delete", error);
+        console.error("[SHITAGRAM vClean8.2] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
+        playSound("error");
         return;
       }
 
@@ -3614,6 +3881,7 @@
       await fetchRealFeed(true);
       renderCurrentView();
       showToast("Post eliminado.");
+      playSound("delete");
     }
 
     function renderRanking() {
@@ -3724,7 +3992,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.1] coin transactions", error);
+        console.warn("[SHITAGRAM vClean8.2] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -3942,7 +4210,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.1] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean8.2] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -3966,7 +4234,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.1] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean8.2] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -4031,7 +4299,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.1] profile load", error);
+        console.error("[SHITAGRAM vClean8.2] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -4047,9 +4315,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.1] login start", email);
+      console.log("[SHITAGRAM vClean8.2] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.1] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.2] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -4073,6 +4341,7 @@
       updateAuthUi();
       renderCurrentView();
       showToast("Sessão terminada.");
+          playSound("tap");
     }
 
     async function publishRealPost(e) {
@@ -4123,7 +4392,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.1] publish", error);
+          console.error("[SHITAGRAM vClean8.2] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
@@ -4133,6 +4402,7 @@
         await fetchRealFeed(true);
         setView("feed");
         showToast("Mico publicado no feed real 💩");
+        playSound("success");
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -4146,10 +4416,12 @@
 
 
     initGrades();
+    initEditGrades();
     setView("feed");
     renderRanking();
     renderFeatured();
     updateProfileStats();
+    updateSoundButtons();
     initAuth();
   </script>
 </body>
