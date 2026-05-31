@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.4</title>
+  <title>Shitagram™ vClean8.5</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1260,6 +1260,47 @@
       color: var(--danger);
     }
 
+    .report-action {
+      color: #ff9f43;
+    }
+
+    .safety-note {
+      background: rgba(255,204,0,0.08);
+      border: 1px solid rgba(255,204,0,0.22);
+      color: #f4f4f4;
+      padding: 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .report-reasons {
+      display: grid;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .report-reason {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #101010;
+      border: 1px solid #262626;
+      color: white;
+      padding: 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .report-reason input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--brand-yellow);
+    }
+
     .shop-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -2068,6 +2109,11 @@
           <textarea id="micoDescription" maxlength="260" placeholder="Escreve aqui o que aconteceu..." required></textarea>
         </div>
 
+        <div class="safety-note">
+          <i class="fa-solid fa-shield-halved"></i>
+          Publica micos sem expor dados pessoais, sem humilhar terceiros e sem incentivar bullying. Conteúdos denunciados podem ficar em análise.
+        </div>
+
         <div class="field">
           <label>Grau do mico</label>
           <div id="gradeGrid" class="grade-grid"></div>
@@ -2227,8 +2273,48 @@
     </div>
   </div>
 
+
+  <div id="reportModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>🚩 Denunciar mico</h2>
+          <p id="reportModalSubtitle">Ajuda a manter a comunidade segura.</p>
+        </div>
+        <button class="close-modal" onclick="closeReportModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="reportForm" class="form-grid">
+        <div class="field">
+          <label>Motivo da denúncia</label>
+          <div class="report-reasons">
+            <label class="report-reason"><input type="radio" name="reportReason" value="Bullying ou humilhação de terceiros" required> Bullying ou humilhação de terceiros</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Conteúdo sexual"> Conteúdo sexual</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Ódio ou discriminação"> Ódio ou discriminação</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Violência"> Violência</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Exposição de dados pessoais"> Exposição de dados pessoais</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Spam"> Spam</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Outro"> Outro</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Detalhes opcionais</label>
+          <textarea id="reportDetails" maxlength="500" placeholder="Explica brevemente o problema, se quiseres."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Enviar denúncia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.4 presentes, boosts e ShitCoins reais -->
+  <!-- versão interna: vClean8.5 denúncias e moderação básica -->
 
   <script>
 
@@ -2338,6 +2424,7 @@
     let selectedEditPostId = null;
     let selectedEditGrade = 5;
     let selectedCommentPostId = null;
+    let selectedReportPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
     let coinTransactions = [];
@@ -2614,6 +2701,8 @@
     const featuredList = document.getElementById("featuredList");
     const publishModal = document.getElementById("publishModal");
     const giftModal = document.getElementById("giftModal");
+    const reportModal = document.getElementById("reportModal");
+    const reportForm = document.getElementById("reportForm");
     const commentsModal = document.getElementById("commentsModal");
     const editPostModal = document.getElementById("editPostModal");
     const commentsList = document.getElementById("commentsList");
@@ -2888,6 +2977,76 @@
       giftModal.classList.remove("open");
     }
 
+
+    function openReportModal(postId) {
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post) {
+        showToast("Post não encontrado.");
+        return;
+      }
+
+      if (post.user_id === currentUser.id) {
+        showToast("Não podes denunciar o teu próprio post.");
+        playSound("error");
+        return;
+      }
+
+      selectedReportPostId = postId;
+      document.getElementById("reportModalSubtitle").textContent = "Denunciar: " + (post.title || "mico");
+      reportForm.reset();
+      reportModal.classList.add("open");
+      playSound("tap");
+    }
+
+    function closeReportModal() {
+      selectedReportPostId = null;
+      reportModal.classList.remove("open");
+      reportForm.reset();
+    }
+
+    async function submitReport(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      if (!selectedReportPostId) return;
+
+      const formData = new FormData(reportForm);
+      const reason = formData.get("reportReason");
+      const details = document.getElementById("reportDetails").value.trim();
+
+      if (!reason) {
+        showToast("Escolhe um motivo.");
+        playSound("error");
+        return;
+      }
+
+      const { error } = await sb.rpc("report_post", {
+        p_post_id: selectedReportPostId,
+        p_reason: reason,
+        p_details: details || null
+      });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean8.5] report", error);
+        showToast(error.message || "Não foi possível enviar a denúncia.");
+        playSound("error");
+        return;
+      }
+
+      closeReportModal();
+      showToast("Denúncia enviada. Obrigado por ajudares a moderar.");
+      playSound("success");
+    }
+
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.textContent = message;
@@ -3006,6 +3165,11 @@
             <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
               <i class="fa-solid fa-gift"></i>
               Enviar presente
+            </button>
+
+            <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
+              <i class="fa-solid fa-flag"></i>
+              Denunciar
             </button>
 
             <button class="action-btn share" onclick="sharePost('${post.id}')">
@@ -3272,6 +3436,12 @@
     giftModal.addEventListener("click", function(e) {
       if (e.target === giftModal) closeGiftModal();
     });
+
+    reportModal.addEventListener("click", function(e) {
+      if (e.target === reportModal) closeReportModal();
+    });
+
+    reportForm.addEventListener("submit", submitReport);
 
     editPostModal.addEventListener("click", function(e) {
       if (e.target === editPostModal) closeEditPostModal();
@@ -3672,6 +3842,11 @@
         <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
           <i class="fa-solid fa-gift"></i>
           Enviar presente
+        </button>
+
+        <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
+          <i class="fa-solid fa-flag"></i>
+          Denunciar
         </button>
       `;
 
@@ -4701,6 +4876,6 @@
     updateSoundButtons();
     initAuth();
   </script>
-<!-- vClean8.4 video upload -->
+<!-- vClean8.5 reports moderation -->
 </body>
 </html>
