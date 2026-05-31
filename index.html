@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.3</title>
+  <title>Shitagram™ vClean8.7</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -430,7 +430,16 @@
       object-fit: cover;
     }
 
-    .video-duration {
+    
+    .media-container video {
+      width: 100%;
+      display: block;
+      max-height: 430px;
+      background: #050505;
+      object-fit: contain;
+    }
+
+.video-duration {
       position: absolute;
       bottom: 12px;
       left: 12px;
@@ -519,7 +528,21 @@
       box-shadow: 0 30px 90px rgba(0,0,0,0.48);
     }
 
-    .clip-bg {
+        .clip-video-real {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #050505;
+      z-index: 1;
+    }
+
+    .clip-video-real::after {
+      content: "";
+    }
+
+.clip-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
@@ -959,6 +982,38 @@
       transform: translateX(-50%) translateY(0);
     }
 
+
+    .publish-safety-confirm {
+      border: 1px solid rgba(255, 204, 0, 0.24);
+      background: linear-gradient(135deg, rgba(255,204,0,0.10), rgba(255,204,0,0.03));
+    }
+
+    .safety-alert {
+      display: none;
+      border: 1px solid rgba(255, 77, 77, 0.35);
+      background: rgba(255, 77, 77, 0.08);
+      color: #ffd1d1;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .safety-alert.show {
+      display: block;
+    }
+
+    .safety-alert strong {
+      color: var(--danger);
+    }
+
+    .safety-alert ul {
+      margin: 8px 0 0 18px;
+      color: #f2d6d6;
+      font-weight: 700;
+    }
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -1150,11 +1205,13 @@
       display: block;
     }
 
-    .image-preview-wrap img {
+    .image-preview-wrap img,
+    .image-preview-wrap video {
       width: 100%;
       max-height: 260px;
       object-fit: cover;
       display: block;
+      background: #050505;
     }
 .modal-actions {
       display: flex;
@@ -1233,6 +1290,47 @@
 
     .danger-action {
       color: var(--danger);
+    }
+
+    .report-action {
+      color: #ff9f43;
+    }
+
+    .safety-note {
+      background: rgba(255,204,0,0.08);
+      border: 1px solid rgba(255,204,0,0.22);
+      color: #f4f4f4;
+      padding: 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .report-reasons {
+      display: grid;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .report-reason {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #101010;
+      border: 1px solid #262626;
+      color: white;
+      padding: 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .report-reason input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--brand-yellow);
     }
 
     .shop-grid {
@@ -1825,6 +1923,77 @@
       }
     }
 
+    .moderation-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .moderation-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .moderation-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .mod-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #121212;
+      border: 1px solid #2a2a2a;
+      color: #d8d8d8;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .mod-chip.warning {
+      border-color: rgba(255,204,0,0.35);
+      color: var(--brand-yellow);
+    }
+
+    .mod-chip.danger {
+      border-color: rgba(255,77,77,0.35);
+      color: var(--danger);
+    }
+
+    .mod-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mod-actions button {
+      border: 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight: 900;
+      background: #171717;
+      color: white;
+      border: 1px solid #2a2a2a;
+    }
+
+    .mod-actions button.primary {
+      background: var(--brand-yellow);
+      color: #050505;
+      border-color: var(--brand-yellow);
+    }
+
+    .mod-actions button.danger {
+      background: rgba(255,77,77,0.14);
+      color: #ff8b8b;
+      border-color: rgba(255,77,77,0.28);
+    }
+
   </style>
 </head>
 
@@ -1857,6 +2026,10 @@
 
         <button id="navProfile" class="nav-item" onclick="setView('profile')">
           <i class="fa-solid fa-user"></i><label>Perfil</label>
+        </button>
+
+        <button id="navModeration" class="nav-item" onclick="setView('moderation')" style="display:none;">
+          <i class="fa-solid fa-shield-halved"></i><label>Moderação</label>
         </button>
       </nav>
 
@@ -2035,13 +2208,25 @@
       <form id="publishForm" class="form-grid">
         <div class="field">
           <label>Título do mico</label>
-          <input id="micoTitle" type="text" maxlength="70" placeholder="Ex: Esqueci-me que estava em chamada" required>
+          <input id="micoTitle" type="text" maxlength="70" oninput="updatePublishSafetyPreview()" placeholder="Ex: Esqueci-me que estava em chamada" required>
         </div>
 
         <div class="field">
           <label>Descrição da vergonha</label>
-          <textarea id="micoDescription" maxlength="260" placeholder="Escreve aqui o que aconteceu..." required></textarea>
+          <textarea id="micoDescription" maxlength="260" oninput="updatePublishSafetyPreview()" placeholder="Escreve aqui o que aconteceu..." required></textarea>
         </div>
+
+        <div class="safety-note">
+          <i class="fa-solid fa-shield-halved"></i>
+          Publica micos sem expor dados pessoais, sem humilhar terceiros e sem incentivar bullying. Conteúdos suspeitos podem ir para revisão antes de aparecer no feed.
+        </div>
+
+        <div id="publishSafetyAlert" class="safety-alert"></div>
+
+        <label class="check-row publish-safety-confirm">
+          <input id="publishSafetyConfirm" type="checkbox" required>
+          Confirmo que este mico não expõe terceiros, dados pessoais, bullying ou conteúdo íntimo.
+        </label>
 
         <div class="field">
           <label>Grau do mico</label>
@@ -2058,9 +2243,9 @@
           <select id="postType" onchange="handlePostTypeChange()">
             <option value="text">Texto</option>
             <option value="image">Imagem</option>
-            <option value="video" disabled>Vídeo / ShitClip™ — em breve</option>
+            <option value="video">Vídeo / ShitClip™</option>
           </select>
-          <div class="field-hint">Imagem real ativa nesta versão. Vídeo/ShitClips™ entra no próximo módulo.</div>
+          <div class="field-hint">Imagem e vídeo reais ativos. Os vídeos aparecem também em ShitClips™.</div>
         </div>
 
         <div id="imageUploadPanel" class="image-upload-panel">
@@ -2071,6 +2256,17 @@
           </div>
           <div id="postImagePreviewWrap" class="image-preview-wrap">
             <img id="postImagePreview" alt="Preview da imagem">
+          </div>
+        </div>
+
+        <div id="videoUploadPanel" class="image-upload-panel">
+          <div class="field">
+            <label>Vídeo / ShitClip™</label>
+            <input id="postVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime" onchange="previewPostVideo()">
+            <div class="field-hint">Formatos aceites: MP4, WEBM ou MOV. Tamanho máximo: 50 MB. Recomendado: vertical 9:16.</div>
+          </div>
+          <div id="postVideoPreviewWrap" class="image-preview-wrap">
+            <video id="postVideoPreview" controls playsinline muted></video>
           </div>
         </div>
 
@@ -2191,8 +2387,48 @@
     </div>
   </div>
 
+
+  <div id="reportModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>🚩 Denunciar mico</h2>
+          <p id="reportModalSubtitle">Ajuda a manter a comunidade segura.</p>
+        </div>
+        <button class="close-modal" onclick="closeReportModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="reportForm" class="form-grid">
+        <div class="field">
+          <label>Motivo da denúncia</label>
+          <div class="report-reasons">
+            <label class="report-reason"><input type="radio" name="reportReason" value="Bullying ou humilhação de terceiros" required> Bullying ou humilhação de terceiros</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Conteúdo sexual"> Conteúdo sexual</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Ódio ou discriminação"> Ódio ou discriminação</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Violência"> Violência</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Exposição de dados pessoais"> Exposição de dados pessoais</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Spam"> Spam</label>
+            <label class="report-reason"><input type="radio" name="reportReason" value="Outro"> Outro</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Detalhes opcionais</label>
+          <textarea id="reportDetails" maxlength="500" placeholder="Explica brevemente o problema, se quiseres."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Enviar denúncia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.3 presentes, boosts e ShitCoins reais -->
+  <!-- versão interna: vClean8.6 denúncias e moderação básica -->
 
   <script>
 
@@ -2302,6 +2538,7 @@
     let selectedEditPostId = null;
     let selectedEditGrade = 5;
     let selectedCommentPostId = null;
+    let selectedReportPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
     let coinTransactions = [];
@@ -2374,7 +2611,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.3] auth init", error);
+        console.error("[SHITAGRAM vClean8.7] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2388,12 +2625,12 @@
 
       const { data, error } = await sb
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
         .eq("id", currentUser.id)
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] profile load", error);
+        console.error("[SHITAGRAM vClean8.7] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2423,13 +2660,14 @@
           display_name: username,
           xp: 0,
           coins: 0,
-          posts_count: 0
+          posts_count: 0,
+          role: "user"
         }, { onConflict: "id" })
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.7] ensure profile", error);
         return;
       }
 
@@ -2458,13 +2696,17 @@
       document.getElementById("authPrimaryBtn").onclick = isLogged ? () => setView("feed") : () => openAuthModal("login");
       document.getElementById("logoutBtn").style.display = isLogged ? "block" : "none";
 
+      const isModerator = ["admin", "moderator"].includes(String(currentProfile?.role || "user"));
+      const modBtn = document.getElementById("navModeration");
+      if (modBtn) modBtn.style.display = isModerator ? "flex" : "none";
+
       updateProfileStats();
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.3] login start", email);
+      console.log("[SHITAGRAM vClean8.7] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.7] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2488,7 +2730,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.3] signup start", email);
+      console.log("[SHITAGRAM vClean8.7] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2496,7 +2738,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.3] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.7] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2578,6 +2820,8 @@
     const featuredList = document.getElementById("featuredList");
     const publishModal = document.getElementById("publishModal");
     const giftModal = document.getElementById("giftModal");
+    const reportModal = document.getElementById("reportModal");
+    const reportForm = document.getElementById("reportForm");
     const commentsModal = document.getElementById("commentsModal");
     const editPostModal = document.getElementById("editPostModal");
     const commentsList = document.getElementById("commentsList");
@@ -2621,6 +2865,10 @@
         document.getElementById("navProfile")?.classList.add("active");
       }
 
+      if (view === "moderation") {
+        document.getElementById("navModeration")?.classList.add("active");
+      }
+
       renderCurrentView();
     }
 
@@ -2631,6 +2879,7 @@
       if (currentView === "shop") renderShopPage();
       if (currentView === "profile") renderProfilePage();
       if (currentView === "notifications") renderNotificationsPage();
+      if (currentView === "moderation") renderModerationPage();
     }
 
     function openStore(tab = "presentes") {
@@ -2676,22 +2925,28 @@
       publishModal.classList.remove("open");
       publishForm.reset();
       selectedGrade = 5;
+      const publishSafetyAlert = document.getElementById("publishSafetyAlert");
+      if (publishSafetyAlert) {
+        publishSafetyAlert.classList.remove("show");
+        publishSafetyAlert.innerHTML = "";
+      }
       clearPostImagePreview();
+      clearPostVideoPreview();
+      handlePostTypeChange();
       initGrades();
       initEditGrades();
     }
 
     function handlePostTypeChange() {
       const type = document.getElementById("postType")?.value || "text";
-      const panel = document.getElementById("imageUploadPanel");
-      if (!panel) return;
+      const imagePanel = document.getElementById("imageUploadPanel");
+      const videoPanel = document.getElementById("videoUploadPanel");
 
-      if (type === "image") {
-        panel.classList.add("open");
-      } else {
-        panel.classList.remove("open");
-        clearPostImagePreview();
-      }
+      if (imagePanel) imagePanel.classList.toggle("open", type === "image");
+      if (videoPanel) videoPanel.classList.toggle("open", type === "video");
+
+      if (type !== "image") clearPostImagePreview();
+      if (type !== "video") clearPostVideoPreview();
     }
 
     function clearPostImagePreview() {
@@ -2700,7 +2955,25 @@
       const img = document.getElementById("postImagePreview");
 
       if (input) input.value = "";
-      if (img) img.removeAttribute("src");
+      if (img) {
+        if (img.src) URL.revokeObjectURL(img.src);
+        img.removeAttribute("src");
+      }
+      if (wrap) wrap.classList.remove("open");
+    }
+
+    function clearPostVideoPreview() {
+      const input = document.getElementById("postVideoFile");
+      const wrap = document.getElementById("postVideoPreviewWrap");
+      const video = document.getElementById("postVideoPreview");
+
+      if (input) input.value = "";
+      if (video) {
+        if (video.src) URL.revokeObjectURL(video.src);
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+      }
       if (wrap) wrap.classList.remove("open");
     }
 
@@ -2736,23 +3009,62 @@
       }
     }
 
-    async function uploadPostImage(file) {
-      if (!currentUser) throw new Error("É necessário iniciar sessão.");
+    function previewPostVideo() {
+      const input = document.getElementById("postVideoFile");
+      const file = input?.files?.[0];
+      const wrap = document.getElementById("postVideoPreviewWrap");
+      const video = document.getElementById("postVideoPreview");
 
-      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-      const maxSize = 5 * 1024 * 1024;
+      if (!file) {
+        clearPostVideoPreview();
+        return;
+      }
+
+      const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
+      const maxSize = 50 * 1024 * 1024;
 
       if (!allowedTypes.includes(file.type)) {
-        throw new Error("Formato inválido. Usa JPG, PNG ou WEBP.");
+        showToast("Formato inválido. Usa MP4, WEBM ou MOV.");
+        clearPostVideoPreview();
+        return;
       }
 
       if (file.size > maxSize) {
-        throw new Error("Imagem demasiado grande. Máximo: 5 MB.");
+        showToast("Vídeo demasiado grande. Máximo: 50 MB.");
+        clearPostVideoPreview();
+        return;
       }
 
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-      const safeExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
-      const storagePath = `${currentUser.id}/${Date.now()}-${Math.random().toString(16).slice(2)}.${safeExt}`;
+      if (video && wrap) {
+        video.src = URL.createObjectURL(file);
+        wrap.classList.add("open");
+      }
+    }
+
+    async function uploadPostMedia(file, type) {
+      if (!currentUser) throw new Error("É necessário iniciar sessão.");
+
+      const imageTypes = ["image/jpeg", "image/png", "image/webp"];
+      const videoTypes = ["video/mp4", "video/webm", "video/quicktime"];
+
+      const allowedTypes = type === "video" ? videoTypes : imageTypes;
+      const maxSize = type === "video" ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(type === "video" ? "Formato inválido. Usa MP4, WEBM ou MOV." : "Formato inválido. Usa JPG, PNG ou WEBP.");
+      }
+
+      if (file.size > maxSize) {
+        throw new Error(type === "video" ? "Vídeo demasiado grande. Máximo: 50 MB." : "Imagem demasiado grande. Máximo: 5 MB.");
+      }
+
+      const ext = (file.name.split(".").pop() || (type === "video" ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g, "");
+      const safeImageExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
+      const safeVideoExt = ["mp4", "webm", "mov"].includes(ext) ? ext : "mp4";
+      const safeExt = type === "video" ? safeVideoExt : safeImageExt;
+
+      const folder = type === "video" ? "videos" : "images";
+      const storagePath = `${currentUser.id}/${folder}/${Date.now()}-${Math.random().toString(16).slice(2)}.${safeExt}`;
 
       const { error: uploadError } = await sb.storage
         .from("post-media")
@@ -2768,11 +3080,18 @@
 
       return {
         media_url: data?.publicUrl || "",
-        media_type: "image",
+        media_type: type,
         storage_path: storagePath
       };
     }
 
+    async function uploadPostImage(file) {
+      return uploadPostMedia(file, "image");
+    }
+
+    async function uploadPostVideo(file) {
+      return uploadPostMedia(file, "video");
+    }
 
     function openGiftModal(postId) {
       selectedGiftPostId = postId;
@@ -2785,6 +3104,76 @@
     function closeGiftModal() {
       selectedGiftPostId = null;
       giftModal.classList.remove("open");
+    }
+
+
+    function openReportModal(postId) {
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const post = posts.find(p => p.id === postId);
+      if (!post) {
+        showToast("Post não encontrado.");
+        return;
+      }
+
+      if (post.user_id === currentUser.id) {
+        showToast("Não podes denunciar o teu próprio post.");
+        playSound("error");
+        return;
+      }
+
+      selectedReportPostId = postId;
+      document.getElementById("reportModalSubtitle").textContent = "Denunciar: " + (post.title || "mico");
+      reportForm.reset();
+      reportModal.classList.add("open");
+      playSound("tap");
+    }
+
+    function closeReportModal() {
+      selectedReportPostId = null;
+      reportModal.classList.remove("open");
+      reportForm.reset();
+    }
+
+    async function submitReport(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      if (!selectedReportPostId) return;
+
+      const formData = new FormData(reportForm);
+      const reason = formData.get("reportReason");
+      const details = document.getElementById("reportDetails").value.trim();
+
+      if (!reason) {
+        showToast("Escolhe um motivo.");
+        playSound("error");
+        return;
+      }
+
+      const { error } = await sb.rpc("report_post", {
+        p_post_id: selectedReportPostId,
+        p_reason: reason,
+        p_details: details || null
+      });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean8.7] report", error);
+        showToast(error.message || "Não foi possível enviar a denúncia.");
+        playSound("error");
+        return;
+      }
+
+      closeReportModal();
+      showToast("Denúncia enviada. Obrigado por ajudares a moderar.");
+      playSound("success");
     }
 
     function showToast(message) {
@@ -2845,12 +3234,14 @@
     function renderPostCard(post) {
       const mediaHtml = post.type !== "text" && post.media ? `
         <div class="media-container">
-          <img src="${post.media}" alt="${escapeHtml(post.title)}">
           ${post.type === "video" ? `
+            <video src="${post.media}" controls playsinline preload="metadata"></video>
             <div class="video-duration">
-              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
+              <i class="fa-solid fa-play"></i> ShitClip™
             </div>
-          ` : ""}
+          ` : `
+            <img src="${post.media}" alt="${escapeHtml(post.title)}">
+          `}
         </div>
       ` : "";
 
@@ -2905,6 +3296,11 @@
               Enviar presente
             </button>
 
+            <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
+              <i class="fa-solid fa-flag"></i>
+              Denunciar
+            </button>
+
             <button class="action-btn share" onclick="sharePost('${post.id}')">
               <i class="fa-solid fa-share-nodes"></i>
               Partilhar
@@ -2928,7 +3324,7 @@
           <article class="post-card">
             <div class="post-content">
               <h2>Sem ShitClips™ ainda</h2>
-              <p>Publica um mico em formato vídeo demo para aparecer aqui.</p>
+              <p>Publica um vídeo para aparecer aqui como ShitClip™.</p>
             </div>
           </article>
         `;
@@ -2939,7 +3335,11 @@
       return `
         <article class="clip-card" data-post-id="${post.id}">
           <div class="clip-phone">
-            <div class="clip-bg" style="background-image:url('${post.media || demoImages[0]}')"></div>
+            ${post.type === "video" && post.media ? `
+              <video class="clip-video-real" src="${post.media}" controls playsinline preload="metadata"></video>
+            ` : `
+              <div class="clip-bg" style="background-image:url('${post.media || demoImages[0]}')"></div>
+            `}
 
             <div class="clip-top">
               <div class="clip-label"><strong>SHITCLIPS™</strong> • ${post.duration || "0:10"}</div>
@@ -3019,6 +3419,160 @@
           </article>
         `).join("")}
       `;
+    }
+
+
+    async function renderModerationPage() {
+      if (!currentUser) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🛡️ Moderação</h1>
+            <p>Entra com uma conta de moderador para ver denúncias.</p>
+          </section>
+        `;
+        openAuthModal("login");
+        return;
+      }
+
+      const isModerator = ["admin", "moderator"].includes(String(currentProfile?.role || "user"));
+      if (!isModerator) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🛡️ Moderação</h1>
+            <p>Esta área é reservada a administradores e moderadores.</p>
+          </section>
+        `;
+        return;
+      }
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🛡️ Painel de moderação</h1>
+          <p>Analisa denúncias, oculta conteúdo problemático e mantém a comunidade segura.</p>
+        </section>
+        <article class="post-card">
+          <div class="post-content">
+            <h2>A carregar denúncias...</h2>
+            <p>Estamos a buscar denúncias abertas no Supabase.</p>
+          </div>
+        </article>
+      `;
+
+      const { data, error } = await sb.rpc("get_moderation_reports");
+
+      if (error) {
+        console.error("[SHITAGRAM vClean8.7] moderation reports", error);
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🛡️ Painel de moderação</h1>
+            <p>Não foi possível carregar denúncias. Confirma se o SQL vClean8.6 foi executado.</p>
+          </section>
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Erro</h2>
+              <p>${escapeHtml(error.message || "Erro desconhecido")}</p>
+            </div>
+          </article>
+        `;
+        return;
+      }
+
+      const reports = Array.isArray(data) ? data : [];
+
+      if (!reports.length) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🛡️ Painel de moderação</h1>
+            <p>Não existem denúncias abertas neste momento.</p>
+          </section>
+        `;
+        return;
+      }
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🛡️ Painel de moderação</h1>
+          <p>${reports.length} denúncia(s) abertas ou em análise.</p>
+        </section>
+
+        <section class="moderation-grid">
+          ${reports.map(renderModerationCard).join("")}
+        </section>
+      `;
+    }
+
+    function renderModerationCard(report) {
+      const created = report.created_at ? new Date(report.created_at).toLocaleString("pt-PT") : "sem data";
+      return `
+        <article class="moderation-card">
+          <div class="post-header">
+            <div>
+              <div class="widget-title" style="margin-bottom:6px;">
+                <i class="fa-solid fa-flag"></i>
+                ${escapeHtml(report.reason || "Denúncia")}
+              </div>
+              <div class="post-time">${created}</div>
+            </div>
+            <span class="badge-grau">${escapeHtml(report.report_status || "open")}</span>
+          </div>
+
+          <div class="post-content">
+            <h2>${escapeHtml(report.post_title || "Post sem título")}</h2>
+            <p>${escapeHtml(report.details || "Sem detalhes adicionais.")}</p>
+          </div>
+
+          <div class="moderation-meta">
+            <span class="mod-chip warning"><i class="fa-solid fa-file-lines"></i> Post: ${escapeHtml(report.post_status || "active")}</span>
+            <span class="mod-chip"><i class="fa-solid fa-user"></i> Autor: @${escapeHtml(report.reported_username || "desconhecido")}</span>
+            <span class="mod-chip"><i class="fa-solid fa-user-shield"></i> Denunciante: @${escapeHtml(report.reporter_username || "desconhecido")}</span>
+          </div>
+
+          <div class="mod-actions">
+            <button class="primary" onclick="moderateReport('${report.report_id}', '${report.post_id}', 'active', 'resolved')">
+              Aprovar post
+            </button>
+            <button onclick="moderateReport('${report.report_id}', '${report.post_id}', 'hidden', 'resolved')">
+              Ocultar
+            </button>
+            <button class="danger" onclick="moderateReport('${report.report_id}', '${report.post_id}', 'removed', 'resolved')">
+              Remover
+            </button>
+            <button onclick="moderateReport('${report.report_id}', '${report.post_id}', null, 'dismissed')">
+              Ignorar denúncia
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    async function moderateReport(reportId, postId, postStatus, reportStatus) {
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const label = postStatus ? `post → ${postStatus}` : `denúncia → ${reportStatus}`;
+      if (!confirm(`Confirmar ação de moderação: ${label}?`)) return;
+
+      const { error } = await sb.rpc("moderate_report", {
+        p_report_id: reportId,
+        p_post_id: postId,
+        p_post_status: postStatus,
+        p_report_status: reportStatus,
+        p_note: null
+      });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean8.7] moderate report", error);
+        showToast(error.message || "Erro ao moderar.");
+        playSound("error");
+        return;
+      }
+
+      showToast("Ação de moderação aplicada.");
+      playSound("success");
+      await loadFeedFromSupabase?.();
+      renderModerationPage();
     }
 
     function reactToPost(postId) {
@@ -3156,7 +3710,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean8.3: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.6: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -3165,6 +3719,12 @@
     giftModal.addEventListener("click", function(e) {
       if (e.target === giftModal) closeGiftModal();
     });
+
+    reportModal.addEventListener("click", function(e) {
+      if (e.target === reportModal) closeReportModal();
+    });
+
+    reportForm.addEventListener("submit", submitReport);
 
     editPostModal.addEventListener("click", function(e) {
       if (e.target === editPostModal) closeEditPostModal();
@@ -3295,7 +3855,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.3] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.7] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3415,7 +3975,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.3] feed real", error);
+        console.error("[SHITAGRAM vClean8.7] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -3521,12 +4081,14 @@
       const isOwner = currentUser && post.user_id === currentUser.id;
       const mediaHtml = post.type !== "text" && post.media ? `
         <div class="media-container">
-          <img src="${post.media}" alt="${escapeHtml(post.title)}">
           ${post.type === "video" ? `
+            <video src="${post.media}" controls playsinline preload="metadata"></video>
             <div class="video-duration">
-              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
+              <i class="fa-solid fa-play"></i> ShitClip™
             </div>
-          ` : ""}
+          ` : `
+            <img src="${post.media}" alt="${escapeHtml(post.title)}">
+          `}
         </div>
       ` : "";
 
@@ -3563,6 +4125,11 @@
         <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
           <i class="fa-solid fa-gift"></i>
           Enviar presente
+        </button>
+
+        <button class="action-btn report-action" onclick="openReportModal('${post.id}')">
+          <i class="fa-solid fa-flag"></i>
+          Denunciar
         </button>
       `;
 
@@ -3708,7 +4275,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.3] edit post", error);
+          console.error("[SHITAGRAM vClean8.7] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -3744,7 +4311,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.3] react", error);
+          console.error("[SHITAGRAM vClean8.7] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -3790,7 +4357,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] load comments", error);
+        console.error("[SHITAGRAM vClean8.7] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -3887,7 +4454,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.3] submit comment", error);
+          console.error("[SHITAGRAM vClean8.7] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -3969,7 +4536,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] gift", error);
+        console.error("[SHITAGRAM vClean8.7] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -3996,7 +4563,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] boost", error);
+        console.error("[SHITAGRAM vClean8.7] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -4017,7 +4584,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] delete", error);
+        console.error("[SHITAGRAM vClean8.7] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -4138,7 +4705,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.3] coin transactions", error);
+        console.warn("[SHITAGRAM vClean8.7] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -4356,7 +4923,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.3] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean8.7] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -4380,7 +4947,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.3] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean8.7] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -4440,12 +5007,12 @@
 
       const { data, error } = await sb
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
         .eq("id", currentUser.id)
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.3] profile load", error);
+        console.error("[SHITAGRAM vClean8.7] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -4461,9 +5028,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.3] login start", email);
+      console.log("[SHITAGRAM vClean8.7] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.7] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -4490,6 +5057,77 @@
           playSound("tap");
     }
 
+
+    function normalizeSafetyText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function analyzePublishSafety(title, description) {
+      const text = normalizeSafetyText(`${title} ${description}`);
+      const flags = [];
+      let blocked = false;
+
+      const patterns = [
+        { key: "email", label: "possível email ou contacto pessoal", regex: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i, review: true },
+        { key: "phone", label: "possível número de telefone", regex: /(\+?\d[\d\s().-]{7,}\d)/, review: true },
+        { key: "address", label: "possível morada/localização privada", regex: /\b(rua|avenida|av\.|travessa|morada|apartamento|lote|andar|codigo postal|c[oó]digo postal)\b/i, review: true },
+        { key: "personal_data", label: "possível exposição de dados pessoais", regex: /\b(nif|cart[aã]o de cidad[aã]o|cc|iban|morada|telefone|telem[oó]vel)\b/i, review: true },
+        { key: "bullying", label: "linguagem que pode soar a bullying/humilhação", regex: /\b(burro|burra|idiota|nojento|nojenta|ot[aá]rio|ot[aá]ria|gordo|gorda|feio|feia|rid[ií]culo|rid[ií]cula|humilhar|gozar|expor)\b/i, review: true },
+        { key: "hate", label: "possível ódio ou discriminação", regex: /\b(racista|homof[oó]bico|xen[oó]fobo|discrimina[cç][aã]o|odeio todos)\b/i, review: true },
+        { key: "sexual", label: "conteúdo íntimo/sexual pode precisar de revisão", regex: /\b(nude|nudes|sexo|sexual|[ií]ntimo|[ií]ntima|pelado|pelada)\b/i, review: true }
+      ];
+
+      patterns.forEach(item => {
+        if (item.regex.test(text)) {
+          flags.push({ key: item.key, label: item.label });
+        }
+      });
+
+      const hardBlocked = [
+        /\b(mata-te|suicida-te|vai morrer|morre seu|morre sua)\b/i,
+        /\b(partilhem a morada|exponham|vamos humilhar)\b/i
+      ];
+
+      if (hardBlocked.some(regex => regex.test(text))) {
+        blocked = true;
+        flags.push({ key: "blocked", label: "conteúdo que incentiva dano, exposição ou assédio" });
+      }
+
+      return {
+        blocked,
+        shouldReview: flags.length > 0,
+        flags
+      };
+    }
+
+    function updatePublishSafetyPreview() {
+      const alert = document.getElementById("publishSafetyAlert");
+      if (!alert) return;
+
+      const title = document.getElementById("micoTitle")?.value || "";
+      const description = document.getElementById("micoDescription")?.value || "";
+      const result = analyzePublishSafety(title, description);
+
+      if (!result.flags.length) {
+        alert.classList.remove("show");
+        alert.innerHTML = "";
+        return result;
+      }
+
+      alert.classList.add("show");
+      alert.innerHTML = `
+        <strong>${result.blocked ? "Publicação bloqueada temporariamente." : "Atenção: este mico pode precisar de revisão."}</strong>
+        <div>Evita expor terceiros, dados pessoais, insultos ou conteúdo íntimo.</div>
+        <ul>${result.flags.map(flag => `<li>${escapeHtml(flag.label)}</li>`).join("")}</ul>
+      `;
+
+      return result;
+    }
+
+
     async function publishRealPost(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -4513,14 +5151,39 @@
         const anonymous = document.getElementById("anonymousCheck").checked;
         const type = document.getElementById("postType")?.value || "text";
         const imageFile = document.getElementById("postImageFile")?.files?.[0] || null;
+        const videoFile = document.getElementById("postVideoFile")?.files?.[0] || null;
 
         if (!title || !description) {
           showToast("Preenche o título e a descrição.");
           return;
         }
 
+        const safetyConfirm = document.getElementById("publishSafetyConfirm");
+        const safetyResult = updatePublishSafetyPreview();
+
+        if (safetyResult?.blocked) {
+          showToast("Este mico foi bloqueado por segurança. Revê o texto.");
+          playSound("error");
+          return;
+        }
+
+        if (!safetyConfirm?.checked) {
+          showToast("Confirma as regras de segurança antes de publicar.");
+          playSound("error");
+          return;
+        }
+
+        const moderationStatus = safetyResult?.shouldReview ? "under_review" : "active";
+        const moderationReason = safetyResult?.flags?.map(flag => flag.label).join("; ") || null;
+        const safetyFlags = safetyResult?.flags?.map(flag => flag.key) || [];
+
         if (type === "image" && !imageFile) {
           showToast("Escolhe uma imagem para publicar.");
+          return;
+        }
+
+        if (type === "video" && !videoFile) {
+          showToast("Escolhe um vídeo para publicar no ShitClips™.");
           return;
         }
 
@@ -4529,13 +5192,19 @@
           mediaPayload = await uploadPostImage(imageFile);
         }
 
+        if (type === "video") {
+          mediaPayload = await uploadPostVideo(videoFile);
+        }
+
         const payload = {
           user_id: currentUser.id,
           title,
           description,
           category: type === "video" ? "shitclip" : "mico",
           trauma_level: selectedGrade,
-          status: "active",
+          status: moderationStatus,
+          moderation_reason: moderationReason,
+          safety_flags: safetyFlags,
           is_anonymous: anonymous,
           ...mediaPayload
         };
@@ -4549,8 +5218,19 @@
           error = retry.error;
         }
 
+        if (error && (
+          String(error.message || "").toLowerCase().includes("moderation_reason") ||
+          String(error.message || "").toLowerCase().includes("safety_flags")
+        )) {
+          const fallbackPayload = { ...payload };
+          delete fallbackPayload.moderation_reason;
+          delete fallbackPayload.safety_flags;
+          const retry = await sb.from("posts").insert(fallbackPayload);
+          error = retry.error;
+        }
+
         if (error) {
-          console.error("[SHITAGRAM vClean8.3] publish", error);
+          console.error("[SHITAGRAM vClean8.7] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
@@ -4559,7 +5239,7 @@
         realFeedLoaded = false;
         await fetchRealFeed(true);
         setView("feed");
-        showToast("Mico publicado no feed real 💩");
+        showToast(moderationStatus === "under_review" ? "Mico enviado para revisão antes de aparecer no feed 🛡️" : "Mico publicado no feed real 💩");
         playSound("success");
       } finally {
         if (submitBtn) {
@@ -4582,5 +5262,7 @@
     updateSoundButtons();
     initAuth();
   </script>
+<!-- vClean8.7 publish safety -->
+<!-- vClean8.7 publish safety -->
 </body>
 </html>
