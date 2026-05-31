@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.7</title>
+  <title>Shitagram™ vClean8.6.1 — Moderação ativa</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -2028,7 +2028,7 @@
           <i class="fa-solid fa-user"></i><label>Perfil</label>
         </button>
 
-        <button id="navModeration" class="nav-item" onclick="setView('moderation')" style="display:none;">
+        <button id="navModeration" type="button" class="nav-item" onclick="setView('moderation')" style="display:none;" title="Painel de moderação/admin">
           <i class="fa-solid fa-shield-halved"></i><label>Moderação</label>
         </button>
       </nav>
@@ -2611,7 +2611,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.7] auth init", error);
+        console.error("[SHITAGRAM vClean8.6.1] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2630,7 +2630,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] profile load", error);
+        console.error("[SHITAGRAM vClean8.6.1] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2667,11 +2667,21 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.6.1] ensure profile", error);
         return;
       }
 
       currentProfile = data;
+    }
+
+
+    function isCurrentModerator() {
+      const role = String(currentProfile?.role || "user").toLowerCase();
+      const email = String(currentUser?.email || "").toLowerCase();
+
+      // Fallback seguro para a conta principal do projeto.
+      // O SQL vClean8.6.1 também define esta conta como admin.
+      return ["admin", "moderator"].includes(role) || email === "viraliqpt@gmail.com";
     }
 
     function updateAuthUi() {
@@ -2696,17 +2706,20 @@
       document.getElementById("authPrimaryBtn").onclick = isLogged ? () => setView("feed") : () => openAuthModal("login");
       document.getElementById("logoutBtn").style.display = isLogged ? "block" : "none";
 
-      const isModerator = ["admin", "moderator"].includes(String(currentProfile?.role || "user"));
+      const isModerator = isCurrentModerator();
       const modBtn = document.getElementById("navModeration");
       if (modBtn) modBtn.style.display = isModerator ? "flex" : "none";
+      if (!isModerator && currentView === "moderation") {
+        currentView = "feed";
+      }
 
       updateProfileStats();
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.7] login start", email);
+      console.log("[SHITAGRAM vClean8.6.1] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.7] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.6.1] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2730,7 +2743,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.7] signup start", email);
+      console.log("[SHITAGRAM vClean8.6.1] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2738,7 +2751,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.7] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.6.1] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -3165,7 +3178,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] report", error);
+        console.error("[SHITAGRAM vClean8.6.1] report", error);
         showToast(error.message || "Não foi possível enviar a denúncia.");
         playSound("error");
         return;
@@ -3434,7 +3447,7 @@
         return;
       }
 
-      const isModerator = ["admin", "moderator"].includes(String(currentProfile?.role || "user"));
+      const isModerator = isCurrentModerator();
       if (!isModerator) {
         mainView.innerHTML = `
           <section class="view-title-card">
@@ -3461,7 +3474,7 @@
       const { data, error } = await sb.rpc("get_moderation_reports");
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] moderation reports", error);
+        console.error("[SHITAGRAM vClean8.6.1] moderation reports", error);
         mainView.innerHTML = `
           <section class="view-title-card">
             <h1>🛡️ Painel de moderação</h1>
@@ -3471,6 +3484,16 @@
             <div class="post-content">
               <h2>Erro</h2>
               <p>${escapeHtml(error.message || "Erro desconhecido")}</p>
+              <p style="margin-top:10px;">Executa o SQL vClean8.6.1 e confirma se a tua conta está com <strong>role = admin</strong>.</p>
+            </div>
+            <div class="post-divider"></div>
+            <div class="post-actions">
+              <button class="action-btn comment" onclick="renderModerationPage()">
+                <i class="fa-solid fa-rotate"></i> Tentar novamente
+              </button>
+              <button class="action-btn share" onclick="setView('feed')">
+                <i class="fa-solid fa-house"></i> Voltar ao Feed
+              </button>
             </div>
           </article>
         `;
@@ -3485,6 +3508,22 @@
             <h1>🛡️ Painel de moderação</h1>
             <p>Não existem denúncias abertas neste momento.</p>
           </section>
+
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Sem denúncias abertas</h2>
+              <p>Quando alguém denunciar um post, ele aparece aqui para aprovação, ocultação ou remoção.</p>
+            </div>
+            <div class="post-divider"></div>
+            <div class="post-actions">
+              <button class="action-btn comment" onclick="renderModerationPage()">
+                <i class="fa-solid fa-rotate"></i> Recarregar
+              </button>
+              <button class="action-btn share" onclick="setView('feed')">
+                <i class="fa-solid fa-house"></i> Voltar ao Feed
+              </button>
+            </div>
+          </article>
         `;
         return;
       }
@@ -3563,7 +3602,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] moderate report", error);
+        console.error("[SHITAGRAM vClean8.6.1] moderate report", error);
         showToast(error.message || "Erro ao moderar.");
         playSound("error");
         return;
@@ -3855,7 +3894,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.7] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.6.1] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3975,7 +4014,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.7] feed real", error);
+        console.error("[SHITAGRAM vClean8.6.1] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -4275,7 +4314,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.7] edit post", error);
+          console.error("[SHITAGRAM vClean8.6.1] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -4311,7 +4350,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.7] react", error);
+          console.error("[SHITAGRAM vClean8.6.1] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -4357,7 +4396,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] load comments", error);
+        console.error("[SHITAGRAM vClean8.6.1] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -4454,7 +4493,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.7] submit comment", error);
+          console.error("[SHITAGRAM vClean8.6.1] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -4536,7 +4575,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] gift", error);
+        console.error("[SHITAGRAM vClean8.6.1] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -4563,7 +4602,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] boost", error);
+        console.error("[SHITAGRAM vClean8.6.1] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -4584,7 +4623,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] delete", error);
+        console.error("[SHITAGRAM vClean8.6.1] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -4705,7 +4744,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.7] coin transactions", error);
+        console.warn("[SHITAGRAM vClean8.6.1] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -4923,7 +4962,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.7] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean8.6.1] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -4947,7 +4986,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.7] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean8.6.1] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -5012,7 +5051,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.7] profile load", error);
+        console.error("[SHITAGRAM vClean8.6.1] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -5028,9 +5067,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.7] login start", email);
+      console.log("[SHITAGRAM vClean8.6.1] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.7] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.6.1] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -5230,7 +5269,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.7] publish", error);
+          console.error("[SHITAGRAM vClean8.6.1] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
