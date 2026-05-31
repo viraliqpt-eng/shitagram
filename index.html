@@ -7,7 +7,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=db_MmzadcY1cyG1SLR11lYfr3BXOqGa-QTGIx0w-N_VknwKx38_lX2KyNEQR3zPVur3S3IXglgrJN-oJS587-KEdB59JFS5TcjVtt3YucCo1C6G0mjnQrC-tBPr6gETBup1sskkFA9yuwVMdAc0ykyweyY4jbGF1C02nF2yKk1mO9IWt6T_tE9cyVUEpOot2GTXk7RaXEf4slI3QrudEkcovaSsNPdNvbbt8CQYU1gTaTlr-nHhd5VnNIiGQFnFDcNnPw3i2xOEucndLA7qqlQ" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Ez1y8T_Uhw9BDTwM1e3ouGLLD6RDjgNMp6S7OVlqcYK091m58iGQmqLk6t_ez7lhL0OOsMhUkEtv_hEsFAvo4AyL4yX4On2r0rSotTAGWDwov5fqSmlF486Z_T48Ep1UT_n99mX_Gya-YCGW-WKh0tkGXhW_RWntn7vACo9ZzGdSLYK3erHgB6tcU-MmqYekVpWLGeANu6mYoYvP9vm9XG8Q08O_nCqUh0jzdyNE1e0TTI27Mx98Mcaehtnkm5qnqjfhukEGQsCyVBHAdfhQeA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -1508,7 +1508,7 @@
       <div class="widget-card">
         <div class="widget-title"><i class="fa-solid fa-trophy"></i> Top da vergonha</div>
         <div id="rankingList" class="ranking-list"></div>
-        <button class="widget-footer-btn">Ver ranking completo <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="widget-footer-btn" onclick="setView('ranking')">Ver ranking completo <i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="widget-card">
@@ -1519,13 +1519,13 @@
           <div class="gift-bubble">🌹</div>
           <div class="gift-bubble">👑</div>
         </div>
-        <button class="widget-footer-btn">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="widget-footer-btn" onclick="setView('shop')">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="widget-card">
         <div class="widget-title"><i class="fa-solid fa-rocket"></i> Micos em destaque</div>
         <div id="featuredList" class="featured-list"></div>
-        <button class="widget-footer-btn">Ver mais micos <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="widget-footer-btn" onclick="setView('feed')">Ver mais micos <i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="widget-card">
@@ -1707,7 +1707,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean7.8-feed -->
+  <!-- versão interna: vClean7.9-feed -->
 
   <script>
     const demoImages = [
@@ -1791,7 +1791,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean7.8] auth init", error);
+        console.error("[SHITAGRAM vClean7.9] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -1810,7 +1810,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] profile load", error);
+        console.error("[SHITAGRAM vClean7.9] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -1846,7 +1846,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] ensure profile", error);
+        console.error("[SHITAGRAM vClean7.9] ensure profile", error);
         return;
       }
 
@@ -1876,9 +1876,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean7.8] login start", email);
+      console.log("[SHITAGRAM vClean7.9] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean7.8] login result", { data, error });
+      console.log("[SHITAGRAM vClean7.9] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -1902,7 +1902,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean7.8] signup start", email);
+      console.log("[SHITAGRAM vClean7.9] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -1910,7 +1910,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean7.8] signup result", { data, error });
+      console.log("[SHITAGRAM vClean7.9] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2441,60 +2441,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    publishForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const title = document.getElementById("micoTitle").value.trim();
-      const description = document.getElementById("micoDescription").value.trim();
-      const anonymous = document.getElementById("anonymousCheck").checked;
-      const type = document.getElementById("postType").value;
-
-      if (!title || !description) {
-        showToast("Preenche o título e a descrição.");
-        return;
-      }
-
-      const author = anonymous ? "@anonimo_mico" : "@joao_silva";
-      const media = type === "text" ? "" : demoImages[Math.floor(Math.random() * demoImages.length)];
-
-      const newPost = {
-        id: crypto.randomUUID(),
-        author,
-        title,
-        description,
-        grade: selectedGrade,
-        reactions: 0,
-        comments: 0,
-        time: "agora mesmo",
-        type,
-        media,
-        duration: type === "video" ? "0:10" : "",
-        anonymous,
-        gifts: []
-      };
-
-      posts.unshift(newPost);
-
-      const baseXp = selectedGrade * 12;
-      users[author].xp += baseXp;
-
-      if (author === "@joao_silva") {
-        myXp += baseXp;
-        users["@joao_silva"].xp = myXp;
-      }
-
-      closePublishModal();
-      renderCurrentView();
-      renderRanking();
-      renderFeatured();
-      updateProfileStats();
-
-      if (type === "video") {
-        showToast(`Mico publicado no Feed e no ShitClips™. +${baseXp} XP 💩`);
-      } else {
-        showToast(`Mico publicado. +${baseXp} XP de vergonha 💩`);
-      }
-    });
+    // vClean7.9: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -2564,7 +2511,7 @@
 
 
     /*
-      vClean7.8-feed
+      vClean7.9-feed
       - marcador visual removido do site
       - Loja e Perfil ativados
       - Feed passa a ler posts reais do Supabase
@@ -2623,7 +2570,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean7.8] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean7.9] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -2742,7 +2689,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean7.8] feed real", error);
+        console.error("[SHITAGRAM vClean7.9] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -2766,6 +2713,7 @@
       const mobileMap = {
         feed: "mobileFeed",
         clips: "mobileClips",
+        ranking: "mobileRanking",
         profile: "mobileProfile"
       };
 
@@ -2952,7 +2900,7 @@
         if (String(error.message || "").toLowerCase().includes("duplicate")) {
           showToast("Já reagiste a este mico.");
         } else {
-          console.error("[SHITAGRAM vClean7.8] react", error);
+          console.error("[SHITAGRAM vClean7.9] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -2999,7 +2947,7 @@
       }
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] comment", error);
+        console.error("[SHITAGRAM vClean7.9] comment", error);
         showToast(error.message || "Erro ao comentar.");
         return;
       }
@@ -3048,7 +2996,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] gift", error);
+        console.error("[SHITAGRAM vClean7.9] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -3067,7 +3015,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] boost", error);
+        console.error("[SHITAGRAM vClean7.9] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -3086,7 +3034,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] delete", error);
+        console.error("[SHITAGRAM vClean7.9] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         return;
       }
@@ -3241,7 +3189,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.8] profile load", error);
+        console.error("[SHITAGRAM vClean7.9] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -3256,9 +3204,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean7.8] login start", email);
+      console.log("[SHITAGRAM vClean7.9] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean7.8] login result", { data, error });
+      console.log("[SHITAGRAM vClean7.9] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -3284,7 +3232,7 @@
       showToast("Sessão terminada.");
     }
 
-    publishForm.addEventListener("submit", async function(e) {
+    async function publishRealPost(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
 
@@ -3294,39 +3242,64 @@
         return;
       }
 
-      const title = document.getElementById("micoTitle").value.trim();
-      const description = document.getElementById("micoDescription").value.trim();
-      const anonymous = document.getElementById("anonymousCheck").checked;
-
-      if (!title || !description) {
-        showToast("Preenche o título e a descrição.");
-        return;
+      const submitBtn = publishForm.querySelector(".btn-primary");
+      const originalLabel = submitBtn ? submitBtn.textContent : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "A publicar...";
       }
 
-      const { error } = await sb
-        .from("posts")
-        .insert({
+      try {
+        const title = document.getElementById("micoTitle").value.trim();
+        const description = document.getElementById("micoDescription").value.trim();
+        const anonymous = document.getElementById("anonymousCheck").checked;
+        const type = document.getElementById("postType")?.value || "text";
+
+        if (!title || !description) {
+          showToast("Preenche o título e a descrição.");
+          return;
+        }
+
+        const payload = {
           user_id: currentUser.id,
           title,
           description,
-          category: "mico",
+          category: type === "video" ? "shitclip" : "mico",
           trauma_level: selectedGrade,
           status: "active",
           is_anonymous: anonymous
-        });
+        };
 
-      if (error) {
-        console.error("[SHITAGRAM vClean7.8] publish", error);
-        showToast(error.message || "Erro ao publicar.");
-        return;
+        let { error } = await sb.from("posts").insert(payload);
+
+        if (error && String(error.message || "").toLowerCase().includes("is_anonymous")) {
+          const fallbackPayload = { ...payload };
+          delete fallbackPayload.is_anonymous;
+          const retry = await sb.from("posts").insert(fallbackPayload);
+          error = retry.error;
+        }
+
+        if (error) {
+          console.error("[SHITAGRAM vClean7.9] publish", error);
+          showToast(error.message || "Erro ao publicar.");
+          return;
+        }
+
+        closePublishModal();
+        realFeedLoaded = false;
+        await fetchRealFeed(true);
+        setView("feed");
+        showToast("Mico publicado no feed real 💩");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel || "Publicar mico";
+        }
       }
+    }
 
-      closePublishModal();
-      realFeedLoaded = false;
-      await fetchRealFeed(true);
-      renderCurrentView();
-      showToast("Mico publicado no feed real.");
-    }, true);
+    publishForm.addEventListener("submit", publishRealPost, true);
+
 
 
     initGrades();
