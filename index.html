@@ -1,717 +1,2150 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shitagram</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-main: #000000;
-            --bg-card: #0a0a0a;
-            --bg-search: #121212;
-            --border-color: #1a1a1a;
-            --text-primary: #ffffff;
-            --text-secondary: #aaaaaa;
-            --brand-yellow: #ffcc00;
-            --accent-glow: rgba(255, 204, 0, 0.15);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 240px 1fr 320px;
-            gap: 20px;
-            width: 100%;
-            max-width: 1400px;
-        }
-
-        /* --- SIDEBAR ESQUERDA --- */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--brand-yellow);
-            letter-spacing: -0.5px;
-            padding-left: 10px;
-        }
-
-        .logo span {
-            font-size: 10px;
-            vertical-align: super;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 18px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-
-        .nav-item i {
-            font-size: 18px;
-            color: var(--brand-yellow);
-            width: 24px;
-            text-align: center;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(90deg, rgba(255,204,0,0.15) 0%, rgba(0,0,0,0) 100%);
-            border-left: 3px solid var(--brand-yellow);
-        }
-
-        .nav-item:hover:not(.active) {
-            background-color: #111;
-        }
-
-        .profile-card-left {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-
-        .profile-info-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar-left {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid #333;
-        }
-
-        .profile-name {
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .profile-xp {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        .profile-xp span {
-            color: var(--brand-yellow);
-            font-weight: 600;
-        }
-
-        .balance-box {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .coin-icon {
-            color: var(--brand-yellow);
-            background: rgba(255,204,0,0.1);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-        }
-
-        /* --- COLUNA CENTRAL (FEED) --- */
-        .feed-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .search-bar-container {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-bar-container i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--bg-search);
-            border: 1px solid var(--border-color);
-            padding: 14px 14px 14px 48px;
-            border-radius: 25px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-        }
-
-        .post-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 20px;
-        }
-
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .post-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .author-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .author-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .author-name {
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .post-time {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .badge-grau {
-            background-color: var(--brand-yellow);
-            color: #000;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 12px;
-        }
-
-        .post-content h2 {
-            color: var(--brand-yellow);
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .post-content p {
-            font-size: 13.5px;
-            color: #dddddd;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .media-container {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-        }
-
-        .media-container img {
-            width: 100%;
-            display: block;
-            max-height: 380px;
-            object-fit: cover;
-        }
-
-        .video-duration {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .post-divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 15px 0;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .action-btn:hover {
-            opacity: 0.8;
-        }
-
-        .action-btn.poop i { color: #b07d62; font-size: 16px; }
-        .action-btn.comment i { color: var(--brand-yellow); font-size: 15px; }
-        .action-btn.gift i { color: #ff4757; font-size: 15px; }
-        .action-btn.share i { color: #ffffff; font-size: 15px; }
-
-        /* --- COLUNA DIREITA --- */
-        .right-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .top-bar-right {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 15px;
-            padding: 5px 0;
-        }
-
-        .icon-circle {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .icon-circle i {
-            font-size: 16px;
-            color: var(--brand-yellow);
-        }
-
-        .badge-notification {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: #ff4d4d;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .avatar-top-right {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #2ecc71;
-        }
-
-        .widget-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 18px;
-        }
-
-        .widget-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--brand-yellow);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .ranking-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .ranking-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 13px;
-        }
-
-        .ranking-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .rank-number {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #000;
-        }
-
-        .rank-1 { background-color: #ffcc00; }
-        .rank-2 { background-color: #cccccc; }
-        .rank-3 { background-color: #cd7f32; }
-
-        .rank-name {
-            font-weight: 600;
-            color: #dddddd;
-        }
-
-        .rank-xp {
-            font-weight: 700;
-            color: #ffffff;
-            font-size: 12px;
-        }
-
-        .widget-footer-btn {
-            width: 100%;
-            background: none;
-            border: none;
-            border-top: 1px solid var(--border-color);
-            padding-top: 12px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .gifts-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            justify-items: center;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .featured-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .featured-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .thumb-container {
-            position: relative;
-            width: 55px;
-            height: 40px;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .thumb-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumb-play {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 10px;
-            background: rgba(0,0,0,0.6);
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .featured-info h4 {
-            font-size: 12.5px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .featured-meta {
-            font-size: 10.5px;
-            color: var(--text-secondary);
-        }
-
-        .beta-text {
-            font-size: 12.5px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shitagram™ vClean6</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-main: #020202;
+      --bg-card: #090909;
+      --bg-soft: #111111;
+      --bg-search: #121212;
+      --border-color: #242424;
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --brand-yellow: #ffcc00;
+      --danger: #ff4d4d;
+      --success: #27d66d;
+      --modal-bg: rgba(0, 0, 0, 0.78);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top center, rgba(255, 204, 0, 0.07), transparent 38%),
+        var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    button, input, textarea, select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 250px minmax(420px, 1fr) 330px;
+      gap: 20px;
+      width: 100%;
+      max-width: 1450px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      background: linear-gradient(180deg, rgba(12,12,12,0.94), rgba(3,3,3,0.94));
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--brand-yellow);
+      line-height: 1;
+      text-shadow: 0 0 22px rgba(255,204,0,0.25);
+    }
+
+    .logo strong {
+      color: white;
+    }
+
+    .logo span {
+      font-size: 10px;
+      vertical-align: super;
+      margin-left: 2px;
+      color: white;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      border: 0;
+      text-decoration: none;
+      background: transparent;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 13px;
+      font-size: 15px;
+      font-weight: 800;
+      transition: 0.2s ease;
+      text-align: left;
+    }
+
+    .nav-item i {
+      width: 24px;
+      color: var(--brand-yellow);
+      font-size: 19px;
+      text-align: center;
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(255,204,0,0.28), rgba(255,204,0,0.04));
+      box-shadow: inset 3px 0 0 var(--brand-yellow);
+    }
+
+    .nav-item:hover {
+      background-color: #141414;
+      transform: translateX(2px);
+    }
+
+    .publish-pill {
+      background: linear-gradient(135deg, var(--brand-yellow), #ffe066);
+      color: #050505;
+      border: none;
+      padding: 15px 16px;
+      border-radius: 14px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 12px 35px rgba(255,204,0,0.16);
+    }
+
+    .profile-card-left {
+      margin-top: auto;
+      background: #080808;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 15px;
+    }
+
+    .profile-info-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-left,
+    .author-avatar,
+    .avatar-top-right {
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .avatar-left {
+      width: 46px;
+      height: 46px;
+      border: 1px solid #333;
+    }
+
+    .profile-name {
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .profile-xp {
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .profile-xp span {
+      color: var(--brand-yellow);
+      font-weight: 800;
+    }
+
+    .balance-box {
+      border-top: 1px solid var(--border-color);
+      margin-top: 12px;
+      padding-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .coin-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,204,0,0.16);
+      color: var(--brand-yellow);
+      border: 1px solid rgba(255,204,0,0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .search-bar-container {
+      position: sticky;
+      top: 20px;
+      z-index: 5;
+      background: rgba(2,2,2,0.72);
+      backdrop-filter: blur(12px);
+      padding-bottom: 4px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-search);
+      border: 1px solid #3a3a3a;
+      color: var(--text-primary);
+      padding: 15px 16px 15px 48px;
+      border-radius: 999px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search-input:focus {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
+    }
+
+    .hero-card {
+      background:
+        linear-gradient(135deg, rgba(255,204,0,0.15), rgba(255,204,0,0.03)),
+        #080808;
+      border: 1px solid rgba(255,204,0,0.22);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .hero-card h1 {
+      font-size: 21px;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    .hero-card h1 span {
+      color: var(--brand-yellow);
+    }
+
+    .hero-card p {
+      color: #d6d6d6;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hero-card button {
+      flex: 0 0 auto;
+      border: none;
+      background: var(--brand-yellow);
+      color: #050505;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 900;
+    }
+
+    .view-title-card {
+      background: #080808;
+      border: 1px solid rgba(255,204,0,0.18);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .view-title-card h1 {
+      font-size: 24px;
+      color: var(--brand-yellow);
+      margin-bottom: 6px;
+    }
+
+    .view-title-card p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .post-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at top right, rgba(255,204,0,0.06), transparent 35%);
+    }
+
+    .post-header,
+    .post-actions,
+    .post-author,
+    .post-time,
+    .action-btn,
+    .widget-title,
+    .ranking-user,
+    .featured-item,
+    .top-bar-right,
+    .gift-option {
+      display: flex;
+      align-items: center;
+    }
+
+    .post-header {
+      position: relative;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .post-author {
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 46px;
+      height: 46px;
+      border: 1px solid #2c2c2c;
+    }
+
+    .author-name {
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .post-time {
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .badge-grau {
+      background: var(--brand-yellow);
+      color: #040404;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .post-content {
+      position: relative;
+    }
+
+    .post-content h2 {
+      color: var(--brand-yellow);
+      font-size: 20px;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .post-content p {
+      color: #dddddd;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .anonymous-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.05);
+      padding: 6px 9px;
+      border-radius: 999px;
+    }
+
+    .media-container {
+      margin-top: 14px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      position: relative;
+      background: #050505;
+    }
+
+    .media-container img {
+      width: 100%;
+      display: block;
+      max-height: 390px;
+      object-fit: cover;
+    }
+
+    .video-duration {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.68);
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 16px 0;
+    }
+
+    .post-actions {
+      position: relative;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      gap: 8px;
+      background: transparent;
+      border: 0;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 7px 8px;
+      border-radius: 10px;
+      transition: 0.18s ease;
+    }
+
+    .action-btn:hover {
+      background: #141414;
+      transform: translateY(-1px);
+    }
+
+    .action-btn.poop i { color: #b07d62; }
+    .action-btn.comment i { color: var(--brand-yellow); }
+    .action-btn.gift i { color: #ff4757; }
+    .action-btn.share i { color: #ffffff; }
+
+    .clips-shell {
+      height: calc(100vh - 40px);
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      padding: 2px 0 24px;
+      border-radius: 20px;
+    }
+
+    .clips-shell::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .clips-shell::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 999px;
+    }
+
+    .clip-card {
+      scroll-snap-align: start;
+      min-height: calc(100vh - 64px);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .clip-phone {
+      width: min(430px, 100%);
+      aspect-ratio: 9 / 16;
+      max-height: calc(100vh - 74px);
+      background: #111;
+      border: 1px solid rgba(255,204,0,0.25);
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.48);
+    }
+
+    .clip-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.02);
+    }
+
+    .clip-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.2) 36%, rgba(0,0,0,0.88)),
+        radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.26) 70%);
+    }
+
+    .clip-top {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .clip-label {
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .clip-label strong {
+      color: var(--brand-yellow);
+    }
+
+    .clip-play {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .clip-play span {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.46);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      font-size: 30px;
+      color: var(--brand-yellow);
+      box-shadow: 0 12px 50px rgba(0,0,0,0.45);
+    }
+
+    .clip-info {
+      position: absolute;
+      left: 18px;
+      right: 88px;
+      bottom: 22px;
+      z-index: 3;
+    }
+
+    .clip-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .clip-author img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brand-yellow);
+    }
+
+    .clip-author div {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .clip-info h2 {
+      font-size: 19px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .clip-info p {
+      color: #e5e5e5;
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .clip-actions {
+      position: absolute;
+      right: 14px;
+      bottom: 22px;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .clip-action {
+      background: rgba(0,0,0,0.42);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: white;
+      width: 54px;
+      min-height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      font-size: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .clip-action span {
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .clip-action.poop i { color: #d69a73; }
+    .clip-action.comment i { color: var(--brand-yellow); }
+    .clip-action.gift i { color: #ff4d6d; }
+    .clip-action.share i { color: white; }
+
+    .clip-progress {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 8px;
+      height: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 999px;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .clip-progress span {
+      display: block;
+      height: 100%;
+      width: 45%;
+      background: var(--brand-yellow);
+      border-radius: inherit;
+      animation: fakeProgress 5s linear infinite;
+    }
+
+    @keyframes fakeProgress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    .xp-pop {
+      position: absolute;
+      bottom: 48px;
+      left: 16px;
+      background: var(--brand-yellow);
+      color: #050505;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      animation: xpFloat 0.9s ease forwards;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    @keyframes xpFloat {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.95);
+      }
+      25% {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-24px) scale(1);
+      }
+    }
+
+    .right-sidebar {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 2px;
+    }
+
+    .right-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .right-sidebar::-webkit-scrollbar-thumb {
+      background: #252525;
+      border-radius: 999px;
+    }
+
+    .top-bar-right {
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 2px 0 4px;
+    }
+
+    .icon-circle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .icon-circle i {
+      color: var(--brand-yellow);
+    }
+
+    .badge-notification {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--danger);
+      color: white;
+      font-size: 10px;
+      font-weight: 900;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .avatar-top-right {
+      width: 42px;
+      height: 42px;
+      border: 2px solid var(--success);
+    }
+
+    .widget-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .widget-title {
+      gap: 8px;
+      color: var(--brand-yellow);
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+
+    .ranking-list,
+    .featured-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .ranking-user {
+      gap: 10px;
+    }
+
+    .rank-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 900;
+      color: #050505;
+    }
+
+    .rank-1 { background: #ffcc00; }
+    .rank-2 { background: #d9d9d9; }
+    .rank-3 { background: #cd7f32; }
+
+    .rank-name {
+      font-weight: 800;
+      color: #eeeeee;
+    }
+
+    .rank-xp {
+      font-weight: 900;
+      color: white;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .widget-footer-btn {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gifts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      justify-items: center;
+      margin-bottom: 15px;
+    }
+
+    .gift-bubble {
+      font-size: 28px;
+      background: #111;
+      border: 1px solid #222;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+    }
+
+    .thumb-container {
+      position: relative;
+      width: 58px;
+      height: 42px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: #111;
+    }
+
+    .thumb-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb-play {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.22);
+    }
+
+    .thumb-play i {
+      background: rgba(0,0,0,0.66);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+    }
+
+    .featured-item {
+      gap: 10px;
+    }
+
+    .featured-info h4 {
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .featured-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .beta-text {
+      color: #dcdcdc;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(20px);
+      background: #111;
+      border: 1px solid rgba(255,204,0,0.35);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s ease;
+      z-index: 100;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-bg);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 18px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.12), transparent 34%),
+        #090909;
+      border: 1px solid rgba(255,204,0,0.22);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.65);
+      animation: modalIn 0.22s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      color: var(--brand-yellow);
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .modal-header p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .close-modal {
+      background: #151515;
+      color: white;
+      border: 1px solid #2c2c2c;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: #111;
+      border: 1px solid #2d2d2d;
+      color: white;
+      border-radius: 13px;
+      padding: 13px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
+    }
+
+    .grade-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+
+    .grade-btn {
+      background: #111;
+      border: 1px solid #2d2d2d;
+      color: white;
+      height: 38px;
+      border-radius: 10px;
+      font-weight: 900;
+    }
+
+    .grade-btn.selected {
+      background: var(--brand-yellow);
+      color: #050505;
+      border-color: var(--brand-yellow);
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dddddd;
+      font-size: 13px;
+      font-weight: 700;
+      background: #101010;
+      border: 1px solid #242424;
+      border-radius: 13px;
+      padding: 12px;
+    }
+
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--brand-yellow);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-secondary,
+    .btn-primary {
+      border: 0;
+      padding: 13px 16px;
+      border-radius: 13px;
+      font-weight: 900;
+    }
+
+    .btn-secondary {
+      background: #171717;
+      color: white;
+      border: 1px solid #303030;
+    }
+
+    .btn-primary {
+      background: var(--brand-yellow);
+      color: #050505;
+    }
+
+    .gift-modal .gift-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .gift-option {
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid #262626;
+      background: #101010;
+      color: white;
+      border-radius: 14px;
+      padding: 13px;
+    }
+
+    .gift-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+    }
+
+    .gift-emoji {
+      font-size: 24px;
+    }
+
+    .gift-cost {
+      color: var(--brand-yellow);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mobile-bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 1120px) {
+      .app {
+        grid-template-columns: 82px minmax(0, 1fr) 310px;
+      }
+
+      .logo {
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .logo strong,
+      .logo span,
+      .nav-item label,
+      .publish-pill span,
+      .profile-card-left {
+        display: none;
+      }
+
+      .sidebar {
+        align-items: center;
+        padding: 14px 10px;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 15px;
+      }
+
+      .publish-pill {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        padding: 0;
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 12px;
+        padding-bottom: 82px;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar,
+      .right-sidebar {
+        display: none;
+      }
+
+      .search-bar-container {
+        top: 12px;
+      }
+
+      .hero-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero-card button {
+        width: 100%;
+      }
+
+      .post-card {
+        padding: 16px;
+      }
+
+      .post-content h2 {
+        font-size: 18px;
+      }
+
+      .post-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .action-btn {
+        justify-content: center;
+        background: #111;
+      }
+
+      .clips-shell {
+        height: calc(100vh - 96px);
+        padding-bottom: 10px;
+      }
+
+      .clip-card {
+        min-height: calc(100vh - 112px);
+      }
+
+      .clip-phone {
+        width: 100%;
+        max-height: calc(100vh - 118px);
+        border-radius: 24px;
+      }
+
+      .mobile-bottom-nav {
+        position: fixed;
+        z-index: 40;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        background: rgba(8,8,8,0.92);
+        border: 1px solid #242424;
+        backdrop-filter: blur(14px);
+        border-radius: 20px;
+        padding: 10px;
+      }
+
+      .mobile-bottom-nav button {
+        background: transparent;
+        color: white;
+        border: 0;
+        font-size: 18px;
+        display: grid;
+        gap: 4px;
+        place-items: center;
+      }
+
+      .mobile-bottom-nav button span {
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .mobile-bottom-nav button.active,
+      .mobile-bottom-nav button.publish-mobile {
+        color: var(--brand-yellow);
+      }
+
+      .grade-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <div class="app">
 
-    <div class="container">
-        
-        <aside class="sidebar">
-            <div class="logo">SHITAGRAM<span>™</span></div>
-            
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active"><i class="fa-solid degrad-icon fa-house"></i> Feed</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-clapperboard"></i> ShitClips™</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-plus"></i> Publicar</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-trophy"></i> Ranking</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-basket-shopping"></i> Loja</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-user"></i> Perfil</a>
-            </nav>
+    <aside class="sidebar">
+      <div class="logo">SHITA<strong>GRAM</strong><span>™</span></div>
 
-            <div class="profile-card-left">
-                <div style="width: 100%;">
-                    <div class="profile-info-left">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop" class="avatar-left" alt="Avatar">
-                        <div>
-                            <div class="profile-name">João Silva</div>
-                            <div class="profile-xp">Grau 6 • <span>1.250 XP</span></div>
-                        </div>
-                    </div>
-                    <div class="balance-box">
-                        <span class="coin-icon">S</span> 2.340
-                        <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 10px; color: var(--text-secondary);"></i>
-                    </div>
-                </div>
-            </div>
-        </aside>
+      <nav class="nav-menu">
+        <button id="navFeed" class="nav-item active" onclick="setView('feed')">
+          <i class="fa-solid fa-house"></i><label>Feed</label>
+        </button>
 
-        <main class="feed-container">
-            <div class="search-bar-container">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" placeholder="Procurar micos ou @utilizadores...">
-            </div>
+        <button id="navClips" class="nav-item" onclick="setView('clips')">
+          <i class="fa-solid fa-clapperboard"></i><label>ShitClips™</label>
+        </button>
 
-            <article class="post-card">
-                <div class="post-header">
-                    <div class="post-author">
-                        <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop" class="author-avatar" alt="Avatar">
-                        <div class="author-details">
-                            <span class="author-name">@pedro_mico</span>
-                            <span class="post-time">2 h • <i class="fa-solid fa-earth-americas"></i></span>
-                        </div>
-                    </div>
-                    <span class="badge-grau">Grau 5</span>
-                </div>
-                <div class="post-content">
-                    <h2>Título do mico: Reunião importante</h2>
-                    <p>Descrição da vergonha: Quando o microfone ficou ligado e toda a empresa ouviu o meu monólogo sobre o chefe. Ainda bem que desliguei antes de falar do aumento.</p>
-                </div>
-                <div class="post-divider"></div>
-                <div class="post-actions">
-                    <button class="action-btn poop"><i class="fa-solid fa-poop"></i> 87 Reagir</button>
-                    <button class="action-btn comment"><i class="fa-solid fa-comment-dots"></i> 32 Comentar</button>
-                    <button class="action-btn gift"><i class="fa-solid fa-gift"></i> Enviar presente</button>
-                    <button class="action-btn share"><i class="fa-solid fa-share-nodes"></i> Partilhar</button>
-                </div>
-            </article>
+        <button class="nav-item" onclick="openPublishModal()">
+          <i class="fa-solid fa-plus"></i><label>Publicar</label>
+        </button>
 
-            <article class="post-card">
-                <div class="post-header">
-                    <div class="post-author">
-                        <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop" class="author-avatar" alt="Avatar">
-                        <div class="author-details">
-                            <span class="author-name">@ana_costa</span>
-                            <span class="post-time">2 h • <i class="fa-solid fa-earth-americas"></i></span>
-                        </div>
-                    </div>
-                    <span class="badge-grau">Grau 7</span>
-                </div>
-                <div class="post-content">
-                    <h2>Título do mico: A dança do buffet</h2>
-                    <p>Descrição da vergonha: Quando tentei fingir que sabia dançar salsa e acabei a derrubar a mesa do buffet. O vídeo ainda está a circular no grupo da família.</p>
-                    
-                    <div class="media-container">
-                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop" alt="Mico Buffet">
-                        <div class="video-duration">
-                            <i class="fa-solid fa-play"></i> 0:12
-                        </div>
-                    </div>
-                </div>
-                <div class="post-divider"></div>
-                <div class="post-actions">
-                    <button class="action-btn poop"><i class="fa-solid fa-poop"></i> 120 Reagir</button>
-                    <button class="action-btn comment"><i class="fa-solid fa-comment-dots"></i> 45 Comentar</button>
-                    <button class="action-btn gift"><i class="fa-solid fa-gift"></i> Enviar presente</button>
-                    <button class="action-btn share"><i class="fa-solid fa-share-nodes"></i> Partilhar</button>
-                </div>
-            </article>
-        </main>
+        <button class="nav-item" onclick="setView('ranking')">
+          <i class="fa-solid fa-trophy"></i><label>Ranking</label>
+        </button>
 
-        <aside class="right-sidebar">
-            <div class="top-bar-right">
-                <div class="icon-circle">
-                    <i class="fa-solid fa-comment-sms"></i>
-                </div>
-                <div class="icon-circle">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge-notification">7</span>
-                </div>
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop" class="avatar-top-right" alt="Avatar">
-            </div>
+        <button class="nav-item">
+          <i class="fa-solid fa-gift"></i><label>Loja</label>
+        </button>
 
-            <div class="widget-card">
-                <div class="widget-title"><i class="fa-solid fa-trophy"></i> Top da vergonha</div>
-                <div class="ranking-list">
-                    <div class="ranking-item">
-                        <div class="ranking-user">
-                            <span class="rank-number rank-1">1</span>
-                            <span class="rank-name">@pedro_mico</span>
-                        </div>
-                        <span class="rank-xp">12.450 XP</span>
-                    </div>
-                    <div class="ranking-item">
-                        <div class="ranking-user">
-                            <span class="rank-number rank-2">2</span>
-                            <span class="rank-name">@ana_costa</span>
-                        </div>
-                        <span class="rank-xp">9.870 XP</span>
-                    </div>
-                    <div class="ranking-item">
-                        <div class="ranking-user">
-                            <span class="rank-number rank-3">3</span>
-                            <span class="rank-name">@joao_silva</span>
-                        </div>
-                        <span class="rank-xp">7.320 XP</span>
-                    </div>
-                </div>
-                <button class="widget-footer-btn">Ver ranking completo <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
+        <button class="nav-item">
+          <i class="fa-solid fa-user"></i><label>Perfil</label>
+        </button>
+      </nav>
 
-            <div class="widget-card">
-                <div class="widget-title"><i class="fa-solid fa-gift"></i> Presentes em alta</div>
-                <div class="gifts-grid">
-                    <span>🔥</span>
-                    <span>😅</span>
-                    <span>🌹</span>
-                    <span>👑</span>
-                </div>
-                <button class="widget-footer-btn">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
+      <button class="publish-pill" onclick="openPublishModal()">
+        <i class="fa-solid fa-plus"></i>
+        <span>Publicar mico</span>
+      </button>
 
-            <div class="widget-card">
-                <div class="widget-title"><i class="fa-solid fa-rocket"></i> Micos em destaque</div>
-                <div class="featured-list">
-                    <div class="featured-item">
-                        <div class="thumb-container">
-                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=100&auto=format&fit=crop" alt="Thumb">
-                            <span class="thumb-play"><i class="fa-solid fa-play"></i></span>
-                        </div>
-                        <div class="featured-info">
-                            <h4>Reunião importante</h4>
-                            <div class="featured-meta">@pedro_mico • 12.450 XP</div>
-                        </div>
-                    </div>
-                    <div class="featured-item">
-                        <div class="thumb-container">
-                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=100&auto=format&fit=crop" alt="Thumb">
-                            <span class="thumb-play"><i class="fa-solid fa-play"></i></span>
-                        </div>
-                        <div class="featured-info">
-                            <h4>A dança do buffet</h4>
-                            <div class="featured-meta">@ana_costa • 9.870 XP</div>
-                        </div>
-                    </div>
-                </div>
-                <button class="widget-footer-btn">Ver mais micos <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
+      <div class="profile-card-left">
+        <div class="profile-info-left">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop" class="avatar-left" alt="Avatar">
+          <div>
+            <div class="profile-name">João Silva</div>
+            <div class="profile-xp">Grau 6 • <span id="myXpLeft">1.250 XP</span></div>
+          </div>
+        </div>
 
-            <div class="widget-card">
-                <div class="widget-title" style="color: #ff4d4d;"><i class="fa-solid fa-fire-flame-curved"></i> Modo beta</div>
-                <p class="beta-text">A vergonha agora dá XP.<br>Ganha pontos e sobe na tabela!</p>
-            </div>
-        </aside>
+        <div class="balance-box">
+          <span class="coin-icon">S</span>
+          <span id="coinBalanceLeft">2.340</span>
+          <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-secondary);font-size:11px;"></i>
+        </div>
+      </div>
+    </aside>
 
+    <main class="feed-container">
+      <div id="searchArea" class="search-bar-container">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" class="search-input" type="text" placeholder="Procurar micos ou @utilizadores..." oninput="renderCurrentView()">
+        </div>
+      </div>
+
+      <section id="mainView"></section>
+    </main>
+
+    <aside class="right-sidebar">
+      <div class="top-bar-right">
+        <div class="icon-circle"><i class="fa-solid fa-comment-sms"></i></div>
+        <div class="icon-circle">
+          <i class="fa-solid fa-bell"></i>
+          <span class="badge-notification">7</span>
+        </div>
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop" class="avatar-top-right" alt="Avatar">
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-title"><i class="fa-solid fa-trophy"></i> Top da vergonha</div>
+        <div id="rankingList" class="ranking-list"></div>
+        <button class="widget-footer-btn">Ver ranking completo <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-title"><i class="fa-solid fa-gift"></i> Presentes em alta</div>
+        <div class="gifts-grid">
+          <div class="gift-bubble">🔥</div>
+          <div class="gift-bubble">😅</div>
+          <div class="gift-bubble">🌹</div>
+          <div class="gift-bubble">👑</div>
+        </div>
+        <button class="widget-footer-btn">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-title"><i class="fa-solid fa-rocket"></i> Micos em destaque</div>
+        <div id="featuredList" class="featured-list"></div>
+        <button class="widget-footer-btn">Ver mais micos <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <div class="widget-card">
+        <div class="widget-title" style="color:#ff4d4d;">
+          <i class="fa-solid fa-fire-flame-curved"></i> Modo beta
+        </div>
+        <p class="beta-text">
+          ShitClips™ ativo.<br>
+          Scroll vertical 9:16 com reações, presentes e XP.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="mobile-bottom-nav">
+    <button id="mobileFeed" class="active" onclick="setView('feed')">
+      <i class="fa-solid fa-house"></i><span>Feed</span>
+    </button>
+
+    <button id="mobileClips" onclick="setView('clips')">
+      <i class="fa-solid fa-clapperboard"></i><span>Clips</span>
+    </button>
+
+    <button class="publish-mobile" onclick="openPublishModal()">
+      <i class="fa-solid fa-circle-plus"></i><span>Publicar</span>
+    </button>
+
+    <button onclick="setView('ranking')">
+      <i class="fa-solid fa-trophy"></i><span>Ranking</span>
+    </button>
+
+    <button>
+      <i class="fa-solid fa-user"></i><span>Perfil</span>
+    </button>
+  </nav>
+
+  <div id="publishModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>💩 Publicar novo mico</h2>
+          <p>Conta a tua vergonha ao mundo. Os vídeos aparecem também no ShitClips™.</p>
+        </div>
+        <button class="close-modal" onclick="closePublishModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="publishForm" class="form-grid">
+        <div class="field">
+          <label>Título do mico</label>
+          <input id="micoTitle" type="text" maxlength="70" placeholder="Ex: Esqueci-me que estava em chamada" required>
+        </div>
+
+        <div class="field">
+          <label>Descrição da vergonha</label>
+          <textarea id="micoDescription" maxlength="260" placeholder="Escreve aqui o que aconteceu..." required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Grau do mico</label>
+          <div id="gradeGrid" class="grade-grid"></div>
+        </div>
+
+        <label class="check-row">
+          <input id="anonymousCheck" type="checkbox">
+          Publicar em modo anónimo
+        </label>
+
+        <div class="field">
+          <label>Tipo de publicação</label>
+          <select id="postType">
+            <option value="text">Texto</option>
+            <option value="image">Imagem demo</option>
+            <option value="video">Vídeo demo para ShitClips™</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closePublishModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Publicar mico</button>
+        </div>
+      </form>
     </div>
+  </div>
 
+  <div id="giftModal" class="modal-overlay">
+    <div class="modal gift-modal">
+      <div class="modal-header">
+        <div>
+          <h2>🎁 Enviar presente</h2>
+          <p id="giftModalSubtitle">Escolhe um presente para este mico.</p>
+        </div>
+        <button class="close-modal" onclick="closeGiftModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="gift-list">
+        <button class="gift-option" onclick="sendGift('🔥 Fogo', 50, 10)">
+          <span class="gift-left"><span class="gift-emoji">🔥</span> Fogo</span>
+          <span class="gift-cost">50 ShitCoins</span>
+        </button>
+
+        <button class="gift-option" onclick="sendGift('😅 Suor frio', 80, 15)">
+          <span class="gift-left"><span class="gift-emoji">😅</span> Suor frio</span>
+          <span class="gift-cost">80 ShitCoins</span>
+        </button>
+
+        <button class="gift-option" onclick="sendGift('🌹 Respeito', 120, 20)">
+          <span class="gift-left"><span class="gift-emoji">🌹</span> Respeito</span>
+          <span class="gift-cost">120 ShitCoins</span>
+        </button>
+
+        <button class="gift-option" onclick="sendGift('👑 Mico lendário', 250, 45)">
+          <span class="gift-left"><span class="gift-emoji">👑</span> Mico lendário</span>
+          <span class="gift-cost">250 ShitCoins</span>
+        </button>
+      </div>
+
+      <div style="margin-top:16px;color:var(--text-secondary);font-size:13px;font-weight:800;">
+        Saldo atual: <span id="coinBalanceModal" style="color:var(--brand-yellow);">2.340</span> ShitCoins
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const demoImages = [
+      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1000&auto=format&fit=crop"
+    ];
+
+    let currentView = "feed";
+    let selectedGrade = 5;
+    let selectedGiftPostId = null;
+    let myCoins = 2340;
+    let myXp = 1250;
+
+    let users = {
+      "@pedro_mico": {
+        xp: 12450,
+        avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&auto=format&fit=crop"
+      },
+      "@ana_costa": {
+        xp: 9870,
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop"
+      },
+      "@joao_silva": {
+        xp: myXp,
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop"
+      },
+      "@anonimo_mico": {
+        xp: 720,
+        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop"
+      }
+    };
+
+    let posts = [
+      {
+        id: crypto.randomUUID(),
+        author: "@pedro_mico",
+        title: "Reunião importante",
+        description: "Quando o microfone ficou ligado e toda a empresa ouviu o meu monólogo sobre o chefe. Ainda bem que desliguei antes de falar do aumento.",
+        grade: 5,
+        reactions: 87,
+        comments: 32,
+        time: "2 h",
+        type: "text",
+        media: "",
+        duration: "",
+        anonymous: false,
+        gifts: []
+      },
+      {
+        id: crypto.randomUUID(),
+        author: "@ana_costa",
+        title: "A dança do buffet",
+        description: "Tentei fingir que sabia dançar salsa e acabei a derrubar a mesa do buffet. O vídeo ainda está a circular no grupo da família.",
+        grade: 7,
+        reactions: 120,
+        comments: 45,
+        time: "2 h",
+        type: "video",
+        media: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1000&auto=format&fit=crop",
+        duration: "0:12",
+        anonymous: false,
+        gifts: ["🔥", "👑"]
+      },
+      {
+        id: crypto.randomUUID(),
+        author: "@anonimo_mico",
+        title: "Entrei na sala errada",
+        description: "Cheguei atrasado, sentei-me, cumprimentei toda a gente e só depois percebi que não era a minha reunião.",
+        grade: 8,
+        reactions: 214,
+        comments: 61,
+        time: "5 h",
+        type: "video",
+        media: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&auto=format&fit=crop",
+        duration: "0:09",
+        anonymous: true,
+        gifts: ["😅"]
+      }
+    ];
+
+    const mainView = document.getElementById("mainView");
+    const rankingList = document.getElementById("rankingList");
+    const featuredList = document.getElementById("featuredList");
+    const publishModal = document.getElementById("publishModal");
+    const giftModal = document.getElementById("giftModal");
+    const publishForm = document.getElementById("publishForm");
+    const gradeGrid = document.getElementById("gradeGrid");
+    const searchInput = document.getElementById("searchInput");
+    const searchArea = document.getElementById("searchArea");
+
+    function setView(view) {
+      currentView = view;
+
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+
+      if (view === "feed") {
+        document.getElementById("navFeed").classList.add("active");
+        document.getElementById("mobileFeed").classList.add("active");
+        searchArea.style.display = "block";
+      }
+
+      if (view === "clips") {
+        document.getElementById("navClips").classList.add("active");
+        document.getElementById("mobileClips").classList.add("active");
+        searchArea.style.display = "none";
+      }
+
+      if (view === "ranking") {
+        searchArea.style.display = "none";
+      }
+
+      renderCurrentView();
+    }
+
+    function renderCurrentView() {
+      if (currentView === "feed") renderFeed();
+      if (currentView === "clips") renderClips();
+      if (currentView === "ranking") renderRankingPage();
+    }
+
+    function initGrades() {
+      gradeGrid.innerHTML = "";
+      for (let i = 1; i <= 10; i++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "grade-btn" + (i === selectedGrade ? " selected" : "");
+        btn.textContent = i;
+        btn.onclick = () => {
+          selectedGrade = i;
+          initGrades();
+        };
+        gradeGrid.appendChild(btn);
+      }
+    }
+
+    function openPublishModal() {
+      publishModal.classList.add("open");
+      document.getElementById("micoTitle").focus();
+    }
+
+    function closePublishModal() {
+      publishModal.classList.remove("open");
+      publishForm.reset();
+      selectedGrade = 5;
+      initGrades();
+    }
+
+    function openGiftModal(postId) {
+      selectedGiftPostId = postId;
+      const post = posts.find(p => p.id === postId);
+      document.getElementById("giftModalSubtitle").textContent = "Enviar presente para: " + post.title;
+      document.getElementById("coinBalanceModal").textContent = formatNumber(myCoins);
+      giftModal.classList.add("open");
+    }
+
+    function closeGiftModal() {
+      selectedGiftPostId = null;
+      giftModal.classList.remove("open");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString("pt-PT");
+    }
+
+    function avatarFor(author) {
+      return users[author]?.avatar || users["@anonimo_mico"].avatar;
+    }
+
+    function renderFeed() {
+      const q = searchInput.value.trim().toLowerCase();
+
+      const filtered = posts.filter(post => {
+        const content = `${post.author} ${post.title} ${post.description}`.toLowerCase();
+        return content.includes(q);
+      });
+
+      mainView.innerHTML = `
+        <section class="hero-card">
+          <div>
+            <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
+            <p>O teu pior momento pode ser o melhor post do dia. Agora com ShitClips™.</p>
+          </div>
+          <button onclick="openPublishModal()">
+            <i class="fa-solid fa-plus"></i>
+            Publicar mico
+          </button>
+        </section>
+
+        <section id="feedList">
+          ${filtered.map(post => renderPostCard(post)).join("")}
+        </section>
+      `;
+
+      if (!filtered.length) {
+        document.getElementById("feedList").innerHTML = `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Nenhum mico encontrado</h2>
+              <p>Tenta procurar outro termo ou publica tu o primeiro mico sobre isto.</p>
+            </div>
+          </article>
+        `;
+      }
+    }
+
+    function renderPostCard(post) {
+      const mediaHtml = post.type !== "text" && post.media ? `
+        <div class="media-container">
+          <img src="${post.media}" alt="${escapeHtml(post.title)}">
+          ${post.type === "video" ? `
+            <div class="video-duration">
+              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
+            </div>
+          ` : ""}
+        </div>
+      ` : "";
+
+      const giftsHtml = post.gifts && post.gifts.length ? `
+        <div class="anonymous-label">
+          <i class="fa-solid fa-gift"></i>
+          Presentes recebidos: ${post.gifts.join(" ")}
+        </div>
+      ` : "";
+
+      return `
+        <article class="post-card" data-post-id="${post.id}">
+          <div class="post-header">
+            <div class="post-author">
+              <img src="${avatarFor(post.author)}" class="author-avatar" alt="Avatar">
+              <div>
+                <div class="author-name">${post.author}</div>
+                <div class="post-time">${post.time} • <i class="fa-solid fa-earth-europe"></i></div>
+              </div>
+            </div>
+            <span class="badge-grau">Grau ${post.grade}</span>
+          </div>
+
+          <div class="post-content">
+            <h2>Título do mico: ${escapeHtml(post.title)}</h2>
+            <p>Descrição da vergonha: ${escapeHtml(post.description)}</p>
+            ${post.anonymous ? `
+              <span class="anonymous-label">
+                <i class="fa-solid fa-mask"></i>
+                Publicação em modo anónimo
+              </span>
+            ` : ""}
+            ${giftsHtml}
+            ${mediaHtml}
+          </div>
+
+          <div class="post-divider"></div>
+
+          <div class="post-actions">
+            <button class="action-btn poop" onclick="reactToPost('${post.id}')">
+              <i class="fa-solid fa-poop"></i>
+              <span>${post.reactions}</span> Reagir
+            </button>
+
+            <button class="action-btn comment" onclick="commentPost('${post.id}')">
+              <i class="fa-solid fa-comment-dots"></i>
+              <span>${post.comments}</span> Comentar
+            </button>
+
+            <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
+              <i class="fa-solid fa-gift"></i>
+              Enviar presente
+            </button>
+
+            <button class="action-btn share" onclick="sharePost('${post.id}')">
+              <i class="fa-solid fa-share-nodes"></i>
+              Partilhar
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderClips() {
+      const videoPosts = posts.filter(post => post.type === "video" || post.type === "image");
+
+      mainView.innerHTML = `
+        <section class="clips-shell">
+          ${videoPosts.map(post => renderClipCard(post)).join("")}
+        </section>
+      `;
+
+      if (!videoPosts.length) {
+        mainView.innerHTML = `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Sem ShitClips™ ainda</h2>
+              <p>Publica um mico em formato vídeo demo para aparecer aqui.</p>
+            </div>
+          </article>
+        `;
+      }
+    }
+
+    function renderClipCard(post) {
+      return `
+        <article class="clip-card" data-post-id="${post.id}">
+          <div class="clip-phone">
+            <div class="clip-bg" style="background-image:url('${post.media || demoImages[0]}')"></div>
+
+            <div class="clip-top">
+              <div class="clip-label"><strong>SHITCLIPS™</strong> • ${post.duration || "0:10"}</div>
+              <div class="clip-label">Grau ${post.grade}</div>
+            </div>
+
+            <div class="clip-play">
+              <span><i class="fa-solid fa-play"></i></span>
+            </div>
+
+            <div class="clip-info">
+              <div class="clip-author">
+                <img src="${avatarFor(post.author)}" alt="Avatar">
+                <div>${post.author}</div>
+              </div>
+              <h2>${escapeHtml(post.title)}</h2>
+              <p>${escapeHtml(post.description)}</p>
+              ${post.gifts.length ? `
+                <span class="anonymous-label">
+                  <i class="fa-solid fa-gift"></i>
+                  ${post.gifts.join(" ")}
+                </span>
+              ` : ""}
+            </div>
+
+            <div class="clip-actions">
+              <button class="clip-action poop" onclick="reactToPost('${post.id}')">
+                <i class="fa-solid fa-poop"></i>
+                <span>${post.reactions}</span>
+              </button>
+
+              <button class="clip-action comment" onclick="commentPost('${post.id}')">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>${post.comments}</span>
+              </button>
+
+              <button class="clip-action gift" onclick="openGiftModal('${post.id}')">
+                <i class="fa-solid fa-gift"></i>
+                <span>Gift</span>
+              </button>
+
+              <button class="clip-action share" onclick="sharePost('${post.id}')">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span>Share</span>
+              </button>
+            </div>
+
+            <div class="clip-progress"><span></span></div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderRankingPage() {
+      const sorted = Object.entries(users)
+        .map(([name, data]) => ({ name, xp: data.xp, avatar: data.avatar }))
+        .sort((a, b) => b.xp - a.xp);
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🏆 Ranking da Vergonha</h1>
+          <p>Os utilizadores com mais XP de vergonha. Quanto maior o mico, maior a glória.</p>
+        </section>
+
+        ${sorted.map((user, index) => `
+          <article class="post-card">
+            <div class="post-header">
+              <div class="post-author">
+                <img src="${user.avatar}" class="author-avatar" alt="Avatar">
+                <div>
+                  <div class="author-name">#${index + 1} ${user.name}</div>
+                  <div class="post-time">${formatNumber(user.xp)} XP acumulado</div>
+                </div>
+              </div>
+              <span class="badge-grau">${index === 0 ? "Lenda" : "Grau " + Math.max(1, 10 - index)}</span>
+            </div>
+          </article>
+        `).join("")}
+      `;
+    }
+
+    function reactToPost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      post.reactions += 1;
+
+      const xpGain = 5;
+      users[post.author].xp += xpGain;
+
+      if (post.author === "@joao_silva") {
+        myXp += xpGain;
+        users["@joao_silva"].xp = myXp;
+      }
+
+      renderCurrentView();
+      renderRanking();
+      renderFeatured();
+      updateProfileStats();
+      spawnXpPop(postId, `+${xpGain} XP`);
+    }
+
+    function commentPost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      post.comments += 1;
+      renderCurrentView();
+      showToast("Comentário demo adicionado 💬");
+    }
+
+    function sharePost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      const shareText = `Vê este mico no Shitagram™: ${post.title}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: "Shitagram™",
+          text: shareText
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast("Texto de partilha copiado 🔗");
+        });
+      }
+    }
+
+    function sendGift(giftName, cost, xpGain) {
+      if (!selectedGiftPostId) return;
+
+      if (myCoins < cost) {
+        showToast("ShitCoins insuficientes 😅");
+        return;
+      }
+
+      const post = posts.find(p => p.id === selectedGiftPostId);
+      if (!post) return;
+
+      myCoins -= cost;
+      post.gifts.push(giftName.split(" ")[0]);
+      users[post.author].xp += xpGain;
+
+      if (post.author === "@joao_silva") {
+        myXp += xpGain;
+        users["@joao_silva"].xp = myXp;
+      }
+
+      closeGiftModal();
+      renderCurrentView();
+      renderRanking();
+      renderFeatured();
+      updateProfileStats();
+      showToast(`${giftName} enviado. +${xpGain} XP para o mico 🎁`);
+    }
+
+    function spawnXpPop(postId, text) {
+      const card = document.querySelector(`[data-post-id="${postId}"]`);
+      if (!card) return;
+
+      const pop = document.createElement("div");
+      pop.className = "xp-pop";
+      pop.textContent = text;
+
+      card.appendChild(pop);
+
+      setTimeout(() => pop.remove(), 950);
+    }
+
+    function renderRanking() {
+      const sorted = Object.entries(users)
+        .map(([name, data]) => ({ name, xp: data.xp }))
+        .sort((a, b) => b.xp - a.xp)
+        .slice(0, 3);
+
+      rankingList.innerHTML = sorted.map((user, index) => `
+        <div class="ranking-item">
+          <div class="ranking-user">
+            <span class="rank-number rank-${index + 1}">${index + 1}</span>
+            <span class="rank-name">${user.name}</span>
+          </div>
+          <span class="rank-xp">${formatNumber(user.xp)} XP</span>
+        </div>
+      `).join("");
+    }
+
+    function renderFeatured() {
+      const sorted = [...posts]
+        .sort((a, b) => {
+          const scoreA = a.reactions + a.comments + (a.gifts.length * 20) + (a.grade * 5);
+          const scoreB = b.reactions + b.comments + (b.gifts.length * 20) + (b.grade * 5);
+          return scoreB - scoreA;
+        })
+        .slice(0, 2);
+
+      featuredList.innerHTML = sorted.map(post => `
+        <div class="featured-item">
+          <div class="thumb-container">
+            <img src="${post.media || "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&auto=format&fit=crop"}" alt="Thumb">
+            <span class="thumb-play"><i class="fa-solid fa-play"></i></span>
+          </div>
+          <div class="featured-info">
+            <h4>${escapeHtml(post.title)}</h4>
+            <div class="featured-meta">${post.author} • ${formatNumber(users[post.author].xp)} XP</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function updateProfileStats() {
+      document.getElementById("coinBalanceLeft").textContent = formatNumber(myCoins);
+      document.getElementById("coinBalanceModal").textContent = formatNumber(myCoins);
+      document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
+    }
+
+    publishForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const title = document.getElementById("micoTitle").value.trim();
+      const description = document.getElementById("micoDescription").value.trim();
+      const anonymous = document.getElementById("anonymousCheck").checked;
+      const type = document.getElementById("postType").value;
+
+      if (!title || !description) {
+        showToast("Preenche o título e a descrição.");
+        return;
+      }
+
+      const author = anonymous ? "@anonimo_mico" : "@joao_silva";
+      const media = type === "text" ? "" : demoImages[Math.floor(Math.random() * demoImages.length)];
+
+      const newPost = {
+        id: crypto.randomUUID(),
+        author,
+        title,
+        description,
+        grade: selectedGrade,
+        reactions: 0,
+        comments: 0,
+        time: "agora mesmo",
+        type,
+        media,
+        duration: type === "video" ? "0:10" : "",
+        anonymous,
+        gifts: []
+      };
+
+      posts.unshift(newPost);
+
+      const baseXp = selectedGrade * 12;
+      users[author].xp += baseXp;
+
+      if (author === "@joao_silva") {
+        myXp += baseXp;
+        users["@joao_silva"].xp = myXp;
+      }
+
+      closePublishModal();
+      renderCurrentView();
+      renderRanking();
+      renderFeatured();
+      updateProfileStats();
+
+      if (type === "video") {
+        showToast(`Mico publicado no Feed e no ShitClips™. +${baseXp} XP 💩`);
+      } else {
+        showToast(`Mico publicado. +${baseXp} XP de vergonha 💩`);
+      }
+    });
+
+    publishModal.addEventListener("click", function(e) {
+      if (e.target === publishModal) closePublishModal();
+    });
+
+    giftModal.addEventListener("click", function(e) {
+      if (e.target === giftModal) closeGiftModal();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closePublishModal();
+        closeGiftModal();
+      }
+    });
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, function(match) {
+        const map = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        };
+        return map[match];
+      });
+    }
+
+    initGrades();
+    setView("feed");
+    renderRanking();
+    renderFeatured();
+    updateProfileStats();
+  </script>
 </body>
 </html>
