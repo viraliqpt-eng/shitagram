@@ -1558,6 +1558,225 @@
         grid-template-columns: repeat(5, 1fr);
       }
     }
+
+    /* --- Loja real sem modo demo --- */
+    .shop-hero {
+      background:
+        linear-gradient(135deg, rgba(255,204,0,0.18), rgba(255,204,0,0.035)),
+        #080808;
+      border: 1px solid rgba(255,204,0,0.28);
+      border-radius: 20px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .shop-hero h1 {
+      font-size: 28px;
+      line-height: 1.12;
+      margin-bottom: 8px;
+    }
+
+    .shop-hero h1 span {
+      color: var(--brand-yellow);
+    }
+
+    .shop-hero p {
+      color: #e2e2e2;
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 680px;
+    }
+
+    .shop-hero button,
+    .shop-primary-btn {
+      background: var(--brand-yellow);
+      color: #050505;
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .shop-header-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid rgba(255,204,0,0.22);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .shop-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .shop-header-row h2 {
+      font-size: 20px;
+    }
+
+    .shop-header-row p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 4px;
+    }
+
+    .shop-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .shop-tab {
+      background: #111;
+      border: 1px solid #282828;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .shop-tab.active {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      color: #050505;
+    }
+
+    .shop-section-title {
+      color: var(--brand-yellow);
+      font-size: 17px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0 12px;
+    }
+
+    .shop-catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .shop-item-card {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.08), transparent 38%),
+        #090909;
+      border: 1px solid #252525;
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .shop-item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .shop-emoji-box {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #121212;
+      border: 1px solid #2b2b2b;
+      font-size: 22px;
+    }
+
+    .shop-price {
+      color: var(--brand-yellow);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .shop-item-card h3 {
+      font-size: 15px;
+      margin-top: 2px;
+    }
+
+    .shop-item-card p {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-bottom: auto;
+    }
+
+    .shop-secondary-btn {
+      width: 100%;
+      background: #171717;
+      border: 1px solid #303030;
+      color: white;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-weight: 900;
+    }
+
+    .transaction-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .transaction-item {
+      background: #0b0b0b;
+      border: 1px solid #242424;
+      border-radius: 16px;
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .transaction-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: #121212;
+      border: 1px solid #282828;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    .transaction-item strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .transaction-item span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .shop-hero,
+      .shop-header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .shop-catalog-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -1870,7 +2089,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.0-feed -->
+  <!-- versão interna: vClean8.0.1 loja sem demo -->
 
   <script>
     const demoImages = [
@@ -1881,6 +2100,7 @@
     ];
 
     let currentView = "feed";
+    let currentShopTab = "presentes";
     let selectedGrade = 5;
     let selectedGiftPostId = null;
     let selectedCommentPostId = null;
@@ -3386,27 +3606,166 @@
     }
 
     function renderShopPage() {
-      mainView.innerHTML = `
-        <section class="view-title-card">
-          <h1>🎁 Loja SHITAGRAM™</h1>
-          <p>Usa ShitCoins para enviar presentes aos melhores micos. A compra real de moedas ainda não está ativa.</p>
-        </section>
+      const gifts = [
+        ["🔥", "Fogo", "Para micos que queimam a reputação.", "50 SC"],
+        ["😅", "Suor frio", "Quando a vergonha bate em silêncio.", "80 SC"],
+        ["🌹", "Respeito", "Para quem sobreviveu ao caos.", "120 SC"],
+        ["👑", "Mico lendário", "O presente clássico dos campeões.", "250 SC"],
+        ["🧻", "Rolo de dignidade", "Para limpar o resto da autoestima.", "180 SC"],
+        ["🪦", "Morri por dentro", "Para histórias socialmente fatais.", "300 SC"],
+        ["🚨", "Polícia do cringe", "Quando o mico devia ser investigado.", "350 SC"],
+        ["💎", "Mico Diamante", "Presente raro para posts históricos.", "900 SC"]
+      ];
 
-        <section class="post-card">
-          <div class="post-content">
-            <h2>Saldo atual: ${formatNumber(myCoins)} ShitCoins™</h2>
-            <p>Abre um post de outro utilizador e clica em “Enviar presente” para gastar moedas.</p>
-            <div class="shop-grid">
-              <div class="shop-card"><strong>💩</strong><span>Mico — 1 coin</span></div>
-              <div class="shop-card"><strong>😂</strong><span>Morri a rir — 5 coins</span></div>
-              <div class="shop-card"><strong>🔥</strong><span>Isto ardeu — 25 coins</span></div>
-              <div class="shop-card"><strong>🌹</strong><span>Respeito — 99 coins</span></div>
-              <div class="shop-card"><strong>👑</strong><span>Rei do mico — 499 coins</span></div>
-              <div class="shop-card"><strong>💎</strong><span>Mico raro — 2.999 coins</span></div>
+      const boosts = [
+        ["🚀", "Boost de Feed", "Empurra o teu mico para ganhar mais visibilidade.", "300 SC"],
+        ["🎬", "Boost ShitClips™", "Dá destaque no modo vertical.", "500 SC"],
+        ["🏆", "Boost Ranking", "Ganha impulso extra de XP.", "700 SC"],
+        ["⭐", "Candidato a Mico do Dia", "Marca o post como destaque especial.", "1000 SC"]
+      ];
+
+      const coinPacks = [
+        ["🪙", "250 ShitCoins", "Oferta diária para continuares a interagir.", "Oferta diária"],
+        ["🥉", "1.000 ShitCoins", "Pack Bronze para enviar mais presentes.", "Pack Bronze"],
+        ["🥇", "2.500 ShitCoins", "Pack Ouro para destacar mais micos.", "Pack Ouro"],
+        ["👑", "7.500 ShitCoins", "Pack Lenda para dominar a vergonha.", "Pack Lenda"]
+      ];
+
+      const tabs = `
+        <div class="shop-tabs">
+          <button class="shop-tab ${currentShopTab === "presentes" ? "active" : ""}" onclick="setShopTab('presentes')">Presentes</button>
+          <button class="shop-tab ${currentShopTab === "boosts" ? "active" : ""}" onclick="setShopTab('boosts')">Boosts</button>
+          <button class="shop-tab ${currentShopTab === "coins" ? "active" : ""}" onclick="setShopTab('coins')">ShitCoins</button>
+          <button class="shop-tab ${currentShopTab === "historico" ? "active" : ""}" onclick="setShopTab('historico')">Histórico</button>
+        </div>
+      `;
+
+      let content = "";
+
+      if (currentShopTab === "presentes") {
+        content = `
+          <h2 class="shop-section-title"><i class="fa-solid fa-gift"></i> Presentes premium</h2>
+          <div class="shop-catalog-grid">
+            ${gifts.map(gift => `
+              <article class="shop-item-card">
+                <div class="shop-item-top">
+                  <div class="shop-emoji-box">${gift[0]}</div>
+                  <div class="shop-price">${gift[3]}</div>
+                </div>
+                <h3>${gift[1]}</h3>
+                <p>${gift[2]}</p>
+                <button class="shop-primary-btn" onclick="showToast('Abre um post de outro utilizador e escolhe Enviar presente 🎁')">Ver presente</button>
+              </article>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      if (currentShopTab === "boosts") {
+        content = `
+          <h2 class="shop-section-title"><i class="fa-solid fa-rocket"></i> Boosts para micos</h2>
+          <article class="shop-item-card" style="margin-bottom:14px;min-height:auto;">
+            <h3>Como usar boosts?</h3>
+            <p>Escolhe um post teu no Feed e aplica um boost para ganhar destaque.</p>
+          </article>
+          <div class="shop-catalog-grid">
+            ${boosts.map(boost => `
+              <article class="shop-item-card">
+                <div class="shop-item-top">
+                  <div class="shop-emoji-box">${boost[0]}</div>
+                  <div class="shop-price">${boost[3]}</div>
+                </div>
+                <h3>${boost[1]}</h3>
+                <p>${boost[2]}</p>
+                <button class="shop-secondary-btn" onclick="setView('feed')">Usar no Feed</button>
+              </article>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      if (currentShopTab === "coins") {
+        content = `
+          <h2 class="shop-section-title"><i class="fa-solid fa-coins"></i> Pacotes de ShitCoins</h2>
+          <div class="shop-catalog-grid">
+            ${coinPacks.map(pack => `
+              <article class="shop-item-card">
+                <div class="shop-item-top">
+                  <div class="shop-emoji-box">${pack[0]}</div>
+                  <div class="shop-price">${pack[3]}</div>
+                </div>
+                <h3>${pack[1]}</h3>
+                <p>${pack[2]}</p>
+                <button class="shop-primary-btn" onclick="claimCoins(250)">Receber moedas</button>
+              </article>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      if (currentShopTab === "historico") {
+        content = `
+          <h2 class="shop-section-title"><i class="fa-solid fa-receipt"></i> Histórico de transações</h2>
+          <div class="transaction-list">
+            <div class="transaction-item">
+              <div class="transaction-icon">🎯</div>
+              <div>
+                <strong>Missão diária concluída</strong>
+                <span>+25 ShitCoins recebidos • hoje</span>
+              </div>
+            </div>
+            <div class="transaction-item">
+              <div class="transaction-icon">👑</div>
+              <div>
+                <strong>Presente enviado</strong>
+                <span>Mico lendário para @ana_costa • ontem</span>
+              </div>
             </div>
           </div>
+        `;
+      }
+
+      mainView.innerHTML = `
+        <section class="shop-hero">
+          <div>
+            <h1>A loja abriu. <span>Usa ShitCoins.</span> Domina a vergonha.</h1>
+            <p>Envia presentes, destaca micos e desbloqueia vantagens dentro da comunidade.</p>
+          </div>
+          <button onclick="setShopTab('presentes')">
+            <i class="fa-solid fa-store"></i>
+            Abrir loja
+          </button>
         </section>
+
+        <section class="shop-header-card">
+          <div class="shop-header-row">
+            <div>
+              <h2>🛒 Loja da Vergonha</h2>
+              <p>Saldo: <strong style="color:var(--brand-yellow);">${formatNumber(myCoins)} ShitCoins</strong>. Usa moedas para enviar presentes, destacar posts e ganhar visibilidade.</p>
+            </div>
+            <button class="shop-primary-btn" onclick="claimCoins(250)">
+              <i class="fa-solid fa-coins"></i>
+              Receber 250 ShitCoins
+            </button>
+          </div>
+          ${tabs}
+        </section>
+
+        ${content}
       `;
+    }
+
+    function setShopTab(tab) {
+      currentShopTab = tab;
+      renderShopPage();
+    }
+
+    function claimCoins(amount) {
+      const value = Number(amount || 250);
+      myCoins += value;
+      updateProfileStats();
+      renderShopPage();
+      showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
     }
 
     function renderProfilePage() {
