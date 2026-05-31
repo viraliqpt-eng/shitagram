@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean7.7 — Auth + Perfil</title>
+  <title>Shitagram™</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=db_MmzadcY1cyG1SLR11lYfr3BXOqGa-QTGIx0w-N_VknwKx38_lX2KyNEQR3zPVur3S3IXglgrJN-oJS587-KEdB59JFS5TcjVtt3YucCo1C6G0mjnQrC-tBPr6gETBup1sskkFA9yuwVMdAc0ykyweyY4jbGF1C02nF2yKk1mO9IWt6T_tE9cyVUEpOot2GTXk7RaXEf4slI3QrudEkcovaSsNPdNvbbt8CQYU1gTaTlr-nHhd5VnNIiGQFnFDcNnPw3i2xOEucndLA7qqlQ" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -1159,6 +1159,52 @@
       white-space: nowrap;
     }
 
+
+    .inline-empty {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 24px;
+      color: var(--text-secondary);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .owner-action {
+      color: var(--brand-yellow);
+    }
+
+    .danger-action {
+      color: var(--danger);
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .shop-card {
+      background: #101010;
+      border: 1px solid #262626;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .shop-card strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .shop-card span {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     .mobile-bottom-nav {
       display: none;
     }
@@ -1219,6 +1265,7 @@
     }
 
     .version-badge {
+      display: none !important;
       position: fixed;
       left: 12px;
       bottom: 12px;
@@ -1398,15 +1445,15 @@
           <i class="fa-solid fa-plus"></i><label>Publicar</label>
         </button>
 
-        <button class="nav-item" onclick="setView('ranking')">
+        <button id="navRanking" class="nav-item" onclick="setView('ranking')">
           <i class="fa-solid fa-trophy"></i><label>Ranking</label>
         </button>
 
-        <button class="nav-item">
+        <button id="navShop" class="nav-item" onclick="setView('shop')">
           <i class="fa-solid fa-gift"></i><label>Loja</label>
         </button>
 
-        <button class="nav-item">
+        <button id="navProfile" class="nav-item" onclick="setView('profile')">
           <i class="fa-solid fa-user"></i><label>Perfil</label>
         </button>
       </nav>
@@ -1506,11 +1553,11 @@
       <i class="fa-solid fa-circle-plus"></i><span>Publicar</span>
     </button>
 
-    <button onclick="setView('ranking')">
+    <button id="mobileRanking" onclick="setView('ranking')">
       <i class="fa-solid fa-trophy"></i><span>Ranking</span>
     </button>
 
-    <button>
+    <button id="mobileProfile" onclick="setView('profile')">
       <i class="fa-solid fa-user"></i><span>Perfil</span>
     </button>
   </nav>
@@ -1660,7 +1707,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <div class="version-badge">vClean7.7-auth</div>
+  <!-- versão interna: vClean7.8-feed -->
 
   <script>
     const demoImages = [
@@ -1744,7 +1791,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean7.7] auth init", error);
+        console.error("[SHITAGRAM vClean7.8] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -1763,7 +1810,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.7] profile load", error);
+        console.error("[SHITAGRAM vClean7.8] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -1799,7 +1846,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean7.7] ensure profile", error);
+        console.error("[SHITAGRAM vClean7.8] ensure profile", error);
         return;
       }
 
@@ -1829,9 +1876,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean7.7] login start", email);
+      console.log("[SHITAGRAM vClean7.8] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean7.7] login result", { data, error });
+      console.log("[SHITAGRAM vClean7.8] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -1855,7 +1902,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean7.7] signup start", email);
+      console.log("[SHITAGRAM vClean7.8] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -1863,7 +1910,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean7.7] signup result", { data, error });
+      console.log("[SHITAGRAM vClean7.8] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2514,6 +2561,773 @@
         return map[match];
       });
     }
+
+
+    /*
+      vClean7.8-feed
+      - marcador visual removido do site
+      - Loja e Perfil ativados
+      - Feed passa a ler posts reais do Supabase
+      - Ações principais começam a chamar Supabase quando possível
+    */
+
+    let realFeedLoaded = false;
+    let realFeedLoading = false;
+
+    function giftTypeToEmoji(type) {
+      const map = {
+        mico: "💩",
+        morri_rir: "😂",
+        vergonha_alheia: "🫣",
+        isto_ardeu: "🔥",
+        abraco_moral: "❤️",
+        respeito: "🌹",
+        caixa_surpresa: "🎁",
+        rei_mico: "👑",
+        trauma_publico: "🚨",
+        lenda_vergonha: "🏆",
+        mico_raro: "💎",
+        patrao_vergonha: "🦁"
+      };
+      return map[type] || "🎁";
+    }
+
+    function relativeTime(value) {
+      if (!value) return "agora";
+      const date = new Date(value);
+      const diff = Math.max(0, Date.now() - date.getTime());
+      const min = Math.floor(diff / 60000);
+      if (min < 1) return "agora";
+      if (min < 60) return `${min} min`;
+      const h = Math.floor(min / 60);
+      if (h < 24) return `${h} h`;
+      const d = Math.floor(h / 24);
+      return `${d} d`;
+    }
+
+    function postScore(post) {
+      return Number(post.reactions || 0) + Number(post.comments || 0) + ((post.gifts || []).length * 20) + Number(post.grade || 0) * 5;
+    }
+
+    async function fetchRealFeed(force = false) {
+      if (!force && realFeedLoaded) return;
+      if (realFeedLoading) return;
+
+      realFeedLoading = true;
+
+      try {
+        let { data, error } = await sb
+          .from("posts")
+          .select("id,user_id,title,description,category,trauma_level,status,created_at,is_boosted,boosted_until,gift_count")
+          .eq("status", "active")
+          .limit(80);
+
+        if (error) {
+          console.warn("[SHITAGRAM vClean7.8] posts full select failed, retry basic", error);
+          const retry = await sb
+            .from("posts")
+            .select("id,user_id,title,description,category,trauma_level,status,created_at")
+            .eq("status", "active")
+            .limit(80);
+
+          data = retry.data;
+          error = retry.error;
+        }
+
+        if (error) throw error;
+
+        const rows = Array.isArray(data) ? data : [];
+        const postIds = rows.map(p => p.id).filter(Boolean);
+        const userIds = [...new Set(rows.map(p => p.user_id).filter(Boolean))];
+
+        const profileMap = {};
+        if (userIds.length) {
+          const { data: profiles, error: profileError } = await sb
+            .from("profiles")
+            .select("id, username, display_name, avatar_url, xp, coins")
+            .in("id", userIds);
+
+          if (!profileError && Array.isArray(profiles)) {
+            profiles.forEach(profile => {
+              profileMap[profile.id] = profile;
+            });
+          }
+        }
+
+        const reactionCounts = {};
+        if (postIds.length) {
+          const { data: reactions } = await sb
+            .from("post_reactions")
+            .select("post_id")
+            .in("post_id", postIds);
+
+          (reactions || []).forEach(r => {
+            reactionCounts[r.post_id] = (reactionCounts[r.post_id] || 0) + 1;
+          });
+        }
+
+        const commentCounts = {};
+        if (postIds.length) {
+          let commentsResult = await sb
+            .from("comments")
+            .select("post_id,status")
+            .in("post_id", postIds);
+
+          let comments = commentsResult.data || [];
+          if (commentsResult.error) {
+            const retryComments = await sb
+              .from("comments")
+              .select("post_id")
+              .in("post_id", postIds);
+            comments = retryComments.data || [];
+          }
+
+          comments
+            .filter(c => !c.status || c.status === "active")
+            .forEach(c => {
+              commentCounts[c.post_id] = (commentCounts[c.post_id] || 0) + 1;
+            });
+        }
+
+        const giftsByPost = {};
+        if (postIds.length) {
+          const { data: gifts } = await sb
+            .from("post_gifts")
+            .select("post_id,gift_type")
+            .in("post_id", postIds);
+
+          (gifts || []).forEach(g => {
+            if (!giftsByPost[g.post_id]) giftsByPost[g.post_id] = [];
+            giftsByPost[g.post_id].push(giftTypeToEmoji(g.gift_type));
+          });
+        }
+
+        const now = Date.now();
+
+        posts = rows.map((row) => {
+          const profile = profileMap[row.user_id] || {};
+          const username = profile.username ? "@" + String(profile.username).replace(/^@/, "") : "@anonimo_mico";
+          const isBoosted = !!row.is_boosted && row.boosted_until && new Date(row.boosted_until).getTime() > now;
+
+          users[username] = {
+            xp: Number(profile.xp || 0),
+            avatar: profile.avatar_url || users["@anonimo_mico"].avatar
+          };
+
+          return {
+            id: row.id,
+            user_id: row.user_id,
+            author: username,
+            title: row.title || "Mico sem título",
+            description: row.description || "",
+            grade: Number(row.trauma_level || 1),
+            reactions: reactionCounts[row.id] || 0,
+            comments: commentCounts[row.id] || 0,
+            time: relativeTime(row.created_at),
+            type: "text",
+            media: "",
+            duration: "",
+            anonymous: !profile.username,
+            gifts: giftsByPost[row.id] || [],
+            is_boosted: isBoosted,
+            boosted_until: row.boosted_until || null,
+            created_at: row.created_at || null
+          };
+        }).sort((a, b) => {
+          if (a.is_boosted !== b.is_boosted) return a.is_boosted ? -1 : 1;
+          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        });
+
+        realFeedLoaded = true;
+        renderRanking();
+        renderFeatured();
+      } catch (error) {
+        console.error("[SHITAGRAM vClean7.8] feed real", error);
+        showToast("Não consegui carregar o feed real.");
+      } finally {
+        realFeedLoading = false;
+      }
+    }
+
+    function setView(view) {
+      currentView = view;
+
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+
+      const navMap = {
+        feed: "navFeed",
+        clips: "navClips",
+        ranking: "navRanking",
+        shop: "navShop",
+        profile: "navProfile"
+      };
+
+      const mobileMap = {
+        feed: "mobileFeed",
+        clips: "mobileClips",
+        profile: "mobileProfile"
+      };
+
+      if (navMap[view] && document.getElementById(navMap[view])) {
+        document.getElementById(navMap[view]).classList.add("active");
+      }
+
+      if (mobileMap[view] && document.getElementById(mobileMap[view])) {
+        document.getElementById(mobileMap[view]).classList.add("active");
+      }
+
+      searchArea.style.display = view === "feed" ? "block" : "none";
+      renderCurrentView();
+    }
+
+    function renderCurrentView() {
+      if (currentView === "feed") renderFeed();
+      if (currentView === "clips") renderClips();
+      if (currentView === "ranking") renderRankingPage();
+      if (currentView === "shop") renderShopPage();
+      if (currentView === "profile") renderProfilePage();
+    }
+
+    function renderFeed() {
+      if (!realFeedLoaded && !realFeedLoading) {
+        mainView.innerHTML = `
+          <section class="hero-card">
+            <div>
+              <h1>A carregar o feed real. <span>Supabase ligado.</span></h1>
+              <p>Estamos a buscar os micos publicados na base de dados.</p>
+            </div>
+            <button onclick="fetchRealFeed(true)"><i class="fa-solid fa-rotate"></i> Recarregar</button>
+          </section>
+          <article class="inline-empty">A carregar posts reais...</article>
+        `;
+        fetchRealFeed(true).then(() => {
+          if (currentView === "feed") renderFeed();
+        });
+        return;
+      }
+
+      const q = searchInput.value.trim().toLowerCase();
+      const filtered = posts.filter(post => {
+        const content = `${post.author} ${post.title} ${post.description}`.toLowerCase();
+        return content.includes(q);
+      });
+
+      mainView.innerHTML = `
+        <section class="hero-card">
+          <div>
+            <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
+            <p>O teu pior momento pode ser o melhor post do dia. Feed real ligado ao Supabase.</p>
+          </div>
+          <button onclick="openPublishModal()">
+            <i class="fa-solid fa-plus"></i>
+            Publicar mico
+          </button>
+        </section>
+
+        <section id="feedList">
+          ${filtered.map(post => renderPostCard(post)).join("")}
+        </section>
+      `;
+
+      if (!filtered.length) {
+        document.getElementById("feedList").innerHTML = `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Nenhum mico encontrado</h2>
+              <p>Publica tu o primeiro mico ou tenta procurar outro termo.</p>
+            </div>
+          </article>
+        `;
+      }
+    }
+
+    function renderPostCard(post) {
+      const isOwner = currentUser && post.user_id === currentUser.id;
+      const mediaHtml = post.type !== "text" && post.media ? `
+        <div class="media-container">
+          <img src="${post.media}" alt="${escapeHtml(post.title)}">
+          ${post.type === "video" ? `
+            <div class="video-duration">
+              <i class="fa-solid fa-play"></i> ${post.duration || "0:10"}
+            </div>
+          ` : ""}
+        </div>
+      ` : "";
+
+      const giftsHtml = post.gifts && post.gifts.length ? `
+        <div class="anonymous-label">
+          <i class="fa-solid fa-gift"></i>
+          Presentes recebidos: ${post.gifts.slice(0, 8).join(" ")}
+        </div>
+      ` : "";
+
+      const boostedHtml = post.is_boosted ? `
+        <span class="anonymous-label" style="color:var(--brand-yellow);border:1px solid rgba(255,204,0,.25);">
+          <i class="fa-solid fa-rocket"></i>
+          Mico em destaque
+        </span>
+      ` : "";
+
+      const ownerActions = isOwner ? `
+        <button class="action-btn owner-action" onclick="boostPost('${post.id}')">
+          <i class="fa-solid fa-rocket"></i>
+          Boost
+        </button>
+
+        <button class="action-btn danger-action" onclick="deletePost('${post.id}')">
+          <i class="fa-solid fa-trash"></i>
+          Eliminar
+        </button>
+      ` : `
+        <button class="action-btn gift" onclick="openGiftModal('${post.id}')">
+          <i class="fa-solid fa-gift"></i>
+          Enviar presente
+        </button>
+      `;
+
+      return `
+        <article class="post-card" data-post-id="${post.id}">
+          <div class="post-header">
+            <div class="post-author">
+              <img src="${avatarFor(post.author)}" class="author-avatar" alt="Avatar">
+              <div>
+                <div class="author-name">${escapeHtml(post.author)}</div>
+                <div class="post-time">${post.time} • <i class="fa-solid fa-earth-europe"></i></div>
+              </div>
+            </div>
+            <span class="badge-grau">Grau ${post.grade}</span>
+          </div>
+
+          <div class="post-content">
+            <h2>Título do mico: ${escapeHtml(post.title)}</h2>
+            <p>Descrição da vergonha: ${escapeHtml(post.description)}</p>
+            ${boostedHtml}
+            ${post.anonymous ? `
+              <span class="anonymous-label">
+                <i class="fa-solid fa-mask"></i>
+                Publicação em modo anónimo
+              </span>
+            ` : ""}
+            ${giftsHtml}
+            ${mediaHtml}
+          </div>
+
+          <div class="post-divider"></div>
+
+          <div class="post-actions">
+            <button class="action-btn poop" onclick="reactToPost('${post.id}')">
+              <i class="fa-solid fa-poop"></i>
+              <span>${post.reactions}</span> Reagir
+            </button>
+
+            <button class="action-btn comment" onclick="commentPost('${post.id}')">
+              <i class="fa-solid fa-comment-dots"></i>
+              <span>${post.comments}</span> Comentar
+            </button>
+
+            ${ownerActions}
+
+            <button class="action-btn share" onclick="sharePost('${post.id}')">
+              <i class="fa-solid fa-share-nodes"></i>
+              Partilhar
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    async function reactToPost(postId) {
+      if (!currentUser) {
+        showToast("Entra para reagir.");
+        openAuthModal("login");
+        return;
+      }
+
+      const { error } = await sb
+        .from("post_reactions")
+        .insert({ post_id: postId, user_id: currentUser.id });
+
+      if (error) {
+        if (String(error.message || "").toLowerCase().includes("duplicate")) {
+          showToast("Já reagiste a este mico.");
+        } else {
+          console.error("[SHITAGRAM vClean7.8] react", error);
+          showToast(error.message || "Erro ao reagir.");
+        }
+        return;
+      }
+
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      renderRanking();
+      renderFeatured();
+      spawnXpPop(postId, "+1 💩");
+    }
+
+    async function commentPost(postId) {
+      if (!currentUser) {
+        showToast("Entra para comentar.");
+        openAuthModal("login");
+        return;
+      }
+
+      const body = prompt("Escreve o teu comentário:");
+      if (!body || !body.trim()) return;
+
+      let { error } = await sb
+        .from("comments")
+        .insert({
+          post_id: postId,
+          user_id: currentUser.id,
+          body: body.trim(),
+          content: body.trim(),
+          status: "active"
+        });
+
+      if (error) {
+        const retry = await sb
+          .from("comments")
+          .insert({
+            post_id: postId,
+            user_id: currentUser.id,
+            body: body.trim(),
+            status: "active"
+          });
+        error = retry.error;
+      }
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] comment", error);
+        showToast(error.message || "Erro ao comentar.");
+        return;
+      }
+
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      showToast("Comentário publicado.");
+    }
+
+    function openGiftModal(postId) {
+      if (!currentUser) {
+        showToast("Entra para enviar presentes.");
+        openAuthModal("login");
+        return;
+      }
+
+      selectedGiftPostId = postId;
+      const post = posts.find(p => p.id === postId);
+
+      if (!post) return;
+
+      if (post.user_id === currentUser.id) {
+        showToast("Não podes enviar presente ao teu próprio post.");
+        return;
+      }
+
+      document.getElementById("giftModalSubtitle").textContent = "Enviar presente para: " + post.title;
+      document.getElementById("coinBalanceModal").textContent = formatNumber(myCoins);
+      giftModal.classList.add("open");
+    }
+
+    async function sendGift(giftName, cost, xpGain) {
+      if (!selectedGiftPostId) return;
+
+      const typeMap = {
+        "🔥 Fogo": "isto_ardeu",
+        "😅 Suor frio": "vergonha_alheia",
+        "🌹 Respeito": "respeito",
+        "👑 Mico lendário": "rei_mico"
+      };
+
+      const { error } = await sb.rpc("send_post_gift", {
+        p_post_id: selectedGiftPostId,
+        p_gift_type: typeMap[giftName] || "mico"
+      });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] gift", error);
+        showToast(error.message || "Erro ao enviar presente.");
+        return;
+      }
+
+      closeGiftModal();
+      await loadProfile();
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      showToast(`${giftName} enviado 🎁`);
+    }
+
+    async function boostPost(postId) {
+      if (!currentUser) return openAuthModal("login");
+
+      const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] boost", error);
+        showToast(error.message || "Não foi possível aplicar boost.");
+        return;
+      }
+
+      await loadProfile();
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      showToast("Boost aplicado por 24h 🚀");
+    }
+
+    async function deletePost(postId) {
+      if (!currentUser) return openAuthModal("login");
+      if (!confirm("Eliminar este mico do feed?")) return;
+
+      const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] delete", error);
+        showToast(error.message || "Não foi possível eliminar.");
+        return;
+      }
+
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      showToast("Post eliminado.");
+    }
+
+    function renderRanking() {
+      const sorted = Object.entries(users)
+        .map(([name, data]) => ({ name, xp: Number(data.xp || 0) }))
+        .sort((a, b) => b.xp - a.xp)
+        .slice(0, 3);
+
+      rankingList.innerHTML = sorted.map((user, index) => `
+        <div class="ranking-item">
+          <div class="ranking-user">
+            <span class="rank-number rank-${index + 1}">${index + 1}</span>
+            <span class="rank-name">${escapeHtml(user.name)}</span>
+          </div>
+          <span class="rank-xp">${formatNumber(user.xp)} XP</span>
+        </div>
+      `).join("") || `<div class="inline-empty">Sem ranking ainda.</div>`;
+    }
+
+    function renderFeatured() {
+      const sorted = [...posts].sort((a, b) => postScore(b) - postScore(a)).slice(0, 2);
+
+      featuredList.innerHTML = sorted.map(post => `
+        <div class="featured-item">
+          <div class="thumb-container">
+            <img src="${post.media || "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&auto=format&fit=crop"}" alt="Thumb">
+            <span class="thumb-play"><i class="fa-solid fa-play"></i></span>
+          </div>
+          <div class="featured-info">
+            <h4>${escapeHtml(post.title)}</h4>
+            <div class="featured-meta">${escapeHtml(post.author)} • ${formatNumber(users[post.author]?.xp || 0)} XP</div>
+          </div>
+        </div>
+      `).join("") || `<div class="inline-empty">Sem micos em destaque.</div>`;
+    }
+
+    function renderRankingPage() {
+      const sorted = Object.entries(users)
+        .map(([name, data]) => ({ name, xp: Number(data.xp || 0), avatar: data.avatar }))
+        .sort((a, b) => b.xp - a.xp);
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🏆 Ranking da Vergonha</h1>
+          <p>Os utilizadores com mais XP de vergonha. Dados lidos dos perfis associados aos posts reais.</p>
+        </section>
+
+        ${sorted.map((user, index) => `
+          <article class="post-card">
+            <div class="post-header">
+              <div class="post-author">
+                <img src="${user.avatar}" class="author-avatar" alt="Avatar">
+                <div>
+                  <div class="author-name">#${index + 1} ${escapeHtml(user.name)}</div>
+                  <div class="post-time">${formatNumber(user.xp)} XP acumulado</div>
+                </div>
+              </div>
+              <span class="badge-grau">${index === 0 ? "Lenda" : "Grau " + Math.max(1, 10 - index)}</span>
+            </div>
+          </article>
+        `).join("")}
+      `;
+    }
+
+    function renderShopPage() {
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🎁 Loja SHITAGRAM™</h1>
+          <p>Usa ShitCoins para enviar presentes aos melhores micos. A compra real de moedas ainda não está ativa.</p>
+        </section>
+
+        <section class="post-card">
+          <div class="post-content">
+            <h2>Saldo atual: ${formatNumber(myCoins)} ShitCoins™</h2>
+            <p>Abre um post de outro utilizador e clica em “Enviar presente” para gastar moedas.</p>
+            <div class="shop-grid">
+              <div class="shop-card"><strong>💩</strong><span>Mico — 1 coin</span></div>
+              <div class="shop-card"><strong>😂</strong><span>Morri a rir — 5 coins</span></div>
+              <div class="shop-card"><strong>🔥</strong><span>Isto ardeu — 25 coins</span></div>
+              <div class="shop-card"><strong>🌹</strong><span>Respeito — 99 coins</span></div>
+              <div class="shop-card"><strong>👑</strong><span>Rei do mico — 499 coins</span></div>
+              <div class="shop-card"><strong>💎</strong><span>Mico raro — 2.999 coins</span></div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderProfilePage() {
+      const username = currentProfile?.username ? "@" + String(currentProfile.username).replace(/^@/, "") : "Visitante";
+      const avatar = currentProfile?.avatar_url || users["@joao_silva"].avatar;
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>👤 Perfil</h1>
+          <p>Dados reais do perfil ligado ao Supabase.</p>
+        </section>
+
+        <article class="post-card">
+          <div class="post-header">
+            <div class="post-author">
+              <img src="${avatar}" class="author-avatar" alt="Avatar">
+              <div>
+                <div class="author-name">${escapeHtml(username)}</div>
+                <div class="post-time">${currentUser ? currentUser.email : "Sessão não iniciada"}</div>
+              </div>
+            </div>
+            <span class="badge-grau">XP ${formatNumber(Number(currentProfile?.xp || 0))}</span>
+          </div>
+          <div class="post-content">
+            <h2>ShitCoins™: ${formatNumber(Number(currentProfile?.coins || 0))}</h2>
+            <p>${escapeHtml(currentProfile?.bio || "Ainda sem bio. Em breve podes editar este campo diretamente aqui.")}</p>
+          </div>
+          <div class="post-divider"></div>
+          <div class="post-actions">
+            ${currentUser ? `
+              <button class="action-btn share" onclick="logoutUser()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair
+              </button>
+            ` : `
+              <button class="action-btn share" onclick="openAuthModal('login')">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Entrar
+              </button>
+            `}
+          </div>
+        </article>
+      `;
+    }
+
+    async function loadProfile() {
+      if (!currentUser) {
+        currentProfile = null;
+        updateAuthUi();
+        await fetchRealFeed(true);
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] profile load", error);
+        showToast("Conta ligada, mas não consegui carregar perfil.");
+        currentProfile = null;
+        updateAuthUi();
+        return;
+      }
+
+      currentProfile = data;
+      if (!currentProfile) await ensureProfile();
+
+      updateAuthUi();
+      await fetchRealFeed(true);
+    }
+
+    async function loginUser(email, password) {
+      console.log("[SHITAGRAM vClean7.8] login start", email);
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      console.log("[SHITAGRAM vClean7.8] login result", { data, error });
+
+      if (error) {
+        const msg = String(error.message || "");
+        if (msg.toLowerCase().includes("invalid")) showToast("Email ou password incorretos.");
+        else if (msg.toLowerCase().includes("confirm")) showToast("Ainda tens de confirmar o email.");
+        else showToast(error.message || "Erro ao entrar.");
+        return;
+      }
+
+      currentUser = data.user;
+      await loadProfile();
+      closeAuthModal();
+      showToast("Login feito com sucesso.");
+      renderCurrentView();
+    }
+
+    async function logoutUser() {
+      await sb.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      updateAuthUi();
+      renderCurrentView();
+      showToast("Sessão terminada.");
+    }
+
+    publishForm.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      if (!currentUser) {
+        showToast("Entra para publicar.");
+        openAuthModal("login");
+        return;
+      }
+
+      const title = document.getElementById("micoTitle").value.trim();
+      const description = document.getElementById("micoDescription").value.trim();
+      const anonymous = document.getElementById("anonymousCheck").checked;
+
+      if (!title || !description) {
+        showToast("Preenche o título e a descrição.");
+        return;
+      }
+
+      const { error } = await sb
+        .from("posts")
+        .insert({
+          user_id: currentUser.id,
+          title,
+          description,
+          category: "mico",
+          trauma_level: selectedGrade,
+          status: "active",
+          is_anonymous: anonymous
+        });
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.8] publish", error);
+        showToast(error.message || "Erro ao publicar.");
+        return;
+      }
+
+      closePublishModal();
+      realFeedLoaded = false;
+      await fetchRealFeed(true);
+      renderCurrentView();
+      showToast("Mico publicado no feed real.");
+    }, true);
+
 
     initGrades();
     setView("feed");
