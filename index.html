@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean7.6 — Novo Layout</title>
+  <title>Shitagram™ vClean7.7 — Auth + Perfil</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=eCZ5g9Jql7w3n2UxmrnzeyvLHMOh_EZUAn3uIiLksjCtEPHslbbEwwTdP1bAzFWOw5qlOnOeguicLft79lmrT2w0ynGvnTcCHLEsBRE0WSoYn-rPgizveDtylvETV1EzJrbq74LQ22FQwsSap1o26XwAD9QQAw73n6tXV--QEb7BTBJHdQ2hM8UH5KQsSEbsXHf0KIw9GfSu4dVUfJesRKNXcwyQEI7u4L_i2MWB3M9sw-UGvVJ9LzC8AaCoaWJ-ZRbrvF2RX2RgKzwm_V1Fcg" charset="UTF-8"></script><style>
+  <style>
     :root {
       --bg-main: #020202;
       --bg-card: #090909;
@@ -1162,6 +1163,82 @@
       display: none;
     }
 
+
+    .auth-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .auth-actions button {
+      border: 1px solid #303030;
+      background: #121212;
+      color: white;
+      border-radius: 11px;
+      padding: 10px;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .auth-actions button:first-child {
+      background: var(--brand-yellow);
+      color: #050505;
+      border-color: var(--brand-yellow);
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .auth-tab {
+      background: #111;
+      color: white;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 900;
+    }
+
+    .auth-tab.active {
+      background: var(--brand-yellow);
+      color: #050505;
+      border-color: var(--brand-yellow);
+    }
+
+    .auth-panel {
+      display: none;
+    }
+
+    .auth-panel.active {
+      display: grid;
+      gap: 14px;
+    }
+
+    .version-badge {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 80;
+      background: rgba(255,204,0,0.12);
+      color: var(--brand-yellow);
+      border: 1px solid rgba(255,204,0,0.35);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 860px) {
+      .version-badge {
+        bottom: 92px;
+      }
+    }
+
     @media (max-width: 1120px) {
       .app {
         grid-template-columns: 82px minmax(0, 1fr) 310px;
@@ -1353,6 +1430,10 @@
           <span id="coinBalanceLeft">2.340</span>
           <i class="fa-solid fa-chevron-right" style="margin-left:auto;color:var(--text-secondary);font-size:11px;"></i>
         </div>
+        <div class="auth-actions">
+          <button id="authPrimaryBtn" onclick="openAuthModal('login')">Entrar</button>
+          <button id="logoutBtn" onclick="logoutUser()" style="display:none;">Sair</button>
+        </div>
       </div>
     </aside>
 
@@ -1433,6 +1514,60 @@
       <i class="fa-solid fa-user"></i><span>Perfil</span>
     </button>
   </nav>
+
+
+  <div id="authModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>🔐 Entrar no SHITAGRAM™</h2>
+          <p>Usa a tua conta para guardar XP, ShitCoins e perfil real.</p>
+        </div>
+        <button class="close-modal" onclick="closeAuthModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="loginTab" class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+        <button id="registerTab" class="auth-tab" onclick="switchAuthTab('register')">Criar conta</button>
+      </div>
+
+      <form id="loginForm" class="auth-panel active">
+        <div class="field">
+          <label>Email</label>
+          <input id="loginEmail" type="email" placeholder="ex: contacto@email.com" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="loginPassword" type="password" placeholder="A tua password" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeAuthModal()">Cancelar</button>
+          <button id="loginSubmitBtn" type="submit" class="btn-primary">Entrar</button>
+        </div>
+      </form>
+
+      <form id="registerForm" class="auth-panel">
+        <div class="field">
+          <label>Nome de utilizador</label>
+          <input id="registerUsername" type="text" placeholder="ex: pedro_mico" maxlength="20" required>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input id="registerEmail" type="email" placeholder="ex: contacto@email.com" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="registerPassword" type="password" placeholder="mínimo 6 caracteres" minlength="6" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="switchAuthTab('login')">Já tenho conta</button>
+          <button id="registerSubmitBtn" type="submit" class="btn-primary">Criar conta</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div id="publishModal" class="modal-overlay">
     <div class="modal">
@@ -1525,6 +1660,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
+  <div class="version-badge">vClean7.7-auth</div>
 
   <script>
     const demoImages = [
@@ -1558,6 +1694,202 @@
         avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop"
       }
     };
+
+
+    const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let currentProfile = null;
+
+    function openAuthModal(tab = "login") {
+      document.getElementById("authModal").classList.add("open");
+      switchAuthTab(tab);
+      setTimeout(() => {
+        const first = tab === "login" ? document.getElementById("loginEmail") : document.getElementById("registerUsername");
+        if (first) first.focus();
+      }, 60);
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").classList.remove("open");
+    }
+
+    function switchAuthTab(tab) {
+      document.getElementById("loginTab").classList.toggle("active", tab === "login");
+      document.getElementById("registerTab").classList.toggle("active", tab === "register");
+      document.getElementById("loginForm").classList.toggle("active", tab === "login");
+      document.getElementById("registerForm").classList.toggle("active", tab === "register");
+    }
+
+    function normalizeUsername(value) {
+      return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/^@+/, "")
+        .replace(/[^a-z0-9_.]/g, "")
+        .slice(0, 20);
+    }
+
+    async function initAuth() {
+      try {
+        const { data } = await sb.auth.getSession();
+        currentUser = data.session?.user || null;
+
+        sb.auth.onAuthStateChange(async (_event, session) => {
+          currentUser = session?.user || null;
+          await loadProfile();
+        });
+
+        await loadProfile();
+      } catch (error) {
+        console.error("[SHITAGRAM vClean7.7] auth init", error);
+        showToast("Não foi possível iniciar autenticação.");
+      }
+    }
+
+    async function loadProfile() {
+      if (!currentUser) {
+        currentProfile = null;
+        updateAuthUi();
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.7] profile load", error);
+        showToast("Conta ligada, mas não consegui carregar perfil.");
+        currentProfile = null;
+        updateAuthUi();
+        return;
+      }
+
+      currentProfile = data;
+      if (!currentProfile) {
+        await ensureProfile();
+      }
+
+      updateAuthUi();
+    }
+
+    async function ensureProfile() {
+      if (!currentUser) return;
+
+      const metaUsername = normalizeUsername(currentUser.user_metadata?.username);
+      const fallback = normalizeUsername((currentUser.email || "user").split("@")[0]) || "user";
+      const username = metaUsername || `${fallback}_${currentUser.id.slice(0, 6)}`;
+
+      const { data, error } = await sb
+        .from("profiles")
+        .upsert({
+          id: currentUser.id,
+          username,
+          display_name: username,
+          xp: 0,
+          coins: 0,
+          posts_count: 0
+        }, { onConflict: "id" })
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count")
+        .single();
+
+      if (error) {
+        console.error("[SHITAGRAM vClean7.7] ensure profile", error);
+        return;
+      }
+
+      currentProfile = data;
+    }
+
+    function updateAuthUi() {
+      const isLogged = !!currentUser;
+      const username = currentProfile?.username ? "@" + currentProfile.username.replace(/^@/, "") : "Visitante";
+      const xp = Number(currentProfile?.xp || 0);
+      const coins = Number(currentProfile?.coins || 0);
+      const avatar = currentProfile?.avatar_url || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop";
+
+      document.querySelectorAll(".profile-name").forEach(el => el.textContent = username);
+      document.querySelectorAll(".avatar-left").forEach(el => el.src = avatar);
+      document.querySelectorAll(".avatar-top-right").forEach(el => el.src = avatar);
+
+      myXp = xp || myXp;
+      myCoins = coins || myCoins;
+      users["@joao_silva"].xp = myXp;
+
+      document.getElementById("authPrimaryBtn").textContent = isLogged ? "Conta ligada" : "Entrar";
+      document.getElementById("authPrimaryBtn").onclick = isLogged ? () => setView("feed") : () => openAuthModal("login");
+      document.getElementById("logoutBtn").style.display = isLogged ? "block" : "none";
+
+      updateProfileStats();
+    }
+
+    async function loginUser(email, password) {
+      console.log("[SHITAGRAM vClean7.7] login start", email);
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      console.log("[SHITAGRAM vClean7.7] login result", { data, error });
+
+      if (error) {
+        const msg = String(error.message || "");
+        if (msg.toLowerCase().includes("invalid")) showToast("Email ou password incorretos.");
+        else if (msg.toLowerCase().includes("confirm")) showToast("Ainda tens de confirmar o email.");
+        else showToast(error.message || "Erro ao entrar.");
+        return;
+      }
+
+      currentUser = data.user;
+      await loadProfile();
+      closeAuthModal();
+      showToast("Login feito com sucesso.");
+    }
+
+    async function registerUser(username, email, password) {
+      const cleanUsername = normalizeUsername(username);
+
+      if (!/^[a-z0-9_.]{3,20}$/.test(cleanUsername)) {
+        showToast("Nome de utilizador inválido. Usa 3 a 20 caracteres.");
+        return;
+      }
+
+      console.log("[SHITAGRAM vClean7.7] signup start", email);
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { username: cleanUsername }
+        }
+      });
+      console.log("[SHITAGRAM vClean7.7] signup result", { data, error });
+
+      if (error) {
+        showToast(error.message || "Erro ao criar conta.");
+        return;
+      }
+
+      if (data.session?.user) {
+        currentUser = data.session.user;
+        await ensureProfile();
+        await loadProfile();
+        closeAuthModal();
+        showToast("Conta criada e sessão iniciada.");
+      } else {
+        switchAuthTab("login");
+        showToast("Conta criada. Agora faz login ou confirma o email.");
+      }
+    }
+
+    async function logoutUser() {
+      await sb.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      updateAuthUi();
+      showToast("Sessão terminada.");
+    }
+
 
     let posts = [
       {
@@ -1664,6 +1996,11 @@
     }
 
     function openPublishModal() {
+      if (!currentUser) {
+        showToast("Entra para publicar micos reais.");
+        openAuthModal("login");
+        return;
+      }
       publishModal.classList.add("open");
       document.getElementById("micoTitle").focus();
     }
@@ -2120,10 +2457,48 @@
       if (e.target === giftModal) closeGiftModal();
     });
 
+    document.getElementById("authModal").addEventListener("click", function(e) {
+      if (e.target === document.getElementById("authModal")) closeAuthModal();
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("loginSubmitBtn");
+      btn.disabled = true;
+      btn.textContent = "A entrar...";
+      try {
+        await loginUser(
+          document.getElementById("loginEmail").value.trim(),
+          document.getElementById("loginPassword").value
+        );
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Entrar";
+      }
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("registerSubmitBtn");
+      btn.disabled = true;
+      btn.textContent = "A criar...";
+      try {
+        await registerUser(
+          document.getElementById("registerUsername").value,
+          document.getElementById("registerEmail").value.trim(),
+          document.getElementById("registerPassword").value
+        );
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Criar conta";
+      }
+    });
+
     document.addEventListener("keydown", function(e) {
       if (e.key === "Escape") {
         closePublishModal();
         closeGiftModal();
+        closeAuthModal();
       }
     });
 
@@ -2145,6 +2520,7 @@
     renderRanking();
     renderFeatured();
     updateProfileStats();
+    initAuth();
   </script>
 </body>
 </html>
