@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.2</title>
+  <title>Shitagram™ vClean8.3</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1116,7 +1116,47 @@
       font-weight: 700;
     }
 
-    .modal-actions {
+    
+    .image-upload-panel {
+      display: none;
+      gap: 12px;
+      margin-top: 10px;
+      background: #101010;
+      border: 1px solid #2d2d2d;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .image-upload-panel.open {
+      display: grid;
+    }
+
+    .image-upload-panel input[type="file"] {
+      width: 100%;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .image-preview-wrap {
+      display: none;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #050505;
+    }
+
+    .image-preview-wrap.open {
+      display: block;
+    }
+
+    .image-preview-wrap img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+.modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
@@ -2015,12 +2055,23 @@
 
         <div class="field">
           <label>Tipo de publicação</label>
-          <select id="postType">
+          <select id="postType" onchange="handlePostTypeChange()">
             <option value="text">Texto</option>
-            <option value="image" disabled>Imagem — em breve</option>
+            <option value="image">Imagem</option>
             <option value="video" disabled>Vídeo / ShitClip™ — em breve</option>
           </select>
-          <div class="field-hint">Nesta versão, a publicação real fica limitada a texto. Upload de imagem e ShitClips™ entram no próximo módulo.</div>
+          <div class="field-hint">Imagem real ativa nesta versão. Vídeo/ShitClips™ entra no próximo módulo.</div>
+        </div>
+
+        <div id="imageUploadPanel" class="image-upload-panel">
+          <div class="field">
+            <label>Imagem do mico</label>
+            <input id="postImageFile" type="file" accept="image/jpeg,image/png,image/webp" onchange="previewPostImage()">
+            <div class="field-hint">Formatos aceites: JPG, PNG ou WEBP. Tamanho máximo: 5 MB.</div>
+          </div>
+          <div id="postImagePreviewWrap" class="image-preview-wrap">
+            <img id="postImagePreview" alt="Preview da imagem">
+          </div>
         </div>
 
         <div class="modal-actions">
@@ -2141,7 +2192,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.2 presentes, boosts e ShitCoins reais -->
+  <!-- versão interna: vClean8.3 presentes, boosts e ShitCoins reais -->
 
   <script>
 
@@ -2323,7 +2374,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.2] auth init", error);
+        console.error("[SHITAGRAM vClean8.3] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2342,7 +2393,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] profile load", error);
+        console.error("[SHITAGRAM vClean8.3] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2378,7 +2429,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.3] ensure profile", error);
         return;
       }
 
@@ -2411,9 +2462,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.2] login start", email);
+      console.log("[SHITAGRAM vClean8.3] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.2] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2437,7 +2488,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.2] signup start", email);
+      console.log("[SHITAGRAM vClean8.3] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2445,7 +2496,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.2] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2625,9 +2676,103 @@
       publishModal.classList.remove("open");
       publishForm.reset();
       selectedGrade = 5;
+      clearPostImagePreview();
       initGrades();
-    initEditGrades();
+      initEditGrades();
     }
+
+    function handlePostTypeChange() {
+      const type = document.getElementById("postType")?.value || "text";
+      const panel = document.getElementById("imageUploadPanel");
+      if (!panel) return;
+
+      if (type === "image") {
+        panel.classList.add("open");
+      } else {
+        panel.classList.remove("open");
+        clearPostImagePreview();
+      }
+    }
+
+    function clearPostImagePreview() {
+      const input = document.getElementById("postImageFile");
+      const wrap = document.getElementById("postImagePreviewWrap");
+      const img = document.getElementById("postImagePreview");
+
+      if (input) input.value = "";
+      if (img) img.removeAttribute("src");
+      if (wrap) wrap.classList.remove("open");
+    }
+
+    function previewPostImage() {
+      const input = document.getElementById("postImageFile");
+      const file = input?.files?.[0];
+      const wrap = document.getElementById("postImagePreviewWrap");
+      const img = document.getElementById("postImagePreview");
+
+      if (!file) {
+        clearPostImagePreview();
+        return;
+      }
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        showToast("Formato inválido. Usa JPG, PNG ou WEBP.");
+        clearPostImagePreview();
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showToast("Imagem demasiado grande. Máximo: 5 MB.");
+        clearPostImagePreview();
+        return;
+      }
+
+      if (img && wrap) {
+        img.src = URL.createObjectURL(file);
+        wrap.classList.add("open");
+      }
+    }
+
+    async function uploadPostImage(file) {
+      if (!currentUser) throw new Error("É necessário iniciar sessão.");
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error("Formato inválido. Usa JPG, PNG ou WEBP.");
+      }
+
+      if (file.size > maxSize) {
+        throw new Error("Imagem demasiado grande. Máximo: 5 MB.");
+      }
+
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const safeExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
+      const storagePath = `${currentUser.id}/${Date.now()}-${Math.random().toString(16).slice(2)}.${safeExt}`;
+
+      const { error: uploadError } = await sb.storage
+        .from("post-media")
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = sb.storage.from("post-media").getPublicUrl(storagePath);
+
+      return {
+        media_url: data?.publicUrl || "",
+        media_type: "image",
+        storage_path: storagePath
+      };
+    }
+
 
     function openGiftModal(postId) {
       selectedGiftPostId = postId;
@@ -3011,7 +3156,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean8.2: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.3: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -3145,12 +3290,12 @@
       try {
         let { data, error } = await sb
           .from("posts")
-          .select("id,user_id,title,description,category,trauma_level,status,created_at,is_boosted,boosted_until,gift_count")
+          .select("id,user_id,title,description,category,trauma_level,status,created_at,is_boosted,boosted_until,gift_count,media_url,media_type,storage_path")
           .eq("status", "active")
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.2] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.3] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3251,8 +3396,9 @@
             reactions: reactionCounts[row.id] || 0,
             comments: commentCounts[row.id] || 0,
             time: relativeTime(row.created_at),
-            type: "text",
-            media: "",
+            type: row.media_type || (row.media_url ? "image" : "text"),
+            media: row.media_url || "",
+            storage_path: row.storage_path || null,
             duration: "",
             anonymous: !profile.username,
             gifts: giftsByPost[row.id] || [],
@@ -3269,7 +3415,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.2] feed real", error);
+        console.error("[SHITAGRAM vClean8.3] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -3562,7 +3708,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.2] edit post", error);
+          console.error("[SHITAGRAM vClean8.3] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -3598,7 +3744,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.2] react", error);
+          console.error("[SHITAGRAM vClean8.3] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -3644,7 +3790,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] load comments", error);
+        console.error("[SHITAGRAM vClean8.3] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -3741,7 +3887,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.2] submit comment", error);
+          console.error("[SHITAGRAM vClean8.3] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -3823,7 +3969,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] gift", error);
+        console.error("[SHITAGRAM vClean8.3] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -3850,7 +3996,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] boost", error);
+        console.error("[SHITAGRAM vClean8.3] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -3871,7 +4017,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] delete", error);
+        console.error("[SHITAGRAM vClean8.3] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -3992,7 +4138,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.2] coin transactions", error);
+        console.warn("[SHITAGRAM vClean8.3] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -4210,7 +4356,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.2] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean8.3] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -4234,7 +4380,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.2] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean8.3] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -4299,7 +4445,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.2] profile load", error);
+        console.error("[SHITAGRAM vClean8.3] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -4315,9 +4461,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.2] login start", email);
+      console.log("[SHITAGRAM vClean8.3] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.2] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.3] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -4366,10 +4512,21 @@
         const description = document.getElementById("micoDescription").value.trim();
         const anonymous = document.getElementById("anonymousCheck").checked;
         const type = document.getElementById("postType")?.value || "text";
+        const imageFile = document.getElementById("postImageFile")?.files?.[0] || null;
 
         if (!title || !description) {
           showToast("Preenche o título e a descrição.");
           return;
+        }
+
+        if (type === "image" && !imageFile) {
+          showToast("Escolhe uma imagem para publicar.");
+          return;
+        }
+
+        let mediaPayload = {};
+        if (type === "image") {
+          mediaPayload = await uploadPostImage(imageFile);
         }
 
         const payload = {
@@ -4379,7 +4536,8 @@
           category: type === "video" ? "shitclip" : "mico",
           trauma_level: selectedGrade,
           status: "active",
-          is_anonymous: anonymous
+          is_anonymous: anonymous,
+          ...mediaPayload
         };
 
         let { error } = await sb.from("posts").insert(payload);
@@ -4392,7 +4550,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.2] publish", error);
+          console.error("[SHITAGRAM vClean8.3] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
