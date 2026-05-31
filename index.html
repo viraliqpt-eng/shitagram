@@ -2044,24 +2044,29 @@
       </div>
 
       <div class="gift-list">
-        <button class="gift-option" onclick="sendGift('🔥 Fogo', 50, 10)">
-          <span class="gift-left"><span class="gift-emoji">🔥</span> Fogo</span>
-          <span class="gift-cost">50 ShitCoins</span>
+        <button class="gift-option" onclick="sendGift('💩 Mico', 1, 1)">
+          <span class="gift-left"><span class="gift-emoji">💩</span> Mico</span>
+          <span class="gift-cost">1 ShitCoin</span>
         </button>
 
-        <button class="gift-option" onclick="sendGift('😅 Suor frio', 80, 15)">
-          <span class="gift-left"><span class="gift-emoji">😅</span> Suor frio</span>
-          <span class="gift-cost">80 ShitCoins</span>
+        <button class="gift-option" onclick="sendGift('😂 Morri a rir', 5, 2)">
+          <span class="gift-left"><span class="gift-emoji">😂</span> Morri a rir</span>
+          <span class="gift-cost">5 ShitCoins</span>
         </button>
 
-        <button class="gift-option" onclick="sendGift('🌹 Respeito', 120, 20)">
+        <button class="gift-option" onclick="sendGift('🔥 Isto ardeu', 25, 5)">
+          <span class="gift-left"><span class="gift-emoji">🔥</span> Isto ardeu</span>
+          <span class="gift-cost">25 ShitCoins</span>
+        </button>
+
+        <button class="gift-option" onclick="sendGift('🌹 Respeito', 99, 10)">
           <span class="gift-left"><span class="gift-emoji">🌹</span> Respeito</span>
-          <span class="gift-cost">120 ShitCoins</span>
+          <span class="gift-cost">99 ShitCoins</span>
         </button>
 
-        <button class="gift-option" onclick="sendGift('👑 Mico lendário', 250, 45)">
-          <span class="gift-left"><span class="gift-emoji">👑</span> Mico lendário</span>
-          <span class="gift-cost">250 ShitCoins</span>
+        <button class="gift-option" onclick="sendGift('👑 Rei do mico', 499, 30)">
+          <span class="gift-left"><span class="gift-emoji">👑</span> Rei do mico</span>
+          <span class="gift-cost">499 ShitCoins</span>
         </button>
       </div>
 
@@ -2099,7 +2104,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.0.1 loja sem demo -->
+  <!-- versão interna: vClean8.1 presentes, boosts e ShitCoins reais -->
 
   <script>
     const demoImages = [
@@ -2116,6 +2121,7 @@
     let selectedCommentPostId = null;
     let myCoins = 2340;
     let myXp = 1250;
+    let coinTransactions = [];
 
     let users = {
       "@pedro_mico": {
@@ -2185,7 +2191,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.0] auth init", error);
+        console.error("[SHITAGRAM vClean8.1] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2204,7 +2210,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] profile load", error);
+        console.error("[SHITAGRAM vClean8.1] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2240,7 +2246,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] ensure profile", error);
+        console.error("[SHITAGRAM vClean8.1] ensure profile", error);
         return;
       }
 
@@ -2258,8 +2264,11 @@
       document.querySelectorAll(".avatar-left").forEach(el => el.src = avatar);
       document.querySelectorAll(".avatar-top-right").forEach(el => el.src = avatar);
 
-      myXp = xp || myXp;
-      myCoins = coins || myCoins;
+      if (isLogged) {
+        myXp = xp;
+        myCoins = coins;
+      }
+
       users["@joao_silva"].xp = myXp;
 
       document.getElementById("authPrimaryBtn").textContent = isLogged ? "Conta ligada" : "Entrar";
@@ -2270,9 +2279,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.0] login start", email);
+      console.log("[SHITAGRAM vClean8.1] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.0] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.1] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2296,7 +2305,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.0] signup start", email);
+      console.log("[SHITAGRAM vClean8.1] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2304,7 +2313,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.0] signup result", { data, error });
+      console.log("[SHITAGRAM vClean8.1] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2862,7 +2871,7 @@
       document.getElementById("myXpLeft").textContent = `${formatNumber(myXp)} XP`;
     }
 
-    // vClean8.0: publicar real é tratado pelo listener Supabase no fim do ficheiro.
+    // vClean8.1: publicar real é tratado pelo listener Supabase no fim do ficheiro.
 
     publishModal.addEventListener("click", function(e) {
       if (e.target === publishModal) closePublishModal();
@@ -2997,7 +3006,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.0] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean8.1] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3116,7 +3125,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.0] feed real", error);
+        console.error("[SHITAGRAM vClean8.1] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -3327,7 +3336,7 @@
         if (String(error.message || "").toLowerCase().includes("duplicate")) {
           showToast("Já reagiste a este mico.");
         } else {
-          console.error("[SHITAGRAM vClean8.0] react", error);
+          console.error("[SHITAGRAM vClean8.1] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -3373,7 +3382,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] load comments", error);
+        console.error("[SHITAGRAM vClean8.1] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -3470,7 +3479,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.0] submit comment", error);
+          console.error("[SHITAGRAM vClean8.1] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -3514,26 +3523,50 @@
     async function sendGift(giftName, cost, xpGain) {
       if (!selectedGiftPostId) return;
 
+      if (!currentUser) {
+        showToast("Entra para enviar presentes.");
+        openAuthModal("login");
+        return;
+      }
+
+      const post = posts.find(p => p.id === selectedGiftPostId);
+      if (!post) return;
+
+      if (post.user_id === currentUser.id) {
+        showToast("Não podes enviar presente ao teu próprio post.");
+        return;
+      }
+
       const typeMap = {
+        "💩 Mico": "mico",
+        "😂 Morri a rir": "morri_rir",
+        "🫣 Vergonha alheia": "vergonha_alheia",
+        "🔥 Isto ardeu": "isto_ardeu",
+        "❤️ Abraço moral": "abraco_moral",
+        "🌹 Respeito": "respeito",
+        "🎁 Caixa surpresa": "caixa_surpresa",
+        "👑 Rei do mico": "rei_mico",
         "🔥 Fogo": "isto_ardeu",
         "😅 Suor frio": "vergonha_alheia",
-        "🌹 Respeito": "respeito",
         "👑 Mico lendário": "rei_mico"
       };
 
+      const giftType = typeMap[giftName] || "mico";
+
       const { error } = await sb.rpc("send_post_gift", {
         p_post_id: selectedGiftPostId,
-        p_gift_type: typeMap[giftName] || "mico"
+        p_gift_type: giftType
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] gift", error);
+        console.error("[SHITAGRAM vClean8.1] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
 
       closeGiftModal();
       await loadProfile();
+      await loadCoinTransactions();
       realFeedLoaded = false;
       await fetchRealFeed(true);
       renderCurrentView();
@@ -3543,15 +3576,22 @@
     async function boostPost(postId) {
       if (!currentUser) return openAuthModal("login");
 
+      const post = posts.find(p => p.id === postId);
+      if (post && post.user_id !== currentUser.id) {
+        showToast("Só podes aplicar boost aos teus próprios posts.");
+        return;
+      }
+
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] boost", error);
+        console.error("[SHITAGRAM vClean8.1] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
 
       await loadProfile();
+      await loadCoinTransactions();
       realFeedLoaded = false;
       await fetchRealFeed(true);
       renderCurrentView();
@@ -3565,7 +3605,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] delete", error);
+        console.error("[SHITAGRAM vClean8.1] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         return;
       }
@@ -3670,30 +3710,52 @@
       `;
     }
 
+    async function loadCoinTransactions() {
+      if (!currentUser) {
+        coinTransactions = [];
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("coin_transactions")
+        .select("id, amount, reason, related_post_id, created_at")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (error) {
+        console.warn("[SHITAGRAM vClean8.1] coin transactions", error);
+        coinTransactions = [];
+        return;
+      }
+
+      coinTransactions = Array.isArray(data) ? data : [];
+    }
+
     function renderShopPage() {
       const gifts = [
-        ["🔥", "Fogo", "Para micos que queimam a reputação.", "50 SC"],
-        ["😅", "Suor frio", "Quando a vergonha bate em silêncio.", "80 SC"],
-        ["🌹", "Respeito", "Para quem sobreviveu ao caos.", "120 SC"],
-        ["👑", "Mico lendário", "O presente clássico dos campeões.", "250 SC"],
-        ["🧻", "Rolo de dignidade", "Para limpar o resto da autoestima.", "180 SC"],
-        ["🪦", "Morri por dentro", "Para histórias socialmente fatais.", "300 SC"],
-        ["🚨", "Polícia do cringe", "Quando o mico devia ser investigado.", "350 SC"],
-        ["💎", "Mico Diamante", "Presente raro para posts históricos.", "900 SC"]
+        ["💩", "Mico", "Presente rápido para marcar presença.", "1 SC", "mico"],
+        ["😂", "Morri a rir", "Para micos que merecem gargalhada.", "5 SC", "morri_rir"],
+        ["🫣", "Vergonha alheia", "Quando custou ver, mas foi épico.", "10 SC", "vergonha_alheia"],
+        ["🔥", "Isto ardeu", "Para micos que queimam a reputação.", "25 SC", "isto_ardeu"],
+        ["❤️", "Abraço moral", "Apoio emocional depois do desastre.", "50 SC", "abraco_moral"],
+        ["🌹", "Respeito", "Para quem sobreviveu ao caos.", "99 SC", "respeito"],
+        ["🎁", "Caixa surpresa", "Um presente forte para um mico raro.", "199 SC", "caixa_surpresa"],
+        ["👑", "Rei do mico", "O presente clássico dos campeões.", "499 SC", "rei_mico"]
       ];
 
       const boosts = [
-        ["🚀", "Boost de Feed", "Empurra o teu mico para ganhar mais visibilidade.", "300 SC"],
-        ["🎬", "Boost ShitClips™", "Dá destaque no modo vertical.", "500 SC"],
-        ["🏆", "Boost Ranking", "Ganha impulso extra de XP.", "700 SC"],
-        ["⭐", "Candidato a Mico do Dia", "Marca o post como destaque especial.", "1000 SC"]
+        ["🚀", "Boost de Feed", "Aplica num post teu para ganhar destaque durante 24h.", "100 SC"],
+        ["🎬", "Boost ShitClips™", "Em breve: destaque no modo vertical.", "em breve"],
+        ["🏆", "Boost Ranking", "Em breve: impulso especial no ranking.", "em breve"],
+        ["⭐", "Candidato a Mico do Dia", "Em breve: marca o post como destaque especial.", "em breve"]
       ];
 
       const coinPacks = [
-        ["🪙", "250 ShitCoins", "Oferta diária para continuares a interagir.", "Oferta diária"],
-        ["🥉", "1.000 ShitCoins", "Pack Bronze para enviar mais presentes.", "Pack Bronze"],
-        ["🥇", "2.500 ShitCoins", "Pack Ouro para destacar mais micos.", "Pack Ouro"],
-        ["👑", "7.500 ShitCoins", "Pack Lenda para dominar a vergonha.", "Pack Lenda"]
+        ["🪙", "250 ShitCoins", "Oferta para continuares a interagir.", "Oferta"],
+        ["🥉", "100 ShitCoins", "Pack rápido para testar presentes pequenos.", "Pack Bronze"],
+        ["🥇", "250 ShitCoins", "Pack para enviar presentes e guardar saldo.", "Pack Ouro"],
+        ["👑", "500 ShitCoins", "Pack máximo permitido nesta fase beta.", "Pack Lenda"]
       ];
 
       const tabs = `
@@ -3719,7 +3781,7 @@
                 </div>
                 <h3>${gift[1]}</h3>
                 <p>${gift[2]}</p>
-                <button class="shop-primary-btn" onclick="showToast('Abre um post de outro utilizador e escolhe Enviar presente 🎁')">Ver presente</button>
+                <button class="shop-primary-btn" onclick="selectGiftFromShop('${gift[4]}')">Ver presente</button>
               </article>
             `).join("")}
           </div>
@@ -3731,10 +3793,10 @@
           <h2 class="shop-section-title"><i class="fa-solid fa-rocket"></i> Boosts para micos</h2>
           <article class="shop-item-card" style="margin-bottom:14px;min-height:auto;">
             <h3>Como usar boosts?</h3>
-            <p>Escolhe um post teu no Feed e aplica um boost para ganhar destaque.</p>
+            <p>Escolhe um post teu no Feed e carrega em Boost. O custo real atual é 100 ShitCoins por 24h.</p>
           </article>
           <div class="shop-catalog-grid">
-            ${boosts.map(boost => `
+            ${boosts.map((boost, index) => `
               <article class="shop-item-card">
                 <div class="shop-item-top">
                   <div class="shop-emoji-box">${boost[0]}</div>
@@ -3742,7 +3804,7 @@
                 </div>
                 <h3>${boost[1]}</h3>
                 <p>${boost[2]}</p>
-                <button class="shop-secondary-btn" onclick="setView('feed')">Usar no Feed</button>
+                <button class="${index === 0 ? "shop-secondary-btn" : "shop-primary-btn"}" onclick="${index === 0 ? "setView('feed')" : "showToast('Este boost entra numa próxima fase 🚧')"}">${index === 0 ? "Usar no Feed" : "Em breve"}</button>
               </article>
             `).join("")}
           </div>
@@ -3753,40 +3815,52 @@
         content = `
           <h2 class="shop-section-title"><i class="fa-solid fa-coins"></i> Pacotes de ShitCoins</h2>
           <div class="shop-catalog-grid">
-            ${coinPacks.map(pack => `
-              <article class="shop-item-card">
-                <div class="shop-item-top">
-                  <div class="shop-emoji-box">${pack[0]}</div>
-                  <div class="shop-price">${pack[3]}</div>
-                </div>
-                <h3>${pack[1]}</h3>
-                <p>${pack[2]}</p>
-                <button class="shop-primary-btn" onclick="claimCoins(250)">Receber moedas</button>
-              </article>
-            `).join("")}
+            ${coinPacks.map(pack => {
+              const amount = Number(String(pack[1]).replace(/\D/g, "")) || 250;
+              return `
+                <article class="shop-item-card">
+                  <div class="shop-item-top">
+                    <div class="shop-emoji-box">${pack[0]}</div>
+                    <div class="shop-price">${pack[3]}</div>
+                  </div>
+                  <h3>${pack[1]}</h3>
+                  <p>${pack[2]}</p>
+                  <button class="shop-primary-btn" onclick="claimCoins(${amount})">Receber moedas</button>
+                </article>
+              `;
+            }).join("")}
           </div>
         `;
       }
 
       if (currentShopTab === "historico") {
-        content = `
-          <h2 class="shop-section-title"><i class="fa-solid fa-receipt"></i> Histórico de transações</h2>
-          <div class="transaction-list">
+        const historyHtml = coinTransactions.length ? coinTransactions.map(tx => {
+          const amount = Number(tx.amount || 0);
+          const positive = amount >= 0;
+          const icon = positive ? "🪙" : (String(tx.reason || "").toLowerCase().includes("boost") ? "🚀" : "🎁");
+          const when = relativeTime(tx.created_at);
+          return `
             <div class="transaction-item">
-              <div class="transaction-icon">🎯</div>
+              <div class="transaction-icon">${icon}</div>
               <div>
-                <strong>Missão diária concluída</strong>
-                <span>+25 ShitCoins recebidos • hoje</span>
+                <strong>${escapeHtml(tx.reason || "Movimento de ShitCoins")}</strong>
+                <span>${positive ? "+" : ""}${formatNumber(amount)} ShitCoins • ${when}</span>
               </div>
             </div>
-            <div class="transaction-item">
-              <div class="transaction-icon">👑</div>
-              <div>
-                <strong>Presente enviado</strong>
-                <span>Mico lendário para @ana_costa • ontem</span>
-              </div>
+          `;
+        }).join("") : `
+          <div class="transaction-item">
+            <div class="transaction-icon">🧾</div>
+            <div>
+              <strong>Sem transações ainda</strong>
+              <span>Quando receberes moedas, enviares presentes ou fizeres boost, aparece aqui.</span>
             </div>
           </div>
+        `;
+
+        content = `
+          <h2 class="shop-section-title"><i class="fa-solid fa-receipt"></i> Histórico de transações</h2>
+          <div class="transaction-list">${historyHtml}</div>
         `;
       }
 
@@ -3825,12 +3899,77 @@
       renderShopPage();
     }
 
-    function claimCoins(amount) {
-      const value = Number(amount || 250);
-      myCoins += value;
-      updateProfileStats();
-      renderShopPage();
-      showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
+    function selectGiftFromShop(giftType) {
+      const labels = {
+        mico: "💩 Mico",
+        morri_rir: "😂 Morri a rir",
+        vergonha_alheia: "🫣 Vergonha alheia",
+        isto_ardeu: "🔥 Isto ardeu",
+        abraco_moral: "❤️ Abraço moral",
+        respeito: "🌹 Respeito",
+        caixa_surpresa: "🎁 Caixa surpresa",
+        rei_mico: "👑 Rei do mico"
+      };
+
+      showToast(`${labels[giftType] || "Presente"} escolhido. Abre um post de outro utilizador e toca em Enviar presente 🎁`);
+      setView("feed");
+    }
+
+    async function claimCoins(amount) {
+      if (!currentUser) {
+        showToast("Entra para receber ShitCoins.");
+        openAuthModal("login");
+        return;
+      }
+
+      const value = Math.max(1, Math.min(Number(amount || 250), 500));
+      const reason = value === 250 ? "Oferta de ShitCoins" : "Pack de ShitCoins";
+
+      try {
+        let credited = value;
+
+        const { data, error } = await sb.rpc("claim_free_coin_pack", {
+          p_amount: value,
+          p_reason: reason
+        });
+
+        if (error) throw error;
+        if (typeof data === "number") credited = data;
+
+        await loadProfile();
+        await loadCoinTransactions();
+        if (currentView === "shop") renderShopPage();
+
+        showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
+      } catch (error) {
+        console.warn("[SHITAGRAM vClean8.1] claim coins rpc failed, fallback", error);
+
+        try {
+          const currentCoins = Number(currentProfile?.coins || myCoins || 0);
+          const newCoins = currentCoins + value;
+
+          const { error: updateError } = await sb
+            .from("profiles")
+            .update({ coins: newCoins })
+            .eq("id", currentUser.id);
+
+          if (updateError) throw updateError;
+
+          await sb.from("coin_transactions").insert({
+            user_id: currentUser.id,
+            amount: value,
+            reason
+          });
+
+          await loadProfile();
+          await loadCoinTransactions();
+          if (currentView === "shop") renderShopPage();
+          showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
+        } catch (fallbackError) {
+          console.error("[SHITAGRAM vClean8.1] claim coins fallback", fallbackError);
+          showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
+        }
+      }
     }
 
     function renderProfilePage() {
@@ -3879,6 +4018,7 @@
     async function loadProfile() {
       if (!currentUser) {
         currentProfile = null;
+        coinTransactions = [];
         updateAuthUi();
         await fetchRealFeed(true);
         return;
@@ -3891,7 +4031,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.0] profile load", error);
+        console.error("[SHITAGRAM vClean8.1] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -3901,14 +4041,15 @@
       currentProfile = data;
       if (!currentProfile) await ensureProfile();
 
+      await loadCoinTransactions();
       updateAuthUi();
       await fetchRealFeed(true);
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.0] login start", email);
+      console.log("[SHITAGRAM vClean8.1] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.0] login result", { data, error });
+      console.log("[SHITAGRAM vClean8.1] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -3982,7 +4123,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.0] publish", error);
+          console.error("[SHITAGRAM vClean8.1] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
