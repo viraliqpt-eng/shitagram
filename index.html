@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shitagram™ vClean8.6.2 — Moderação ativa</title>
+  <title>Shitagram™ vClean9 — Perfil público</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1423,6 +1423,102 @@
       box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
     }
 
+
+    .profile-hero {
+      display: grid;
+      gap: 16px;
+    }
+
+    .profile-cover-card {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255,204,0,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,204,0,0.22);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .profile-main-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .profile-big-avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--brand-yellow);
+      background: #111;
+    }
+
+    .profile-public-title {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .profile-public-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .profile-bio {
+      color: #e4e4e4;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .profile-stat {
+      background: #101010;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .profile-stat strong {
+      display: block;
+      color: var(--brand-yellow);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .profile-stat span {
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .avatar-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #101010;
+      border: 1px solid #242424;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .avatar-preview-wrap img {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brand-yellow);
+    }
+
+
     .mobile-bottom-nav {
       display: none;
     }
@@ -1663,6 +1759,102 @@
       border-color: var(--brand-yellow);
       box-shadow: 0 0 0 4px rgba(255,204,0,0.08);
     }
+
+
+    .profile-hero {
+      display: grid;
+      gap: 16px;
+    }
+
+    .profile-cover-card {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255,204,0,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,204,0,0.22);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .profile-main-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .profile-big-avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--brand-yellow);
+      background: #111;
+    }
+
+    .profile-public-title {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .profile-public-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .profile-bio {
+      color: #e4e4e4;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .profile-stat {
+      background: #101010;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .profile-stat strong {
+      display: block;
+      color: var(--brand-yellow);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .profile-stat span {
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .avatar-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #101010;
+      border: 1px solid #242424;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .avatar-preview-wrap img {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brand-yellow);
+    }
+
 
     .mobile-bottom-nav {
         position: fixed;
@@ -2431,8 +2623,52 @@
     </div>
   </div>
 
+
+  <div id="profileEditModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>👤 Editar perfil</h2>
+          <p>Atualiza a tua bio e avatar público.</p>
+        </div>
+        <button class="close-modal" onclick="closeProfileEditModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="profileEditForm" class="form-grid">
+        <div class="field">
+          <label>Nome público</label>
+          <input id="profileDisplayName" type="text" maxlength="50" placeholder="O teu nome público">
+        </div>
+
+        <div class="field">
+          <label>Bio</label>
+          <textarea id="profileBio" maxlength="180" placeholder="Ex: Especialista em micos de reuniões e vergonha social."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Avatar</label>
+          <div class="avatar-preview-wrap">
+            <img id="profileAvatarPreview" src="" alt="Preview avatar">
+            <div style="flex:1;">
+              <input id="profileAvatarFile" type="file" accept="image/jpeg,image/png,image/webp">
+              <p style="color:var(--text-secondary);font-size:12px;margin-top:8px;">JPG, PNG ou WEBP até 3 MB.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeProfileEditModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar perfil</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
   <div id="toast" class="toast"></div>
-  <!-- versão interna: vClean8.6.2 moderação mobile corrigida -->
+  <!-- versão interna: vClean9 moderação mobile corrigida -->
 
   <script>
 
@@ -2615,7 +2851,7 @@
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.6.2] auth init", error);
+        console.error("[SHITAGRAM vClean9] auth init", error);
         showToast("Não foi possível iniciar autenticação.");
       }
     }
@@ -2634,7 +2870,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] profile load", error);
+        console.error("[SHITAGRAM vClean9] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -2671,7 +2907,7 @@
         .single();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] ensure profile", error);
+        console.error("[SHITAGRAM vClean9] ensure profile", error);
         return;
       }
 
@@ -2684,7 +2920,7 @@
       const email = String(currentUser?.email || "").toLowerCase();
 
       // Fallback seguro para a conta principal do projeto.
-      // O SQL vClean8.6.2 também define esta conta como admin.
+      // O SQL vClean9 também define esta conta como admin.
       return ["admin", "moderator"].includes(role) || email === "viraliqpt@gmail.com";
     }
 
@@ -2723,9 +2959,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.6.2] login start", email);
+      console.log("[SHITAGRAM vClean9] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.6.2] login result", { data, error });
+      console.log("[SHITAGRAM vClean9] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -2749,7 +2985,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean8.6.2] signup start", email);
+      console.log("[SHITAGRAM vClean9] signup start", email);
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -2757,7 +2993,7 @@
           data: { username: cleanUsername }
         }
       });
-      console.log("[SHITAGRAM vClean8.6.2] signup result", { data, error });
+      console.log("[SHITAGRAM vClean9] signup result", { data, error });
 
       if (error) {
         showToast(error.message || "Erro ao criar conta.");
@@ -2922,7 +3158,40 @@
         btn.textContent = i;
         btn.onclick = () => {
           selectedGrade = i;
-          initGrades();
+      
+    const profileAvatarInput = document.getElementById("profileAvatarFile");
+    if (profileAvatarInput) {
+      profileAvatarInput.addEventListener("change", function() {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const preview = document.getElementById("profileAvatarPreview");
+        preview.src = URL.createObjectURL(file);
+      });
+    }
+
+    const profileEditForm = document.getElementById("profileEditForm");
+    if (profileEditForm) {
+      profileEditForm.addEventListener("submit", saveProfileEdits);
+    }
+
+    const profileEditModal = document.getElementById("profileEditModal");
+    if (profileEditModal) {
+      profileEditModal.addEventListener("click", function(e) {
+        if (e.target === profileEditModal) closeProfileEditModal();
+      });
+    }
+
+    function openInitialPublicProfileFromHash() {
+      const hash = String(location.hash || "");
+      if (!hash.startsWith("#u/")) return;
+      const username = hash.replace("#u/", "").trim();
+      if (!username) return;
+      const foundPost = posts.find(post => String(post.author || "").replace(/^@/, "") === username);
+      if (foundPost?.user_id) openPublicProfileById(foundPost.user_id);
+    }
+
+
+    initGrades();
     initEditGrades();
         };
         gradeGrid.appendChild(btn);
@@ -2952,7 +3221,40 @@
       clearPostImagePreview();
       clearPostVideoPreview();
       handlePostTypeChange();
-      initGrades();
+  
+    const profileAvatarInput = document.getElementById("profileAvatarFile");
+    if (profileAvatarInput) {
+      profileAvatarInput.addEventListener("change", function() {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const preview = document.getElementById("profileAvatarPreview");
+        preview.src = URL.createObjectURL(file);
+      });
+    }
+
+    const profileEditForm = document.getElementById("profileEditForm");
+    if (profileEditForm) {
+      profileEditForm.addEventListener("submit", saveProfileEdits);
+    }
+
+    const profileEditModal = document.getElementById("profileEditModal");
+    if (profileEditModal) {
+      profileEditModal.addEventListener("click", function(e) {
+        if (e.target === profileEditModal) closeProfileEditModal();
+      });
+    }
+
+    function openInitialPublicProfileFromHash() {
+      const hash = String(location.hash || "");
+      if (!hash.startsWith("#u/")) return;
+      const username = hash.replace("#u/", "").trim();
+      if (!username) return;
+      const foundPost = posts.find(post => String(post.author || "").replace(/^@/, "") === username);
+      if (foundPost?.user_id) openPublicProfileById(foundPost.user_id);
+    }
+
+
+    initGrades();
       initEditGrades();
     }
 
@@ -3184,7 +3486,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] report", error);
+        console.error("[SHITAGRAM vClean9] report", error);
         showToast(error.message || "Não foi possível enviar a denúncia.");
         playSound("error");
         return;
@@ -3274,13 +3576,13 @@
       return `
         <article class="post-card" data-post-id="${post.id}">
           <div class="post-header">
-            <div class="post-author">
+            <button class="post-author" style="background:transparent;border:0;color:inherit;text-align:left;cursor:pointer;" onclick="openPublicProfileById('${post.user_id || ""}')">
               <img src="${avatarFor(post.author)}" class="author-avatar" alt="Avatar">
               <div>
                 <div class="author-name">${post.author}</div>
                 <div class="post-time">${post.time} • <i class="fa-solid fa-earth-europe"></i></div>
               </div>
-            </div>
+            </button>
             <span class="badge-grau">Grau ${post.grade}</span>
           </div>
 
@@ -3480,7 +3782,7 @@
       const { data, error } = await sb.rpc("get_moderation_reports");
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] moderation reports", error);
+        console.error("[SHITAGRAM vClean9] moderation reports", error);
         mainView.innerHTML = `
           <section class="view-title-card">
             <h1>🛡️ Painel de moderação</h1>
@@ -3490,7 +3792,7 @@
             <div class="post-content">
               <h2>Erro</h2>
               <p>${escapeHtml(error.message || "Erro desconhecido")}</p>
-              <p style="margin-top:10px;">Executa o SQL vClean8.6.2 e confirma se a tua conta está com <strong>role = admin</strong>.</p>
+              <p style="margin-top:10px;">Executa o SQL vClean9 e confirma se a tua conta está com <strong>role = admin</strong>.</p>
             </div>
             <div class="post-divider"></div>
             <div class="post-actions">
@@ -3608,7 +3910,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] moderate report", error);
+        console.error("[SHITAGRAM vClean9] moderate report", error);
         showToast(error.message || "Erro ao moderar.");
         playSound("error");
         return;
@@ -3900,7 +4202,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean8.6.2] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean9] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -3921,7 +4223,7 @@
         if (userIds.length) {
           const { data: profiles, error: profileError } = await sb
             .from("profiles")
-            .select("id, username, display_name, avatar_url, xp, coins")
+            .select("id, username, display_name, avatar_url, bio, xp, coins")
             .in("id", userIds);
 
           if (!profileError && Array.isArray(profiles)) {
@@ -4020,7 +4322,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean8.6.2] feed real", error);
+        console.error("[SHITAGRAM vClean9] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -4324,7 +4626,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.6.2] edit post", error);
+          console.error("[SHITAGRAM vClean9] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -4360,7 +4662,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean8.6.2] react", error);
+          console.error("[SHITAGRAM vClean9] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -4406,7 +4708,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] load comments", error);
+        console.error("[SHITAGRAM vClean9] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -4503,7 +4805,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.6.2] submit comment", error);
+          console.error("[SHITAGRAM vClean9] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -4585,7 +4887,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] gift", error);
+        console.error("[SHITAGRAM vClean9] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -4612,7 +4914,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] boost", error);
+        console.error("[SHITAGRAM vClean9] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -4633,7 +4935,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] delete", error);
+        console.error("[SHITAGRAM vClean9] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -4754,7 +5056,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean8.6.2] coin transactions", error);
+        console.warn("[SHITAGRAM vClean9] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -4972,7 +5274,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean8.6.2] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean9] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -4996,7 +5298,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean8.6.2] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean9] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -5004,32 +5306,48 @@
 
     function renderProfilePage() {
       const username = currentProfile?.username ? "@" + String(currentProfile.username).replace(/^@/, "") : "Visitante";
+      const displayName = currentProfile?.display_name || username;
       const avatar = currentProfile?.avatar_url || users["@joao_silva"].avatar;
+      const bio = currentProfile?.bio || "Ainda sem bio. Edita este campo para dar identidade ao teu perfil.";
+      const xp = Number(currentProfile?.xp || 0);
+      const coins = Number(currentProfile?.coins || 0);
+      const myPosts = posts.filter(p => p.user_id === currentUser?.id);
 
       mainView.innerHTML = `
         <section class="view-title-card">
           <h1>👤 Perfil</h1>
-          <p>Dados reais do perfil ligado ao Supabase.</p>
+          <p>Dados reais do teu perfil ligado ao Supabase.</p>
         </section>
 
-        <article class="post-card">
-          <div class="post-header">
-            <div class="post-author">
-              <img src="${avatar}" class="author-avatar" alt="Avatar">
-              <div>
-                <div class="author-name">${escapeHtml(username)}</div>
-                <div class="post-time">${currentUser ? currentUser.email : "Sessão não iniciada"}</div>
-              </div>
+        <article class="profile-cover-card">
+          <div class="profile-main-row">
+            <img src="${avatar}" class="profile-big-avatar" alt="Avatar">
+            <div style="flex:1;">
+              <div class="profile-public-title">${escapeHtml(displayName)}</div>
+              <div class="profile-public-subtitle">${escapeHtml(username)} · ${currentUser ? escapeHtml(currentUser.email) : "Sessão não iniciada"}</div>
+              <p class="profile-bio">${escapeHtml(bio)}</p>
             </div>
-            <span class="badge-grau">XP ${formatNumber(Number(currentProfile?.xp || 0))}</span>
+            <span class="badge-grau">XP ${formatNumber(xp)}</span>
           </div>
-          <div class="post-content">
-            <h2>ShitCoins™: ${formatNumber(Number(currentProfile?.coins || 0))}</h2>
-            <p>${escapeHtml(currentProfile?.bio || "Ainda sem bio. Em breve podes editar este campo diretamente aqui.")}</p>
+
+          <div class="profile-stats-grid">
+            <div class="profile-stat"><strong>${formatNumber(xp)}</strong><span>XP</span></div>
+            <div class="profile-stat"><strong>${formatNumber(coins)}</strong><span>ShitCoins™</span></div>
+            <div class="profile-stat"><strong>${formatNumber(myPosts.length)}</strong><span>Micos</span></div>
+            <div class="profile-stat"><strong>${formatNumber(myPosts.reduce((sum, p) => sum + Number(p.gifts?.length || 0), 0))}</strong><span>Presentes</span></div>
           </div>
+
           <div class="post-divider"></div>
           <div class="post-actions">
             ${currentUser ? `
+              <button class="action-btn comment" onclick="openProfileEditModal()">
+                <i class="fa-solid fa-pen"></i>
+                Editar perfil
+              </button>
+              <button class="action-btn share" onclick="shareProfile('${currentProfile?.username || ""}')">
+                <i class="fa-solid fa-share-nodes"></i>
+                Partilhar perfil
+              </button>
               <button class="action-btn share" onclick="logoutUser()">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Sair
@@ -5042,8 +5360,232 @@
             `}
           </div>
         </article>
+
+        <section class="view-title-card">
+          <h1>💩 Os teus micos</h1>
+          <p>Publicações associadas ao teu perfil.</p>
+        </section>
+
+        ${myPosts.length ? myPosts.map(post => renderPostCard(post)).join("") : `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Ainda sem micos publicados</h2>
+              <p>Publica o teu primeiro mico para começar a ganhar XP.</p>
+            </div>
+          </article>
+        `}
       `;
     }
+
+    function openProfileEditModal() {
+      if (!currentUser || !currentProfile) {
+        openAuthModal("login");
+        return;
+      }
+
+      const modal = document.getElementById("profileEditModal");
+      const displayName = document.getElementById("profileDisplayName");
+      const bio = document.getElementById("profileBio");
+      const avatarPreview = document.getElementById("profileAvatarPreview");
+      const avatarFile = document.getElementById("profileAvatarFile");
+
+      displayName.value = currentProfile.display_name || "";
+      bio.value = currentProfile.bio || "";
+      avatarPreview.src = currentProfile.avatar_url || users["@joao_silva"].avatar;
+      avatarFile.value = "";
+
+      modal.classList.add("open");
+      setTimeout(() => displayName.focus(), 50);
+    }
+
+    function closeProfileEditModal() {
+      document.getElementById("profileEditModal").classList.remove("open");
+    }
+
+    async function uploadAvatarFile(file) {
+      if (!file) return null;
+
+      const allowed = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowed.includes(file.type)) {
+        throw new Error("Avatar inválido. Usa JPG, PNG ou WEBP.");
+      }
+
+      if (file.size > 3 * 1024 * 1024) {
+        throw new Error("Avatar demasiado grande. Máximo 3 MB.");
+      }
+
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${currentUser.id}/avatar-${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await sb.storage
+        .from("avatars")
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: file.type
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = sb.storage.from("avatars").getPublicUrl(path);
+
+      return {
+        avatar_url: data.publicUrl,
+        avatar_storage_path: path
+      };
+    }
+
+    async function saveProfileEdits(event) {
+      event.preventDefault();
+
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const submitBtn = event.submitter;
+      const original = submitBtn?.textContent;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "A guardar...";
+      }
+
+      try {
+        const file = document.getElementById("profileAvatarFile").files[0];
+        const displayName = document.getElementById("profileDisplayName").value.trim();
+        const bio = document.getElementById("profileBio").value.trim();
+
+        let avatarPayload = {};
+        if (file) avatarPayload = await uploadAvatarFile(file);
+
+        const payload = {
+          display_name: displayName || currentProfile?.username || "Utilizador",
+          bio,
+          updated_at: new Date().toISOString(),
+          ...avatarPayload
+        };
+
+        const { error } = await sb
+          .from("profiles")
+          .update(payload)
+          .eq("id", currentUser.id);
+
+        if (error) throw error;
+
+        await loadProfile();
+        closeProfileEditModal();
+        renderProfilePage();
+        showToast("Perfil atualizado com sucesso 👤");
+        playSound("success");
+      } catch (error) {
+        console.error("[SHITAGRAM vClean9] profile update", error);
+        showToast(error.message || "Erro ao atualizar perfil.");
+        playSound("error");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = original || "Guardar perfil";
+        }
+      }
+    }
+
+    async function openPublicProfileById(userId) {
+      if (!userId) return;
+
+      try {
+        const { data: profile, error } = await sb
+          .from("profiles")
+          .select("id, username, display_name, avatar_url, bio, xp, coins")
+          .eq("id", userId)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        const userPosts = posts.filter(post => post.user_id === userId);
+        renderPublicProfile(profile, userPosts);
+      } catch (error) {
+        console.error("[SHITAGRAM vClean9] public profile", error);
+        showToast("Não consegui abrir o perfil público.");
+      }
+    }
+
+    function renderPublicProfile(profile, userPosts = []) {
+      const username = profile?.username ? "@" + String(profile.username).replace(/^@/, "") : "@utilizador";
+      const displayName = profile?.display_name || username;
+      const avatar = profile?.avatar_url || users["@anonimo_mico"].avatar;
+      const bio = profile?.bio || "Este utilizador ainda não escreveu bio.";
+      const gifts = userPosts.reduce((sum, p) => sum + Number(p.gifts?.length || 0), 0);
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>👤 Perfil público</h1>
+          <p>Estatuto público dentro da comunidade SHITAGRAM™.</p>
+        </section>
+
+        <article class="profile-cover-card">
+          <div class="profile-main-row">
+            <img src="${avatar}" class="profile-big-avatar" alt="Avatar">
+            <div style="flex:1;">
+              <div class="profile-public-title">${escapeHtml(displayName)}</div>
+              <div class="profile-public-subtitle">${escapeHtml(username)}</div>
+              <p class="profile-bio">${escapeHtml(bio)}</p>
+            </div>
+            <span class="badge-grau">XP ${formatNumber(Number(profile?.xp || 0))}</span>
+          </div>
+
+          <div class="profile-stats-grid">
+            <div class="profile-stat"><strong>${formatNumber(Number(profile?.xp || 0))}</strong><span>XP</span></div>
+            <div class="profile-stat"><strong>${formatNumber(userPosts.length)}</strong><span>Micos</span></div>
+            <div class="profile-stat"><strong>${formatNumber(gifts)}</strong><span>Presentes</span></div>
+            <div class="profile-stat"><strong>${formatNumber(Number(profile?.coins || 0))}</strong><span>ShitCoins™</span></div>
+          </div>
+
+          <div class="post-divider"></div>
+          <div class="post-actions">
+            <button class="action-btn share" onclick="shareProfile('${profile?.username || ""}')">
+              <i class="fa-solid fa-share-nodes"></i>
+              Partilhar perfil
+            </button>
+            <button class="action-btn comment" onclick="setView('feed')">
+              <i class="fa-solid fa-house"></i>
+              Voltar ao Feed
+            </button>
+          </div>
+        </article>
+
+        <section class="view-title-card">
+          <h1>💩 Micos publicados</h1>
+          <p>Últimos posts deste utilizador.</p>
+        </section>
+
+        ${userPosts.length ? userPosts.map(post => renderPostCard(post)).join("") : `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Sem micos públicos</h2>
+              <p>Este utilizador ainda não tem posts visíveis.</p>
+            </div>
+          </article>
+        `}
+      `;
+
+      currentView = "public_profile";
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+      searchArea.style.display = "none";
+    }
+
+    function shareProfile(username) {
+      const clean = String(username || currentProfile?.username || "").replace(/^@/, "");
+      const url = `${location.origin}${location.pathname}#u/${clean || "perfil"}`;
+      const text = `Vê este perfil no SHITAGRAM™: @${clean}`;
+
+      if (navigator.share) {
+        navigator.share({ title: "SHITAGRAM™", text, url }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(url).then(() => showToast("Link do perfil copiado 🔗"));
+      }
+    }
+
 
     async function loadProfile() {
       if (!currentUser) {
@@ -5061,7 +5603,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean8.6.2] profile load", error);
+        console.error("[SHITAGRAM vClean9] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -5077,9 +5619,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean8.6.2] login start", email);
+      console.log("[SHITAGRAM vClean9] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean8.6.2] login result", { data, error });
+      console.log("[SHITAGRAM vClean9] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -5279,7 +5821,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean8.6.2] publish", error);
+          console.error("[SHITAGRAM vClean9] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
@@ -5302,6 +5844,39 @@
 
 
 
+
+    const profileAvatarInput = document.getElementById("profileAvatarFile");
+    if (profileAvatarInput) {
+      profileAvatarInput.addEventListener("change", function() {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const preview = document.getElementById("profileAvatarPreview");
+        preview.src = URL.createObjectURL(file);
+      });
+    }
+
+    const profileEditForm = document.getElementById("profileEditForm");
+    if (profileEditForm) {
+      profileEditForm.addEventListener("submit", saveProfileEdits);
+    }
+
+    const profileEditModal = document.getElementById("profileEditModal");
+    if (profileEditModal) {
+      profileEditModal.addEventListener("click", function(e) {
+        if (e.target === profileEditModal) closeProfileEditModal();
+      });
+    }
+
+    function openInitialPublicProfileFromHash() {
+      const hash = String(location.hash || "");
+      if (!hash.startsWith("#u/")) return;
+      const username = hash.replace("#u/", "").trim();
+      if (!username) return;
+      const foundPost = posts.find(post => String(post.author || "").replace(/^@/, "") === username);
+      if (foundPost?.user_id) openPublicProfileById(foundPost.user_id);
+    }
+
+
     initGrades();
     initEditGrades();
     setView("feed");
@@ -5310,8 +5885,9 @@
     updateProfileStats();
     updateSoundButtons();
     initAuth();
+    setTimeout(openInitialPublicProfileFromHash, 1200);
   </script>
-<!-- vClean8.7 publish safety -->
-<!-- vClean8.7 publish safety -->
+<!-- vClean9 profile public/avatar -->
+<!-- vClean9 profile public/avatar -->
 </body>
 </html>
