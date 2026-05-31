@@ -772,6 +772,14 @@
       place-items: center;
     }
 
+
+    .top-action-btn {
+      border: 1px solid var(--border-color);
+      padding: 0;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
     .avatar-top-right {
       width: 42px;
       height: 42px;
@@ -1803,7 +1811,7 @@
           <i class="fa-solid fa-trophy"></i><label>Ranking</label>
         </button>
 
-        <button id="navShop" class="nav-item" onclick="setView('shop')">
+        <button id="navShop" class="nav-item" onclick="openStore('presentes')">
           <i class="fa-solid fa-gift"></i><label>Loja</label>
         </button>
 
@@ -1851,11 +1859,13 @@
 
     <aside class="right-sidebar">
       <div class="top-bar-right">
-        <div class="icon-circle"><i class="fa-solid fa-comment-sms"></i></div>
-        <div class="icon-circle">
+        <button class="icon-circle top-action-btn" type="button" onclick="showMessagesComingSoon()" title="Mensagens">
+          <i class="fa-solid fa-comment-sms"></i>
+        </button>
+        <button class="icon-circle top-action-btn" type="button" onclick="setView('notifications')" title="Notificações">
           <i class="fa-solid fa-bell"></i>
-          <span class="badge-notification">7</span>
-        </div>
+          <span id="notificationBadge" class="badge-notification">7</span>
+        </button>
         <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop" class="avatar-top-right" alt="Avatar">
       </div>
 
@@ -1873,7 +1883,7 @@
           <div class="gift-bubble">🌹</div>
           <div class="gift-bubble">👑</div>
         </div>
-        <button class="widget-footer-btn" onclick="setView('shop')">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="widget-footer-btn" onclick="openStore('presentes')">Ver loja de presentes <i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="widget-card">
@@ -2390,20 +2400,28 @@
       document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
       document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
 
+      searchArea.style.display = view === "feed" ? "block" : "none";
+
       if (view === "feed") {
-        document.getElementById("navFeed").classList.add("active");
-        document.getElementById("mobileFeed").classList.add("active");
-        searchArea.style.display = "block";
+        document.getElementById("navFeed")?.classList.add("active");
+        document.getElementById("mobileFeed")?.classList.add("active");
       }
 
       if (view === "clips") {
-        document.getElementById("navClips").classList.add("active");
-        document.getElementById("mobileClips").classList.add("active");
-        searchArea.style.display = "none";
+        document.getElementById("navClips")?.classList.add("active");
+        document.getElementById("mobileClips")?.classList.add("active");
       }
 
       if (view === "ranking") {
-        searchArea.style.display = "none";
+        document.getElementById("navRanking")?.classList.add("active");
+      }
+
+      if (view === "shop") {
+        document.getElementById("navShop")?.classList.add("active");
+      }
+
+      if (view === "profile") {
+        document.getElementById("navProfile")?.classList.add("active");
       }
 
       renderCurrentView();
@@ -2413,6 +2431,21 @@
       if (currentView === "feed") renderFeed();
       if (currentView === "clips") renderClips();
       if (currentView === "ranking") renderRankingPage();
+      if (currentView === "shop") renderShopPage();
+      if (currentView === "profile") renderProfilePage();
+      if (currentView === "notifications") renderNotificationsPage();
+    }
+
+    function openStore(tab = "presentes") {
+      currentShopTab = tab;
+      setView("shop");
+      setTimeout(() => {
+        document.querySelector(".shop-header-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 40);
+    }
+
+    function showMessagesComingSoon() {
+      showToast("Mensagens privadas entram em breve 💬");
     }
 
     function initGrades() {
@@ -3605,6 +3638,38 @@
       `;
     }
 
+
+    function renderNotificationsPage() {
+      const badge = document.getElementById("notificationBadge");
+      if (badge) badge.style.display = "none";
+
+      const notifications = [
+        ["🎁", "Recebeste um presente", "Alguém enviou um presente para um dos teus micos.", "agora"],
+        ["💬", "Novo comentário", "Um utilizador comentou no teu post.", "hoje"],
+        ["💩", "Nova reação", "O teu mico recebeu uma reação.", "hoje"],
+        ["🏆", "Ranking atualizado", "O teu perfil subiu na tabela da vergonha.", "ontem"]
+      ];
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🔔 Notificações</h1>
+          <p>Segue a atividade dos teus micos, presentes, comentários e ranking.</p>
+        </section>
+
+        <section class="transaction-list">
+          ${notifications.map(item => `
+            <article class="transaction-item">
+              <div class="transaction-icon">${item[0]}</div>
+              <div>
+                <strong>${item[1]}</strong>
+                <span>${item[2]} • ${item[3]}</span>
+              </div>
+            </article>
+          `).join("")}
+        </section>
+      `;
+    }
+
     function renderShopPage() {
       const gifts = [
         ["🔥", "Fogo", "Para micos que queimam a reputação.", "50 SC"],
@@ -3633,7 +3698,7 @@
 
       const tabs = `
         <div class="shop-tabs">
-          <button class="shop-tab ${currentShopTab === "presentes" ? "active" : ""}" onclick="setShopTab('presentes')">Presentes</button>
+          <button class="shop-tab ${currentShopTab === "presentes" ? "active" : ""}" onclick="openStore('presentes')">Presentes</button>
           <button class="shop-tab ${currentShopTab === "boosts" ? "active" : ""}" onclick="setShopTab('boosts')">Boosts</button>
           <button class="shop-tab ${currentShopTab === "coins" ? "active" : ""}" onclick="setShopTab('coins')">ShitCoins</button>
           <button class="shop-tab ${currentShopTab === "historico" ? "active" : ""}" onclick="setShopTab('historico')">Histórico</button>
@@ -3731,7 +3796,7 @@
             <h1>A loja abriu. <span>Usa ShitCoins.</span> Domina a vergonha.</h1>
             <p>Envia presentes, destaca micos e desbloqueia vantagens dentro da comunidade.</p>
           </div>
-          <button onclick="setShopTab('presentes')">
+          <button onclick="openStore('presentes')">
             <i class="fa-solid fa-store"></i>
             Abrir loja
           </button>
