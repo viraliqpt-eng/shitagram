@@ -25,6 +25,8 @@
       followingIds: new Set(),
       notifications: [],
       badges: [],
+      rankings: { xp: [], coins: [], gifts: [], posts: [] },
+      activeRanking: "xp",
       activeTab: "feed",
       activeGiftPostId: null,
       activeGiftCategory: "todos"
@@ -1318,6 +1320,112 @@
       }
     };
 
+
+    function medal(rank) {
+      if (rank === 1) return "🥇";
+      if (rank === 2) return "🥈";
+      if (rank === 3) return "🥉";
+      return `#${rank}`;
+    }
+
+    async function loadRankings() {
+      const targets = [
+        ["xp", "ranking_users_xp"],
+        ["coins", "ranking_users_coins"],
+        ["gifts", "ranking_users_gifts"],
+        ["posts", "ranking_posts_reactions"]
+      ];
+
+      const results = await Promise.allSettled(
+        targets.map(([key, view]) => supabase.from(view).select("*").limit(10))
+      );
+
+      results.forEach((res, idx) => {
+        const [key, view] = targets[idx];
+        if (res.status === "fulfilled" && !res.value.error) {
+          state.rankings[key] = res.value.data || [];
+        } else {
+          const err = res.status === "fulfilled" ? res.value.error : res.reason;
+          console.warn(`[clean] ranking ${view} warning`, err);
+          state.rankings[key] = [];
+        }
+      });
+
+      renderRankings();
+    }
+
+    function rankingUserRow(item, idx, metric, label) {
+      const rank = idx + 1;
+      const username = item.username || item.display_name || "user";
+      const avatar = item.avatar_url ? `<img src="${escapeHtml(item.avatar_url)}" class="w-12 h-12 rounded-2xl object-cover">` : `<div class="w-12 h-12 rounded-2xl bg-yellow-400 text-black grid place-items-center text-2xl">💩</div>`;
+      return `
+        <button onclick="openPublicProfile('${item.id || item.user_id}')" class="w-full text-left rounded-3xl bg-black/35 border border-white/10 p-4 flex items-center gap-4 hover:border-yellow-400/40 transition">
+          <div class="w-12 text-center text-2xl font-black">${medal(rank)}</div>
+          ${avatar}
+          <div class="min-w-0 flex-1">
+            <p class="font-black truncate">@${escapeHtml(username)}</p>
+            <p class="text-xs text-zinc-500">${escapeHtml(item.display_name || username)}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xl font-black text-yellow-400">${Number(item[metric] || 0).toLocaleString("pt-PT")}</p>
+            <p class="text-[10px] text-zinc-500 font-black uppercase">${label}</p>
+          </div>
+        </button>`;
+    }
+
+    function rankingPostRow(item, idx) {
+      const rank = idx + 1;
+      const title = item.title || "Mico sem título";
+      const username = item.username || "user";
+      return `
+        <div class="rounded-3xl bg-black/35 border border-white/10 p-4">
+          <div class="flex items-start gap-4">
+            <div class="w-12 text-center text-2xl font-black">${medal(rank)}</div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-3">
+                <button onclick="openPublicProfile('${item.user_id}')" class="font-black hover:text-yellow-400">@${escapeHtml(username)}</button>
+                <span class="rounded-full bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 px-3 py-1 text-xs font-black">💩 ${Number(item.reactions_count || 0).toLocaleString("pt-PT")}</span>
+              </div>
+              <p class="mt-2 text-lg font-black">${escapeHtml(title)}</p>
+              <p class="mt-1 text-sm text-zinc-500">💬 ${Number(item.comments_count || 0).toLocaleString("pt-PT")} · 🎁 ${Number(item.gifts_count || 0).toLocaleString("pt-PT")} presentes</p>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderRankings() {
+      const empty = `<div class="card p-6 text-zinc-500 font-bold">Ainda não há dados suficientes para este ranking.</div>`;
+
+      $("rankingXpList").innerHTML = state.rankings.xp.length
+        ? state.rankings.xp.map((u, i) => rankingUserRow(u, i, "xp", "XP")).join("")
+        : empty;
+
+      $("rankingCoinsList").innerHTML = state.rankings.coins.length
+        ? state.rankings.coins.map((u, i) => rankingUserRow(u, i, "coins", "Coins")).join("")
+        : empty;
+
+      $("rankingGiftsList").innerHTML = state.rankings.gifts.length
+        ? state.rankings.gifts.map((u, i) => rankingUserRow(u, i, "gifts_received_value", "Coins recebidas")).join("")
+        : empty;
+
+      $("rankingPostsList").innerHTML = state.rankings.posts.length
+        ? state.rankings.posts.map((p, i) => rankingPostRow(p, i)).join("")
+        : empty;
+    }
+
+    window.setRankingTab = function(tab) {
+      state.activeRanking = tab;
+      document.querySelectorAll("[data-ranking-page]").forEach(el => el.classList.add("hidden"));
+      $(`ranking-${tab}`).classList.remove("hidden");
+      document.querySelectorAll("[data-ranking-tab]").forEach(btn => {
+        const active = btn.dataset.rankingTab === tab;
+        btn.classList.toggle("bg-yellow-400", active);
+        btn.classList.toggle("text-black", active);
+        btn.classList.toggle("bg-white/5", !active);
+        btn.classList.toggle("text-zinc-300", !active);
+      });
+    };
+
     window.goTab = function(tab) {
       state.activeTab = tab;
       document.querySelectorAll("[data-page]").forEach(el => el.classList.add("hidden"));
@@ -1327,6 +1435,7 @@
       });
       if (tab === "feed") loadAll();
       if (tab === "clips") loadClips();
+      if (tab === "ranking") { loadRankings(); setRankingTab(state.activeRanking || "xp"); }
       if (tab === "profile") { updateAuthUI(); if (state.user) recalcAndLoadBadges(); }
       if (tab === "notifications") {
         loadNotifications().then(renderNotifications);
@@ -1352,8 +1461,8 @@
     };
 
     window.addEventListener("DOMContentLoaded", async () => {
-      $("versionBadge").textContent = "vClean5";
-      $("versionBadge2").textContent = "vClean5";
+      $("versionBadge").textContent = "vClean6";
+      $("versionBadge2").textContent = "vClean6";
       await refreshSession();
 
       supabase.auth.onAuthStateChange(async (_event, session) => {
@@ -1431,6 +1540,7 @@
           <button data-nav="clips" onclick="goTab('clips')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🎬 ShitClips™</button>
           <button data-nav="notifications" onclick="goTab('notifications')" class="relative w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🔔 Notificações <span id="notifBadge" class="hidden absolute right-3 top-3 rounded-full bg-yellow-400 text-black text-[10px] px-2 py-0.5">0</span></button>
           <button data-nav="coins" onclick="goTab('coins')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🪙 ShitCoins™ <span id="topCoinsNav" class="text-yellow-400">0</span></button>
+          <button data-nav="ranking" onclick="goTab('ranking')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">🏆 Ranking</button>
           <button data-nav="publish" onclick="goTab('publish')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">➕ Publicar</button>
           <button data-nav="profile" onclick="goTab('profile')" class="w-full text-left rounded-2xl px-4 py-3 font-black text-zinc-300 border border-transparent">👤 Perfil</button>
           <button id="mobileLogoutBtn" onclick="logout()" class="hidden w-full text-left rounded-2xl px-4 py-3 font-black text-red-400 border border-red-400/20 bg-red-400/10">Sair</button>
@@ -1458,6 +1568,11 @@
                 <p class="mt-2 text-3xl font-black text-yellow-400"><span id="topCoins">0</span> 🪙</p>
                 <p class="mt-2 text-sm text-zinc-400">Usa moedas para enviar presentes e destacar os teus micos.</p>
                 <button onclick="goTab('coins')" class="mt-4 w-full rounded-2xl bg-yellow-400 text-black py-3 font-black">Abrir loja grátis</button>
+              </div>
+              <div class="card p-5">
+                <h3 class="font-black text-xl">Ranking</h3>
+                <p class="mt-2 text-sm text-zinc-400">Vê quem lidera por XP, coins, presentes e micos.</p>
+                <button onclick="goTab('ranking')" class="mt-4 w-full rounded-2xl bg-white/5 border border-white/10 py-3 font-black">Ver ranking</button>
               </div>
               <div class="card p-5">
                 <h3 class="font-black text-xl">Convidar amigos</h3>
@@ -1606,6 +1721,34 @@
           </div>
         </div>
 
+
+        <div id="page-ranking" data-page class="hidden">
+          <div class="space-y-5">
+            <div class="card p-6">
+              <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                  <p class="text-yellow-400 text-xs font-black uppercase tracking-widest">Ranking</p>
+                  <h2 class="mt-2 text-3xl font-black">Lendas da vergonha</h2>
+                  <p class="mt-2 text-zinc-400">Top utilizadores e micos por XP, moedas, presentes e reações.</p>
+                </div>
+                <button onclick="loadRankings()" class="rounded-2xl bg-yellow-400 text-black px-5 py-3 text-xs font-black uppercase">Atualizar</button>
+              </div>
+
+              <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-2">
+                <button data-ranking-tab="xp" onclick="setRankingTab('xp')" class="rounded-2xl bg-yellow-400 text-black py-3 text-xs font-black uppercase">XP</button>
+                <button data-ranking-tab="coins" onclick="setRankingTab('coins')" class="rounded-2xl bg-white/5 text-zinc-300 py-3 text-xs font-black uppercase">Coins</button>
+                <button data-ranking-tab="gifts" onclick="setRankingTab('gifts')" class="rounded-2xl bg-white/5 text-zinc-300 py-3 text-xs font-black uppercase">Presentes</button>
+                <button data-ranking-tab="posts" onclick="setRankingTab('posts')" class="rounded-2xl bg-white/5 text-zinc-300 py-3 text-xs font-black uppercase">Micos</button>
+              </div>
+            </div>
+
+            <div id="ranking-xp" data-ranking-page class="space-y-3"></div>
+            <div id="ranking-coins" data-ranking-page class="hidden space-y-3"></div>
+            <div id="ranking-gifts" data-ranking-page class="hidden space-y-3"></div>
+            <div id="ranking-posts" data-ranking-page class="hidden space-y-3"></div>
+          </div>
+        </div>
+
         <div id="page-profile" data-page class="hidden">
           <div class="max-w-2xl">
             <div class="card p-6">
@@ -1645,12 +1788,13 @@
       </section>
     </main>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-6 gap-1 px-2 py-2">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 grid grid-cols-7 gap-1 px-2 py-2">
       <button data-nav="feed" onclick="goTab('feed')" class="nav-active rounded-2xl py-3 text-xs font-black">🏠<br>Feed</button>
       <button data-nav="clips" onclick="goTab('clips')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🎬<br>Clips</button>
       <button data-nav="publish" onclick="goTab('publish')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">➕<br>Publicar</button>
       <button data-nav="notifications" onclick="goTab('notifications')" class="relative rounded-2xl py-3 text-xs font-black text-zinc-400">🔔<br>Notif.<span id="notifBadgeMobile" class="hidden absolute right-1 top-1 rounded-full bg-yellow-400 text-black text-[9px] px-1.5">0</span></button>
       <button data-nav="coins" onclick="goTab('coins')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🪙<br>Moedas</button>
+      <button data-nav="ranking" onclick="goTab('ranking')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">🏆<br>Rank</button>
       <button data-nav="profile" onclick="goTab('profile')" class="rounded-2xl py-3 text-xs font-black text-zinc-400">👤<br>Perfil</button>
     </nav>
 
