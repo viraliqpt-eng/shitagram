@@ -59,7 +59,7 @@
     input,textarea{width:100%;background:#111;border:1px solid #303030;color:#fff;border-radius:14px;padding:13px 14px;outline:none}
     textarea{min-height:110px;resize:vertical} input:focus,textarea:focus{border-color:var(--yellow);box-shadow:0 0 0 4px rgba(255,204,0,.08)}
     .formnote{color:#aaa;font-size:13px;line-height:1.5;margin-top:12px}
-    .footer{border-top:1px solid #191919;padding:26px 0;color:#888;font-size:13px}
+    .footer{border-top:1px solid #191919;padding:28px 0;color:#888;font-size:13px}.footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.footer-links{display:flex;gap:14px;flex-wrap:wrap}.footer a{color:#d8d8d8;text-decoration:none;font-weight:800}.footer a:hover{color:var(--yellow)}
     .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);opacity:0;background:#111;border:1px solid rgba(255,204,0,.35);border-radius:999px;padding:12px 16px;font-weight:900;transition:.25s;z-index:100}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     @media(max-width:880px){
@@ -171,7 +171,16 @@
   </main>
 
   <footer class="footer">
-    <div class="wrap">SHITAGRAM™ Beta · A vergonha agora dá XP · <a href="app.html">Entrar na app</a></div>
+    <div class="wrap">
+      <div>© 2026 SHITAGRAM™ · Projeto em beta · A vergonha agora dá XP.</div>
+      <div class="footer-links">
+        <a href="legal.html#regras">Regras da comunidade</a>
+        <a href="legal.html#termos">Termos</a>
+        <a href="legal.html#privacidade">Privacidade</a>
+        <a href="legal.html#contacto">Contacto</a>
+        <a href="app.html">Entrar na app</a>
+      </div>
+    </div>
   </footer>
 
   <div id="toast" class="toast"></div>
@@ -195,7 +204,7 @@
         email: document.getElementById('email').value.trim().toLowerCase(),
         desired_username: document.getElementById('username').value.trim().replace(/^@/, ''),
         reason: document.getElementById('reason').value.trim(),
-        source: 'landing_v10_1'
+        source: 'landing_v10_2_1'
       };
 
       const btn = e.target.querySelector('button[type="submit"]');
