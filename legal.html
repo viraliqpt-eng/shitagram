@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regras, Termos e Privacidade — SHITAGRAM™</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#020202; --card:#0b0b0b; --soft:#121212; --border:#242424;
+      --text:#fff; --muted:#b8b8b8; --yellow:#ffcc00; --danger:#ff4d4d; --ok:#27d66d;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,sans-serif}
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at top,rgba(255,204,0,.08),transparent 35%),var(--bg);
+      color:var(--text); padding:24px;
+    }
+    .wrap{max-width:1040px;margin:0 auto}
+    header{
+      display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:28px;
+      position:sticky;top:0;background:rgba(2,2,2,.86);backdrop-filter:blur(12px);padding:12px 0;z-index:2
+    }
+    .logo{font-size:26px;font-weight:900;color:var(--yellow);letter-spacing:-.8px}
+    .logo span{color:#fff}.tm{font-size:10px;vertical-align:super;margin-left:2px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    a.btn{color:#050505;background:var(--yellow);text-decoration:none;font-weight:900;padding:11px 14px;border-radius:12px}
+    a.btn.secondary{background:#141414;color:#fff;border:1px solid var(--border)}
+    .hero{
+      border:1px solid rgba(255,204,0,.22);border-radius:22px;padding:28px;
+      background:linear-gradient(135deg,rgba(255,204,0,.14),rgba(255,204,0,.03)),var(--card);
+      margin-bottom:18px;
+    }
+    h1{font-size:36px;line-height:1.05;margin-bottom:10px;letter-spacing:-1.4px}
+    h1 span, h2{color:var(--yellow)}
+    p{color:var(--muted);line-height:1.6;font-size:15px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+    .card{
+      background:rgba(11,11,11,.96);border:1px solid var(--border);border-radius:18px;padding:20px;
+    }
+    h2{font-size:22px;margin-bottom:10px}
+    h3{font-size:16px;margin:16px 0 8px}
+    ul{padding-left:20px;color:var(--muted);line-height:1.65;font-size:15px}
+    li{margin:5px 0}
+    .danger{border-color:rgba(255,77,77,.28)}
+    .danger h2{color:var(--danger)}
+    .ok{border-color:rgba(39,214,109,.24)}
+    .ok h2{color:var(--ok)}
+    .note{
+      background:#101010;border:1px solid var(--border);border-left:4px solid var(--yellow);
+      padding:16px;border-radius:14px;margin:18px 0;color:#e8e8e8;line-height:1.6
+    }
+    .toc{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .toc a{color:#fff;text-decoration:none;background:#111;border:1px solid #252525;padding:10px 12px;border-radius:999px;font-weight:800;font-size:13px}
+    section{scroll-margin-top:88px}
+    footer{color:#777;text-align:center;margin:32px 0 8px;font-size:13px}
+    @media(max-width:760px){
+      body{padding:14px} header{align-items:flex-start;flex-direction:column}
+      h1{font-size:30px}.grid{grid-template-columns:1fr}.hero{padding:22px}
+      .actions{width:100%}.actions a{flex:1;text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">SHITA<span>GRAM</span><span class="tm">™</span></div>
+      <div class="actions">
+        <a class="btn secondary" href="index.html">Landing</a>
+        <a class="btn" href="app.html">Entrar na app</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Regras da comunidade, <span>termos simples</span> e privacidade.</h1>
+        <p>
+          O SHITAGRAM™ é uma rede social de humor sobre micos e momentos embaraçosos.
+          A regra principal é simples: podes rir de ti próprio, mas não podes usar a app para expor, humilhar ou perseguir outras pessoas.
+        </p>
+        <div class="toc">
+          <a href="#regras">Regras</a>
+          <a href="#proibido">Conteúdo proibido</a>
+          <a href="#denunciar">Denúncias</a>
+          <a href="#privacidade">Privacidade</a>
+          <a href="#termos">Termos</a>
+          <a href="#beta">Beta</a>
+        </div>
+      </section>
+
+      <div class="note">
+        <strong>Aviso importante:</strong> esta página é uma versão simples para beta e não substitui aconselhamento jurídico.
+        Antes de lançar publicamente ou monetizar, convém rever estes textos com apoio legal.
+      </div>
+
+      <section id="regras" class="card ok">
+        <h2>✅ Regras da comunidade</h2>
+        <p>Queremos humor, criatividade e participação saudável.</p>
+        <ul>
+          <li>Publica micos teus ou histórias que não exponham terceiros de forma identificável.</li>
+          <li>Usa o modo anónimo com responsabilidade.</li>
+          <li>Evita nomes completos, moradas, telefones, emails, locais sensíveis ou dados privados.</li>
+          <li>Não transformes a vergonha em ataque pessoal.</li>
+          <li>Respeita denúncias, moderação e decisões da equipa.</li>
+          <li>Se um conteúdo puder magoar alguém real, reformula antes de publicar.</li>
+        </ul>
+      </section>
+
+      <div class="grid">
+        <section id="proibido" class="card danger">
+          <h2>🚫 Conteúdo proibido</h2>
+          <ul>
+            <li>Bullying, humilhação real ou perseguição.</li>
+            <li>Exposição de terceiros sem consentimento.</li>
+            <li>Dados pessoais: telefones, emails, moradas, documentos ou locais privados.</li>
+            <li>Conteúdo sexual ou íntimo de terceiros.</li>
+            <li>Ódio, discriminação, ameaças ou violência.</li>
+            <li>Menores em situações constrangedoras ou sensíveis.</li>
+            <li>Spam, golpes, links maliciosos ou manipulação.</li>
+          </ul>
+        </section>
+
+        <section id="denunciar" class="card">
+          <h2>🚩 Como denunciar</h2>
+          <p>Usa o botão <strong>Denunciar</strong> em posts que violem as regras.</p>
+          <h3>Motivos possíveis</h3>
+          <ul>
+            <li>Bullying ou humilhação de terceiros</li>
+            <li>Conteúdo sexual</li>
+            <li>Ódio ou discriminação</li>
+            <li>Violência</li>
+            <li>Exposição de dados pessoais</li>
+            <li>Spam</li>
+            <li>Outro</li>
+          </ul>
+        </section>
+      </div>
+
+      <section id="privacidade" class="card">
+        <h2>🔐 Privacidade</h2>
+        <p>Durante a beta, recolhemos apenas os dados necessários para criar conta, operar a app e manter a comunidade segura.</p>
+        <h3>Dados que podem ser usados</h3>
+        <ul>
+          <li>Email de registo e identificação da conta.</li>
+          <li>Username, avatar, bio e dados de perfil.</li>
+          <li>Posts, comentários, reações, presentes, denúncias e atividade dentro da app.</li>
+          <li>Dados técnicos básicos necessários para funcionamento e segurança.</li>
+        </ul>
+        <h3>O que não deves publicar</h3>
+        <ul>
+          <li>Dados pessoais teus ou de terceiros.</li>
+          <li>Informação íntima ou sensível.</li>
+          <li>Conteúdos que identifiquem alguém sem autorização.</li>
+        </ul>
+      </section>
+
+      <section id="termos" class="card">
+        <h2>📄 Termos simples de utilização</h2>
+        <ul>
+          <li>Ao usar o SHITAGRAM™, aceitas respeitar estas regras.</li>
+          <li>És responsável pelo conteúdo que publicas.</li>
+          <li>A moderação pode ocultar, remover ou rever conteúdos que violem as regras.</li>
+          <li>Contas que abusem da plataforma podem ser limitadas, suspensas ou removidas.</li>
+          <li>ShitCoins, XP, presentes, boosts e badges são elementos internos de gamificação, sem valor monetário real nesta fase.</li>
+          <li>A app pode mudar, remover funcionalidades ou ajustar regras durante a beta.</li>
+        </ul>
+      </section>
+
+      <section id="beta" class="card">
+        <h2>🧪 Beta disclaimer</h2>
+        <p>
+          O SHITAGRAM™ ainda está em fase beta. Podem existir bugs, alterações de interface, funcionalidades incompletas e mudanças nas regras.
+          O objetivo da beta é testar a experiência, melhorar a segurança e preparar o lançamento público.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      SHITAGRAM™ — A vergonha agora dá XP. Última atualização: vClean10.2
+    </footer>
+  </div>
+</body>
+</html>
