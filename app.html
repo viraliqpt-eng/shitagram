@@ -1604,6 +1604,55 @@
       }
     }
 
+
+    .legal-sidebar {
+      margin-top: 4px;
+      padding: 12px 2px 0;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .legal-sidebar a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .legal-sidebar a:hover {
+      color: var(--brand-yellow);
+    }
+
+    .legal-app-note {
+      width: 100%;
+      opacity: .75;
+    }
+
+    .mobile-legal-links {
+      display: none;
+      padding: 14px 6px 90px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .mobile-legal-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 800;
+      margin: 0 5px;
+    }
+
+    .mobile-legal-links a:hover {
+      color: var(--brand-yellow);
+    }
+
+
     @media (max-width: 1120px) {
       .app {
         grid-template-columns: 82px minmax(0, 1fr) 310px;
@@ -2234,6 +2283,14 @@
         <span>Publicar mico</span>
       </button>
 
+      <div class="legal-sidebar">
+        <span class="legal-app-note">© 2026 SHITAGRAM™ · Beta</span>
+        <a href="legal.html#regras" target="_self">Regras</a>
+        <a href="legal.html#termos" target="_self">Termos</a>
+        <a href="legal.html#privacidade" target="_self">Privacidade</a>
+        <a href="legal.html#contacto" target="_self">Contacto</a>
+      </div>
+
       <div class="profile-card-left">
         <div class="profile-info-left">
           <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop" class="avatar-left" alt="Avatar">
@@ -2311,6 +2368,14 @@
         </p>
       </div>
     </aside>
+  </div>
+
+  <div class="mobile-legal-links">
+    © 2026 SHITAGRAM™ · Beta<br>
+    <a href="legal.html#regras">Regras</a> ·
+    <a href="legal.html#termos">Termos</a> ·
+    <a href="legal.html#privacidade">Privacidade</a> ·
+    <a href="legal.html#contacto">Contacto</a>
   </div>
 
   <nav class="mobile-bottom-nav">
@@ -6080,5 +6145,6 @@
   </script>
 <!-- vClean9.3 profile public/avatar -->
 <!-- vClean9.3 profile public/avatar -->
+<!-- vClean10.2.1 legal footer links -->
 </body>
 </html>
