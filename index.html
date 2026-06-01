@@ -3,151 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ — Beta</title>
-
-  <!-- Favicon -->
+  <title>SHITAGRAM™ — Beta pública</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{
-      --bg:#020202;
-      --card:#090909;
-      --soft:#111;
-      --border:#242424;
-      --text:#fff;
-      --muted:#aaa;
-      --yellow:#ffcc00;
-      --danger:#ff4d4d;
-      --green:#27d66d;
+    :root {
+      --bg:#020202; --card:#090909; --soft:#111; --line:#242424;
+      --yellow:#ffcc00; --txt:#fff; --muted:#aaa; --danger:#ff4d4d;
     }
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,sans-serif}
     body{
-      min-height:100vh;
-      background:
-        radial-gradient(circle at top left, rgba(255,204,0,.16), transparent 28%),
-        radial-gradient(circle at top right, rgba(255,77,77,.08), transparent 24%),
-        var(--bg);
-      color:var(--text);
-      overflow-x:hidden;
+      min-height:100vh;color:var(--txt);background:
+      radial-gradient(circle at top left,rgba(255,204,0,.18),transparent 34%),
+      radial-gradient(circle at bottom right,rgba(255,204,0,.08),transparent 36%),#020202;
     }
-    a{text-decoration:none;color:inherit}
-    .wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}
-    header{
-      position:sticky;top:0;z-index:20;
-      backdrop-filter:blur(16px);
-      background:rgba(2,2,2,.72);
-      border-bottom:1px solid rgba(255,255,255,.07);
-    }
-    .nav{
-      height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px;
-    }
-    .logo{font-size:25px;font-weight:900;color:var(--yellow);letter-spacing:-1px}
-    .logo strong{color:white}.logo span{font-size:10px;vertical-align:super;color:white;margin-left:2px}
-    .navlinks{display:flex;align-items:center;gap:18px;color:#d5d5d5;font-size:13px;font-weight:800}
-    .navlinks a:hover{color:var(--yellow)}
-    .btn{
-      border:0;border-radius:999px;padding:13px 17px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s ease;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:var(--yellow);color:#050505;box-shadow:0 18px 60px rgba(255,204,0,.16)}
-    .btn-secondary{background:#111;border:1px solid #2a2a2a;color:white}
-    .hero{
-      padding:72px 0 52px;
-      display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center;
-    }
-    .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid rgba(255,204,0,.22);
-      background:rgba(255,204,0,.08);
-      color:var(--yellow);
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:12px;
-      font-weight:900;
-      margin-bottom:18px;
-    }
-    h1{font-size:clamp(38px,6vw,76px);line-height:.94;letter-spacing:-4px;font-weight:900}
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+    header{position:sticky;top:0;z-index:10;background:rgba(2,2,2,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .logo{font-weight:900;font-size:26px;letter-spacing:-1px;color:var(--yellow);text-shadow:0 0 22px rgba(255,204,0,.18)}
+    .logo strong{color:#fff} .logo span{font-size:10px;vertical-align:super;color:#fff;margin-left:2px}
+    .navlinks{display:flex;align-items:center;gap:10px}
+    .navlinks a,.btn{border:1px solid #2a2a2a;background:#0b0b0b;color:#fff;border-radius:999px;padding:11px 15px;font-weight:800;font-size:13px}
+    .btn.primary{background:var(--yellow);color:#050505;border-color:var(--yellow);box-shadow:0 14px 45px rgba(255,204,0,.16)}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center;padding:76px 0 42px}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;background:rgba(255,204,0,.1);border:1px solid rgba(255,204,0,.22);color:var(--yellow);padding:9px 12px;border-radius:999px;font-size:13px;font-weight:900;margin-bottom:18px}
+    h1{font-size:clamp(40px,6vw,76px);line-height:.94;letter-spacing:-3px;margin-bottom:20px}
     h1 span{color:var(--yellow)}
-    .lead{color:#d7d7d7;font-size:18px;line-height:1.6;margin:22px 0 26px;max-width:680px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-    .microcopy{color:var(--muted);font-size:12px;font-weight:700;margin-top:12px}
-    .phone{
-      background:linear-gradient(180deg,#121212,#050505);
-      border:1px solid rgba(255,204,0,.2);
-      border-radius:34px;
-      padding:16px;
-      box-shadow:0 40px 120px rgba(0,0,0,.6);
-      max-width:430px;
-      margin-left:auto;
-      position:relative;
-    }
-    .phone:before{
-      content:"";position:absolute;inset:-1px;border-radius:34px;pointer-events:none;
-      background:radial-gradient(circle at top right, rgba(255,204,0,.22), transparent 36%);
-    }
-    .screen{position:relative;border-radius:24px;background:#050505;border:1px solid #222;padding:16px;overflow:hidden}
-    .post{
-      background:#090909;border:1px solid #242424;border-radius:18px;padding:16px;margin-bottom:12px;
-    }
-    .post-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px}
-    .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--yellow),#fff2a0);display:grid;place-items:center;color:#050505;font-weight:900}
-    .who{display:flex;gap:10px;align-items:center}.who b{font-size:14px}.who small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-    .grade{background:var(--yellow);color:#050505;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
-    .post h3{color:var(--yellow);font-size:17px;margin-bottom:7px}
-    .post p{font-size:13px;color:#dedede;line-height:1.45}
-    .actions{border-top:1px solid #242424;margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;color:#f1f1f1;font-size:12px;font-weight:900}
-    .clip{
-      min-height:210px;border-radius:18px;border:1px solid #242424;overflow:hidden;
-      background:linear-gradient(135deg,rgba(255,204,0,.18),rgba(255,77,77,.12)),#111;
-      display:flex;align-items:flex-end;padding:16px;
-    }
-    .clip h3{font-size:20px;margin-bottom:6px}.clip p{font-size:12px;color:#ddd}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:34px 0 0}
-    .stat{background:rgba(9,9,9,.85);border:1px solid #242424;border-radius:18px;padding:18px}
-    .stat b{display:block;color:var(--yellow);font-size:26px;font-weight:900}.stat span{color:var(--muted);font-size:12px;font-weight:800}
+    .lead{color:#dedede;font-size:18px;line-height:1.62;max-width:620px;margin-bottom:26px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+    .trust{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:620px}
+    .mini{background:rgba(9,9,9,.92);border:1px solid var(--line);border-radius:16px;padding:14px}
+    .mini b{color:var(--yellow);font-size:20px} .mini p{color:var(--muted);font-size:12px;margin-top:4px;font-weight:700}
+    .phone{background:linear-gradient(180deg,#101010,#050505);border:1px solid rgba(255,204,0,.24);border-radius:34px;padding:14px;box-shadow:0 30px 120px rgba(0,0,0,.7),0 0 80px rgba(255,204,0,.08)}
+    .screen{border-radius:24px;overflow:hidden;border:1px solid #252525;background:#080808;padding:16px;min-height:580px}
+    .search{background:#121212;border:1px solid #2b2b2b;border-radius:999px;color:#999;padding:13px 16px;margin-bottom:14px;font-weight:700}
+    .post{background:#0b0b0b;border:1px solid #252525;border-radius:18px;padding:16px;margin-bottom:14px}
+    .ph{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .user{display:flex;gap:10px;align-items:center} .av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#333,#111);display:grid;place-items:center}
+    .name{font-weight:900} .time{color:#999;font-size:12px;margin-top:3px}
+    .grade{background:var(--yellow);color:#050505;font-weight:900;border-radius:999px;padding:6px 10px;font-size:12px;height:max-content}
+    .post h3{color:var(--yellow);margin-bottom:8px;font-size:17px} .post p{color:#ddd;line-height:1.48;font-size:13px}
+    .actions{border-top:1px solid #242424;margin-top:14px;padding-top:12px;display:flex;justify-content:space-between;color:#eee;font-size:12px;font-weight:900}
     section{padding:54px 0}
-    .section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
-    .section-title h2{font-size:34px;letter-spacing:-1.4px}
-    .section-title p{color:var(--muted);max-width:560px;line-height:1.55;font-size:14px}
+    .section-title{font-size:34px;letter-spacing:-1.4px;margin-bottom:12px} .section-title span{color:var(--yellow)}
+    .section-lead{color:var(--muted);line-height:1.6;max-width:760px;margin-bottom:22px}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .card{
-      background:rgba(9,9,9,.92);border:1px solid #242424;border-radius:20px;padding:22px;
-      min-height:176px;
-    }
-    .icon{font-size:28px;margin-bottom:16px}.card h3{font-size:18px;margin-bottom:9px}.card p{color:#cfcfcf;font-size:14px;line-height:1.55}
-    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .step{background:#090909;border:1px solid #242424;border-radius:18px;padding:18px}
-    .step b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--yellow);color:#050505;margin-bottom:14px;font-weight:900}
-    .step h3{font-size:16px;margin-bottom:8px}.step p{color:var(--muted);font-size:13px;line-height:1.5}
-    .beta{
-      display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start;
-      background:linear-gradient(135deg,rgba(255,204,0,.14),rgba(255,204,0,.02)),#080808;
-      border:1px solid rgba(255,204,0,.22);border-radius:28px;padding:26px;
-    }
-    .form{display:grid;gap:12px}
-    label{font-size:12px;font-weight:900;color:#e8e8e8}
-    input,textarea,select{
-      width:100%;background:#111;border:1px solid #2a2a2a;color:white;border-radius:14px;padding:14px;outline:none;font-size:14px;
-    }
-    input:focus,textarea:focus,select:focus{border-color:var(--yellow);box-shadow:0 0 0 4px rgba(255,204,0,.08)}
-    .field{display:grid;gap:7px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .note{font-size:12px;color:var(--muted);line-height:1.45}
-    footer{border-top:1px solid #171717;color:var(--muted);padding:28px 0;font-size:13px}
-    .toast{
-      position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
-      background:#111;border:1px solid rgba(255,204,0,.35);border-radius:999px;padding:13px 17px;
-      font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.22s;z-index:100
-    }
+    .card{background:rgba(9,9,9,.92);border:1px solid var(--line);border-radius:20px;padding:22px}
+    .card .icon{font-size:28px;margin-bottom:12px} .card h3{font-size:18px;margin-bottom:8px;color:#fff} .card p{color:#bbb;line-height:1.55;font-size:14px}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+    form{background:rgba(9,9,9,.95);border:1px solid rgba(255,204,0,.22);border-radius:24px;padding:22px}
+    label{display:block;font-size:13px;font-weight:900;margin:13px 0 7px}
+    input,textarea{width:100%;background:#111;border:1px solid #303030;color:#fff;border-radius:14px;padding:13px 14px;outline:none}
+    textarea{min-height:110px;resize:vertical} input:focus,textarea:focus{border-color:var(--yellow);box-shadow:0 0 0 4px rgba(255,204,0,.08)}
+    .formnote{color:#aaa;font-size:13px;line-height:1.5;margin-top:12px}
+    .footer{border-top:1px solid #191919;padding:26px 0;color:#888;font-size:13px}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);opacity:0;background:#111;border:1px solid rgba(255,204,0,.35);border-radius:999px;padding:12px 16px;font-weight:900;transition:.25s;z-index:100}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:920px){
-      .navlinks{display:none}.hero{grid-template-columns:1fr;padding-top:46px}.phone{margin:0;max-width:none}
-      .grid,.steps,.beta{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}
-      .section-title{align-items:flex-start;flex-direction:column}h1{letter-spacing:-2px}
+    @media(max-width:880px){
+      .hero,.split{grid-template-columns:1fr} .grid{grid-template-columns:1fr} .navlinks a:not(.primary-hide){display:none}
+      .trust{grid-template-columns:1fr} .screen{min-height:auto} h1{letter-spacing:-2px}
     }
   </style>
 </head>
@@ -155,197 +72,153 @@
   <header>
     <div class="wrap nav">
       <a class="logo" href="#">SHITA<strong>GRAM</strong><span>™</span></a>
-      <nav class="navlinks">
+      <div class="navlinks">
         <a href="#como">Como funciona</a>
-        <a href="#features">Funcionalidades</a>
         <a href="#seguranca">Segurança</a>
-        <a href="#beta">Beta</a>
-      </nav>
-      <a class="btn btn-primary" href="#beta">Entrar na beta</a>
+        <a href="#beta">Lista beta</a>
+        <a class="btn primary primary-hide" href="app.html">Entrar na app</a>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section class="wrap hero">
+  <main class="wrap">
+    <section class="hero">
       <div>
-        <div class="eyebrow">💩 Beta privada em preparação</div>
+        <div class="eyebrow">💩 Beta pública em preparação</div>
         <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
-        <p class="lead">
-          A rede social onde os teus momentos mais embaraçosos viram estatuto:
-          micos, ShitClips™, XP, ranking, presentes, boosts e modo anónimo.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#beta">Quero entrar na beta</a>
-          <a class="btn btn-secondary" href="https://viraliqpt-eng.github.io/shitagram/">Ver app atual</a>
+        <p class="lead">A rede social onde os teus momentos mais embaraçosos viram estatuto. Partilha micos, reage, comenta, sobe no ranking e entra na comunidade antes do lançamento.</p>
+        <div class="cta">
+          <a class="btn primary" href="app.html">Entrar na app</a>
+          <a class="btn" href="#beta">Entrar na lista beta</a>
         </div>
-        <p class="microcopy">Sem pagamentos reais nesta fase. Primeiro validamos comunidade, retenção e segurança.</p>
-
-        <div class="stats">
-          <div class="stat"><b>XP</b><span>Ganha estatuto com micos</span></div>
-          <div class="stat"><b>🎁</b><span>Presentes com ShitCoins</span></div>
-          <div class="stat"><b>🛡️</b><span>Denúncias e moderação</span></div>
+        <div class="trust">
+          <div class="mini"><b>XP</b><p>Quanto maior o mico, maior a glória.</p></div>
+          <div class="mini"><b>🎬</b><p>ShitClips™ para vídeos curtos.</p></div>
+          <div class="mini"><b>🛡️</b><p>Denúncias e moderação ativa.</p></div>
         </div>
       </div>
-
-      <div class="phone" aria-label="Mockup da app">
+      <div class="phone">
         <div class="screen">
-          <div class="post">
-            <div class="post-head">
-              <div class="who"><div class="avatar">S</div><div><b>@pedro_mico</b><small>2h • público</small></div></div>
-              <div class="grade">Grau 7</div>
-            </div>
+          <div class="search">🔎 Procurar micos ou @utilizadores...</div>
+          <article class="post">
+            <div class="ph"><div class="user"><div class="av">😅</div><div><div class="name">@pedro_mico</div><div class="time">2 h · público</div></div></div><span class="grade">Grau 7</span></div>
             <h3>Título do mico: Reunião importante</h3>
-            <p>Quando o microfone ficou ligado e toda a empresa ouviu o meu monólogo sobre o chefe.</p>
-            <div class="actions"><span>💩 87</span><span>💬 32</span><span>🎁 Presente</span><span>↗</span></div>
-          </div>
-          <div class="clip">
-            <div>
-              <h3>SHITCLIPS™</h3>
-              <p>Vídeos curtos para os micos que merecem replay.</p>
-            </div>
-          </div>
+            <p>O microfone ficou ligado e a equipa ouviu o meu monólogo sobre o chefe. Ganhei trauma e 120 XP.</p>
+            <div class="actions"><span>💩 87</span><span>💬 32</span><span>🎁 Presente</span><span>↗ Partilhar</span></div>
+          </article>
+          <article class="post">
+            <div class="ph"><div class="user"><div class="av">🫣</div><div><div class="name">@ana_costa</div><div class="time">agora · ShitClip™</div></div></div><span class="grade">Grau 9</span></div>
+            <h3>A dança do buffet</h3>
+            <p>Tentei dançar salsa e acabei a derrubar a mesa. O ranking nunca mais foi o mesmo.</p>
+            <div class="actions"><span>🔥 214</span><span>💬 61</span><span>🚀 Destaque</span></div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section id="como" class="wrap">
-      <div class="section-title">
-        <h2>Como funciona</h2>
-        <p>Uma mecânica simples para transformar vergonha em participação, ranking e comunidade.</p>
-      </div>
-      <div class="steps">
-        <div class="step"><b>1</b><h3>Publica</h3><p>Conta um mico em texto, imagem ou vídeo curto.</p></div>
-        <div class="step"><b>2</b><h3>Recebe reações</h3><p>A comunidade reage, comenta e envia presentes.</p></div>
-        <div class="step"><b>3</b><h3>Ganha XP</h3><p>Quanto mais interação, mais estatuto ganhas.</p></div>
-        <div class="step"><b>4</b><h3>Sobe no ranking</h3><p>Os melhores micos aparecem em destaque.</p></div>
-      </div>
-    </section>
-
-    <section id="features" class="wrap">
-      <div class="section-title">
-        <h2>Funcionalidades da beta</h2>
-        <p>O foco é validar uso real antes de qualquer premium pago.</p>
-      </div>
+    <section id="como">
+      <h2 class="section-title">Como <span>funciona</span></h2>
+      <p class="section-lead">A experiência foi pensada para ser simples, social e segura: publicar, interagir, ganhar estatuto e manter controlo sobre abusos.</p>
       <div class="grid">
-        <div class="card"><div class="icon">🏠</div><h3>Feed de micos</h3><p>Posts com grau de vergonha, reações, comentários e partilha.</p></div>
-        <div class="card"><div class="icon">🎬</div><h3>ShitClips™</h3><p>Vídeos curtos para momentos que precisam de replay.</p></div>
-        <div class="card"><div class="icon">🏆</div><h3>Ranking</h3><p>Top por XP, presentes e micos em destaque.</p></div>
-        <div class="card"><div class="icon">🎁</div><h3>Loja de presentes</h3><p>Usa ShitCoins para enviar presentes e destacar posts.</p></div>
-        <div class="card"><div class="icon">🫣</div><h3>Modo anónimo</h3><p>Partilha sem expor diretamente o teu perfil.</p></div>
-        <div class="card"><div class="icon">👤</div><h3>Perfil público</h3><p>Avatar, bio, seguidores, posts e estatísticas.</p></div>
+        <div class="card"><div class="icon">💩</div><h3>Publica micos</h3><p>Conta histórias embaraçosas em texto, imagem ou ShitClips™.</p></div>
+        <div class="card"><div class="icon">🏆</div><h3>Ganha XP</h3><p>Reações, comentários, presentes e boosts ajudam a subir no ranking.</p></div>
+        <div class="card"><div class="icon">🎁</div><h3>Usa ShitCoins</h3><p>Envia presentes, destaca posts e participa na economia interna da comunidade.</p></div>
       </div>
     </section>
 
-    <section id="seguranca" class="wrap">
-      <div class="section-title">
-        <h2>Segurança antes do crescimento</h2>
-        <p>O conceito é divertido, mas precisa de limites claros para evitar bullying, exposição e abuso.</p>
-      </div>
+    <section>
+      <h2 class="section-title">Funcionalidades da <span>beta</span></h2>
       <div class="grid">
-        <div class="card"><div class="icon">🚩</div><h3>Denúncias</h3><p>Qualquer utilizador pode denunciar conteúdo problemático.</p></div>
-        <div class="card"><div class="icon">🛡️</div><h3>Moderação admin</h3><p>Painel para rever, ocultar ou remover posts denunciados.</p></div>
-        <div class="card"><div class="icon">⚠️</div><h3>Aviso antes de publicar</h3><p>Filtro básico para dados pessoais, bullying e conteúdo sensível.</p></div>
+        <div class="card"><div class="icon">🎬</div><h3>ShitClips™</h3><p>Vídeos curtos para micos visuais, com feed vertical e interação rápida.</p></div>
+        <div class="card"><div class="icon">🫥</div><h3>Modo anónimo</h3><p>Partilha sem expor o teu nome quando fizer sentido.</p></div>
+        <div class="card"><div class="icon">🚀</div><h3>Boosts</h3><p>Destaca os teus melhores micos no feed e aumenta visibilidade.</p></div>
       </div>
     </section>
 
-    <section id="beta" class="wrap">
-      <div class="beta">
+    <section id="seguranca">
+      <div class="split">
         <div>
-          <div class="eyebrow">🚀 Lista beta</div>
-          <h2 style="font-size:34px;line-height:1.05;margin-bottom:12px;">Queres entrar primeiro?</h2>
-          <p style="color:#d7d7d7;line-height:1.6;margin-bottom:18px;">
-            Deixa os teus dados para receber acesso quando a beta pública abrir.
-            Nesta fase queremos utilizadores reais, feedback e bons micos.
-          </p>
-          <p class="note">
-            Ao enviar, aceitas ser contactado sobre a beta do SHITAGRAM™. Não vendemos os teus dados.
-          </p>
+          <h2 class="section-title">Segurança antes do <span>crescimento</span></h2>
+          <p class="section-lead">O conceito é divertido, mas pode ser sensível. Por isso a beta inclui aviso antes de publicar, denúncias, moderação e estados de revisão para conteúdos suspeitos.</p>
         </div>
+        <div class="card">
+          <h3>Regras base</h3>
+          <p>Sem bullying, dados pessoais, conteúdo íntimo, exposição de terceiros, ódio, violência ou spam. O objetivo é rir do mico, não humilhar pessoas.</p>
+        </div>
+      </div>
+    </section>
 
-        <form class="form" id="waitlistForm">
-          <div class="form-row">
-            <div class="field">
-              <label>Nome</label>
-              <input id="name" required maxlength="80" placeholder="O teu nome">
-            </div>
-            <div class="field">
-              <label>Email</label>
-              <input id="email" required type="email" maxlength="120" placeholder="teu@email.com">
-            </div>
-          </div>
-          <div class="field">
-            <label>Username desejado</label>
-            <input id="username" required maxlength="32" placeholder="@teu_mico">
-          </div>
-          <div class="field">
-            <label>Porque queres entrar?</label>
-            <textarea id="reason" maxlength="300" placeholder="Ex: quero testar, publicar micos, criar ShitClips..."></textarea>
-          </div>
-          <button class="btn btn-primary" type="submit">Quero entrar na beta</button>
-          <p class="note">
-            Para guardar diretamente no Supabase, configura SUPABASE_URL e SUPABASE_ANON_KEY no script desta página.
-          </p>
+    <section id="beta">
+      <div class="split">
+        <div>
+          <h2 class="section-title">Entra na <span>lista beta</span></h2>
+          <p class="section-lead">Queres testar antes do lançamento? Deixa os teus dados e o username desejado. A lista ajuda a organizar os primeiros utilizadores e feedback.</p>
+        </div>
+        <form id="betaForm">
+          <label>Nome</label>
+          <input id="name" required placeholder="O teu nome">
+          <label>Email</label>
+          <input id="email" type="email" required placeholder="teu@email.com">
+          <label>Username desejado</label>
+          <input id="username" required placeholder="@teu_mico">
+          <label>Porque queres entrar?</label>
+          <textarea id="reason" placeholder="Ex: quero testar a beta, publicar ShitClips, dar feedback..."></textarea>
+          <button class="btn primary" style="width:100%;margin-top:14px" type="submit">Quero entrar na beta</button>
+          <p class="formnote">Ao enviar, aceitas ser contactado sobre a beta do SHITAGRAM™. Sem pagamentos reais nesta fase.</p>
         </form>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      SHITAGRAM™ Beta · A vergonha agora dá XP. · Sem premium pago nesta fase.
-    </div>
+  <footer class="footer">
+    <div class="wrap">SHITAGRAM™ Beta · A vergonha agora dá XP · <a href="app.html">Entrar na app</a></div>
   </footer>
 
   <div id="toast" class="toast"></div>
 
   <script>
-    // Opcional: coloca aqui as tuas credenciais Supabase para guardar a waitlist.
-    const SUPABASE_URL = "";
-    const SUPABASE_ANON_KEY = "";
-    const APP_URL = "https://viraliqpt-eng.github.io/shitagram/";
+    const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const supabaseClient = SUPABASE_URL && SUPABASE_ANON_KEY
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
-
-    const toast = document.getElementById("toast");
-
-    function showToast(message){
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2600);
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2600);
     }
 
-    document.getElementById("waitlistForm").addEventListener("submit", async (e) => {
+    document.getElementById('betaForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const payload = {
-        name: document.getElementById("name").value.trim(),
-        email: document.getElementById("email").value.trim().toLowerCase(),
-        desired_username: document.getElementById("username").value.trim().replace(/^@/,""),
-        reason: document.getElementById("reason").value.trim(),
-        source: "landing_beta_v10"
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        desired_username: document.getElementById('username').value.trim().replace(/^@/, ''),
+        reason: document.getElementById('reason').value.trim(),
+        source: 'landing_v10_1'
       };
 
-      if (!payload.name || !payload.email || !payload.desired_username) {
-        showToast("Preenche nome, email e username.");
+      const btn = e.target.querySelector('button[type="submit"]');
+      const old = btn.textContent;
+      btn.textContent = 'A enviar...';
+      btn.disabled = true;
+
+      const { error } = await supabase.from('beta_waitlist').insert(payload);
+      btn.textContent = old;
+      btn.disabled = false;
+
+      if (error) {
+        console.error(error);
+        if ((error.message || '').toLowerCase().includes('duplicate')) {
+          toast('Este email já está na lista beta.');
+        } else {
+          toast('Não foi possível enviar. Tenta novamente.');
+        }
         return;
       }
 
-      if (supabaseClient) {
-        const { error } = await supabaseClient.from("beta_waitlist").insert(payload);
-        if (error) {
-          showToast(error.message || "Erro ao guardar inscrição.");
-          return;
-        }
-      } else {
-        const list = JSON.parse(localStorage.getItem("shitagram_beta_waitlist") || "[]");
-        list.push({ ...payload, created_at: new Date().toISOString() });
-        localStorage.setItem("shitagram_beta_waitlist", JSON.stringify(list));
-      }
-
       e.target.reset();
-      showToast("Inscrição recebida. Bem-vindo à fila da vergonha 💩");
+      toast('Pedido recebido. Bem-vindo à lista beta 💩');
     });
   </script>
 </body>
