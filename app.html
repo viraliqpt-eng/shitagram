@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Beta Access Control</title>
+  <title>SHITAGRAM™ App — Onboarding inicial</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=anM17HbMi7Yg2k2-h09Rmlj5-l7_HmMvTO21TRK-iil5mHGPd3eJFqF4mbA9nmxHz9iov6PsTtJEsZjAXYl--gpm8xAiJjVXt-dqMgTb4M589oOmE77Em9axtFKy3Rf1qKmsYaC26uapI6ttiGSgsKqX-bor6raxxP63TdxxFwB_H-gfM9zJm6OLcx6r3h4fdkIK2P_leYFSMLKTXac2EZBnP8fnuu_bauEw2ZDlO2TByXoJwko7SOSpB7HrxFM75i7bI4lgmfA1wIFkn1zGCw" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -2339,7 +2339,7 @@
     }
 
   
-    /* vClean10.6 — Beta access control */
+    /* vClean10.7 — Beta access control */
     .beta-access-badge {
       display: inline-flex;
       align-items: center;
@@ -2429,6 +2429,88 @@
 
       .beta-request-actions button {
         flex: 1;
+      }
+    }
+
+
+    /* vClean10.7 — Onboarding inicial */
+    .onboarding-progress {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0 18px;
+    }
+
+    .onboarding-progress span {
+      height: 7px;
+      border-radius: 999px;
+      background: #222;
+      border: 1px solid #2e2e2e;
+    }
+
+    .onboarding-progress span.active {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 18px rgba(255,204,0,0.22);
+    }
+
+    .onboarding-step {
+      display: none;
+    }
+
+    .onboarding-step.active {
+      display: block;
+    }
+
+    .onboarding-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .interest-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .interest-pill {
+      background: #111;
+      border: 1px solid #2c2c2c;
+      color: white;
+      padding: 13px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .interest-pill.selected {
+      border-color: var(--brand-yellow);
+      background: rgba(255,204,0,0.12);
+      color: var(--brand-yellow);
+    }
+
+    .onboarding-checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .onboarding-checklist div {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 13px;
+      color: #dddddd;
+      font-weight: 800;
+    }
+
+    @media (max-width: 640px) {
+      .onboarding-grid-2,
+      .interest-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -2951,6 +3033,90 @@
   </div>
 
 
+
+  <div id="onboardingModal" class="modal-overlay">
+    <div class="modal" style="max-width:640px;">
+      <div class="modal-header">
+        <div>
+          <h2>🚀 Bem-vindo à beta</h2>
+          <p>Configura o teu SHITAGRAM™ em menos de 1 minuto.</p>
+        </div>
+        <button class="close-modal" onclick="skipOnboardingSoft()" title="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="onboarding-progress">
+        <span id="onbBar1" class="active"></span>
+        <span id="onbBar2"></span>
+        <span id="onbBar3"></span>
+      </div>
+
+      <div id="onbStep1" class="onboarding-step active">
+        <div class="field">
+          <label>Username</label>
+          <input id="onbUsername" type="text" maxlength="20" placeholder="ex: pedro_mico">
+        </div>
+
+        <div class="onboarding-grid-2">
+          <div class="field">
+            <label>País</label>
+            <input id="onbCountry" type="text" maxlength="40" placeholder="Portugal">
+          </div>
+          <div class="field">
+            <label>Cidade</label>
+            <input id="onbCity" type="text" maxlength="40" placeholder="Lisboa">
+          </div>
+        </div>
+
+        <p style="color:var(--text-secondary);font-size:13px;line-height:1.45;margin-top:10px;">
+          Estes dados ajudam o Mood Map a mostrar estados emocionais agregados por país/cidade. Não usamos localização exata.
+        </p>
+      </div>
+
+      <div id="onbStep2" class="onboarding-step">
+        <h3 style="color:var(--brand-yellow);margin-bottom:8px;">Escolhe os teus temas preferidos</h3>
+        <p style="color:var(--text-secondary);font-size:13px;">Isto ajuda a personalizar a experiência da beta.</p>
+
+        <div class="interest-grid">
+          <button type="button" class="interest-pill" data-interest="trabalho" onclick="toggleInterest(this)">💼 Micos de trabalho</button>
+          <button type="button" class="interest-pill" data-interest="namoro" onclick="toggleInterest(this)">💔 Namoro e dates</button>
+          <button type="button" class="interest-pill" data-interest="familia" onclick="toggleInterest(this)">👨‍👩‍👧 Família</button>
+          <button type="button" class="interest-pill" data-interest="escola" onclick="toggleInterest(this)">🎓 Escola/faculdade</button>
+          <button type="button" class="interest-pill" data-interest="festas" onclick="toggleInterest(this)">🎉 Festas</button>
+          <button type="button" class="interest-pill" data-interest="caos_social" onclick="toggleInterest(this)">🤡 Caos social</button>
+        </div>
+      </div>
+
+      <div id="onbStep3" class="onboarding-step">
+        <h3 style="color:var(--brand-yellow);margin-bottom:8px;">Regras rápidas da beta</h3>
+
+        <label class="check-row" style="margin-top:12px;">
+          <input id="onbRulesAccepted" type="checkbox">
+          Confirmo que não vou expor dados pessoais, humilhar terceiros, publicar conteúdo íntimo ou usar a app para bullying.
+        </label>
+
+        <div class="onboarding-checklist">
+          <div>✅ Completa o perfil</div>
+          <div>💩 Publica o primeiro mico</div>
+          <div>💬 Reage e comenta em posts reais</div>
+          <div>🌍 Visita o Mood Map</div>
+          <div>🎁 Usa ShitCoins para testar presentes/boosts</div>
+        </div>
+
+        <p style="color:var(--brand-yellow);font-size:13px;font-weight:900;margin-top:12px;">
+          Ao terminar, recebes 500 ShitCoins de boas-vindas.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="onbBackBtn" type="button" class="btn-secondary" onclick="prevOnboardingStep()" style="display:none;">Voltar</button>
+        <button id="onbNextBtn" type="button" class="btn-primary" onclick="nextOnboardingStep()">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+
   <div id="toast" class="toast"></div>
   <!-- versão interna: vClean9.3 moderação mobile corrigida -->
 
@@ -3153,14 +3319,14 @@
         sb.auth.onAuthStateChange((_event, session) => {
           currentUser = session?.user || null;
           loadProfile().catch(error => {
-            console.error("[SHITAGRAM vClean10.6] auth state profile", error);
+            console.error("[SHITAGRAM vClean10.7] auth state profile", error);
             safeShowToast("Sessão iniciada, mas o perfil demorou a carregar.");
           });
         });
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] auth init", error);
+        console.error("[SHITAGRAM vClean10.7] auth init", error);
         safeShowToast("Não foi possível iniciar autenticação.");
         updateAuthUi();
       }
@@ -3177,7 +3343,7 @@
         const { data, error } = await withTimeout(
           sb
             .from("profiles")
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
             .eq("id", currentUser.id)
             .maybeSingle(),
           9000,
@@ -3185,7 +3351,7 @@
         );
 
         if (error) {
-          console.error("[SHITAGRAM vClean10.6] profile load", error);
+          console.error("[SHITAGRAM vClean10.7] profile load", error);
           safeShowToast("Conta ligada, mas não consegui carregar perfil.");
           currentProfile = {
             id: currentUser.id,
@@ -3206,7 +3372,7 @@
 
         updateAuthUi();
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] profile timeout", error);
+        console.error("[SHITAGRAM vClean10.7] profile timeout", error);
         currentProfile = {
           id: currentUser.id,
           username: normalizeUsername((currentUser.email || "user").split("@")[0]) || "user",
@@ -3240,23 +3406,28 @@
               coins: 0,
               posts_count: 0,
               role,
-              beta_status: role === "admin" ? "approved" : "pending"
+              beta_status: role === "admin" ? "approved" : "pending",
+              country: "Portugal",
+              city: "Lisboa",
+              onboarding_completed: false,
+              community_rules_accepted: false,
+              first_login_bonus_claimed: false
             }, { onConflict: "id" })
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
             .single(),
           9000,
           "Criação do perfil"
         );
 
         if (error) {
-          console.error("[SHITAGRAM vClean10.6] ensure profile", error);
+          console.error("[SHITAGRAM vClean10.7] ensure profile", error);
           currentProfile = { id: currentUser.id, username, display_name: username, xp: 0, coins: 0, role };
           return;
         }
 
         currentProfile = data;
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] ensure profile timeout", error);
+        console.error("[SHITAGRAM vClean10.7] ensure profile timeout", error);
         currentProfile = { id: currentUser.id, username, display_name: username, xp: 0, coins: 0, role };
       }
     }
@@ -3311,10 +3482,11 @@
       }
 
       updateProfileStats();
+      maybeShowOnboarding();
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean10.6] login start", email);
+      console.log("[SHITAGRAM vClean10.7] login start", email);
 
       try {
         const { data, error } = await withTimeout(
@@ -3323,7 +3495,7 @@
           "Login"
         );
 
-        console.log("[SHITAGRAM vClean10.6] login result", { data, error });
+        console.log("[SHITAGRAM vClean10.7] login result", { data, error });
 
         if (error) {
           const msg = String(error.message || "");
@@ -3344,13 +3516,13 @@
             renderCurrentView();
           })
           .catch(error => {
-            console.error("[SHITAGRAM vClean10.6] load profile after login", error);
+            console.error("[SHITAGRAM vClean10.7] load profile after login", error);
             safeShowToast("Login feito, mas o perfil demorou a carregar.");
           });
 
         return true;
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] login timeout/error", error);
+        console.error("[SHITAGRAM vClean10.7] login timeout/error", error);
         safeShowToast(error.message || "Login demorou demasiado. Verifica a ligação e tenta novamente.");
         return false;
       }
@@ -3364,7 +3536,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean10.6] signup start", email);
+      console.log("[SHITAGRAM vClean10.7] signup start", email);
 
       try {
         const { data, error } = await withTimeout(
@@ -3377,7 +3549,7 @@
           "Criação de conta"
         );
 
-        console.log("[SHITAGRAM vClean10.6] signup result", { data, error });
+        console.log("[SHITAGRAM vClean10.7] signup result", { data, error });
 
         if (error) {
           safeShowToast(error.message || "Erro ao criar conta.");
@@ -3397,7 +3569,7 @@
           safeShowToast("Conta criada. Agora faz login ou confirma o email.");
         }
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] signup timeout/error", error);
+        console.error("[SHITAGRAM vClean10.7] signup timeout/error", error);
         safeShowToast(error.message || "Criação de conta demorou demasiado.");
       }
     }
@@ -3598,6 +3770,170 @@
       if (!username) return;
       const foundPost = posts.find(post => String(post.author || "").replace(/^@/, "") === username);
       if (foundPost?.user_id) openPublicProfileById(foundPost.user_id);
+    }
+
+
+
+    // vClean10.7 — Onboarding inicial
+    let onboardingStep = 1;
+    let selectedInterests = new Set();
+
+    function shouldShowOnboarding() {
+      if (!currentUser || !currentProfile) return false;
+      const status = String(currentProfile.beta_status || "approved").toLowerCase();
+      if (status && !["approved", "active"].includes(status) && !isCurrentModerator()) return false;
+      return currentProfile.onboarding_completed !== true;
+    }
+
+    function maybeShowOnboarding() {
+      try {
+        if (!shouldShowOnboarding()) return;
+        const modal = document.getElementById("onboardingModal");
+        if (!modal || modal.classList.contains("open")) return;
+
+        const username = (currentProfile?.username || "").replace(/^@/, "");
+        document.getElementById("onbUsername").value = username || normalizeUsername((currentUser?.email || "user").split("@")[0]);
+        document.getElementById("onbCountry").value = currentProfile?.country || localStorage.getItem("shitagram_country") || "Portugal";
+        document.getElementById("onbCity").value = currentProfile?.city || localStorage.getItem("shitagram_city") || "Lisboa";
+
+        selectedInterests = new Set(Array.isArray(currentProfile?.interests) ? currentProfile.interests : []);
+        document.querySelectorAll(".interest-pill").forEach(btn => {
+          btn.classList.toggle("selected", selectedInterests.has(btn.dataset.interest));
+        });
+
+        onboardingStep = 1;
+        renderOnboardingStep();
+        modal.classList.add("open");
+      } catch (error) {
+        console.warn("[SHITAGRAM vClean10.7] onboarding", error);
+      }
+    }
+
+    function renderOnboardingStep() {
+      [1, 2, 3].forEach(n => {
+        document.getElementById(`onbStep${n}`).classList.toggle("active", n === onboardingStep);
+        document.getElementById(`onbBar${n}`).classList.toggle("active", n <= onboardingStep);
+      });
+
+      document.getElementById("onbBackBtn").style.display = onboardingStep > 1 ? "inline-flex" : "none";
+      document.getElementById("onbNextBtn").textContent = onboardingStep === 3 ? "Terminar onboarding" : "Continuar";
+    }
+
+    function nextOnboardingStep() {
+      if (onboardingStep === 1) {
+        const username = normalizeUsername(document.getElementById("onbUsername").value);
+        const country = document.getElementById("onbCountry").value.trim();
+        const city = document.getElementById("onbCity").value.trim();
+
+        if (!username || username.length < 3) {
+          safeShowToast("Escolhe um username com pelo menos 3 caracteres.");
+          return;
+        }
+
+        if (!country || !city) {
+          safeShowToast("Indica país e cidade para o Mood Map.");
+          return;
+        }
+      }
+
+      if (onboardingStep === 3) {
+        completeOnboarding();
+        return;
+      }
+
+      onboardingStep += 1;
+      renderOnboardingStep();
+      playSound?.("click");
+    }
+
+    function prevOnboardingStep() {
+      onboardingStep = Math.max(1, onboardingStep - 1);
+      renderOnboardingStep();
+      playSound?.("click");
+    }
+
+    function toggleInterest(btn) {
+      const key = btn.dataset.interest;
+      if (selectedInterests.has(key)) selectedInterests.delete(key);
+      else selectedInterests.add(key);
+      btn.classList.toggle("selected", selectedInterests.has(key));
+      playSound?.("click");
+    }
+
+    function skipOnboardingSoft() {
+      document.getElementById("onboardingModal").classList.remove("open");
+      safeShowToast("Podes terminar o onboarding no Perfil.");
+    }
+
+    async function completeOnboarding() {
+      if (!currentUser) {
+        openAuthModal("login");
+        return;
+      }
+
+      const accepted = document.getElementById("onbRulesAccepted").checked;
+      if (!accepted) {
+        safeShowToast("Tens de aceitar as regras rápidas da comunidade.");
+        return;
+      }
+
+      const username = normalizeUsername(document.getElementById("onbUsername").value);
+      const country = document.getElementById("onbCountry").value.trim() || "Portugal";
+      const city = document.getElementById("onbCity").value.trim() || "Lisboa";
+      const interests = Array.from(selectedInterests);
+
+      const btn = document.getElementById("onbNextBtn");
+      const oldText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "A guardar...";
+
+      try {
+        localStorage.setItem("shitagram_country", country);
+        localStorage.setItem("shitagram_city", city);
+
+        const bonus = currentProfile?.first_login_bonus_claimed ? 0 : 500;
+
+        const { data, error } = await withTimeout(
+          sb
+            .from("profiles")
+            .update({
+              username,
+              display_name: currentProfile?.display_name || username,
+              country,
+              city,
+              interests,
+              community_rules_accepted: true,
+              onboarding_completed: true,
+              first_login_bonus_claimed: true,
+              coins: Number(currentProfile?.coins || 0) + bonus
+            })
+            .eq("id", currentUser.id)
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
+            .single(),
+          9000,
+          "Onboarding"
+        );
+
+        if (error) throw error;
+
+        currentProfile = data;
+        myCoins = Number(currentProfile.coins || 0);
+        document.getElementById("onboardingModal").classList.remove("open");
+
+        try {
+          await trackEvent?.("onboarding_completed", { country, city, interests_count: interests.length });
+        } catch (_) {}
+
+        safeShowToast(bonus ? "Onboarding concluído. Recebeste 500 ShitCoins 🎁" : "Onboarding concluído.");
+        updateAuthUi();
+        renderCurrentView?.();
+      } catch (error) {
+        console.error("[SHITAGRAM vClean10.7] complete onboarding", error);
+        safeShowToast(error.message || "Erro ao guardar onboarding.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
     }
 
 
@@ -3896,7 +4232,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] report", error);
+        console.error("[SHITAGRAM vClean10.7] report", error);
         showToast(error.message || "Não foi possível enviar a denúncia.");
         playSound("error");
         return;
@@ -4192,7 +4528,7 @@
       const { data, error } = await sb.rpc("get_moderation_reports");
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] moderation reports", error);
+        console.error("[SHITAGRAM vClean10.7] moderation reports", error);
         mainView.innerHTML = `
           <section class="view-title-card">
             <h1>🛡️ Painel de moderação</h1>
@@ -4320,7 +4656,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] moderate report", error);
+        console.error("[SHITAGRAM vClean10.7] moderate report", error);
         showToast(error.message || "Erro ao moderar.");
         playSound("error");
         return;
@@ -4612,7 +4948,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean10.6] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean10.7] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -4732,7 +5068,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] feed real", error);
+        console.error("[SHITAGRAM vClean10.7] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -5040,7 +5376,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean10.6] edit post", error);
+          console.error("[SHITAGRAM vClean10.7] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -5076,7 +5412,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean10.6] react", error);
+          console.error("[SHITAGRAM vClean10.7] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -5128,7 +5464,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] load comments", error);
+        console.error("[SHITAGRAM vClean10.7] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -5225,7 +5561,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean10.6] submit comment", error);
+          console.error("[SHITAGRAM vClean10.7] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -5313,7 +5649,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] gift", error);
+        console.error("[SHITAGRAM vClean10.7] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -5352,7 +5688,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] boost", error);
+        console.error("[SHITAGRAM vClean10.7] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -5373,7 +5709,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] delete", error);
+        console.error("[SHITAGRAM vClean10.7] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -5494,7 +5830,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean10.6] coin transactions", error);
+        console.warn("[SHITAGRAM vClean10.7] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -5712,7 +6048,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean10.6] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean10.7] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -5736,7 +6072,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean10.6] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean10.7] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -6372,7 +6708,7 @@
         showToast("Perfil atualizado com sucesso 👤");
         playSound("success");
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] profile update", error);
+        console.error("[SHITAGRAM vClean10.7] profile update", error);
         showToast(error.message || "Erro ao atualizar perfil.");
         playSound("error");
       } finally {
@@ -6398,7 +6734,7 @@
         const userPosts = posts.filter(post => post.user_id === userId);
         renderPublicProfile(profile, userPosts);
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] public profile", error);
+        console.error("[SHITAGRAM vClean10.7] public profile", error);
         showToast("Não consegui abrir o perfil público.");
       }
     }
@@ -6500,7 +6836,7 @@
           isFollowing: Boolean(isFollowingResult.count)
         };
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] follow stats", error);
+        console.error("[SHITAGRAM vClean10.7] follow stats", error);
         return { followers: 0, following: 0, isFollowing: false, error };
       }
     }
@@ -6562,7 +6898,7 @@
         await hydratePublicFollowStats(targetUserId);
         if (currentView === "profile") await hydrateOwnFollowStats();
       } catch (error) {
-        console.error("[SHITAGRAM vClean10.6] toggle follow", error);
+        console.error("[SHITAGRAM vClean10.7] toggle follow", error);
         showToast(error.message || "Não consegui atualizar o follow.");
         if (btn) btn.innerHTML = previousHtml;
       } finally {
@@ -6594,12 +6930,12 @@
 
       const { data, error } = await sb
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
         .eq("id", currentUser.id)
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean10.6] profile load", error);
+        console.error("[SHITAGRAM vClean10.7] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -6615,9 +6951,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean10.6] login start", email);
+      console.log("[SHITAGRAM vClean10.7] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean10.6] login result", { data, error });
+      console.log("[SHITAGRAM vClean10.7] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -6819,7 +7155,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean10.6] publish", error);
+          console.error("[SHITAGRAM vClean10.7] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
