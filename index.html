@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ — Beta pública + Analytics</title>
+  <title>SHITAGRAM™ — Beta pública + Convites</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -76,7 +76,7 @@
         <a href="#como">Como funciona</a>
         <a href="#seguranca">Segurança</a>
         <a href="#beta">Lista beta</a>
-        <a class="btn primary primary-hide" href="app.html">Entrar na app</a>
+        <a class="btn primary primary-hide js-app-link" href="app.html">Entrar na app</a>
       </div>
     </div>
   </header>
@@ -88,8 +88,11 @@
         <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
         <p class="lead">A rede social onde os teus momentos mais embaraçosos viram estatuto. Partilha micos, reage, comenta, sobe no ranking e entra na comunidade antes do lançamento.</p>
         <div class="cta">
-          <a class="btn primary" href="app.html">Entrar na app</a>
+          <a class="btn primary js-app-link" href="app.html">Entrar na app</a>
           <a class="btn" href="#beta">Entrar na lista beta</a>
+        </div>
+        <div id="refInviteBox" style="display:none;margin-top:18px;padding:14px;border:1px solid rgba(255,204,0,.28);border-radius:18px;background:rgba(255,204,0,.08);color:#f4f4f4;font-weight:800;">
+          🎟️ Entraste por convite de <span id="refInviteName" style="color:var(--yellow);"></span>. Cria conta para ficares associado à beta.
         </div>
         <div class="trust">
           <div class="mini"><b>XP</b><p>Quanto maior o mico, maior a glória.</p></div>
@@ -161,6 +164,7 @@
           <input id="email" type="email" required placeholder="teu@email.com">
           <label>Username desejado</label>
           <input id="username" required placeholder="@teu_mico">
+          <input id="refCode" type="hidden">
           <label>Porque queres entrar?</label>
           <textarea id="reason" placeholder="Ex: quero testar a beta, publicar ShitClips, dar feedback..."></textarea>
           <button class="btn primary" style="width:100%;margin-top:14px" type="submit">Quero entrar na beta</button>
@@ -178,7 +182,7 @@
         <a href="legal.html#termos">Termos</a>
         <a href="legal.html#privacidade">Privacidade</a>
         <a href="legal.html#contacto">Contacto</a>
-        <a href="app.html">Entrar na app</a>
+        <a class="js-app-link" href="app.html">Entrar na app</a>
       </div>
     </div>
   </footer>
@@ -214,11 +218,24 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      trackLandingEvent("landing_view", { version: "vClean10.4" });
+      const params = new URLSearchParams(location.search);
+      const ref = (params.get("ref") || params.get("invite") || "").trim().toLowerCase();
+      if (ref && /^[a-z0-9_.-]{3,40}$/.test(ref)) {
+        localStorage.setItem("shitagram_invite_ref", ref);
+        document.getElementById("refCode").value = ref;
+        document.getElementById("refInviteName").textContent = "@" + ref.replace(/^@/, "");
+        document.getElementById("refInviteBox").style.display = "block";
+
+        document.querySelectorAll(".js-app-link").forEach(link => {
+          link.href = "app.html?ref=" + encodeURIComponent(ref);
+        });
+      }
+
+      trackLandingEvent("landing_view", { version: "vClean10.5", ref: ref || null });
 
       document.querySelectorAll('a[href*="app.html"]').forEach(link => {
         link.addEventListener("click", () => {
-          trackLandingEvent("landing_click_enter_app", { href: link.getAttribute("href") });
+          trackLandingEvent("landing_click_enter_app", { href: link.getAttribute("href"), ref: ref || null });
         });
       });
 
@@ -243,7 +260,7 @@
         email: document.getElementById('email').value.trim().toLowerCase(),
         desired_username: document.getElementById('username').value.trim().replace(/^@/, ''),
         reason: document.getElementById('reason').value.trim(),
-        source: 'landing_v10_2_1'
+        source: 'landing_v10_5_invites', ref_code: document.getElementById('refCode')?.value || null
       };
 
       const btn = e.target.querySelector('button[type="submit"]');
@@ -265,7 +282,7 @@
         return;
       }
 
-      await trackLandingEvent('beta_waitlist_submit', { email_domain: payload.email.split('@')[1] || '' });
+      await trackLandingEvent('beta_waitlist_submit', { email_domain: payload.email.split('@')[1] || '', ref: payload.ref_code || null });
       e.target.reset();
       toast('Pedido recebido. Bem-vindo à lista beta 💩');
     });
