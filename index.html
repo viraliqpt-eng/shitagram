@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ — Beta pública + Convites</title>
+  <title>SHITAGRAM™ — Beta fechada + Convites</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -84,12 +84,12 @@
   <main class="wrap">
     <section class="hero">
       <div>
-        <div class="eyebrow">💩 Beta pública em preparação</div>
+        <div class="eyebrow">🔐 Beta fechada em preparação</div>
         <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
-        <p class="lead">A rede social onde os teus momentos mais embaraçosos viram estatuto. Partilha micos, reage, comenta, sobe no ranking e entra na comunidade antes do lançamento.</p>
+        <p class="lead">A rede social onde os teus momentos mais embaraçosos viram estatuto. Partilha micos, reage, comenta, sobe no ranking e pede acesso à beta fechada e entra quando fores aprovado.</p>
         <div class="cta">
           <a class="btn primary js-app-link" href="app.html">Entrar na app</a>
-          <a class="btn" href="#beta">Entrar na lista beta</a>
+          <a class="btn" href="#beta">Pedir acesso beta</a>
         </div>
         <div id="refInviteBox" style="display:none;margin-top:18px;padding:14px;border:1px solid rgba(255,204,0,.28);border-radius:18px;background:rgba(255,204,0,.08);color:#f4f4f4;font-weight:800;">
           🎟️ Entraste por convite de <span id="refInviteName" style="color:var(--yellow);"></span>. Cria conta para ficares associado à beta.
@@ -135,6 +135,7 @@
         <div class="card"><div class="icon">🎬</div><h3>ShitClips™</h3><p>Vídeos curtos para micos visuais, com feed vertical e interação rápida.</p></div>
         <div class="card"><div class="icon">🫥</div><h3>Modo anónimo</h3><p>Partilha sem expor o teu nome quando fizer sentido.</p></div>
         <div class="card"><div class="icon">🚀</div><h3>Boosts</h3><p>Destaca os teus melhores micos no feed e aumenta visibilidade.</p></div>
+        <div class="card"><div class="icon">🔐</div><h3>Acesso aprovado</h3><p>Na beta fechada, apenas utilizadores aprovados conseguem entrar na app completa.</p></div>
       </div>
     </section>
 
@@ -154,8 +155,8 @@
     <section id="beta">
       <div class="split">
         <div>
-          <h2 class="section-title">Entra na <span>lista beta</span></h2>
-          <p class="section-lead">Queres testar antes do lançamento? Deixa os teus dados e o username desejado. A lista ajuda a organizar os primeiros utilizadores e feedback.</p>
+          <h2 class="section-title">Pede <span>acesso beta</span></h2>
+          <p class="section-lead">A beta é fechada e controlada. Deixa os teus dados, usa um convite se tiveres, e a equipa aprova o acesso quando houver vaga.</p>
         </div>
         <form id="betaForm">
           <label>Nome</label>
@@ -167,8 +168,8 @@
           <input id="refCode" type="hidden">
           <label>Porque queres entrar?</label>
           <textarea id="reason" placeholder="Ex: quero testar a beta, publicar ShitClips, dar feedback..."></textarea>
-          <button class="btn primary" style="width:100%;margin-top:14px" type="submit">Quero entrar na beta</button>
-          <p class="formnote">Ao enviar, aceitas ser contactado sobre a beta do SHITAGRAM™. Sem pagamentos reais nesta fase.</p>
+          <button class="btn primary" style="width:100%;margin-top:14px" type="submit">Pedir acesso beta</button>
+          <p class="formnote">O pedido fica pendente até aprovação. Ao enviar, aceitas ser contactado sobre a beta do SHITAGRAM™. Sem pagamentos reais nesta fase.</p>
         </form>
       </div>
     </section>
@@ -260,7 +261,7 @@
         email: document.getElementById('email').value.trim().toLowerCase(),
         desired_username: document.getElementById('username').value.trim().replace(/^@/, ''),
         reason: document.getElementById('reason').value.trim(),
-        source: 'landing_v10_5_invites', ref_code: document.getElementById('refCode')?.value || null
+        source: 'landing_v10_6_beta_access', ref_code: document.getElementById('refCode')?.value || null
       };
 
       const btn = e.target.querySelector('button[type="submit"]');
@@ -284,7 +285,7 @@
 
       await trackLandingEvent('beta_waitlist_submit', { email_domain: payload.email.split('@')[1] || '', ref: payload.ref_code || null });
       e.target.reset();
-      toast('Pedido recebido. Bem-vindo à lista beta 💩');
+      toast('Pedido recebido. A tua entrada fica pendente até aprovação 💩');
     });
   </script>
 </body>
