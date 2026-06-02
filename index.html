@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ — Beta pública</title>
+  <title>SHITAGRAM™ — Beta pública + Analytics</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -190,6 +190,45 @@
     const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    function getAnalyticsSessionId() {
+      let id = localStorage.getItem("shitagram_session_id");
+      if (!id) {
+        id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+        localStorage.setItem("shitagram_session_id", id);
+      }
+      return id;
+    }
+
+    async function trackLandingEvent(eventName, metadata = {}) {
+      try {
+        await supabase.rpc("track_app_event", {
+          p_event_name: eventName,
+          p_event_source: "landing",
+          p_page: location.pathname + location.hash,
+          p_metadata: metadata || {},
+          p_session_id: getAnalyticsSessionId()
+        });
+      } catch (err) {
+        console.warn("[SHITAGRAM landing analytics]", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      trackLandingEvent("landing_view", { version: "vClean10.4" });
+
+      document.querySelectorAll('a[href*="app.html"]').forEach(link => {
+        link.addEventListener("click", () => {
+          trackLandingEvent("landing_click_enter_app", { href: link.getAttribute("href") });
+        });
+      });
+
+      document.querySelectorAll('a[href*="legal.html"]').forEach(link => {
+        link.addEventListener("click", () => {
+          trackLandingEvent("landing_click_legal", { href: link.getAttribute("href") });
+        });
+      });
+    });
+
     function toast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
@@ -226,6 +265,7 @@
         return;
       }
 
+      await trackLandingEvent('beta_waitlist_submit', { email_domain: payload.email.split('@')[1] || '' });
       e.target.reset();
       toast('Pedido recebido. Bem-vindo à lista beta 💩');
     });
