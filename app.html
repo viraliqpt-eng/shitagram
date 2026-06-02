@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Onboarding inicial</title>
+  <title>SHITAGRAM™ App — Checklist de ativação</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=anM17HbMi7Yg2k2-h09Rmlj5-l7_HmMvTO21TRK-iil5mHGPd3eJFqF4mbA9nmxHz9iov6PsTtJEsZjAXYl--gpm8xAiJjVXt-dqMgTb4M589oOmE77Em9axtFKy3Rf1qKmsYaC26uapI6ttiGSgsKqX-bor6raxxP63TdxxFwB_H-gfM9zJm6OLcx6r3h4fdkIK2P_leYFSMLKTXac2EZBnP8fnuu_bauEw2ZDlO2TByXoJwko7SOSpB7HrxFM75i7bI4lgmfA1wIFkn1zGCw" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=-OnP7jKbctxEXvjrD3tyQ_FzLaRyW8TPmqoYrZ8UMMhZPOON34MHo3YlEwdle2U4yItFdoXyWrjjMJ7WIn2CS04e8kMhvIgri6D71fz0Hhxj9fo8_7StBtJbH2VhrHF-rPz_fQpzSB873xvEvmQSvGXC0YAyqPgUUlB-xjLdOX3SWlbFAhmjIxKGavoQMagthbqT6DKNb8ILTYC5JNH4MyAFmChFpvj19NTCGtrf4-YMO_Ooh7xIBCNJpJi44lg1AIYrDmkLhwh21UyVG3HaHg" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -2514,6 +2514,205 @@
       }
     }
 
+  
+    /* vClean10.8 — Checklist de ativação */
+    .activation-hero {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255,204,0,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,204,0,0.28);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .activation-hero h1 {
+      color: var(--brand-yellow);
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .activation-hero p {
+      color: #dcdcdc;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    .activation-progress-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .activation-progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .activation-progress-percent {
+      color: var(--brand-yellow);
+      font-size: 22px;
+    }
+
+    .activation-progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .activation-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand-yellow), #ffe47a);
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .activation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .activation-task {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .activation-task.done {
+      border-color: rgba(255,204,0,0.42);
+      background:
+        radial-gradient(circle at top left, rgba(255,204,0,0.12), transparent 32%),
+        rgba(9,9,9,0.96);
+    }
+
+    .activation-task-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .activation-task h3 {
+      margin: 0;
+      font-size: 16px;
+      color: white;
+    }
+
+    .activation-task.done h3 {
+      color: var(--brand-yellow);
+    }
+
+    .activation-task p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .activation-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #151515;
+      border: 1px solid #2b2b2b;
+      color: var(--text-secondary);
+      font-weight: 900;
+    }
+
+    .activation-task.done .activation-status {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      color: #050505;
+    }
+
+    .activation-action {
+      margin-top: 6px;
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-weight: 900;
+    }
+
+    .activation-action.secondary {
+      background: #171717;
+      color: white;
+      border: 1px solid #303030;
+    }
+
+    .activation-bonus-card {
+      background:
+        radial-gradient(circle at top, rgba(255,204,0,0.18), transparent 42%),
+        #090909;
+      border: 1px solid rgba(255,204,0,0.32);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .activation-bonus-card h2 {
+      color: var(--brand-yellow);
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .activation-bonus-card p {
+      color: #d6d6d6;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .activation-bonus-card button {
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .activation-bonus-card button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 760px) {
+      .activation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .activation-bonus-card {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .activation-bonus-card button {
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 
@@ -2562,6 +2761,10 @@
 <button id="navBetaAccess" type="button" class="nav-item" onclick="setView('beta_access')" style="display:none;" title="Aprovar/rejeitar acessos beta">
           <i class="fa-solid fa-user-lock"></i><label>Acessos Beta</label>
         </button>
+        <button id="navActivation" type="button" class="nav-item" onclick="setView('activation')" title="Primeiros passos da beta">
+          <i class="fa-solid fa-list-check"></i><label>Primeiros Passos</label>
+        </button>
+
       </nav>
 
       <button class="publish-pill" onclick="openPublishModal()">
@@ -2699,6 +2902,10 @@
 <button id="mobileBetaAccess" onclick="setView('beta_access')" style="display:none;">
       <i class="fa-solid fa-user-lock"></i><span>Beta</span>
     </button>
+    <button id="mobileActivation" onclick="setView('activation')">
+      <i class="fa-solid fa-list-check"></i><span>Passos</span>
+    </button>
+
   </nav>
 
 
@@ -3702,6 +3909,11 @@
         document.getElementById("mobileBetaAccess")?.classList.add("active");
       }
 
+      if (view === "activation") {
+        document.getElementById("navActivation")?.classList.add("active");
+        document.getElementById("mobileActivation")?.classList.add("active");
+      }
+
       renderCurrentView();
     }
 
@@ -3717,6 +3929,7 @@
       if (currentView === "moderation") renderModerationPage();
       if (currentView === "analytics") renderAnalyticsPage();
       if (currentView === "beta_access") renderBetaAccessAdminPage();
+      if (currentView === "activation") renderActivationChecklistPage();
     }
 
     function openStore(tab = "presentes") {
@@ -7405,7 +7618,206 @@
       grid-template-columns: 1fr;
     }
   }
-</style>
+
+    /* vClean10.8 — Checklist de ativação */
+    .activation-hero {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255,204,0,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,204,0,0.28);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .activation-hero h1 {
+      color: var(--brand-yellow);
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .activation-hero p {
+      color: #dcdcdc;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    .activation-progress-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .activation-progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .activation-progress-percent {
+      color: var(--brand-yellow);
+      font-size: 22px;
+    }
+
+    .activation-progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .activation-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand-yellow), #ffe47a);
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .activation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .activation-task {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .activation-task.done {
+      border-color: rgba(255,204,0,0.42);
+      background:
+        radial-gradient(circle at top left, rgba(255,204,0,0.12), transparent 32%),
+        rgba(9,9,9,0.96);
+    }
+
+    .activation-task-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .activation-task h3 {
+      margin: 0;
+      font-size: 16px;
+      color: white;
+    }
+
+    .activation-task.done h3 {
+      color: var(--brand-yellow);
+    }
+
+    .activation-task p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .activation-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #151515;
+      border: 1px solid #2b2b2b;
+      color: var(--text-secondary);
+      font-weight: 900;
+    }
+
+    .activation-task.done .activation-status {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      color: #050505;
+    }
+
+    .activation-action {
+      margin-top: 6px;
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-weight: 900;
+    }
+
+    .activation-action.secondary {
+      background: #171717;
+      color: white;
+      border: 1px solid #303030;
+    }
+
+    .activation-bonus-card {
+      background:
+        radial-gradient(circle at top, rgba(255,204,0,0.18), transparent 42%),
+        #090909;
+      border: 1px solid rgba(255,204,0,0.32);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .activation-bonus-card h2 {
+      color: var(--brand-yellow);
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .activation-bonus-card p {
+      color: #d6d6d6;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .activation-bonus-card button {
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .activation-bonus-card button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 760px) {
+      .activation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .activation-bonus-card {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .activation-bonus-card button {
+        width: 100%;
+      }
+    }
+
+  </style>
 
 <button id="shitagramMoodButton" type="button" title="Mood Map Global">🌍</button>
 
@@ -7770,7 +8182,206 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-</style>
+
+    /* vClean10.8 — Checklist de ativação */
+    .activation-hero {
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255,204,0,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,204,0,0.28);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .activation-hero h1 {
+      color: var(--brand-yellow);
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .activation-hero p {
+      color: #dcdcdc;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    .activation-progress-card {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .activation-progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .activation-progress-percent {
+      color: var(--brand-yellow);
+      font-size: 22px;
+    }
+
+    .activation-progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .activation-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brand-yellow), #ffe47a);
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .activation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .activation-task {
+      background: rgba(9,9,9,0.96);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .activation-task.done {
+      border-color: rgba(255,204,0,0.42);
+      background:
+        radial-gradient(circle at top left, rgba(255,204,0,0.12), transparent 32%),
+        rgba(9,9,9,0.96);
+    }
+
+    .activation-task-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .activation-task h3 {
+      margin: 0;
+      font-size: 16px;
+      color: white;
+    }
+
+    .activation-task.done h3 {
+      color: var(--brand-yellow);
+    }
+
+    .activation-task p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .activation-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #151515;
+      border: 1px solid #2b2b2b;
+      color: var(--text-secondary);
+      font-weight: 900;
+    }
+
+    .activation-task.done .activation-status {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      color: #050505;
+    }
+
+    .activation-action {
+      margin-top: 6px;
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-weight: 900;
+    }
+
+    .activation-action.secondary {
+      background: #171717;
+      color: white;
+      border: 1px solid #303030;
+    }
+
+    .activation-bonus-card {
+      background:
+        radial-gradient(circle at top, rgba(255,204,0,0.18), transparent 42%),
+        #090909;
+      border: 1px solid rgba(255,204,0,0.32);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .activation-bonus-card h2 {
+      color: var(--brand-yellow);
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .activation-bonus-card p {
+      color: #d6d6d6;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .activation-bonus-card button {
+      border: 0;
+      background: var(--brand-yellow);
+      color: #050505;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .activation-bonus-card button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 760px) {
+      .activation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .activation-bonus-card {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .activation-bonus-card button {
+        width: 100%;
+      }
+    }
+
+  </style>
 
 <script>
 (function() {
@@ -7993,6 +8604,347 @@
   });
 })();
 </script>
+
+
+<script>
+/* vClean10.8 — Checklist de ativação + missões iniciais */
+const ACTIVATION_BONUS_AMOUNT = 750;
+let activationStatusCache = null;
+
+async function safeCountActivation(queryBuilder) {
+  try {
+    const { count, error } = await queryBuilder;
+    if (error) return 0;
+    return Number(count || 0);
+  } catch (_) {
+    return 0;
+  }
+}
+
+async function getActivationStats() {
+  if (!currentUser) return null;
+
+  const profileCompleted = Boolean(
+    (currentProfile?.bio && String(currentProfile.bio).trim().length >= 8) ||
+    (currentProfile?.avatar_url && String(currentProfile.avatar_url).trim().length > 0)
+  );
+
+  const postsCount = await safeCountActivation(
+    sb.from("posts")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", currentUser.id)
+      .neq("status", "deleted")
+  );
+
+  const reactionsCount = await safeCountActivation(
+    sb.from("post_reactions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", currentUser.id)
+  );
+
+  const commentsCount = await safeCountActivation(
+    sb.from("comments")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", currentUser.id)
+  );
+
+  const giftsCount = await safeCountActivation(
+    sb.from("post_gifts")
+      .select("id", { count: "exact", head: true })
+      .eq("giver_id", currentUser.id)
+  );
+
+  let moodVisited = localStorage.getItem("shitagram_mood_map_visited") === "1";
+
+  if (!moodVisited) {
+    const moodEvents = await safeCountActivation(
+      sb.from("mood_events")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", currentUser.id)
+    );
+    moodVisited = moodEvents > 0;
+  }
+
+  const steps = {
+    profile_completed: profileCompleted,
+    first_post_completed: postsCount >= 1,
+    three_reactions_completed: reactionsCount >= 3,
+    one_comment_completed: commentsCount >= 1,
+    mood_map_completed: moodVisited,
+    gift_sent_completed: giftsCount >= 1
+  };
+
+  const completedCount = Object.values(steps).filter(Boolean).length;
+  const totalSteps = Object.keys(steps).length;
+  const percent = Math.round((completedCount / totalSteps) * 100);
+
+  return {
+    ...steps,
+    posts_count: postsCount,
+    reactions_count: reactionsCount,
+    comments_count: commentsCount,
+    gifts_count: giftsCount,
+    mood_visited: moodVisited,
+    completed_count: completedCount,
+    total_steps: totalSteps,
+    percent
+  };
+}
+
+async function syncActivationChecklist(stats) {
+  if (!currentUser || !stats) return;
+
+  try {
+    await sb.from("user_activation_checklists").upsert({
+      user_id: currentUser.id,
+      profile_completed: stats.profile_completed,
+      first_post_completed: stats.first_post_completed,
+      three_reactions_completed: stats.three_reactions_completed,
+      one_comment_completed: stats.one_comment_completed,
+      mood_map_completed: stats.mood_map_completed,
+      gift_sent_completed: stats.gift_sent_completed,
+      completed_at: stats.completed_count === stats.total_steps ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.warn("[SHITAGRAM vClean10.8] checklist sync", error);
+  }
+}
+
+async function loadActivationStatus() {
+  if (!currentUser) return null;
+
+  const stats = await getActivationStats();
+
+  let bonusClaimed = false;
+  try {
+    const { data } = await sb
+      .from("user_activation_checklists")
+      .select("bonus_claimed")
+      .eq("user_id", currentUser.id)
+      .maybeSingle();
+
+    bonusClaimed = Boolean(data?.bonus_claimed);
+  } catch (_) {}
+
+  await syncActivationChecklist(stats);
+
+  activationStatusCache = {
+    ...stats,
+    bonus_claimed: bonusClaimed
+  };
+
+  return activationStatusCache;
+}
+
+function activationTaskHtml({ title, description, done, count, target, actionLabel, action }) {
+  const counter = typeof count !== "undefined" && typeof target !== "undefined"
+    ? `<p>${Math.min(count, target)} / ${target}</p>`
+    : "";
+
+  return `
+    <article class="activation-task ${done ? "done" : ""}">
+      <div class="activation-task-head">
+        <h3>${title}</h3>
+        <span class="activation-status">${done ? "✓" : "•"}</span>
+      </div>
+      <p>${description}</p>
+      ${counter}
+      ${done ? "" : `<button class="activation-action secondary" onclick="${action}">${actionLabel}</button>`}
+    </article>
+  `;
+}
+
+async function renderActivationChecklistPage() {
+  if (!currentUser) {
+    openAuthModal("login");
+    return;
+  }
+
+  mainView.innerHTML = `
+    <section class="activation-hero">
+      <h1>✅ Primeiros Passos</h1>
+      <p>Completa as missões iniciais para ativar melhor o teu perfil, perceber a comunidade e ganhar um bónus extra de ShitCoins™.</p>
+    </section>
+
+    <section class="post-card">
+      <div class="post-content">
+        <h2>A carregar checklist...</h2>
+        <p>Estamos a confirmar o teu progresso.</p>
+      </div>
+    </section>
+  `;
+
+  const stats = await loadActivationStatus();
+  if (!stats) return;
+
+  const allDone = stats.completed_count === stats.total_steps;
+
+  mainView.innerHTML = `
+    <section class="activation-hero">
+      <h1>✅ Primeiros Passos</h1>
+      <p>Completa as missões iniciais para ativar melhor o teu perfil, perceber a comunidade e ganhar um bónus extra de ShitCoins™.</p>
+    </section>
+
+    <section class="activation-progress-card">
+      <div class="activation-progress-top">
+        <span>${stats.completed_count} de ${stats.total_steps} missões completas</span>
+        <span class="activation-progress-percent">${stats.percent}%</span>
+      </div>
+      <div class="activation-progress-bar">
+        <div class="activation-progress-fill" style="width:${stats.percent}%"></div>
+      </div>
+    </section>
+
+    <section class="activation-grid">
+      ${activationTaskHtml({
+        title: "Completar perfil",
+        description: "Adiciona bio ou avatar para o teu perfil parecer real.",
+        done: stats.profile_completed,
+        actionLabel: "Editar perfil",
+        action: "setView('profile')"
+      })}
+
+      ${activationTaskHtml({
+        title: "Publicar primeiro mico",
+        description: "Publica o teu primeiro post para entrares no jogo da vergonha.",
+        done: stats.first_post_completed,
+        count: stats.posts_count,
+        target: 1,
+        actionLabel: "Publicar mico",
+        action: "openPublishModal()"
+      })}
+
+      ${activationTaskHtml({
+        title: "Reagir a 3 posts",
+        description: "Ajuda o feed a ganhar vida com reações reais.",
+        done: stats.three_reactions_completed,
+        count: stats.reactions_count,
+        target: 3,
+        actionLabel: "Ir ao Feed",
+        action: "setView('feed')"
+      })}
+
+      ${activationTaskHtml({
+        title: "Comentar 1 post",
+        description: "Entra na conversa e aumenta o movimento da comunidade.",
+        done: stats.one_comment_completed,
+        count: stats.comments_count,
+        target: 1,
+        actionLabel: "Ir ao Feed",
+        action: "setView('feed')"
+      })}
+
+      ${activationTaskHtml({
+        title: "Visitar Mood Map",
+        description: "Vê como está o clima emocional da comunidade.",
+        done: stats.mood_map_completed,
+        actionLabel: "Abrir Mood Map",
+        action: "openMoodMap()"
+      })}
+
+      ${activationTaskHtml({
+        title: "Enviar 1 presente",
+        description: "Usa ShitCoins™ para enviar um presente num post de outro utilizador.",
+        done: stats.gift_sent_completed,
+        count: stats.gifts_count,
+        target: 1,
+        actionLabel: "Ir ao Feed",
+        action: "setView('feed')"
+      })}
+    </section>
+
+    <section class="activation-bonus-card">
+      <div>
+        <h2>${stats.bonus_claimed ? "Bónus já recebido 🪙" : allDone ? "Bónus desbloqueado 🪙" : "Bónus de ativação"}</h2>
+        <p>${stats.bonus_claimed
+          ? "Já recebeste o bónus desta checklist."
+          : allDone
+            ? `Podes receber ${ACTIVATION_BONUS_AMOUNT} ShitCoins™ por completares os primeiros passos.`
+            : `Completa todas as missões para desbloquear ${ACTIVATION_BONUS_AMOUNT} ShitCoins™.`}
+        </p>
+      </div>
+      <button onclick="claimActivationBonus()" ${(!allDone || stats.bonus_claimed) ? "disabled" : ""}>
+        ${stats.bonus_claimed ? "Recebido" : "Receber bónus"}
+      </button>
+    </section>
+  `;
+}
+
+async function claimActivationBonus() {
+  if (!currentUser) return;
+
+  const stats = await loadActivationStatus();
+  if (!stats || stats.completed_count !== stats.total_steps) {
+    showToast("Ainda tens missões por completar.");
+    return;
+  }
+
+  if (stats.bonus_claimed) {
+    showToast("Já recebeste este bónus.");
+    return;
+  }
+
+  try {
+    const { data, error } = await sb.rpc("claim_activation_checklist_bonus");
+
+    if (error) throw error;
+
+    showToast(`Bónus recebido: ${ACTIVATION_BONUS_AMOUNT} ShitCoins™ ✅`);
+    playSound("coins");
+    await loadProfile();
+    await renderActivationChecklistPage();
+
+    if (window.trackAppEvent) {
+      window.trackAppEvent("activation_bonus_claimed", { amount: ACTIVATION_BONUS_AMOUNT });
+    }
+  } catch (error) {
+    console.error("[SHITAGRAM vClean10.8] activation bonus", error);
+    showToast(error.message || "Não foi possível receber o bónus.");
+    playSound("error");
+  }
+}
+
+(function installActivationHooks() {
+  const wrapAsync = (name) => {
+    const original = window[name] || (typeof globalThis[name] === "function" ? globalThis[name] : null);
+    if (!original || original.__activationWrapped) return;
+
+    const wrapped = async function(...args) {
+      const result = await original.apply(this, args);
+      setTimeout(() => {
+        if (currentUser) loadActivationStatus().catch(() => {});
+      }, 350);
+      return result;
+    };
+
+    wrapped.__activationWrapped = true;
+    window[name] = wrapped;
+    try { globalThis[name] = wrapped; } catch (_) {}
+  };
+
+  ["publishRealPost", "reactToPost", "submitRealComment", "sendGift", "boostPost", "saveProfile"].forEach(wrapAsync);
+
+  const oldOpenMoodMap = window.openMoodMap || (typeof openMoodMap === "function" ? openMoodMap : null);
+  if (oldOpenMoodMap && !oldOpenMoodMap.__activationWrapped) {
+    const wrappedMood = function(...args) {
+      localStorage.setItem("shitagram_mood_map_visited", "1");
+      if (currentUser) {
+        sb.from("user_activation_checklists").upsert({
+          user_id: currentUser.id,
+          mood_map_completed: true,
+          updated_at: new Date().toISOString()
+        }).then(() => {}).catch(() => {});
+      }
+      return oldOpenMoodMap.apply(this, args);
+    };
+    wrappedMood.__activationWrapped = true;
+    window.openMoodMap = wrappedMood;
+    try { openMoodMap = wrappedMood; } catch (_) {}
+  }
+})();
+</script>
+
 
 </body>
 </html>
