@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Analytics</title>
+  <title>SHITAGRAM™ App — Convites Beta</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -2239,6 +2239,105 @@
       border-color: rgba(255,77,77,0.28);
     }
 
+  
+    .invite-code-box {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .invite-code-value {
+      flex: 1 1 260px;
+      background: #101010;
+      border: 1px solid rgba(255,204,0,0.25);
+      color: var(--brand-yellow);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 14px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .invite-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .invite-stat {
+      background: #101010;
+      border: 1px solid #242424;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .invite-stat span {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .invite-stat strong {
+      color: white;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .founder-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,204,0,0.14);
+      border: 1px solid rgba(255,204,0,0.32);
+      color: var(--brand-yellow);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    .invite-table {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .invite-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      background: #101010;
+      border: 1px solid #242424;
+      border-radius: 14px;
+      padding: 12px;
+      color: #e5e5e5;
+      font-size: 13px;
+    }
+
+    .invite-status {
+      color: var(--brand-yellow);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    @media (max-width: 860px) {
+      .invite-stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .invite-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -2271,6 +2370,10 @@
 
         <button id="navProfile" class="nav-item" onclick="setView('profile')">
           <i class="fa-solid fa-user"></i><label>Perfil</label>
+        </button>
+
+        <button id="navInvites" class="nav-item" onclick="setView('invites')">
+          <i class="fa-solid fa-ticket"></i><label>Convites</label>
         </button>
 
         <button id="navModeration" type="button" class="nav-item" onclick="setView('moderation')" style="display:none;" title="Painel de moderação/admin">
@@ -2401,6 +2504,10 @@
 
     <button id="mobileProfile" onclick="setView('profile')">
       <i class="fa-solid fa-user"></i><span>Perfil</span>
+    </button>
+
+    <button id="mobileInvites" onclick="setView('invites')">
+      <i class="fa-solid fa-ticket"></i><span>Convites</span>
     </button>
 
     <button id="mobileModeration" onclick="setView('moderation')" style="display:none;">
@@ -2888,6 +2995,16 @@
     let currentUser = null;
     let currentProfile = null;
 
+    (function captureInviteRef() {
+      try {
+        const params = new URLSearchParams(location.search);
+        const ref = params.get("ref") || params.get("invite");
+        if (ref && /^[a-zA-Z0-9_.-]{3,40}$/.test(ref)) {
+          localStorage.setItem("shitagram_invite_ref", ref.toLowerCase());
+        }
+      } catch (_) {}
+    })();
+
     function withTimeout(promise, ms = 10000, label = "operação") {
       return Promise.race([
         promise,
@@ -2960,7 +3077,7 @@
         const { data, error } = await withTimeout(
           sb
             .from("profiles")
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
             .eq("id", currentUser.id)
             .maybeSingle(),
           9000,
@@ -3022,9 +3139,10 @@
               xp: 0,
               coins: 0,
               posts_count: 0,
-              role
+              role,
+              beta_status: "approved"
             }, { onConflict: "id" })
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
             .single(),
           9000,
           "Criação do perfil"
@@ -3116,7 +3234,11 @@
         safeShowToast("Login feito com sucesso.");
 
         loadProfile()
-          .then(() => renderCurrentView())
+          .then(async () => {
+            await acceptStoredInvite();
+            await loadProfile();
+            renderCurrentView();
+          })
           .catch(error => {
             console.error("[SHITAGRAM vClean9.3] load profile after login", error);
             safeShowToast("Login feito, mas o perfil demorou a carregar.");
@@ -3163,6 +3285,7 @@
           closeAuthModal();
           safeShowToast("Conta criada e sessão iniciada.");
           await ensureProfile();
+          await acceptStoredInvite();
           await loadProfile();
           renderCurrentView();
         } else {
@@ -3281,6 +3404,12 @@
 
       if (view === "profile") {
         document.getElementById("navProfile")?.classList.add("active");
+        document.getElementById("mobileProfile")?.classList.add("active");
+      }
+
+      if (view === "invites") {
+        document.getElementById("navInvites")?.classList.add("active");
+        document.getElementById("mobileInvites")?.classList.add("active");
       }
 
       if (view === "moderation") {
@@ -3301,6 +3430,7 @@
       if (currentView === "ranking") renderRankingPage();
       if (currentView === "shop") renderShopPage();
       if (currentView === "profile") renderProfilePage();
+      if (currentView === "invites") renderInvitesPage();
       if (currentView === "notifications") renderNotificationsPage();
       if (currentView === "moderation") renderModerationPage();
       if (currentView === "analytics") renderAnalyticsPage();
@@ -4542,6 +4672,7 @@
       if (currentView === "ranking") renderRankingPage();
       if (currentView === "shop") renderShopPage();
       if (currentView === "profile") renderProfilePage();
+      if (currentView === "invites") renderInvitesPage();
       if (currentView === "notifications") renderNotificationsPage();
       if (currentView === "moderation") renderModerationPage();
       if (currentView === "analytics") renderAnalyticsPage();
@@ -5500,6 +5631,222 @@
       }
     }
 
+
+    async function acceptStoredInvite() {
+      if (!currentUser) return;
+      const ref = localStorage.getItem("shitagram_invite_ref");
+      if (!ref) return;
+
+      try {
+        const { error } = await sb.rpc("accept_beta_invite", {
+          p_ref_code: ref,
+          p_invited_email: currentUser.email || null
+        });
+
+        if (error) {
+          console.warn("[SHITAGRAM invites] convite não aceite", error.message);
+          return;
+        }
+
+        localStorage.removeItem("shitagram_invite_ref");
+        window.trackAppEvent?.("invite_accepted", { ref }, "app");
+      } catch (err) {
+        console.warn("[SHITAGRAM invites] erro local", err);
+      }
+    }
+
+    function getInviteLinkFromCode(code) {
+      const safeCode = String(code || currentProfile?.username || "").replace(/^@/, "");
+      const base = location.origin + location.pathname.replace(/app\.html.*$/i, "");
+      return `${base}?ref=${encodeURIComponent(safeCode)}`;
+    }
+
+    async function copyInviteLink() {
+      if (!currentProfile) {
+        openAuthModal("login");
+        return;
+      }
+
+      const code = currentProfile.invite_code || currentProfile.username;
+      const link = getInviteLinkFromCode(code);
+
+      try {
+        await navigator.clipboard.writeText(link);
+        showToast("Link de convite copiado 🔗");
+        window.trackAppEvent?.("invite_link_copied", { code }, "app");
+      } catch (_) {
+        prompt("Copia o teu link de convite:", link);
+      }
+    }
+
+    async function loadMyInviteStats() {
+      try {
+        const { data, error } = await sb.rpc("get_my_invite_stats");
+        if (error) throw error;
+        return data || {};
+      } catch (err) {
+        console.warn("[SHITAGRAM invites] get_my_invite_stats", err);
+        const code = currentProfile?.invite_code || currentProfile?.username || "convite";
+        return {
+          invite_code: code,
+          invite_limit: Number(currentProfile?.invite_limit || 5),
+          invited_count: Number(currentProfile?.invited_count || 0),
+          remaining: Math.max(0, Number(currentProfile?.invite_limit || 5) - Number(currentProfile?.invited_count || 0)),
+          founder_beta: !!currentProfile?.founder_beta
+        };
+      }
+    }
+
+    async function renderInvitesPage() {
+      if (!currentUser) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🎟️ Convites beta</h1>
+            <p>Inicia sessão para veres o teu código de convite.</p>
+          </section>
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Entra para convidar amigos</h2>
+              <p>Cada utilizador beta recebe convites limitados para trazer pessoas para a comunidade.</p>
+            </div>
+            <div class="post-divider"></div>
+            <div class="post-actions">
+              <button class="action-btn comment" onclick="openAuthModal('login')">
+                <i class="fa-solid fa-right-to-bracket"></i> Entrar
+              </button>
+            </div>
+          </article>
+        `;
+        return;
+      }
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🎟️ Convites beta</h1>
+          <p>A carregar o teu código de convite...</p>
+        </section>
+      `;
+
+      const stats = await loadMyInviteStats();
+      const inviteCode = stats.invite_code || currentProfile?.username || "convite";
+      const inviteLink = getInviteLinkFromCode(inviteCode);
+      const invited = Number(stats.invited_count || 0);
+      const limit = Number(stats.invite_limit || 5);
+      const remaining = Math.max(0, Number(stats.remaining ?? (limit - invited)));
+      const founder = !!stats.founder_beta || invited > 0;
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🎟️ Convites beta</h1>
+          <p>Convida pessoas para o SHITAGRAM™ e ajuda a construir a comunidade antes do lançamento público.</p>
+          ${founder ? `<span class="founder-badge"><i class="fa-solid fa-crown"></i> Fundador Beta</span>` : ""}
+        </section>
+
+        <article class="post-card">
+          <div class="post-content">
+            <h2>O teu link de convite</h2>
+            <p>Partilha este link. Quando alguém cria conta por ele, o convite fica registado.</p>
+            <div class="invite-code-box">
+              <div class="invite-code-value">${escapeHtml(inviteLink)}</div>
+              <button class="btn-primary" onclick="copyInviteLink()">
+                <i class="fa-solid fa-copy"></i> Copiar
+              </button>
+            </div>
+
+            <div class="invite-stat-grid">
+              <div class="invite-stat">
+                <span>Convites usados</span>
+                <strong>${invited}</strong>
+              </div>
+              <div class="invite-stat">
+                <span>Limite beta</span>
+                <strong>${limit}</strong>
+              </div>
+              <div class="invite-stat">
+                <span>Restantes</span>
+                <strong>${remaining}</strong>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Como funciona</h2>
+            <p>O link usa o formato <strong>?ref=${escapeHtml(inviteCode)}</strong>. Os convites são limitados para manter a beta controlada e segura.</p>
+            <p style="margin-top:10px;color:var(--text-secondary);">Quando o teu primeiro convite for aceite, recebes a badge <strong>Fundador Beta</strong>.</p>
+          </div>
+        </article>
+
+        ${isCurrentModerator() ? `
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Admin: aprovar beta users</h2>
+              <p>Vê os convites registados e aprova entradas beta quando necessário.</p>
+            </div>
+            <div class="post-divider"></div>
+            <div class="post-actions">
+              <button class="action-btn comment" onclick="renderAdminInvites()">
+                <i class="fa-solid fa-user-check"></i> Ver convites pendentes
+              </button>
+            </div>
+            <div id="adminInviteList"></div>
+          </article>
+        ` : ""}
+      `;
+
+      window.trackAppEvent?.("invites_viewed", { invited, remaining }, "app");
+    }
+
+    async function renderAdminInvites() {
+      const target = document.getElementById("adminInviteList");
+      if (!target) return;
+      target.innerHTML = `<div class="post-content" style="margin-top:14px;"><p>A carregar convites...</p></div>`;
+
+      try {
+        const { data, error } = await sb.rpc("get_beta_invites_admin", { p_limit: 30 });
+        if (error) throw error;
+
+        const rows = data || [];
+        if (!rows.length) {
+          target.innerHTML = `<div class="post-content" style="margin-top:14px;"><p>Sem convites pendentes ou recentes.</p></div>`;
+          return;
+        }
+
+        target.innerHTML = `
+          <div class="invite-table">
+            ${rows.map(row => `
+              <div class="invite-row">
+                <span>
+                  <strong>${escapeHtml(row.invited_email || row.invited_username || "Utilizador beta")}</strong><br>
+                  <small style="color:var(--text-secondary);">Convite de ${escapeHtml(row.inviter_username || "desconhecido")} · ${escapeHtml(row.ref_code || "")}</small>
+                </span>
+                <span class="invite-status">${escapeHtml(row.status || "accepted")}</span>
+                ${row.status !== "approved" ? `
+                  <button class="btn-primary" onclick="approveBetaInvite('${row.id}')">Aprovar</button>
+                ` : `<span style="color:var(--text-secondary);font-weight:800;">Aprovado</span>`}
+              </div>
+            `).join("")}
+          </div>
+        `;
+      } catch (err) {
+        target.innerHTML = `<div class="post-content" style="margin-top:14px;"><p>Erro ao carregar convites: ${escapeHtml(err.message || "erro")}</p></div>`;
+      }
+    }
+
+    async function approveBetaInvite(inviteId) {
+      try {
+        const { error } = await sb.rpc("approve_beta_invite", { p_invite_id: inviteId });
+        if (error) throw error;
+        showToast("Convite aprovado.");
+        renderAdminInvites();
+        window.trackAppEvent?.("beta_invite_approved", { inviteId }, "app");
+      } catch (err) {
+        showToast(err.message || "Erro ao aprovar convite.");
+      }
+    }
+
+
     function renderProfilePage() {
       const username = currentProfile?.username ? "@" + String(currentProfile.username).replace(/^@/, "") : "Visitante";
       const displayName = currentProfile?.display_name || username;
@@ -5900,7 +6247,7 @@
 
       const { data, error } = await sb
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
         .eq("id", currentUser.id)
         .maybeSingle();
 
