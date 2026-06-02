@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App</title>
+  <title>SHITAGRAM™ App — Mood Map</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -4818,6 +4818,12 @@
         return;
       }
 
+      await registerMoodEvent({
+        postId,
+        mood: "vergonha",
+        eventType: "reaction_poop"
+      });
+
       realFeedLoaded = false;
       await fetchRealFeed(true);
       renderCurrentView();
@@ -4960,6 +4966,12 @@
           return;
         }
 
+        await registerMoodEvent({
+          postId: selectedCommentPostId,
+          mood: detectShitagramMood(body),
+          eventType: "comment"
+        });
+
         commentText.value = "";
         await loadPostComments(selectedCommentPostId);
         realFeedLoaded = false;
@@ -5042,7 +5054,19 @@
         return;
       }
 
+      await registerMoodEvent({
+        postId: selectedGiftPostId,
+        mood: "alivio",
+        eventType: "gift_sent"
+      });
+
       closeGiftModal();
+      await registerMoodEvent({
+        postId,
+        mood: "mico",
+        eventType: "boost_applied"
+      });
+
       await loadProfile();
       await loadCoinTransactions();
       realFeedLoaded = false;
@@ -6056,12 +6080,13 @@
           ...mediaPayload
         };
 
-        let { error } = await sb.from("posts").insert(payload);
+        let { data: insertedPost, error } = await sb.from("posts").insert(payload).select("id").single();
 
         if (error && String(error.message || "").toLowerCase().includes("is_anonymous")) {
           const fallbackPayload = { ...payload };
           delete fallbackPayload.is_anonymous;
-          const retry = await sb.from("posts").insert(fallbackPayload);
+          const retry = await sb.from("posts").insert(fallbackPayload).select("id").single();
+          insertedPost = retry.data;
           error = retry.error;
         }
 
@@ -6072,7 +6097,8 @@
           const fallbackPayload = { ...payload };
           delete fallbackPayload.moderation_reason;
           delete fallbackPayload.safety_flags;
-          const retry = await sb.from("posts").insert(fallbackPayload);
+          const retry = await sb.from("posts").insert(fallbackPayload).select("id").single();
+          insertedPost = retry.data;
           error = retry.error;
         }
 
@@ -6081,6 +6107,12 @@
           showToast(error.message || "Erro ao publicar.");
           return;
         }
+
+        await registerMoodEvent({
+          postId: insertedPost?.id || null,
+          mood: detectShitagramMood(`${title} ${description}`),
+          eventType: "post_created"
+        });
 
         closePublishModal();
         realFeedLoaded = false;
@@ -6145,6 +6177,492 @@
   </script>
 <!-- vClean9.3 profile public/avatar -->
 <!-- vClean9.3 profile public/avatar -->
-<!-- vClean10.2.1 legal footer links -->
+<!-- vClean10.3 Mood Map MVP -->
+
+<!-- vClean10.3 Mood Map agregado -->
+<style>
+  #shitagramMoodButton {
+    position: fixed;
+    right: 18px;
+    bottom: 134px;
+    z-index: 9999;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid #ffcc00;
+    background: #111;
+    color: #ffcc00;
+    font-size: 22px;
+    box-shadow: 0 16px 50px rgba(0,0,0,.45), 0 0 0 4px rgba(255,204,0,.08);
+  }
+
+  #shitagramMoodPanel {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    background: rgba(0,0,0,.82);
+    padding: 18px;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+  }
+
+  #shitagramMoodPanel.show { display: block; }
+
+  .shitagramMoodBox {
+    max-width: 820px;
+    margin: 28px auto;
+    background: radial-gradient(circle at top, rgba(255,204,0,.16), #080808 68%);
+    border: 1px solid rgba(255,204,0,.55);
+    border-radius: 26px;
+    padding: 22px;
+    color: white;
+    box-shadow: 0 30px 90px rgba(0,0,0,.62);
+  }
+
+  .shitagramMoodHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .shitagramMoodHeader h2 {
+    margin: 0;
+    color: #ffcc00;
+    font-size: 24px;
+    letter-spacing: -.4px;
+  }
+
+  .shitagramMoodClose {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    font-size: 26px;
+  }
+
+  .shitagramMoodIntro {
+    color:#cfcfcf;
+    margin-top:10px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .shitagramMoodFilters {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .shitagramMoodFilters input {
+    background: #111;
+    border: 1px solid #2b2b2b;
+    color: white;
+    border-radius: 13px;
+    padding: 12px 13px;
+    outline: none;
+  }
+
+  .shitagramMoodFilters button {
+    background: #ffcc00;
+    color: #050505;
+    border: 0;
+    border-radius: 13px;
+    padding: 12px 14px;
+    font-weight: 900;
+  }
+
+  .shitagramMoodGrid {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .shitagramMoodCard {
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+
+  .shitagramMoodCard h3 {
+    margin: 0 0 8px;
+    color: #ffcc00;
+  }
+
+  .shitagramMoodMeta {
+    font-size:13px;
+    color:#cfcfcf;
+    line-height:1.45;
+  }
+
+  .shitagramMoodBar {
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  .shitagramMoodFill {
+    height: 100%;
+    background: #ffcc00;
+    width: 0%;
+  }
+
+  .shitagramCityRanking {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.12);
+  }
+
+  .shitagramCityRanking h3 {
+    color: #ffcc00;
+    margin: 0 0 14px;
+  }
+
+  .shitagramCityItem {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: white;
+    font-size: 13px;
+  }
+
+  .shitagramCityItem span:last-child {
+    color: #ffcc00;
+    font-weight: 900;
+    text-align: right;
+  }
+
+  @media (max-width: 860px) {
+    #shitagramMoodButton {
+      right: 18px;
+      bottom: 104px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .shitagramMoodFilters {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<button id="shitagramMoodButton" type="button" title="Mood Map Global">🌍</button>
+
+<div id="shitagramMoodPanel" aria-hidden="true">
+  <div class="shitagramMoodBox">
+    <div class="shitagramMoodHeader">
+      <div>
+        <h2>🌍 Mood Map Global</h2>
+        <p class="shitagramMoodIntro">
+          Como a comunidade está a falhar nas últimas 24 horas. Dados agregados, sem mostrar utilizadores individuais.
+        </p>
+      </div>
+      <button class="shitagramMoodClose" onclick="closeMoodMap()" type="button">×</button>
+    </div>
+
+    <div class="shitagramMoodFilters">
+      <input id="shitagramCountryInput" type="text" placeholder="País" />
+      <input id="shitagramCityInput" type="text" placeholder="Cidade" />
+      <button type="button" onclick="saveMoodLocation()">Guardar localização</button>
+    </div>
+
+    <div id="shitagramMoodGrid" class="shitagramMoodGrid">
+      A carregar mapa emocional...
+    </div>
+  </div>
+</div>
+
+<script>
+  function getMoodLabel(mood) {
+    const labels = {
+      vergonha: "💩 Vergonha coletiva",
+      drama: "😭 Drama emocional",
+      caos: "🤡 Caos social",
+      mico: "😳 Mico público",
+      alivio: "😂 Alívio coletivo",
+      tristeza: "😭 Tristeza cómica",
+      raiva: "🔥 Raiva divertida",
+      constrangimento: "😳 Constrangimento"
+    };
+
+    return labels[mood] || "🌫️ Estado confuso";
+  }
+
+  function detectShitagramMood(text = "") {
+    const t = String(text || "").toLowerCase();
+
+    const rules = {
+      drama: ["chorei", "triste", "acabou", "ex", "coração", "saudade", "rejeitado", "terminou", "bloqueou"],
+      vergonha: ["vergonha", "mico", "passei mal", "humilhado", "ridículo", "constrangedor", "cringe"],
+      caos: ["caos", "surtei", "gritei", "briga", "confusão", "desastre", "pânico", "correria"],
+      alivio: ["também", "ainda bem", "não fui só eu", "igual", "aconteceu comigo", "sobrevivi"],
+      mico: ["cai", "caí", "tropecei", "errei", "falhei", "esqueci", "paguei mico", "enganei"]
+    };
+
+    let bestMood = "mico";
+    let bestScore = 0;
+
+    Object.entries(rules).forEach(([mood, words]) => {
+      let score = 0;
+      words.forEach(word => {
+        if (t.includes(word)) score++;
+      });
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMood = mood;
+      }
+    });
+
+    return bestMood;
+  }
+
+  async function registerMoodEvent({ postId = null, mood = "mico", eventType = "post_created" } = {}) {
+    const user = window.currentUser || currentUser;
+    if (!user || !window.sb) return;
+
+    const allowedMoods = ["vergonha", "drama", "caos", "mico", "alivio", "tristeza", "raiva", "constrangimento"];
+    const safeMood = allowedMoods.includes(mood) ? mood : "mico";
+
+    const country = localStorage.getItem("shitagram_country") || "Portugal";
+    const city = localStorage.getItem("shitagram_city") || "Lisboa";
+
+    const { error } = await sb
+      .from("mood_events")
+      .insert({
+        user_id: user.id,
+        post_id: postId || null,
+        country,
+        city,
+        mood: safeMood,
+        event_type: eventType
+      });
+
+    if (error) {
+      console.warn("[SHITAGRAM Mood Map] evento não registado", error);
+    }
+  }
+
+  async function getGlobalMood() {
+    if (!window.sb) return null;
+
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await sb
+      .from("mood_events")
+      .select("country, city, mood, event_type, created_at")
+      .gte("created_at", since);
+
+    if (error || !data) {
+      console.error("[SHITAGRAM Mood Map] erro ao carregar", error);
+      return null;
+    }
+
+    const moods = {};
+
+    data.forEach(event => {
+      const key = event.country || "Global";
+
+      if (!moods[key]) {
+        moods[key] = {
+          total: 0,
+          vergonha: 0,
+          drama: 0,
+          caos: 0,
+          mico: 0,
+          alivio: 0,
+          tristeza: 0,
+          raiva: 0,
+          constrangimento: 0
+        };
+      }
+
+      moods[key].total++;
+      moods[key][event.mood] = (moods[key][event.mood] || 0) + 1;
+    });
+
+    return moods;
+  }
+
+  async function getCityMoodRanking() {
+    if (!window.sb) return [];
+
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await sb
+      .from("mood_events")
+      .select("country, city, mood, created_at")
+      .gte("created_at", since);
+
+    if (error || !data) {
+      console.error("[SHITAGRAM Mood Map] erro ranking cidades", error);
+      return [];
+    }
+
+    const cities = {};
+
+    data.forEach(event => {
+      const city = event.city || "Desconhecida";
+      const country = event.country || "Global";
+      const key = city + ", " + country;
+
+      if (!cities[key]) {
+        cities[key] = {
+          city,
+          country,
+          total: 0,
+          vergonha: 0,
+          drama: 0,
+          caos: 0,
+          mico: 0,
+          alivio: 0,
+          tristeza: 0,
+          raiva: 0,
+          constrangimento: 0
+        };
+      }
+
+      cities[key].total++;
+      cities[key][event.mood] = (cities[key][event.mood] || 0) + 1;
+    });
+
+    return Object.values(cities)
+      .filter(item => item.total >= 2)
+      .map(item => {
+        const dominant = Object.entries(item)
+          .filter(([key]) => !["city", "country", "total"].includes(key))
+          .sort((a, b) => b[1] - a[1])[0] || ["mico", 0];
+
+        return {
+          ...item,
+          dominantMood: dominant[0],
+          dominantCount: dominant[1],
+          percent: item.total ? Math.round((dominant[1] / item.total) * 100) : 0
+        };
+      })
+      .sort((a, b) => b.percent - a.percent || b.total - a.total)
+      .slice(0, 10);
+  }
+
+  function openMoodMap() {
+    const panel = document.getElementById("shitagramMoodPanel");
+    if (!panel) return;
+    panel.classList.add("show");
+    panel.setAttribute("aria-hidden", "false");
+
+    const countryInput = document.getElementById("shitagramCountryInput");
+    const cityInput = document.getElementById("shitagramCityInput");
+    if (countryInput) countryInput.value = localStorage.getItem("shitagram_country") || "Portugal";
+    if (cityInput) cityInput.value = localStorage.getItem("shitagram_city") || "Lisboa";
+
+    renderMoodMapPanel();
+  }
+
+  function closeMoodMap() {
+    const panel = document.getElementById("shitagramMoodPanel");
+    if (!panel) return;
+    panel.classList.remove("show");
+    panel.setAttribute("aria-hidden", "true");
+  }
+
+  function saveMoodLocation() {
+    const country = document.getElementById("shitagramCountryInput")?.value?.trim() || "Portugal";
+    const city = document.getElementById("shitagramCityInput")?.value?.trim() || "Lisboa";
+
+    localStorage.setItem("shitagram_country", country);
+    localStorage.setItem("shitagram_city", city);
+
+    if (typeof showToast === "function") {
+      showToast("Localização emocional guardada 🌍");
+    }
+
+    renderMoodMapPanel();
+  }
+
+  async function renderMoodMapPanel() {
+    const grid = document.getElementById("shitagramMoodGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "A carregar mapa emocional...";
+
+    const moodData = await getGlobalMood();
+
+    if (!moodData || Object.keys(moodData).length === 0) {
+      grid.innerHTML = `
+        <div class="shitagramMoodCard">
+          <h3>🌍 Ainda sem dados suficientes</h3>
+          <p class="shitagramMoodMeta">Quando houver reações, comentários, presentes e micos publicados, o mapa começa a ganhar vida.</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = Object.entries(moodData).map(([country, stats]) => {
+      const dominant = Object.entries(stats)
+        .filter(([key]) => key !== "total")
+        .sort((a, b) => b[1] - a[1])[0] || ["mico", 0];
+
+      const mood = dominant[0];
+      const count = dominant[1];
+      const percent = stats.total ? Math.round((count / stats.total) * 100) : 0;
+
+      return `
+        <div class="shitagramMoodCard">
+          <h3>${country}</h3>
+          <p>${getMoodLabel(mood)}</p>
+          <p class="shitagramMoodMeta">
+            ${percent}% dos eventos emocionais nas últimas 24h · ${stats.total} eventos agregados
+          </p>
+          <div class="shitagramMoodBar">
+            <div class="shitagramMoodFill" style="width:${percent}%"></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    await renderCityMoodRanking();
+  }
+
+  async function renderCityMoodRanking() {
+    const grid = document.getElementById("shitagramMoodGrid");
+    if (!grid) return;
+
+    const ranking = await getCityMoodRanking();
+
+    if (!ranking.length) return;
+
+    const html = `
+      <div class="shitagramCityRanking">
+        <h3>🏙️ Ranking emocional por cidade</h3>
+        ${ranking.map((item, index) => `
+          <div class="shitagramCityItem">
+            <span>
+              ${index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "#" + (index + 1)}
+              ${item.city}, ${item.country}
+            </span>
+            <span>${getMoodLabel(item.dominantMood)} · ${item.percent}%</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    grid.insertAdjacentHTML("beforeend", html);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const moodButton = document.getElementById("shitagramMoodButton");
+    if (moodButton) moodButton.onclick = openMoodMap;
+  });
+</script>
+
 </body>
 </html>
