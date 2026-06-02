@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Convites Beta</title>
+  <title>SHITAGRAM™ App — Beta Access Control</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -2338,6 +2338,100 @@
       }
     }
 
+  
+    /* vClean10.6 — Beta access control */
+    .beta-access-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,204,0,0.28);
+      background: rgba(255,204,0,0.10);
+      color: var(--brand-yellow);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-top: 10px;
+    }
+
+    .beta-access-badge.pending {
+      border-color: rgba(255,184,0,0.45);
+      color: #ffcc00;
+    }
+
+    .beta-access-badge.blocked {
+      border-color: rgba(255,77,77,0.45);
+      background: rgba(255,77,77,0.12);
+      color: var(--danger);
+    }
+
+    .beta-admin-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .beta-request-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      background: #101010;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .beta-request-row small {
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .beta-request-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .beta-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      margin-top: 7px;
+    }
+
+    .beta-status-pill.approved { color: var(--success); background: rgba(39,214,109,0.10); }
+    .beta-status-pill.pending { color: var(--brand-yellow); background: rgba(255,204,0,0.10); }
+    .beta-status-pill.blocked { color: var(--danger); background: rgba(255,77,77,0.10); }
+
+    .beta-locked-card {
+      border-color: rgba(255,204,0,0.28);
+      background:
+        radial-gradient(circle at top right, rgba(255,204,0,0.12), transparent 36%),
+        #090909;
+    }
+
+    @media (max-width: 860px) {
+      .beta-request-row {
+        grid-template-columns: 1fr;
+      }
+
+      .beta-request-actions {
+        justify-content: stretch;
+      }
+
+      .beta-request-actions button {
+        flex: 1;
+      }
+    }
+
   </style>
 </head>
 
@@ -2382,6 +2476,9 @@
 
         <button id="navAnalytics" type="button" class="nav-item" onclick="setView('analytics')" style="display:none;" title="Analytics da beta">
           <i class="fa-solid fa-chart-line"></i><label>Analytics</label>
+        </button>
+<button id="navBetaAccess" type="button" class="nav-item" onclick="setView('beta_access')" style="display:none;" title="Aprovar/rejeitar acessos beta">
+          <i class="fa-solid fa-user-lock"></i><label>Acessos Beta</label>
         </button>
       </nav>
 
@@ -2516,6 +2613,9 @@
 
     <button id="mobileAnalytics" onclick="setView('analytics')" style="display:none;">
       <i class="fa-solid fa-chart-line"></i><span>Stats</span>
+    </button>
+<button id="mobileBetaAccess" onclick="setView('beta_access')" style="display:none;">
+      <i class="fa-solid fa-user-lock"></i><span>Beta</span>
     </button>
   </nav>
 
@@ -3053,14 +3153,14 @@
         sb.auth.onAuthStateChange((_event, session) => {
           currentUser = session?.user || null;
           loadProfile().catch(error => {
-            console.error("[SHITAGRAM vClean9.3] auth state profile", error);
+            console.error("[SHITAGRAM vClean10.6] auth state profile", error);
             safeShowToast("Sessão iniciada, mas o perfil demorou a carregar.");
           });
         });
 
         await loadProfile();
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] auth init", error);
+        console.error("[SHITAGRAM vClean10.6] auth init", error);
         safeShowToast("Não foi possível iniciar autenticação.");
         updateAuthUi();
       }
@@ -3085,7 +3185,7 @@
         );
 
         if (error) {
-          console.error("[SHITAGRAM vClean9.3] profile load", error);
+          console.error("[SHITAGRAM vClean10.6] profile load", error);
           safeShowToast("Conta ligada, mas não consegui carregar perfil.");
           currentProfile = {
             id: currentUser.id,
@@ -3106,7 +3206,7 @@
 
         updateAuthUi();
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] profile timeout", error);
+        console.error("[SHITAGRAM vClean10.6] profile timeout", error);
         currentProfile = {
           id: currentUser.id,
           username: normalizeUsername((currentUser.email || "user").split("@")[0]) || "user",
@@ -3140,7 +3240,7 @@
               coins: 0,
               posts_count: 0,
               role,
-              beta_status: "approved"
+              beta_status: role === "admin" ? "approved" : "pending"
             }, { onConflict: "id" })
             .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status")
             .single(),
@@ -3149,14 +3249,14 @@
         );
 
         if (error) {
-          console.error("[SHITAGRAM vClean9.3] ensure profile", error);
+          console.error("[SHITAGRAM vClean10.6] ensure profile", error);
           currentProfile = { id: currentUser.id, username, display_name: username, xp: 0, coins: 0, role };
           return;
         }
 
         currentProfile = data;
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] ensure profile timeout", error);
+        console.error("[SHITAGRAM vClean10.6] ensure profile timeout", error);
         currentProfile = { id: currentUser.id, username, display_name: username, xp: 0, coins: 0, role };
       }
     }
@@ -3198,11 +3298,15 @@
       const mobileModBtn = document.getElementById("mobileModeration");
       const analyticsBtn = document.getElementById("navAnalytics");
       const mobileAnalyticsBtn = document.getElementById("mobileAnalytics");
+      const betaAccessBtn = document.getElementById("navBetaAccess");
+      const mobileBetaAccessBtn = document.getElementById("mobileBetaAccess");
       if (modBtn) modBtn.style.display = isModerator ? "flex" : "none";
       if (mobileModBtn) mobileModBtn.style.display = isModerator ? "grid" : "none";
       if (analyticsBtn) analyticsBtn.style.display = isModerator ? "flex" : "none";
       if (mobileAnalyticsBtn) mobileAnalyticsBtn.style.display = isModerator ? "grid" : "none";
-      if (!isModerator && (currentView === "moderation" || currentView === "analytics")) {
+      if (betaAccessBtn) betaAccessBtn.style.display = isModerator ? "flex" : "none";
+      if (mobileBetaAccessBtn) mobileBetaAccessBtn.style.display = isModerator ? "grid" : "none";
+      if (!isModerator && (currentView === "moderation" || currentView === "analytics" || currentView === "beta_access")) {
         currentView = "feed";
       }
 
@@ -3210,7 +3314,7 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean9.3] login start", email);
+      console.log("[SHITAGRAM vClean10.6] login start", email);
 
       try {
         const { data, error } = await withTimeout(
@@ -3219,7 +3323,7 @@
           "Login"
         );
 
-        console.log("[SHITAGRAM vClean9.3] login result", { data, error });
+        console.log("[SHITAGRAM vClean10.6] login result", { data, error });
 
         if (error) {
           const msg = String(error.message || "");
@@ -3240,13 +3344,13 @@
             renderCurrentView();
           })
           .catch(error => {
-            console.error("[SHITAGRAM vClean9.3] load profile after login", error);
+            console.error("[SHITAGRAM vClean10.6] load profile after login", error);
             safeShowToast("Login feito, mas o perfil demorou a carregar.");
           });
 
         return true;
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] login timeout/error", error);
+        console.error("[SHITAGRAM vClean10.6] login timeout/error", error);
         safeShowToast(error.message || "Login demorou demasiado. Verifica a ligação e tenta novamente.");
         return false;
       }
@@ -3260,7 +3364,7 @@
         return;
       }
 
-      console.log("[SHITAGRAM vClean9.3] signup start", email);
+      console.log("[SHITAGRAM vClean10.6] signup start", email);
 
       try {
         const { data, error } = await withTimeout(
@@ -3273,7 +3377,7 @@
           "Criação de conta"
         );
 
-        console.log("[SHITAGRAM vClean9.3] signup result", { data, error });
+        console.log("[SHITAGRAM vClean10.6] signup result", { data, error });
 
         if (error) {
           safeShowToast(error.message || "Erro ao criar conta.");
@@ -3293,7 +3397,7 @@
           safeShowToast("Conta criada. Agora faz login ou confirma o email.");
         }
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] signup timeout/error", error);
+        console.error("[SHITAGRAM vClean10.6] signup timeout/error", error);
         safeShowToast(error.message || "Criação de conta demorou demasiado.");
       }
     }
@@ -3421,10 +3525,16 @@
         document.getElementById("mobileAnalytics")?.classList.add("active");
       }
 
+      if (view === "beta_access") {
+        document.getElementById("navBetaAccess")?.classList.add("active");
+        document.getElementById("mobileBetaAccess")?.classList.add("active");
+      }
+
       renderCurrentView();
     }
 
     function renderCurrentView() {
+      if (enforceBetaAccessForCurrentView()) return;
       if (currentView === "feed") renderFeed();
       if (currentView === "clips") renderClips();
       if (currentView === "ranking") renderRankingPage();
@@ -3434,6 +3544,7 @@
       if (currentView === "notifications") renderNotificationsPage();
       if (currentView === "moderation") renderModerationPage();
       if (currentView === "analytics") renderAnalyticsPage();
+      if (currentView === "beta_access") renderBetaAccessAdminPage();
     }
 
     function openStore(tab = "presentes") {
@@ -3785,7 +3896,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] report", error);
+        console.error("[SHITAGRAM vClean10.6] report", error);
         showToast(error.message || "Não foi possível enviar a denúncia.");
         playSound("error");
         return;
@@ -4081,7 +4192,7 @@
       const { data, error } = await sb.rpc("get_moderation_reports");
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] moderation reports", error);
+        console.error("[SHITAGRAM vClean10.6] moderation reports", error);
         mainView.innerHTML = `
           <section class="view-title-card">
             <h1>🛡️ Painel de moderação</h1>
@@ -4209,7 +4320,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] moderate report", error);
+        console.error("[SHITAGRAM vClean10.6] moderate report", error);
         showToast(error.message || "Erro ao moderar.");
         playSound("error");
         return;
@@ -4501,7 +4612,7 @@
           .limit(80);
 
         if (error) {
-          console.warn("[SHITAGRAM vClean9.3] posts full select failed, retry basic", error);
+          console.warn("[SHITAGRAM vClean10.6] posts full select failed, retry basic", error);
           const retry = await sb
             .from("posts")
             .select("id,user_id,title,description,category,trauma_level,status,created_at")
@@ -4621,7 +4732,7 @@
         renderRanking();
         renderFeatured();
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] feed real", error);
+        console.error("[SHITAGRAM vClean10.6] feed real", error);
         showToast("Não consegui carregar o feed real.");
       } finally {
         realFeedLoading = false;
@@ -4929,7 +5040,7 @@
         });
 
         if (error) {
-          console.error("[SHITAGRAM vClean9.3] edit post", error);
+          console.error("[SHITAGRAM vClean10.6] edit post", error);
           showToast(error.message || "Não foi possível editar o post.");
           playSound("error");
           return;
@@ -4965,7 +5076,7 @@
           showToast("Já reagiste a este mico.");
         playSound("error");
         } else {
-          console.error("[SHITAGRAM vClean9.3] react", error);
+          console.error("[SHITAGRAM vClean10.6] react", error);
           showToast(error.message || "Erro ao reagir.");
         }
         return;
@@ -5017,7 +5128,7 @@
         .order("created_at", { ascending: true });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] load comments", error);
+        console.error("[SHITAGRAM vClean10.6] load comments", error);
         commentsList.innerHTML = `<div class="inline-empty">Não foi possível carregar comentários.</div>`;
         return;
       }
@@ -5114,7 +5225,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean9.3] submit comment", error);
+          console.error("[SHITAGRAM vClean10.6] submit comment", error);
           showToast(error.message || "Erro ao comentar.");
           return;
         }
@@ -5202,7 +5313,7 @@
       });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] gift", error);
+        console.error("[SHITAGRAM vClean10.6] gift", error);
         showToast(error.message || "Erro ao enviar presente.");
         return;
       }
@@ -5241,7 +5352,7 @@
       const { error } = await sb.rpc("boost_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] boost", error);
+        console.error("[SHITAGRAM vClean10.6] boost", error);
         showToast(error.message || "Não foi possível aplicar boost.");
         return;
       }
@@ -5262,7 +5373,7 @@
       const { error } = await sb.rpc("delete_own_post", { p_post_id: postId });
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] delete", error);
+        console.error("[SHITAGRAM vClean10.6] delete", error);
         showToast(error.message || "Não foi possível eliminar.");
         playSound("error");
         return;
@@ -5383,7 +5494,7 @@
         .limit(30);
 
       if (error) {
-        console.warn("[SHITAGRAM vClean9.3] coin transactions", error);
+        console.warn("[SHITAGRAM vClean10.6] coin transactions", error);
         coinTransactions = [];
         return;
       }
@@ -5601,7 +5712,7 @@
 
         showToast(`Recebeste ${formatNumber(credited)} ShitCoins 🪙`);
       } catch (error) {
-        console.warn("[SHITAGRAM vClean9.3] claim coins rpc failed, fallback", error);
+        console.warn("[SHITAGRAM vClean10.6] claim coins rpc failed, fallback", error);
 
         try {
           const currentCoins = Number(currentProfile?.coins || myCoins || 0);
@@ -5625,7 +5736,7 @@
           if (currentView === "shop") renderShopPage();
           showToast(`Recebeste ${formatNumber(value)} ShitCoins 🪙`);
         } catch (fallbackError) {
-          console.error("[SHITAGRAM vClean9.3] claim coins fallback", fallbackError);
+          console.error("[SHITAGRAM vClean10.6] claim coins fallback", fallbackError);
           showToast(fallbackError.message || "Não foi possível receber ShitCoins.");
         }
       }
@@ -5847,6 +5958,241 @@
     }
 
 
+    function betaAccessStatus() {
+      const role = String(currentProfile?.role || "user").toLowerCase();
+      const email = String(currentUser?.email || "").toLowerCase();
+      if (["admin", "moderator"].includes(role) || email === "viraliqpt@gmail.com") return "approved";
+      return String(currentProfile?.beta_status || "pending").toLowerCase();
+    }
+
+    function betaAccessApproved() {
+      return !currentUser || betaAccessStatus() === "approved";
+    }
+
+    function betaAccessBlocked() {
+      return currentUser && betaAccessStatus() === "blocked";
+    }
+
+    function betaAccessPending() {
+      return currentUser && !betaAccessApproved() && !betaAccessBlocked();
+    }
+
+    function renderBetaAccessBlockedPage() {
+      mainView.innerHTML = `
+        <section class="view-title-card beta-locked-card">
+          <h1>🚫 Acesso bloqueado</h1>
+          <p>Esta conta não pode entrar na beta neste momento.</p>
+          <span class="beta-access-badge blocked">Estado: blocked</span>
+        </section>
+
+        <article class="post-card">
+          <div class="post-content">
+            <h2>O que fazer agora?</h2>
+            <p>Se achas que isto foi um erro, entra em contacto com a equipa do SHITAGRAM™.</p>
+          </div>
+          <div class="post-divider"></div>
+          <div class="post-actions">
+            <button class="action-btn share" onclick="logoutUser()">
+              <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderBetaAccessPendingPage() {
+      const username = currentProfile?.username ? "@" + String(currentProfile.username).replace(/^@/, "") : "utilizador";
+      mainView.innerHTML = `
+        <section class="view-title-card beta-locked-card">
+          <h1>⏳ Acesso beta pendente</h1>
+          <p>Olá ${escapeHtml(username)}. A tua conta foi criada, mas ainda precisa de aprovação para entrar na app.</p>
+          <span class="beta-access-badge pending">Estado: pending</span>
+        </section>
+
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Como funciona a beta fechada?</h2>
+            <p>O SHITAGRAM™ está a abrir por fases para manter a comunidade segura, moderada e estável.</p>
+            <p style="margin-top:10px;color:var(--text-secondary);">Quando a tua conta for aprovada, vais conseguir aceder ao Feed, ShitClips™, Loja, Ranking e restantes funcionalidades.</p>
+          </div>
+          <div class="post-divider"></div>
+          <div class="post-actions">
+            <button class="action-btn comment" onclick="setView('invites')">
+              <i class="fa-solid fa-ticket"></i> Ver convites
+            </button>
+            <button class="action-btn share" onclick="logoutUser()">
+              <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    async function renderBetaAccessAdminPage() {
+      if (!isCurrentModerator()) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🔒 Sem acesso</h1>
+            <p>Este painel é reservado a administradores e moderadores.</p>
+          </section>
+        `;
+        return;
+      }
+
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>🔐 Beta access control</h1>
+          <p>Aprova, rejeita ou bloqueia utilizadores antes de entrarem na beta pública.</p>
+        </section>
+
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Pedidos pendentes</h2>
+            <p>A carregar pedidos de acesso...</p>
+          </div>
+        </article>
+      `;
+
+      try {
+        const { data, error } = await sb.rpc("get_beta_access_requests", { p_limit: 60 });
+        if (error) throw error;
+
+        const rows = data || [];
+        if (!rows.length) {
+          mainView.innerHTML = `
+            <section class="view-title-card">
+              <h1>🔐 Beta access control</h1>
+              <p>Sem pedidos pendentes neste momento.</p>
+            </section>
+            <article class="post-card">
+              <div class="post-content">
+                <h2>Sem pedidos</h2>
+                <p>Quando alguém entrar pela landing, convite ou registo, aparece aqui para aprovação.</p>
+              </div>
+              <div class="post-divider"></div>
+              <div class="post-actions">
+                <button class="action-btn comment" onclick="renderBetaAccessAdminPage()">
+                  <i class="fa-solid fa-rotate"></i> Recarregar
+                </button>
+              </div>
+            </article>
+          `;
+          return;
+        }
+
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🔐 Beta access control</h1>
+            <p>${rows.length} pedido(s) encontrado(s).</p>
+          </section>
+
+          <section class="beta-admin-grid">
+            ${rows.map(row => `
+              <article class="beta-request-row">
+                <div>
+                  <strong>${escapeHtml(row.username ? "@" + row.username.replace(/^@/, "") : row.email || "Utilizador")}</strong><br>
+                  <small>${escapeHtml(row.email || "email não disponível")}</small><br>
+                  <span class="beta-status-pill ${escapeHtml(row.beta_status || "pending")}">${escapeHtml(row.beta_status || "pending")}</span>
+                  ${row.invited_by_username ? `<small style="display:block;margin-top:7px;">Convite de @${escapeHtml(row.invited_by_username)}</small>` : ""}
+                  ${row.created_at ? `<small style="display:block;margin-top:4px;">Criado em ${new Date(row.created_at).toLocaleString("pt-PT")}</small>` : ""}
+                </div>
+                <div class="beta-request-actions">
+                  <button class="btn-primary" onclick="approveBetaUser('${row.user_id}')">
+                    <i class="fa-solid fa-check"></i> Aprovar
+                  </button>
+                  <button class="btn-secondary" onclick="rejectBetaUser('${row.user_id}')">
+                    <i class="fa-solid fa-clock"></i> Manter pendente
+                  </button>
+                  <button class="btn-secondary" onclick="blockBetaUser('${row.user_id}')">
+                    <i class="fa-solid fa-ban"></i> Bloquear
+                  </button>
+                </div>
+              </article>
+            `).join("")}
+          </section>
+        `;
+      } catch (err) {
+        mainView.innerHTML = `
+          <section class="view-title-card">
+            <h1>🔐 Beta access control</h1>
+            <p>Erro ao carregar pedidos.</p>
+          </section>
+          <article class="post-card">
+            <div class="post-content">
+              <h2>Erro</h2>
+              <p>${escapeHtml(err.message || "Não foi possível carregar os pedidos de acesso.")}</p>
+            </div>
+            <div class="post-divider"></div>
+            <div class="post-actions">
+              <button class="action-btn comment" onclick="renderBetaAccessAdminPage()">
+                <i class="fa-solid fa-rotate"></i> Tentar novamente
+              </button>
+            </div>
+          </article>
+        `;
+      }
+    }
+
+    async function approveBetaUser(userId) {
+      try {
+        const { error } = await sb.rpc("approve_beta_user", { p_user_id: userId });
+        if (error) throw error;
+        showToast("Utilizador aprovado.");
+        window.trackAppEvent?.("beta_user_approved", { userId }, "app");
+        renderBetaAccessAdminPage();
+      } catch (err) {
+        showToast(err.message || "Erro ao aprovar utilizador.");
+      }
+    }
+
+    async function rejectBetaUser(userId) {
+      try {
+        const { error } = await sb.rpc("set_beta_user_pending", { p_user_id: userId });
+        if (error) throw error;
+        showToast("Utilizador mantido em pendente.");
+        window.trackAppEvent?.("beta_user_pending", { userId }, "app");
+        renderBetaAccessAdminPage();
+      } catch (err) {
+        showToast(err.message || "Erro ao atualizar utilizador.");
+      }
+    }
+
+    async function blockBetaUser(userId) {
+      const ok = confirm("Queres bloquear este utilizador da beta?");
+      if (!ok) return;
+
+      try {
+        const { error } = await sb.rpc("block_beta_user", { p_user_id: userId, p_reason: "Bloqueado no painel beta" });
+        if (error) throw error;
+        showToast("Utilizador bloqueado.");
+        window.trackAppEvent?.("beta_user_blocked", { userId }, "app");
+        renderBetaAccessAdminPage();
+      } catch (err) {
+        showToast(err.message || "Erro ao bloquear utilizador.");
+      }
+    }
+
+    function enforceBetaAccessForCurrentView() {
+      if (!currentUser) return false;
+
+      const allowedViews = ["profile", "invites", "notifications"];
+      if (isCurrentModerator()) return false;
+
+      if (betaAccessBlocked()) {
+        renderBetaAccessBlockedPage();
+        return true;
+      }
+
+      if (betaAccessPending() && !allowedViews.includes(currentView)) {
+        renderBetaAccessPendingPage();
+        return true;
+      }
+
+      return false;
+    }
+
+
+
     function renderProfilePage() {
       const username = currentProfile?.username ? "@" + String(currentProfile.username).replace(/^@/, "") : "Visitante";
       const displayName = currentProfile?.display_name || username;
@@ -5868,6 +6214,7 @@
             <div style="flex:1;">
               <div class="profile-public-title">${escapeHtml(displayName)}</div>
               <div class="profile-public-subtitle">${escapeHtml(username)} · ${currentUser ? escapeHtml(currentUser.email) : "Sessão não iniciada"}</div>
+              ${currentUser ? `<span class="beta-access-badge ${escapeHtml(betaAccessStatus())}">Beta: ${escapeHtml(betaAccessStatus())}</span>` : ""}
               <p class="profile-bio">${escapeHtml(bio)}</p>
             </div>
             <span class="badge-grau">XP ${formatNumber(xp)}</span>
@@ -6025,7 +6372,7 @@
         showToast("Perfil atualizado com sucesso 👤");
         playSound("success");
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] profile update", error);
+        console.error("[SHITAGRAM vClean10.6] profile update", error);
         showToast(error.message || "Erro ao atualizar perfil.");
         playSound("error");
       } finally {
@@ -6051,7 +6398,7 @@
         const userPosts = posts.filter(post => post.user_id === userId);
         renderPublicProfile(profile, userPosts);
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] public profile", error);
+        console.error("[SHITAGRAM vClean10.6] public profile", error);
         showToast("Não consegui abrir o perfil público.");
       }
     }
@@ -6153,7 +6500,7 @@
           isFollowing: Boolean(isFollowingResult.count)
         };
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] follow stats", error);
+        console.error("[SHITAGRAM vClean10.6] follow stats", error);
         return { followers: 0, following: 0, isFollowing: false, error };
       }
     }
@@ -6215,7 +6562,7 @@
         await hydratePublicFollowStats(targetUserId);
         if (currentView === "profile") await hydrateOwnFollowStats();
       } catch (error) {
-        console.error("[SHITAGRAM vClean9.3] toggle follow", error);
+        console.error("[SHITAGRAM vClean10.6] toggle follow", error);
         showToast(error.message || "Não consegui atualizar o follow.");
         if (btn) btn.innerHTML = previousHtml;
       } finally {
@@ -6252,7 +6599,7 @@
         .maybeSingle();
 
       if (error) {
-        console.error("[SHITAGRAM vClean9.3] profile load", error);
+        console.error("[SHITAGRAM vClean10.6] profile load", error);
         showToast("Conta ligada, mas não consegui carregar perfil.");
         currentProfile = null;
         updateAuthUi();
@@ -6268,9 +6615,9 @@
     }
 
     async function loginUser(email, password) {
-      console.log("[SHITAGRAM vClean9.3] login start", email);
+      console.log("[SHITAGRAM vClean10.6] login start", email);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      console.log("[SHITAGRAM vClean9.3] login result", { data, error });
+      console.log("[SHITAGRAM vClean10.6] login result", { data, error });
 
       if (error) {
         const msg = String(error.message || "");
@@ -6472,7 +6819,7 @@
         }
 
         if (error) {
-          console.error("[SHITAGRAM vClean9.3] publish", error);
+          console.error("[SHITAGRAM vClean10.6] publish", error);
           showToast(error.message || "Erro ao publicar.");
           return;
         }
