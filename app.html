@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Mood Map</title>
+  <title>SHITAGRAM™ App — Analytics</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -2276,6 +2276,10 @@
         <button id="navModeration" type="button" class="nav-item" onclick="setView('moderation')" style="display:none;" title="Painel de moderação/admin">
           <i class="fa-solid fa-shield-halved"></i><label>Moderação</label>
         </button>
+
+        <button id="navAnalytics" type="button" class="nav-item" onclick="setView('analytics')" style="display:none;" title="Analytics da beta">
+          <i class="fa-solid fa-chart-line"></i><label>Analytics</label>
+        </button>
       </nav>
 
       <button class="publish-pill" onclick="openPublishModal()">
@@ -2401,6 +2405,10 @@
 
     <button id="mobileModeration" onclick="setView('moderation')" style="display:none;">
       <i class="fa-solid fa-shield-halved"></i><span>Mod</span>
+    </button>
+
+    <button id="mobileAnalytics" onclick="setView('analytics')" style="display:none;">
+      <i class="fa-solid fa-chart-line"></i><span>Stats</span>
     </button>
   </nav>
 
@@ -2875,6 +2883,7 @@
     const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.sb = sb;
 
     let currentUser = null;
     let currentProfile = null;
@@ -3069,9 +3078,13 @@
       const isModerator = isCurrentModerator();
       const modBtn = document.getElementById("navModeration");
       const mobileModBtn = document.getElementById("mobileModeration");
+      const analyticsBtn = document.getElementById("navAnalytics");
+      const mobileAnalyticsBtn = document.getElementById("mobileAnalytics");
       if (modBtn) modBtn.style.display = isModerator ? "flex" : "none";
       if (mobileModBtn) mobileModBtn.style.display = isModerator ? "grid" : "none";
-      if (!isModerator && currentView === "moderation") {
+      if (analyticsBtn) analyticsBtn.style.display = isModerator ? "flex" : "none";
+      if (mobileAnalyticsBtn) mobileAnalyticsBtn.style.display = isModerator ? "grid" : "none";
+      if (!isModerator && (currentView === "moderation" || currentView === "analytics")) {
         currentView = "feed";
       }
 
@@ -3274,6 +3287,11 @@
         document.getElementById("navModeration")?.classList.add("active");
       }
 
+      if (view === "analytics") {
+        document.getElementById("navAnalytics")?.classList.add("active");
+        document.getElementById("mobileAnalytics")?.classList.add("active");
+      }
+
       renderCurrentView();
     }
 
@@ -3285,6 +3303,7 @@
       if (currentView === "profile") renderProfilePage();
       if (currentView === "notifications") renderNotificationsPage();
       if (currentView === "moderation") renderModerationPage();
+      if (currentView === "analytics") renderAnalyticsPage();
     }
 
     function openStore(tab = "presentes") {
@@ -4492,7 +4511,8 @@
         ranking: "navRanking",
         shop: "navShop",
         profile: "navProfile",
-        moderation: "navModeration"
+        moderation: "navModeration",
+        analytics: "navAnalytics"
       };
 
       const mobileMap = {
@@ -4500,7 +4520,8 @@
         clips: "mobileClips",
         ranking: "mobileRanking",
         profile: "mobileProfile",
-        moderation: "mobileModeration"
+        moderation: "mobileModeration",
+        analytics: "mobileAnalytics"
       };
 
       if (navMap[view] && document.getElementById(navMap[view])) {
@@ -4523,6 +4544,7 @@
       if (currentView === "profile") renderProfilePage();
       if (currentView === "notifications") renderNotificationsPage();
       if (currentView === "moderation") renderModerationPage();
+      if (currentView === "analytics") renderAnalyticsPage();
     }
 
     function renderFeed() {
@@ -6662,6 +6684,284 @@
     const moodButton = document.getElementById("shitagramMoodButton");
     if (moodButton) moodButton.onclick = openMoodMap;
   });
+</script>
+
+
+<style>
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .analytics-card {
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 15px;
+  }
+
+  .analytics-card strong {
+    display: block;
+    color: var(--brand-yellow);
+    font-size: 22px;
+    margin-top: 6px;
+  }
+
+  .analytics-card span {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .analytics-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .analytics-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 0;
+    color: #e9e9e9;
+    font-size: 13px;
+  }
+
+  .analytics-row b {
+    color: var(--brand-yellow);
+  }
+
+  @media (max-width: 860px) {
+    .analytics-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<script>
+(function() {
+  const ANALYTICS_VERSION = "vClean10.4";
+  window.shitagramAnalyticsVersion = ANALYTICS_VERSION;
+
+  function getAnalyticsSessionId() {
+    let id = localStorage.getItem("shitagram_session_id");
+    if (!id) {
+      id = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+      localStorage.setItem("shitagram_session_id", id);
+    }
+    return id;
+  }
+
+  window.trackAppEvent = async function(eventName, metadata = {}, source = "app") {
+    try {
+      if (!window.sb || !eventName) return;
+      const page = location.pathname + location.hash;
+      const payload = {
+        p_event_name: eventName,
+        p_event_source: source,
+        p_page: page,
+        p_metadata: metadata || {},
+        p_session_id: getAnalyticsSessionId()
+      };
+
+      const { error } = await window.sb.rpc("track_app_event", payload);
+
+      if (error) {
+        console.warn("[SHITAGRAM analytics] evento não registado", eventName, error.message);
+      }
+    } catch (err) {
+      console.warn("[SHITAGRAM analytics] erro local", err);
+    }
+  };
+
+  function metricCard(label, value) {
+    return `
+      <div class="analytics-card">
+        <span>${label}</span>
+        <strong>${Number(value || 0).toLocaleString("pt-PT")}</strong>
+      </div>
+    `;
+  }
+
+  function rowsFromObject(obj) {
+    if (!obj || typeof obj !== "object" || !Object.keys(obj).length) {
+      return `<div class="analytics-row"><span>Sem dados suficientes</span><b>0</b></div>`;
+    }
+
+    return Object.entries(obj)
+      .sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0))
+      .slice(0, 12)
+      .map(([name, count]) => `
+        <div class="analytics-row">
+          <span>${escapeHtml(String(name))}</span>
+          <b>${Number(count || 0).toLocaleString("pt-PT")}</b>
+        </div>
+      `).join("");
+  }
+
+  window.renderAnalyticsPage = async function() {
+    if (!currentUser) {
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>📊 Analytics da beta</h1>
+          <p>Inicia sessão como admin para veres os dados da beta.</p>
+        </section>
+      `;
+      return;
+    }
+
+    if (!isCurrentModerator()) {
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>📊 Analytics da beta</h1>
+          <p>Esta área é exclusiva para administradores e moderadores.</p>
+        </section>
+      `;
+      return;
+    }
+
+    mainView.innerHTML = `
+      <section class="view-title-card">
+        <h1>📊 Analytics da beta</h1>
+        <p>A carregar métricas principais do SHITAGRAM™...</p>
+      </section>
+    `;
+
+    let summary = null;
+    try {
+      const { data, error } = await sb.rpc("get_admin_analytics", { p_days: 7 });
+      if (error) throw error;
+      summary = data || {};
+    } catch (err) {
+      console.error("[SHITAGRAM analytics] get_admin_analytics", err);
+      mainView.innerHTML = `
+        <section class="view-title-card">
+          <h1>📊 Analytics da beta</h1>
+          <p>Não foi possível carregar o painel. Confirma se o SQL vClean10.4 foi executado.</p>
+        </section>
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Erro</h2>
+            <p>${escapeHtml(err.message || "Erro desconhecido")}</p>
+          </div>
+          <div class="post-divider"></div>
+          <div class="post-actions">
+            <button class="action-btn comment" onclick="renderAnalyticsPage()">
+              <i class="fa-solid fa-rotate"></i> Tentar novamente
+            </button>
+          </div>
+        </article>
+      `;
+      return;
+    }
+
+    const events = summary.event_breakdown || {};
+    const sources = summary.source_breakdown || {};
+    const daily = summary.daily_events || {};
+
+    mainView.innerHTML = `
+      <section class="view-title-card">
+        <h1>📊 Analytics da beta</h1>
+        <p>Métricas agregadas dos últimos ${Number(summary.days || 7)} dias. Sem dados pessoais expostos.</p>
+      </section>
+
+      <section class="analytics-grid">
+        ${metricCard("Utilizadores", summary.users_total)}
+        ${metricCard("Lista beta", summary.beta_waitlist_total)}
+        ${metricCard("Posts ativos", summary.posts_active)}
+        ${metricCard("Comentários", summary.comments_total)}
+        ${metricCard("Reações", summary.reactions_total)}
+        ${metricCard("Presentes", summary.gifts_total)}
+        ${metricCard("Boosts ativos", summary.boosts_active)}
+        ${metricCard("Denúncias abertas", summary.reports_open)}
+        ${metricCard("Mood events 24h", summary.mood_events_24h)}
+        ${metricCard("Eventos 24h", summary.events_24h)}
+        ${metricCard("Eventos 7 dias", summary.events_period)}
+        ${metricCard("Sessões", summary.sessions_period)}
+      </section>
+
+      <article class="post-card">
+        <div class="post-content">
+          <h2>Eventos principais</h2>
+          <p>Mostra onde as pessoas estão a clicar/interagir dentro da landing e da app.</p>
+          <div class="analytics-list">${rowsFromObject(events)}</div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-content">
+          <h2>Origem dos eventos</h2>
+          <p>Ajuda a separar comportamento da landing, app e Mood Map.</p>
+          <div class="analytics-list">${rowsFromObject(sources)}</div>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <div class="post-content">
+          <h2>Eventos por dia</h2>
+          <p>Visão simples da atividade recente.</p>
+          <div class="analytics-list">${rowsFromObject(daily)}</div>
+        </div>
+      </article>
+    `;
+  };
+
+  // Wrappers leves para registar comportamento sem quebrar a app se o SQL ainda não estiver aplicado.
+  function wrapAsyncFunction(name, eventName, metadataBuilder, source = "app") {
+    const original = window[name];
+    if (typeof original !== "function" || original.__analyticsWrapped) return;
+
+    const wrapped = async function(...args) {
+      const result = await original.apply(this, args);
+      try {
+        const metadata = typeof metadataBuilder === "function" ? metadataBuilder(args, result) : {};
+        await window.trackAppEvent(eventName, metadata, source);
+      } catch (_) {}
+      return result;
+    };
+
+    wrapped.__analyticsWrapped = true;
+    window[name] = wrapped;
+  }
+
+  function wrapSyncFunction(name, eventName, metadataBuilder, source = "app") {
+    const original = window[name];
+    if (typeof original !== "function" || original.__analyticsWrapped) return;
+
+    const wrapped = function(...args) {
+      const result = original.apply(this, args);
+      try {
+        const metadata = typeof metadataBuilder === "function" ? metadataBuilder(args, result) : {};
+        window.trackAppEvent(eventName, metadata, source);
+      } catch (_) {}
+      return result;
+    };
+
+    wrapped.__analyticsWrapped = true;
+    window[name] = wrapped;
+  }
+
+  // Guardar eventos importantes.
+  wrapSyncFunction("setView", "view_changed", (args) => ({ view: args[0] }));
+  wrapAsyncFunction("loginUser", "login_attempt", (args) => ({ email: String(args[0] || "").toLowerCase() }));
+  wrapAsyncFunction("registerUser", "register_attempt", (args) => ({ email: String(args[1] || "").toLowerCase() }));
+  wrapAsyncFunction("publishRealPost", "post_publish_submit", () => ({ view: currentView }));
+  wrapAsyncFunction("reactToPost", "post_reaction", (args) => ({ post_id: args[0] }));
+  wrapAsyncFunction("submitRealComment", "post_comment_submit", () => ({}));
+  wrapAsyncFunction("sendGift", "gift_sent", (args) => ({ gift_type: args[0] }));
+  wrapAsyncFunction("boostPost", "boost_applied", (args) => ({ post_id: args[0] }));
+  wrapAsyncFunction("submitReport", "report_submitted", () => ({}));
+  wrapAsyncFunction("claimCoins", "coins_claimed", () => ({}));
+  wrapSyncFunction("openMoodMap", "mood_map_open", () => ({}), "mood_map");
+
+  document.addEventListener("DOMContentLoaded", () => {
+    window.trackAppEvent("app_loaded", { version: ANALYTICS_VERSION });
+  });
+})();
 </script>
 
 </body>
