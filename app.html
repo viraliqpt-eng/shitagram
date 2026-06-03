@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=C4bgDfB6W6ULBadgpK_hrJ5SwI_JSmtbRfUr0gzxL5d6BAHtJMu9Eug_Yc6fR8sI9snJmk7wDOXLC8ttlmNkVufkNVyeqDE3A90mxOmpHgT_VNv9bpDmEFcC0eewfvr65ZtQfs5R727HQvYm0jSmFTwS3KskkB5htvu0zp8vqoDFoiYFOWBM4oPHi7Or3_0hQF0tian7ykaXeysSk4Ozb6dcuRyihX89kHkX5R_JYudnvT3YWQ9oe6oHuyYbP4KkgfGFrzo8Ak0knx1zseE9ew" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -9999,7 +9999,310 @@ async function claimActivationBonus() {
     window.setView("messages");
   };
 
-  console.log("[SHITAGRAM vClean11] mensagens privadas simples carregadas");
+  console.log("[SHITAGRAM vClean11.1 base] mensagens privadas carregadas");
+})();
+</script>
+
+
+<script>
+/* SHITAGRAM™ vClean11.1 — Segurança nas mensagens */
+(function(){
+  const V = "vClean11.1";
+  window.shitagramVersion = V;
+
+  function safeUser() {
+    try { return currentUser || window.currentUser || null; } catch (_) { return window.currentUser || null; }
+  }
+
+  function toastMsg(message) {
+    if (typeof showToast === "function") return showToast(message);
+    if (typeof msgToast === "function") return msgToast(message);
+    alert(message);
+  }
+
+  function esc(str = "") {
+    return String(str).replace(/[&<>"']/g, m => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    }[m]));
+  }
+
+  function fmtTime(ts) {
+    if (!ts) return "";
+    try {
+      return new Date(ts).toLocaleString("pt-PT", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
+    } catch (_) { return ""; }
+  }
+
+  function getSb() {
+    try { return sb || supabase || window.supabaseClient || window.supabase; } catch (_) { return window.supabaseClient || window.supabase; }
+  }
+
+  function injectMessageSecurityStyles() {
+    if (document.getElementById("messageSecurityStyles")) return;
+    const style = document.createElement("style");
+    style.id = "messageSecurityStyles";
+    style.textContent = `
+      .message-thread-tools {
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:10px;
+      }
+      .message-tool-btn {
+        border:1px solid #2b2b2b;
+        background:#111;
+        color:#fff;
+        border-radius:999px;
+        padding:8px 11px;
+        font-size:12px;
+        font-weight:900;
+      }
+      .message-tool-btn.danger {
+        border-color:rgba(255,77,77,.45);
+        color:#ff7070;
+      }
+      .message-tool-btn.warn {
+        border-color:rgba(255,204,0,.45);
+        color:#ffcc00;
+      }
+      .message-delete-btn {
+        margin-top:7px;
+        border:0;
+        background:transparent;
+        color:rgba(0,0,0,.72);
+        font-size:11px;
+        font-weight:900;
+        text-decoration:underline;
+      }
+      .message-bubble-row:not(.mine) .message-delete-btn { display:none; }
+      .message-attachment-soon {
+        border:1px solid #2b2b2b;
+        background:#111;
+        color:#ffcc00;
+        border-radius:13px;
+        padding:0 12px;
+        font-weight:900;
+      }
+      .conversation-blocked-note {
+        margin: 10px 0 0;
+        border: 1px solid rgba(255,77,77,.35);
+        background: rgba(255,77,77,.08);
+        color: #ffd0d0;
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-size: 12px;
+        font-weight: 800;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  injectMessageSecurityStyles();
+
+  window.activeMessageConversationId = window.activeMessageConversationId || null;
+  window.activeMessageOtherUserId = window.activeMessageOtherUserId || null;
+  window.activeMessageOtherUsername = window.activeMessageOtherUsername || "";
+
+  const oldOpenConversation = window.openConversation;
+  if (typeof oldOpenConversation === "function") {
+    window.openConversation = async function(conversationId, otherUserId, username, displayName, avatarUrl) {
+      window.activeMessageConversationId = conversationId;
+      window.activeMessageOtherUserId = otherUserId;
+      window.activeMessageOtherUsername = username || displayName || "";
+      await oldOpenConversation(conversationId, otherUserId, username, displayName, avatarUrl);
+      injectThreadSecurityTools();
+    };
+  }
+
+  function injectThreadSecurityTools() {
+    const head = document.getElementById("messageThreadHead");
+    if (!head || document.getElementById("messageThreadTools")) return;
+
+    const tools = document.createElement("div");
+    tools.id = "messageThreadTools";
+    tools.className = "message-thread-tools";
+    tools.innerHTML = `
+      <button type="button" class="message-tool-btn warn" onclick="showAttachmentsSoon()">📎 Anexos</button>
+      <button type="button" class="message-tool-btn" onclick="reportActiveConversation()">🚩 Denunciar conversa</button>
+      <button type="button" class="message-tool-btn danger" onclick="blockActiveMessageUser()">🚫 Bloquear utilizador</button>
+    `;
+    head.appendChild(tools);
+
+    const form = document.getElementById("messageComposeForm");
+    if (form && !document.getElementById("messageAttachmentSoonBtn")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.id = "messageAttachmentSoonBtn";
+      btn.className = "message-attachment-soon";
+      btn.textContent = "📎";
+      btn.onclick = showAttachmentsSoon;
+      form.insertBefore(btn, form.querySelector("button[type='submit']") || null);
+    }
+  }
+
+  window.showAttachmentsSoon = function() {
+    toastMsg("Anexos/imagens nas mensagens entram em breve. Por agora, usa texto.");
+  };
+
+  window.blockActiveMessageUser = async function() {
+    const s = getSb();
+    const other = window.activeMessageOtherUserId;
+    if (!s || !other) return toastMsg("Seleciona uma conversa primeiro.");
+
+    const ok = confirm("Queres bloquear este utilizador? Ele deixa de conseguir enviar-te mensagens.");
+    if (!ok) return;
+
+    const { error } = await s.rpc("block_user", { p_blocked_id: other });
+    if (error) {
+      console.error(error);
+      return toastMsg(error.message || "Não foi possível bloquear.");
+    }
+
+    if (typeof playSound === "function") playSound("delete");
+    toastMsg("Utilizador bloqueado.");
+    const form = document.getElementById("messageComposeForm");
+    if (form) form.style.display = "none";
+    const body = document.getElementById("messageThreadBody");
+    if (body) {
+      body.insertAdjacentHTML("beforebegin", `<div class="conversation-blocked-note">Conversa bloqueada. Podes gerir isto mais tarde no perfil do utilizador.</div>`);
+    }
+  };
+
+  window.reportActiveConversation = async function() {
+    const s = getSb();
+    const conv = window.activeMessageConversationId;
+    if (!s || !conv) return toastMsg("Seleciona uma conversa primeiro.");
+
+    const reason = prompt("Motivo da denúncia:", "Assédio ou abuso");
+    if (!reason) return;
+
+    const { error } = await s.rpc("report_conversation", {
+      p_conversation_id: conv,
+      p_reason: reason,
+      p_details: ""
+    });
+
+    if (error) {
+      console.error(error);
+      return toastMsg(error.message || "Não foi possível denunciar.");
+    }
+
+    if (typeof playSound === "function") playSound("success");
+    toastMsg("Conversa denunciada para moderação.");
+  };
+
+  window.deletePrivateMessage = async function(messageId) {
+    const s = getSb();
+    if (!s || !messageId) return;
+    const ok = confirm("Eliminar esta mensagem para ti e para a conversa?");
+    if (!ok) return;
+
+    const { error } = await s.rpc("delete_own_private_message", { p_message_id: messageId });
+    if (error) {
+      console.error(error);
+      return toastMsg(error.message || "Não foi possível eliminar a mensagem.");
+    }
+
+    if (typeof playSound === "function") playSound("delete");
+    toastMsg("Mensagem eliminada.");
+    if (window.activeMessageConversationId && typeof window.loadMessages === "function") {
+      await window.loadMessages(window.activeMessageConversationId);
+    }
+  };
+
+  const oldLoadMessages = window.loadMessages;
+  window.loadMessages = async function(conversationId, silent = false) {
+    const s = getSb();
+    const body = document.getElementById("messageThreadBody");
+    if (!s || !body) {
+      return oldLoadMessages ? oldLoadMessages(conversationId, silent) : null;
+    }
+
+    window.activeMessageConversationId = conversationId;
+    if (!silent) body.innerHTML = `<div class="messages-empty">A carregar mensagens...</div>`;
+
+    const { data, error } = await s
+      .from("private_messages")
+      .select("id, sender_id, body, created_at, deleted_at, status")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: true })
+      .limit(150);
+
+    if (error) {
+      console.error(error);
+      body.innerHTML = `<div class="messages-empty"><strong>Erro ao carregar</strong>${esc(error.message)}</div>`;
+      return;
+    }
+
+    const user = safeUser();
+    const messages = data || [];
+    if (!messages.length) {
+      body.innerHTML = `
+        <div class="messages-empty">
+          <strong>Começa a conversa</strong>
+          Envia uma mensagem curta e respeitosa.
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = messages.map(m => {
+      const mine = m.sender_id === user?.id;
+      return `
+        <div class="message-bubble-row ${mine ? "mine" : ""}">
+          <div class="message-bubble">
+            ${esc(m.body)}
+            <span class="message-time">${fmtTime(m.created_at)}</span>
+            ${mine ? `<button type="button" class="message-delete-btn" onclick="deletePrivateMessage('${m.id}')">Eliminar</button>` : ""}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    body.scrollTop = body.scrollHeight;
+  };
+
+  window.sendActiveMessage = async function(e) {
+    e.preventDefault();
+    const s = getSb();
+    const user = safeUser();
+    const conv = window.activeMessageConversationId;
+    if (!s || !conv || !user) return toastMsg("Entra na conta para enviar mensagens.");
+
+    const input = document.getElementById("messageInput");
+    const body = (input?.value || "").trim();
+    if (!body) return;
+    if (body.length > 800) return toastMsg("Mensagem demasiado longa.");
+
+    const button = document.querySelector("#messageComposeForm button[type='submit']");
+    if (button) {
+      button.disabled = true;
+      button.textContent = "A enviar...";
+    }
+
+    const { error } = await s.rpc("send_private_message", {
+      p_conversation_id: conv,
+      p_body: body
+    });
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Enviar";
+    }
+
+    if (error) {
+      console.error(error);
+      return toastMsg(error.message || "Não foi possível enviar.");
+    }
+
+    input.value = "";
+    if (typeof playSound === "function") playSound("success");
+    await window.loadMessages(conv);
+    if (typeof window.loadConversations === "function") await window.loadConversations();
+  };
+
+  console.log("[SHITAGRAM vClean11.1] bloqueio/segurança nas mensagens carregado");
 })();
 </script>
 
