@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=9P7Jxm9_fjiMRPl62C4aCWYsXAWV24PD-PqnA6HtMarMItLUGmvxXZEpi3PA3vTsM3QIXrYHYqxliRI0Qr-mcPmX_3BlmKGqxXt1uxluu6hzbA_TOUNcHUh90mvT9GsZVpF-dYYVJUvVmmk3VsCwHhkW_YS4N6E0cX73aE-B3xbUSdtRpUhXf9pXhI001SFm7un9lP5vjlkMX-3lRvmyi9UR-WWx13AbFNBWazskurkaPkGOlB0ZMOYYgBKBtjOLAihd7OXuQTVtuf5BHJhmoA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=SeV32HkSYFWCt_t4DQIrHU4BbELmSeMsRSmOFV5h-MqXlm5P66v7mt1ir0JYRBdeHfnNJx9KkyGDZFE-Ca-M1unJ4iPv12V1dJ8WvRgKRKzMwlnrtECj8_pXwvDUpyLfn3nWrkD1idBTnW6asaVA4AdbD29KO1Ax4amZac5krgEUOoX0hntuZDqJZ_5amK64k70xeD5lXFzsOFLyfkTrUzAQpRvqyZBIJdKp8OYMHka0XDoeEfq_gEyVAcUMfTExCbo5yTqYI1SOqGg_bb31Ew" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -10977,6 +10977,340 @@ async function claimActivationBonus() {
   setTimeout(addMessageModerationButtons, 2500);
 
   console.log("[SHITAGRAM " + V + "] Denúncias e moderação de mensagens carregadas.");
+})();
+</script>
+
+
+<!-- SHITAGRAM™ vClean11.4 — Anti-spam e limites de segurança -->
+<style>
+  .spam-shield-badge {
+    position: fixed;
+    right: 18px;
+    bottom: 194px;
+    z-index: 9999;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,184,0,.75);
+    background: #111;
+    color: #FFB800;
+    font-size: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 38px rgba(0,0,0,.45);
+  }
+  .spam-shield-badge.show { display: flex; }
+
+  #spamSecurityPanel {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0,0,0,.84);
+    display: none;
+    padding: 18px;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+  }
+  #spamSecurityPanel.show { display: block; }
+
+  .spam-security-box {
+    max-width: 880px;
+    margin: 28px auto;
+    background: radial-gradient(circle at top, #2a1d00, #080808 70%);
+    border: 1px solid rgba(255,184,0,.5);
+    border-radius: 24px;
+    color: #fff;
+    padding: 22px;
+  }
+  .spam-security-head {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .spam-security-head h2 {
+    color:#FFB800;
+    margin:0 0 6px;
+    font-size:24px;
+  }
+  .spam-security-head p {
+    color:#cfcfcf;
+    margin:0;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .spam-close-btn {
+    border:0;
+    background:#151515;
+    color:white;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    font-size:20px;
+  }
+  .spam-grid {
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:12px;
+  }
+  .spam-card {
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;
+    padding:14px;
+  }
+  .spam-card h3 {
+    color:#FFB800;
+    margin:0 0 8px;
+    font-size:15px;
+  }
+  .spam-card p {
+    color:#ddd;
+    margin:0;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .spam-table {
+    width:100%;
+    border-collapse: collapse;
+    margin-top:14px;
+    font-size:13px;
+  }
+  .spam-table th,
+  .spam-table td {
+    padding:10px 8px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    text-align:left;
+  }
+  .spam-table th { color:#FFB800; font-size:12px; }
+  .spam-mini-btn {
+    border:1px solid rgba(255,184,0,.45);
+    background:#141414;
+    color:#FFB800;
+    padding:8px 10px;
+    border-radius:10px;
+    font-weight:800;
+    font-size:12px;
+  }
+  @media(max-width: 760px) {
+    .spam-grid { grid-template-columns: 1fr; }
+    .spam-shield-badge { bottom: 94px; right: 16px; }
+  }
+</style>
+
+<button id="spamSecurityButton" class="spam-shield-badge" title="Segurança">🛡️</button>
+
+<div id="spamSecurityPanel">
+  <div class="spam-security-box">
+    <div class="spam-security-head">
+      <div>
+        <h2>🛡️ Anti-spam e segurança</h2>
+        <p>Limites ativos para proteger posts, comentários, mensagens, denúncias e convites durante a beta.</p>
+      </div>
+      <button class="spam-close-btn" onclick="closeSpamSecurityPanel()">×</button>
+    </div>
+
+    <div class="spam-grid">
+      <div class="spam-card">
+        <h3>Mensagens</h3>
+        <p>Limite recomendado: 8 mensagens/minuto e bloqueio para contas suspeitas.</p>
+      </div>
+      <div class="spam-card">
+        <h3>Posts</h3>
+        <p>Limite recomendado: 5 posts/hora para evitar flood no feed.</p>
+      </div>
+      <div class="spam-card">
+        <h3>Comentários</h3>
+        <p>Limite recomendado: 10 comentários/minuto com aviso claro ao utilizador.</p>
+      </div>
+      <div class="spam-card">
+        <h3>Denúncias e convites</h3>
+        <p>Limites para evitar abuso de reports e convites em massa.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <h3 style="color:#FFB800;margin:0;">Utilizadores suspeitos</h3>
+      <button class="spam-mini-btn" onclick="loadSuspiciousUsers()">Recarregar</button>
+    </div>
+
+    <div id="spamSecurityContent" style="margin-top:10px;color:#cfcfcf;">
+      A carregar dados de segurança...
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const SPAM_ACTION_LABELS = {
+    post_create: "Publicação",
+    comment_create: "Comentário",
+    reaction_create: "Reação",
+    message_send: "Mensagem",
+    report_create: "Denúncia",
+    invite_create: "Convite",
+    gift_send: "Presente",
+    boost_apply: "Boost"
+  };
+
+  async function checkSpamLimit(action) {
+    try {
+      if (!window.currentUser && !window.user) return true;
+
+      if (!window.sb && window.supabase) window.sb = window.supabase;
+      if (!window.sb) return true;
+
+      const { data, error } = await window.sb.rpc("check_rate_limit", {
+        p_action: action
+      });
+
+      if (error) {
+        console.warn("[SHITAGRAM anti-spam] fallback", error);
+        return true;
+      }
+
+      if (data && data.allowed === false) {
+        const label = SPAM_ACTION_LABELS[action] || "Ação";
+        const wait = data.retry_after_seconds ? ` Tenta novamente em ${data.retry_after_seconds}s.` : "";
+        if (typeof showToast === "function") {
+          showToast(`${label} bloqueada por limite de segurança.${wait}`);
+        } else {
+          alert(`${label} bloqueada por limite de segurança.${wait}`);
+        }
+        if (typeof playSound === "function") playSound("error");
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      console.warn("[SHITAGRAM anti-spam]", err);
+      return true;
+    }
+  }
+
+  function wrapAsync(name, action) {
+    const oldFn = window[name];
+    if (typeof oldFn !== "function" || oldFn.__spamWrapped) return;
+
+    const wrapped = async function(...args) {
+      const ok = await checkSpamLimit(action);
+      if (!ok) return;
+      return oldFn.apply(this, args);
+    };
+    wrapped.__spamWrapped = true;
+    window[name] = wrapped;
+  }
+
+  function wrapFormSubmit(formId, action) {
+    const form = document.getElementById(formId);
+    if (!form || form.__spamWrapped) return;
+    form.__spamWrapped = true;
+    form.addEventListener("submit", async function(e) {
+      const ok = await checkSpamLimit(action);
+      if (!ok) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    }, true);
+  }
+
+  window.openSpamSecurityPanel = function() {
+    document.getElementById("spamSecurityPanel")?.classList.add("show");
+    loadSuspiciousUsers();
+  };
+
+  window.closeSpamSecurityPanel = function() {
+    document.getElementById("spamSecurityPanel")?.classList.remove("show");
+  };
+
+  window.loadSuspiciousUsers = async function() {
+    const box = document.getElementById("spamSecurityContent");
+    if (!box) return;
+    box.innerHTML = "A carregar utilizadores suspeitos...";
+
+    try {
+      if (!window.sb && window.supabase) window.sb = window.supabase;
+      if (!window.sb) {
+        box.innerHTML = "Supabase não disponível nesta sessão.";
+        return;
+      }
+
+      const { data, error } = await window.sb.rpc("get_suspicious_users");
+      if (error) throw error;
+
+      if (!data || !data.length) {
+        box.innerHTML = `
+          <div class="spam-card">
+            <h3>Sem atividade suspeita</h3>
+            <p>Nenhum utilizador ultrapassou os limites recentes.</p>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = `
+        <table class="spam-table">
+          <thead>
+            <tr>
+              <th>Utilizador</th>
+              <th>Ações recentes</th>
+              <th>Tipos</th>
+              <th>Última ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(row => `
+              <tr>
+                <td>${row.username || row.user_id || "desconhecido"}</td>
+                <td>${row.total_events || 0}</td>
+                <td>${row.action_types || "-"}</td>
+                <td>${row.last_event_at ? new Date(row.last_event_at).toLocaleString("pt-PT") : "-"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    } catch (err) {
+      console.error("[SHITAGRAM anti-spam] suspicious users", err);
+      box.innerHTML = "Não foi possível carregar o painel anti-spam.";
+    }
+  };
+
+  function revealAdminShield() {
+    const role = (window.currentProfile && window.currentProfile.role) || "";
+    const email = (window.currentUser && window.currentUser.email) || "";
+    const isAdmin = role === "admin" || role === "moderator" || email === "viraliqpt@gmail.com";
+    const btn = document.getElementById("spamSecurityButton");
+    if (btn && isAdmin) btn.classList.add("show");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("spamSecurityButton")?.addEventListener("click", openSpamSecurityPanel);
+
+    // Wrappers leves. Se alguma função não existir nesta versão, ignora.
+    setTimeout(() => {
+      wrapAsync("reactToPost", "reaction_create");
+      wrapAsync("submitReport", "report_create");
+      wrapAsync("sendGift", "gift_send");
+      wrapAsync("boostOwnPost", "boost_apply");
+      wrapAsync("sendActiveMessage", "message_send");
+      wrapAsync("sendMessage", "message_send");
+      wrapFormSubmit("publishForm", "post_create");
+      wrapFormSubmit("commentForm", "comment_create");
+      revealAdminShield();
+    }, 1200);
+
+    setInterval(revealAdminShield, 2500);
+  });
+
+  // Expor para futuras versões.
+  window.ShitagramAntiSpam = {
+    checkSpamLimit,
+    openSpamSecurityPanel,
+    loadSuspiciousUsers
+  };
 })();
 </script>
 
