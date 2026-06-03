@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHITAGRAM™ — vClean11.5.1 Audit Logs</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#050505;--card:#101010;--muted:#aaa;--text:#fff;--yellow:#ffcc00;--border:#242424;--danger:#ff4d4d;--ok:#31d07d}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,rgba(255,204,0,.08),transparent 35%),var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+    .wrap{max-width:1120px;margin:0 auto;padding:20px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+    .logo{font-weight:900;font-size:26px;color:var(--yellow)}.card{background:rgba(16,16,16,.94);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:900;background:#191919;color:#fff;cursor:pointer}.btn.primary{background:var(--yellow);color:#050505}.btn.danger{background:var(--danger)}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat strong{font-size:24px;color:var(--yellow)}.stat span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+    .filters{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.input{width:100%;background:#111;border:1px solid #333;border-radius:12px;color:#fff;padding:11px}
+    table{width:100%;border-collapse:collapse} th,td{padding:12px;border-bottom:1px solid #242424;text-align:left;font-size:13px;vertical-align:top} th{color:var(--yellow)} td{color:#ddd}.muted{color:var(--muted)}
+    .pill{display:inline-block;border:1px solid #333;border-radius:999px;padding:5px 8px;font-size:12px;color:#ddd}.pill.ok{border-color:rgba(49,208,125,.5);color:var(--ok)}.pill.warn{border-color:rgba(255,204,0,.5);color:var(--yellow)}
+    .hidden{display:none}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111;border:1px solid rgba(255,204,0,.4);border-radius:999px;padding:12px 16px;font-weight:800;opacity:0;transition:.2s}.toast.show{opacity:1}
+    @media(max-width:800px){.grid,.filters{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column} th:nth-child(3),td:nth-child(3){display:none}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="logo">SHITAGRAM™</div>
+      <div class="muted">vClean11.5.1 — Logs de auditoria/admin actions</div>
+    </div>
+    <div class="tabs">
+      <button class="btn" onclick="goBackToApp()">Voltar à app</button>
+      <button class="btn primary" onclick="loadAuditDashboard()">Recarregar</button>
+    </div>
+  </div>
+
+  <section id="accessBox" class="card">
+    <h2>🛡️ Auditoria administrativa</h2>
+    <p class="muted">Esta área mostra quem aprovou, bloqueou, removeu, ocultou ou alterou estados dentro do SHITAGRAM™.</p>
+  </section>
+
+  <section id="stats" class="grid"></section>
+
+  <section class="card">
+    <h3>Filtros</h3>
+    <div class="filters">
+      <input id="filterAction" class="input" placeholder="Tipo de ação, ex: beta_approved" />
+      <input id="filterTarget" class="input" placeholder="Utilizador/post/mensagem afetado" />
+      <input id="filterAdmin" class="input" placeholder="Admin/moderador" />
+      <select id="filterDays" class="input">
+        <option value="7">Últimos 7 dias</option>
+        <option value="1">Últimas 24h</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="365">Último ano</option>
+      </select>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn primary" onclick="loadAuditLogs()">Aplicar filtros</button>
+      <button class="btn" onclick="clearFilters()">Limpar</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Histórico de ações</h3>
+    <div id="logsTable" class="muted">A carregar logs...</div>
+  </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const SUPABASE_URL = window.SUPABASE_URL || "https://dcupiiifnffdsyyccyac.supabase.co";
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "COLOCA_AQUI_A_TUA_ANON_KEY";
+const supabase = window.supabase?.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : window.supabase;
+
+let currentUser = null;
+let currentProfile = null;
+
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+async function initAudit() {
+  const { data: { user } } = await supabase.auth.getUser();
+  currentUser = user;
+  if (!user) {
+    document.getElementById('logsTable').innerHTML = "Tens de iniciar sessão como admin.";
+    return;
+  }
+
+  const { data: profile, error } = await supabase.from('profiles').select('id,username,email,role').eq('id', user.id).single();
+  currentProfile = profile;
+  const role = profile?.role || (user.email === 'viraliqpt@gmail.com' ? 'admin' : 'user');
+
+  if (!['admin','moderator'].includes(role)) {
+    document.getElementById('accessBox').innerHTML = '<h2>Acesso reservado</h2><p class="muted">Só admins e moderadores podem ver logs de auditoria.</p>';
+    document.getElementById('logsTable').innerHTML = "";
+    return;
+  }
+
+  await loadAuditDashboard();
+}
+
+async function loadAuditDashboard(){
+  await Promise.all([loadAuditStats(), loadAuditLogs()]);
+}
+
+async function loadAuditStats(){
+  const { data, error } = await supabase.rpc('get_admin_audit_stats');
+  const box = document.getElementById('stats');
+  if (error) {
+    box.innerHTML = `<div class="card stat"><strong>—</strong><span>Erro ao carregar estatísticas</span></div>`;
+    console.warn(error);
+    return;
+  }
+  const s = data?.[0] || {};
+  box.innerHTML = `
+    <div class="card stat"><strong>${s.total_logs || 0}</strong><span>Total de ações</span></div>
+    <div class="card stat"><strong>${s.logs_24h || 0}</strong><span>Últimas 24h</span></div>
+    <div class="card stat"><strong>${s.unique_admins || 0}</strong><span>Admins/moderadores ativos</span></div>
+    <div class="card stat"><strong>${s.high_risk_actions || 0}</strong><span>Ações críticas</span></div>
+  `;
+}
+
+async function loadAuditLogs(){
+  const days = Number(document.getElementById('filterDays').value || 7);
+  const action = document.getElementById('filterAction').value.trim() || null;
+  const target = document.getElementById('filterTarget').value.trim() || null;
+  const admin = document.getElementById('filterAdmin').value.trim() || null;
+
+  const { data, error } = await supabase.rpc('get_admin_audit_logs', {
+    p_days: days,
+    p_action: action,
+    p_target: target,
+    p_admin: admin
+  });
+
+  const el = document.getElementById('logsTable');
+  if (error) {
+    el.innerHTML = `<p class="muted">Erro ao carregar logs: ${escapeHtml(error.message)}</p>`;
+    console.error(error);
+    return;
+  }
+  if (!data || !data.length) {
+    el.innerHTML = `<p class="muted">Ainda não há ações registadas para estes filtros.</p>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th><th>Ação</th><th>Admin</th><th>Alvo</th><th>Detalhes</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.map(row => `
+          <tr>
+            <td>${new Date(row.created_at).toLocaleString('pt-PT')}</td>
+            <td><span class="pill ${isCritical(row.action_type) ? 'warn' : 'ok'}">${escapeHtml(row.action_type || '')}</span></td>
+            <td>${escapeHtml(row.admin_username || row.admin_email || '—')}</td>
+            <td>${escapeHtml(row.target_label || row.target_id || '—')}</td>
+            <td>${escapeHtml(row.details_summary || '—')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function isCritical(action){
+  return ['user_blocked','post_removed','message_removed','role_changed','beta_blocked','security_state_changed'].includes(action);
+}
+function clearFilters(){
+  filterAction.value=''; filterTarget.value=''; filterAdmin.value=''; filterDays.value='7'; loadAuditLogs();
+}
+function escapeHtml(str=''){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+document.addEventListener('DOMContentLoaded', initAudit);
+</script>
+</body>
+</html>
