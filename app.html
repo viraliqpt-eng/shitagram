@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=-OnP7jKbctxEXvjrD3tyQ_FzLaRyW8TPmqoYrZ8UMMhZPOON34MHo3YlEwdle2U4yItFdoXyWrjjMJ7WIn2CS04e8kMhvIgri6D71fz0Hhxj9fo8_7StBtJbH2VhrHF-rPz_fQpzSB873xvEvmQSvGXC0YAyqPgUUlB-xjLdOX3SWlbFAhmjIxKGavoQMagthbqT6DKNb8ILTYC5JNH4MyAFmChFpvj19NTCGtrf4-YMO_Ooh7xIBCNJpJi44lg1AIYrDmkLhwh21UyVG3HaHg" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -2515,7 +2515,7 @@
     }
 
   
-    /* vClean10.8 — Checklist de ativação */
+    /* vClean10.8.1 — Checklist de ativação */
     .activation-hero {
       background:
         radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
@@ -7619,7 +7619,7 @@
     }
   }
 
-    /* vClean10.8 — Checklist de ativação */
+    /* vClean10.8.1 — Checklist de ativação */
     .activation-hero {
       background:
         radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
@@ -8183,7 +8183,7 @@
     }
   }
 
-    /* vClean10.8 — Checklist de ativação */
+    /* vClean10.8.1 — Checklist de ativação */
     .activation-hero {
       background:
         radial-gradient(circle at top right, rgba(255,204,0,0.16), transparent 34%),
@@ -8607,7 +8607,7 @@
 
 
 <script>
-/* vClean10.8 — Checklist de ativação + missões iniciais */
+/* vClean10.8.1 — Checklist de ativação + missões iniciais */
 const ACTIVATION_BONUS_AMOUNT = 750;
 let activationStatusCache = null;
 
@@ -8707,7 +8707,7 @@ async function syncActivationChecklist(stats) {
       updated_at: new Date().toISOString()
     });
   } catch (error) {
-    console.warn("[SHITAGRAM vClean10.8] checklist sync", error);
+    console.warn("[SHITAGRAM vClean10.8.1] checklist sync", error);
   }
 }
 
@@ -8899,7 +8899,7 @@ async function claimActivationBonus() {
       window.trackAppEvent("activation_bonus_claimed", { amount: ACTIVATION_BONUS_AMOUNT });
     }
   } catch (error) {
-    console.error("[SHITAGRAM vClean10.8] activation bonus", error);
+    console.error("[SHITAGRAM vClean10.8.1] activation bonus", error);
     showToast(error.message || "Não foi possível receber o bónus.");
     playSound("error");
   }
@@ -8945,6 +8945,178 @@ async function claimActivationBonus() {
 })();
 </script>
 
+
+
+<!-- vClean10.8.1.1 — correção de navegação: Acessos Beta + Primeiros Passos -->
+<script>
+(function(){
+  const VERSION_PATCH = "vClean10.8.1.1-nav-fix";
+
+  function safeCall(fnName, fallbackHtml) {
+    try {
+      if (typeof window[fnName] === "function") {
+        return window[fnName]();
+      }
+      const main = document.getElementById("mainView");
+      if (main) main.innerHTML = fallbackHtml || `
+        <section class="view-title-card">
+          <h1>⚠️ Secção indisponível</h1>
+          <p>A função ${fnName} ainda não está carregada nesta versão.</p>
+        </section>
+      `;
+    } catch (err) {
+      console.error("[SHITAGRAM " + VERSION_PATCH + "] erro em " + fnName, err);
+      const main = document.getElementById("mainView");
+      if (main) main.innerHTML = `
+        <section class="view-title-card">
+          <h1>⚠️ Erro ao abrir painel</h1>
+          <p>${String(err.message || err)}</p>
+        </section>
+      `;
+    }
+  }
+
+  function clearActiveNav() {
+    document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+  }
+
+  function activateDesktop(view) {
+    const navMap = {
+      feed: "navFeed",
+      clips: "navClips",
+      ranking: "navRanking",
+      shop: "navShop",
+      profile: "navProfile",
+      invites: "navInvites",
+      notifications: "navNotifications",
+      moderation: "navModeration",
+      analytics: "navAnalytics",
+      beta_access: "navBetaAccess",
+      betaAccess: "navBetaAccess",
+      activation: "navActivation",
+      firstSteps: "navActivation"
+    };
+
+    const id = navMap[view];
+    if (id) document.getElementById(id)?.classList.add("active");
+  }
+
+  function activateMobile(view) {
+    const mobileMap = {
+      feed: "mobileFeed",
+      clips: "mobileClips",
+      ranking: "mobileRanking",
+      shop: "mobileShop",
+      profile: "mobileProfile",
+      invites: "mobileInvites",
+      notifications: "mobileNotifications",
+      moderation: "mobileModeration",
+      analytics: "mobileAnalytics",
+      beta_access: "mobileBetaAccess",
+      betaAccess: "mobileBetaAccess",
+      activation: "mobileActivation",
+      firstSteps: "mobileActivation"
+    };
+
+    const id = mobileMap[view];
+    if (id) document.getElementById(id)?.classList.add("active");
+  }
+
+  window.renderCurrentView = function() {
+    try {
+      if (typeof enforceBetaAccessForCurrentView === "function" && enforceBetaAccessForCurrentView()) return;
+    } catch (err) {
+      console.warn("[SHITAGRAM " + VERSION_PATCH + "] beta access guard warning", err);
+    }
+
+    const view = window.currentView || "feed";
+
+    if (view === "feed") return safeCall("renderFeed");
+    if (view === "clips") return safeCall("renderClips");
+    if (view === "ranking") return safeCall("renderRankingPage");
+    if (view === "shop") return safeCall("renderShopPage");
+    if (view === "profile") return safeCall("renderProfilePage");
+    if (view === "invites") return safeCall("renderInvitesPage");
+    if (view === "notifications") return safeCall("renderNotificationsPage");
+    if (view === "moderation") return safeCall("renderModerationPage");
+    if (view === "analytics") return safeCall("renderAnalyticsPage");
+
+    if (view === "beta_access" || view === "betaAccess") {
+      return safeCall("renderBetaAccessAdminPage", `
+        <section class="view-title-card">
+          <h1>🔐 Acessos Beta</h1>
+          <p>Não foi possível carregar o painel de acessos beta.</p>
+        </section>
+      `);
+    }
+
+    if (view === "activation" || view === "firstSteps") {
+      return safeCall("renderActivationChecklistPage", `
+        <section class="view-title-card">
+          <h1>✅ Primeiros Passos</h1>
+          <p>Não foi possível carregar a checklist de ativação.</p>
+        </section>
+      `);
+    }
+
+    return safeCall("renderFeed");
+  };
+
+  window.setView = function(view) {
+    try {
+      if (typeof playSound === "function") playSound("tap");
+    } catch (_) {}
+
+    if (view === "betaAccess") view = "beta_access";
+    if (view === "firstSteps") view = "activation";
+
+    window.currentView = view;
+    clearActiveNav();
+    activateDesktop(view);
+    activateMobile(view);
+
+    const searchArea = document.getElementById("searchArea");
+    if (searchArea) searchArea.style.display = view === "feed" ? "block" : "none";
+
+    window.renderCurrentView();
+  };
+
+  function wireCriticalButtons() {
+    const betaButtons = [
+      document.getElementById("navBetaAccess"),
+      document.getElementById("mobileBetaAccess")
+    ].filter(Boolean);
+
+    betaButtons.forEach(btn => {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        window.setView("beta_access");
+      };
+      btn.style.cursor = "pointer";
+    });
+
+    const activationButtons = [
+      document.getElementById("navActivation"),
+      document.getElementById("mobileActivation")
+    ].filter(Boolean);
+
+    activationButtons.forEach(btn => {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        window.setView("activation");
+      };
+      btn.style.cursor = "pointer";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", wireCriticalButtons);
+  setTimeout(wireCriticalButtons, 600);
+  setTimeout(wireCriticalButtons, 1500);
+
+  console.log("[SHITAGRAM " + VERSION_PATCH + "] Acessos Beta e Primeiros Passos ligados.");
+})();
+</script>
 
 </body>
 </html>
