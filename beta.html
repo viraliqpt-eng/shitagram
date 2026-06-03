@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
 <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=wafMnlJTikPLuEajT2SZDDtg7YtNuyyoJA5CVtfsqq1z6UtLprwDEc2y8zXOdNuC7RkISz0YLplP-InlUdbbYJ47p37hEuL-u0kHK4StUKvUpaCtcga2ss2y9blyVGHehwq0SH3bbn3icRyziQxOakiezWr06lqPvGKlrau5jRcvOSMJlAyMeHUfF4J1OsY4b_XndYmDCq4ttNVrz0E7_GisS7u9jj5lBSAqpcWtwYBbInvktPtmA3nz1ZAIQXIbNpp6vAfCTlBqzwUzWeM1Nw" charset="UTF-8"></script><style>
+<style>
 :root{--bg:#020202;--card:#0b0b0b;--yellow:#ffcc00;--muted:#b8b8b8;--border:#252525}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;background:radial-gradient(circle at top,rgba(255,204,0,.12),transparent 34%),var(--bg);color:white}.wrap{max-width:1120px;margin:auto;padding:26px}
 header,footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}.logo{font-size:28px;font-weight:900;color:var(--yellow)}.logo span{color:white}.tag{font-size:12px;color:var(--muted);font-weight:800}
@@ -55,12 +55,16 @@ form?.addEventListener("submit", async (event) => {
   const usernameInput = document.getElementById("username");
   const reasonInput = document.getElementById("reason");
 
+  const wantedUsername = usernameInput.value.trim();
+
   const payload = {
     name: nameInput.value.trim(),
     email: emailInput.value.trim(),
-    desired_username: usernameInput.value.trim(),
+    desired_username: wantedUsername,
+    username: wantedUsername,
     reason: reasonInput.value.trim(),
     referral_code: ref,
+    ref: ref,
     source: "beta_page"
   };
 
@@ -83,7 +87,7 @@ form?.addEventListener("submit", async (event) => {
     showBetaMessage("Candidatura registada. Obrigado por quereres entrar na vergonha organizada 💩", true);
   } catch (error) {
     console.error("[SHITAGRAM beta] erro ao enviar candidatura:", error);
-    showBetaMessage("Não foi possível enviar a candidatura. Verifica a ligação ou as permissões da tabela beta_waitlist.", false);
+    showBetaMessage("Não foi possível enviar a candidatura: " + (error.message || "verifica permissões/colunas da beta_waitlist."), false);
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
