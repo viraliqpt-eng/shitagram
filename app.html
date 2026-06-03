@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Checklist de ativação</title>
+  <title>SHITAGRAM™ App — Notificações reais melhoradas</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -2747,6 +2747,10 @@
           <i class="fa-solid fa-user"></i><label>Perfil</label>
         </button>
 
+        <button id="navMessages" class="nav-item" onclick="setView('messages')">
+          <i class="fa-solid fa-comment-sms"></i><label>Mensagens</label>
+        </button>
+
         <button id="navInvites" class="nav-item" onclick="setView('invites')">
           <i class="fa-solid fa-ticket"></i><label>Convites</label>
         </button>
@@ -2814,7 +2818,7 @@
 
     <aside class="right-sidebar">
       <div class="top-bar-right">
-        <button class="icon-circle top-action-btn" type="button" onclick="showMessagesComingSoon()" title="Mensagens">
+        <button class="icon-circle top-action-btn" type="button" onclick="setView('messages')" title="Mensagens">
           <i class="fa-solid fa-comment-sms"></i>
         </button>
         <button class="icon-circle top-action-btn" type="button" onclick="setView('notifications')" title="Notificações">
@@ -2886,6 +2890,10 @@
 
     <button id="mobileProfile" onclick="setView('profile')">
       <i class="fa-solid fa-user"></i><span>Perfil</span>
+    </button>
+
+    <button id="mobileMessages" onclick="setView('messages')">
+      <i class="fa-solid fa-comment-sms"></i><span>Msgs</span>
     </button>
 
     <button id="mobileInvites" onclick="setView('invites')">
@@ -9115,6 +9123,883 @@ async function claimActivationBonus() {
   setTimeout(wireCriticalButtons, 1500);
 
   console.log("[SHITAGRAM " + VERSION_PATCH + "] Acessos Beta e Primeiros Passos ligados.");
+})();
+</script>
+
+
+<!-- vClean10.9 — Notificações reais melhoradas -->
+<style>
+  .notification-toolbar {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin: 12px 0 18px;
+  }
+  .notification-count-pill {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    background: rgba(255, 204, 0, .12);
+    border:1px solid rgba(255, 204, 0, .28);
+    color: var(--brand-yellow);
+    font-weight:900;
+    font-size:13px;
+  }
+  .notification-actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .notification-list-real {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .notification-card-real {
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:16px;
+    border-radius:20px;
+    background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+    border:1px solid rgba(255,255,255,.10);
+  }
+  .notification-card-real.unread {
+    border-color: rgba(255, 204, 0, .45);
+    box-shadow: 0 0 0 1px rgba(255, 204, 0, .08) inset;
+  }
+  .notification-icon-real {
+    width:44px;
+    height:44px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(255, 204, 0, .13);
+    color: var(--brand-yellow);
+    font-size:20px;
+    flex:0 0 auto;
+  }
+  .notification-body-real {
+    flex:1;
+    min-width:0;
+  }
+  .notification-title-real {
+    font-weight:900;
+    color:var(--text-primary);
+    margin-bottom:4px;
+  }
+  .notification-text-real {
+    color:var(--text-secondary);
+    line-height:1.45;
+    font-size:14px;
+  }
+  .notification-meta-real {
+    margin-top:8px;
+    color:var(--text-muted, #777);
+    font-size:12px;
+    font-weight:800;
+  }
+  .notification-empty-real {
+    padding:22px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.04);
+  }
+</style>
+
+<script>
+(function notificationV109Patch() {
+  const NOTIF_VERSION = "vClean10.9";
+
+  function nlog(...args) {
+    console.log("[SHITAGRAM " + NOTIF_VERSION + "]", ...args);
+  }
+
+  function getNotificationIcon(type) {
+    const icons = {
+      follow: "👥",
+      comment: "💬",
+      reaction: "💩",
+      gift: "🎁",
+      moderation_approved: "✅",
+      moderation_rejected: "⛔",
+      beta_approved: "🔓",
+      beta_blocked: "🔒",
+      beta_pending: "⏳",
+      post_approved: "✅",
+      post_removed: "🚫",
+      post_hidden: "👁️‍🗨️",
+      system: "🔔"
+    };
+    return icons[type] || "🔔";
+  }
+
+  function normalizeNotification(row) {
+    return {
+      id: row.id,
+      type: row.type || row.notification_type || "system",
+      title: row.title || row.message_title || "Notificação",
+      body: row.body || row.message || row.content || "",
+      is_read: Boolean(row.is_read || row.read_at),
+      created_at: row.created_at || row.inserted_at || new Date().toISOString(),
+      actor_id: row.actor_id || null,
+      post_id: row.post_id || null,
+      metadata: row.metadata || {}
+    };
+  }
+
+  window.createRealNotification = async function createRealNotification({ recipientId, actorId = null, postId = null, type = "system", title = "Notificação", body = "", metadata = {} }) {
+    try {
+      const user = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+      if (!recipientId || !user) return null;
+
+      const { data, error } = await sb
+        .from("notifications")
+        .insert({
+          recipient_id: recipientId,
+          actor_id: actorId,
+          post_id: postId,
+          type,
+          title,
+          body,
+          metadata
+        })
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      await window.updateUnreadNotificationBadge?.();
+      return data;
+    } catch (err) {
+      console.warn("[SHITAGRAM " + NOTIF_VERSION + "] create notification fallback", err);
+      return null;
+    }
+  };
+
+  window.fetchRealNotifications = async function fetchRealNotifications() {
+    const user = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+    if (!user) return [];
+
+    const { data, error } = await sb
+      .from("notifications")
+      .select("id, recipient_id, actor_id, post_id, type, title, body, is_read, read_at, metadata, created_at")
+      .eq("recipient_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(80);
+
+    if (error) {
+      console.error("[SHITAGRAM " + NOTIF_VERSION + "] fetch notifications", error);
+      throw error;
+    }
+
+    return (data || []).map(normalizeNotification);
+  };
+
+  window.getUnreadNotificationCount = async function getUnreadNotificationCount() {
+    const user = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+    if (!user) return 0;
+
+    const { count, error } = await sb
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("recipient_id", user.id)
+      .eq("is_read", false);
+
+    if (error) {
+      console.warn("[SHITAGRAM " + NOTIF_VERSION + "] unread count", error);
+      return 0;
+    }
+
+    return count || 0;
+  };
+
+  window.updateUnreadNotificationBadge = async function updateUnreadNotificationBadge() {
+    const badge = document.getElementById("notificationBadge");
+    if (!badge) return;
+
+    try {
+      const count = await window.getUnreadNotificationCount();
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : String(count);
+        badge.style.display = "inline-flex";
+      } else {
+        badge.textContent = "0";
+        badge.style.display = "none";
+      }
+    } catch (_) {
+      badge.style.display = "none";
+    }
+  };
+
+  window.markAllNotificationsRead = async function markAllNotificationsRead() {
+    const user = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+    if (!user) {
+      showToast?.("Entra para veres notificações.");
+      return;
+    }
+
+    try {
+      const { error } = await sb
+        .from("notifications")
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq("recipient_id", user.id)
+        .eq("is_read", false);
+
+      if (error) throw error;
+      playSound?.("success");
+      showToast?.("Notificações marcadas como lidas.");
+      await window.updateUnreadNotificationBadge();
+      if ((window.currentView || currentView) === "notifications") renderNotificationsPage();
+    } catch (err) {
+      console.error("[SHITAGRAM " + NOTIF_VERSION + "] mark read", err);
+      showToast?.("Não consegui marcar como lidas.");
+    }
+  };
+
+  window.renderNotificationsPage = async function renderNotificationsPage() {
+    const main = document.getElementById("mainView");
+    if (!main) return;
+
+    const user = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+    if (!user) {
+      main.innerHTML = `
+        <section class="view-title-card">
+          <h1>🔔 Notificações</h1>
+          <p>Entra na tua conta para veres atividade real dos teus micos.</p>
+        </section>
+        <article class="notification-empty-real">
+          <h2>Conta necessária</h2>
+          <p>As notificações são privadas e ligadas ao teu perfil.</p>
+          <button class="primary-action" onclick="openAuthModal('login')">Entrar</button>
+        </article>
+      `;
+      return;
+    }
+
+    main.innerHTML = `
+      <section class="view-title-card">
+        <h1>🔔 Notificações reais</h1>
+        <p>Segue comentários, seguidores, presentes, decisões de moderação e acessos beta.</p>
+      </section>
+
+      <div class="notification-toolbar">
+        <span class="notification-count-pill" id="notificationUnreadInline">A carregar...</span>
+        <div class="notification-actions">
+          <button class="secondary-action" onclick="renderNotificationsPage()">
+            <i class="fa-solid fa-rotate"></i> Recarregar
+          </button>
+          <button class="primary-action" onclick="markAllNotificationsRead()">
+            <i class="fa-solid fa-check-double"></i> Marcar como lidas
+          </button>
+        </div>
+      </div>
+
+      <section id="notificationRealList" class="notification-list-real">
+        <article class="notification-empty-real">A carregar notificações...</article>
+      </section>
+    `;
+
+    try {
+      const list = document.getElementById("notificationRealList");
+      const inline = document.getElementById("notificationUnreadInline");
+      const notifications = await window.fetchRealNotifications();
+      const unreadCount = notifications.filter(n => !n.is_read).length;
+
+      if (inline) inline.textContent = unreadCount ? `${unreadCount} por ler` : "Tudo lido";
+      await window.updateUnreadNotificationBadge();
+
+      if (!notifications.length) {
+        list.innerHTML = `
+          <article class="notification-empty-real">
+            <h2>Sem notificações ainda</h2>
+            <p>Quando receberes comentários, presentes, seguidores ou decisões de moderação, vai aparecer aqui.</p>
+          </article>
+        `;
+        return;
+      }
+
+      list.innerHTML = notifications.map(n => `
+        <article class="notification-card-real ${n.is_read ? "" : "unread"}">
+          <div class="notification-icon-real">${getNotificationIcon(n.type)}</div>
+          <div class="notification-body-real">
+            <div class="notification-title-real">${escapeHtml(n.title)}</div>
+            <div class="notification-text-real">${escapeHtml(n.body || "")}</div>
+            <div class="notification-meta-real">${n.is_read ? "Lida" : "Nova"} · ${formatTimeAgo ? formatTimeAgo(n.created_at) : new Date(n.created_at).toLocaleString("pt-PT")}</div>
+          </div>
+        </article>
+      `).join("");
+    } catch (err) {
+      const list = document.getElementById("notificationRealList");
+      if (list) {
+        list.innerHTML = `
+          <article class="notification-empty-real">
+            <h2>Não consegui carregar notificações</h2>
+            <p>${escapeHtml(String(err.message || err))}</p>
+          </article>
+        `;
+      }
+    }
+  };
+
+  const previousRenderCurrentView = window.renderCurrentView;
+  window.renderCurrentView = function v109RenderCurrentView() {
+    const view = window.currentView || (typeof currentView !== "undefined" ? currentView : "feed");
+    if (view === "notifications") return window.renderNotificationsPage();
+    return previousRenderCurrentView ? previousRenderCurrentView() : null;
+  };
+
+  const previousSetView = window.setView;
+  window.setView = function v109SetView(view) {
+    if (view === "notifications") {
+      try { playSound?.("tap"); } catch (_) {}
+      try { currentView = view; } catch (_) {}
+      window.currentView = view;
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("navNotifications")?.classList.add("active");
+      document.getElementById("mobileNotifications")?.classList.add("active");
+      const searchArea = document.getElementById("searchArea");
+      if (searchArea) searchArea.style.display = "none";
+      return window.renderNotificationsPage();
+    }
+    return previousSetView ? previousSetView(view) : null;
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    window.updateUnreadNotificationBadge();
+    setInterval(() => window.updateUnreadNotificationBadge?.(), 60000);
+  });
+
+  nlog("notificações reais carregadas");
+})();
+</script>
+
+
+<style>
+  .messages-shell {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 16px;
+    min-height: min(720px, calc(100vh - 120px));
+  }
+  .messages-list,
+  .messages-thread {
+    background: rgba(9,9,9,0.96);
+    border: 1px solid var(--border-color, #242424);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .messages-list-head,
+  .messages-thread-head {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color, #242424);
+    background: radial-gradient(circle at top right, rgba(255,204,0,.12), transparent 45%);
+  }
+  .messages-list-head h2,
+  .messages-thread-head h2 {
+    margin: 0;
+    color: var(--brand-yellow, #ffcc00);
+    font-size: 20px;
+  }
+  .messages-list-head p,
+  .messages-thread-head p {
+    margin: 5px 0 0;
+    color: var(--text-secondary, #aaa);
+    font-size: 13px;
+  }
+  .messages-search {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color, #242424);
+  }
+  .messages-search input {
+    width: 100%;
+    background: #050505;
+    border: 1px solid #2d2d2d;
+    color: white;
+    border-radius: 999px;
+    padding: 12px 14px;
+    outline: none;
+    font-weight: 700;
+  }
+  .messages-search input:focus {
+    border-color: var(--brand-yellow, #ffcc00);
+    box-shadow: 0 0 0 4px rgba(255,204,0,.08);
+  }
+  .conversation-list,
+  .messages-results {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  .conversation-item,
+  .user-result-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    border: 1px solid #222;
+    background: #0f0f0f;
+    color: white;
+    padding: 11px;
+    border-radius: 15px;
+    text-align: left;
+  }
+  .conversation-item:hover,
+  .user-result-item:hover,
+  .conversation-item.active {
+    border-color: rgba(255,204,0,.45);
+    background: rgba(255,204,0,.08);
+  }
+  .conversation-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #333;
+    flex: 0 0 auto;
+  }
+  .conversation-meta {
+    min-width: 0;
+    flex: 1;
+  }
+  .conversation-name {
+    font-weight: 900;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .conversation-last {
+    color: var(--text-secondary, #aaa);
+    font-size: 12px;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .conversation-unread {
+    background: var(--brand-yellow, #ffcc00);
+    color: #050505;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 900;
+  }
+  .messages-body {
+    height: 520px;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .message-bubble-row {
+    display: flex;
+  }
+  .message-bubble-row.mine {
+    justify-content: flex-end;
+  }
+  .message-bubble {
+    max-width: 74%;
+    padding: 11px 13px;
+    border-radius: 16px;
+    background: #151515;
+    border: 1px solid #2a2a2a;
+    color: #f7f7f7;
+    line-height: 1.4;
+    font-size: 14px;
+  }
+  .message-bubble-row.mine .message-bubble {
+    background: var(--brand-yellow, #ffcc00);
+    color: #050505;
+    border-color: var(--brand-yellow, #ffcc00);
+    font-weight: 800;
+  }
+  .message-time {
+    display: block;
+    opacity: .62;
+    font-size: 10px;
+    margin-top: 5px;
+    font-weight: 700;
+  }
+  .message-compose {
+    border-top: 1px solid var(--border-color, #242424);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 12px;
+  }
+  .message-compose input {
+    background: #050505;
+    border: 1px solid #2d2d2d;
+    color: white;
+    border-radius: 14px;
+    padding: 13px 14px;
+    outline: none;
+  }
+  .message-compose button {
+    background: var(--brand-yellow, #ffcc00);
+    border: 0;
+    color: #050505;
+    border-radius: 14px;
+    padding: 0 16px;
+    font-weight: 900;
+  }
+  .messages-empty {
+    padding: 28px;
+    color: var(--text-secondary, #aaa);
+    text-align: center;
+  }
+  .messages-empty strong {
+    color: var(--brand-yellow, #ffcc00);
+    display: block;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 860px) {
+    .messages-shell {
+      grid-template-columns: 1fr;
+    }
+    .messages-body {
+      height: 420px;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop";
+  let activeConversationId = null;
+  let activeConversationMeta = null;
+  let messageRefreshTimer = null;
+
+  function msgToast(text) {
+    if (typeof showToast === "function") showToast(text);
+    else console.log(text);
+  }
+
+  function msgEscape(value) {
+    if (typeof escapeHtml === "function") return escapeHtml(String(value || ""));
+    return String(value || "").replace(/[&<>"']/g, s => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[s]));
+  }
+
+  function requireMessagesAuth() {
+    if (!currentUser) {
+      if (typeof openAuthModal === "function") openAuthModal("login");
+      msgToast("Entra para usar mensagens privadas.");
+      return false;
+    }
+    return true;
+  }
+
+  function messageTime(ts) {
+    if (!ts) return "";
+    try {
+      return new Date(ts).toLocaleString("pt-PT", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
+    } catch (_) {
+      return "";
+    }
+  }
+
+  window.renderMessagesPage = async function() {
+    const searchArea = document.getElementById("searchArea");
+    if (searchArea) searchArea.style.display = "none";
+    const main = document.getElementById("mainView");
+    if (!main) return;
+
+    if (!requireMessagesAuth()) {
+      main.innerHTML = `
+        <section class="view-title-card">
+          <h1>💬 Mensagens privadas</h1>
+          <p>Entra na tua conta para enviar e receber mensagens.</p>
+        </section>
+      `;
+      return;
+    }
+
+    main.innerHTML = `
+      <section class="view-title-card">
+        <h1>💬 Mensagens privadas</h1>
+        <p>Conversas simples entre utilizadores aprovados na beta. Mantém o respeito: denúncias e moderação continuam ativas.</p>
+      </section>
+
+      <section class="messages-shell">
+        <aside class="messages-list">
+          <div class="messages-list-head">
+            <h2>Caixa de entrada</h2>
+            <p>Procura pessoas ou abre uma conversa recente.</p>
+          </div>
+          <div class="messages-search">
+            <input id="messageUserSearch" type="text" placeholder="Procurar @username..." oninput="searchMessageUsers()" />
+          </div>
+          <div id="messageSearchResults" class="messages-results"></div>
+          <div id="conversationList" class="conversation-list">
+            <div class="messages-empty">A carregar conversas...</div>
+          </div>
+        </aside>
+
+        <section class="messages-thread">
+          <div id="messageThreadHead" class="messages-thread-head">
+            <h2>Seleciona uma conversa</h2>
+            <p>Ou procura um utilizador para começar.</p>
+          </div>
+          <div id="messageThreadBody" class="messages-body">
+            <div class="messages-empty">
+              <strong>Sem conversa aberta</strong>
+              Escolhe alguém na lista para começar a falar.
+            </div>
+          </div>
+          <form id="messageComposeForm" class="message-compose" onsubmit="sendActiveMessage(event)" style="display:none;">
+            <input id="messageInput" maxlength="800" placeholder="Escreve uma mensagem..." autocomplete="off" />
+            <button type="submit">Enviar</button>
+          </form>
+        </section>
+      </section>
+    `;
+
+    await loadConversations();
+  };
+
+  window.loadConversations = async function() {
+    const box = document.getElementById("conversationList");
+    if (!box || !currentUser) return;
+
+    const { data, error } = await sb.rpc("get_my_conversations");
+    if (error) {
+      console.error(error);
+      box.innerHTML = `<div class="messages-empty"><strong>Erro nas conversas</strong>${msgEscape(error.message)}</div>`;
+      return;
+    }
+
+    const conversations = data || [];
+    if (!conversations.length) {
+      box.innerHTML = `
+        <div class="messages-empty">
+          <strong>Ainda sem conversas</strong>
+          Procura um utilizador acima para começar.
+        </div>
+      `;
+      return;
+    }
+
+    box.innerHTML = conversations.map(c => `
+      <button class="conversation-item ${c.conversation_id === activeConversationId ? "active" : ""}"
+        onclick="openConversation('${c.conversation_id}', '${c.other_user_id}', '${msgEscape(c.other_username || "")}', '${msgEscape(c.other_display_name || "")}', '${msgEscape(c.other_avatar_url || "")}')">
+        <img class="conversation-avatar" src="${msgEscape(c.other_avatar_url || DEFAULT_AVATAR)}" alt="Avatar">
+        <span class="conversation-meta">
+          <span class="conversation-name">${msgEscape(c.other_display_name || c.other_username || "Utilizador")}</span>
+          <span class="conversation-last">${msgEscape(c.last_message || "Sem mensagens ainda")}</span>
+        </span>
+        ${Number(c.unread_count || 0) > 0 ? `<span class="conversation-unread">${Number(c.unread_count)}</span>` : ""}
+      </button>
+    `).join("");
+  };
+
+  window.searchMessageUsers = async function() {
+    const input = document.getElementById("messageUserSearch");
+    const results = document.getElementById("messageSearchResults");
+    if (!input || !results || !currentUser) return;
+
+    const q = input.value.trim();
+    if (q.length < 2) {
+      results.innerHTML = "";
+      return;
+    }
+
+    const safe = q.replace(/^@/, "").replace(/[%_,]/g, "");
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id, username, display_name, avatar_url, beta_status")
+      .or(`username.ilike.%${safe}%,display_name.ilike.%${safe}%`)
+      .neq("id", currentUser.id)
+      .limit(8);
+
+    if (error) {
+      console.error(error);
+      results.innerHTML = `<div class="messages-empty">Erro ao procurar utilizadores.</div>`;
+      return;
+    }
+
+    const users = (data || []).filter(u => !u.beta_status || u.beta_status === "approved");
+    if (!users.length) {
+      results.innerHTML = `<div class="messages-empty">Nenhum utilizador encontrado.</div>`;
+      return;
+    }
+
+    results.innerHTML = users.map(u => `
+      <button class="user-result-item" onclick="startConversationWithUser('${u.id}')">
+        <img class="conversation-avatar" src="${msgEscape(u.avatar_url || DEFAULT_AVATAR)}" alt="Avatar">
+        <span class="conversation-meta">
+          <span class="conversation-name">${msgEscape(u.display_name || "@" + (u.username || "user"))}</span>
+          <span class="conversation-last">@${msgEscape(u.username || "user")}</span>
+        </span>
+      </button>
+    `).join("");
+  };
+
+  window.startConversationWithUser = async function(otherUserId) {
+    if (!requireMessagesAuth()) return;
+
+    const { data, error } = await sb.rpc("create_or_get_dm", { p_other_user_id: otherUserId });
+    if (error) {
+      console.error(error);
+      msgToast(error.message || "Não foi possível abrir conversa.");
+      return;
+    }
+
+    document.getElementById("messageUserSearch").value = "";
+    document.getElementById("messageSearchResults").innerHTML = "";
+    await loadConversations();
+
+    const { data: memberData } = await sb
+      .from("profiles")
+      .select("id, username, display_name, avatar_url")
+      .eq("id", otherUserId)
+      .maybeSingle();
+
+    await openConversation(data, otherUserId, memberData?.username || "", memberData?.display_name || "", memberData?.avatar_url || "");
+  };
+
+  window.openConversation = async function(conversationId, otherUserId, username, displayName, avatarUrl) {
+    activeConversationId = conversationId;
+    activeConversationMeta = { otherUserId, username, displayName, avatarUrl };
+
+    const head = document.getElementById("messageThreadHead");
+    const form = document.getElementById("messageComposeForm");
+    if (head) {
+      head.innerHTML = `
+        <h2>${msgEscape(displayName || "@" + username || "Conversa")}</h2>
+        <p>@${msgEscape(username || "utilizador")}</p>
+      `;
+    }
+    if (form) form.style.display = "grid";
+
+    await loadMessages(conversationId);
+    await sb.rpc("mark_conversation_read", { p_conversation_id: conversationId }).catch?.(() => {});
+    await loadConversations();
+
+    clearInterval(messageRefreshTimer);
+    messageRefreshTimer = setInterval(() => {
+      if (currentView === "messages" && activeConversationId === conversationId) loadMessages(conversationId, true);
+    }, 12000);
+  };
+
+  window.loadMessages = async function(conversationId, silent = false) {
+    const body = document.getElementById("messageThreadBody");
+    if (!body) return;
+    if (!silent) body.innerHTML = `<div class="messages-empty">A carregar mensagens...</div>`;
+
+    const { data, error } = await sb
+      .from("private_messages")
+      .select("id, sender_id, body, created_at")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: true })
+      .limit(120);
+
+    if (error) {
+      console.error(error);
+      body.innerHTML = `<div class="messages-empty"><strong>Erro ao carregar</strong>${msgEscape(error.message)}</div>`;
+      return;
+    }
+
+    const messages = data || [];
+    if (!messages.length) {
+      body.innerHTML = `
+        <div class="messages-empty">
+          <strong>Começa a conversa</strong>
+          Envia uma mensagem curta e respeitosa.
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = messages.map(m => {
+      const mine = m.sender_id === currentUser?.id;
+      return `
+        <div class="message-bubble-row ${mine ? "mine" : ""}">
+          <div class="message-bubble">
+            ${msgEscape(m.body)}
+            <span class="message-time">${messageTime(m.created_at)}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    body.scrollTop = body.scrollHeight;
+  };
+
+  window.sendActiveMessage = async function(e) {
+    e.preventDefault();
+    if (!activeConversationId || !currentUser) return;
+
+    const input = document.getElementById("messageInput");
+    const body = (input?.value || "").trim();
+    if (!body) return;
+
+    if (body.length > 800) {
+      msgToast("Mensagem demasiado longa.");
+      return;
+    }
+
+    const button = document.querySelector("#messageComposeForm button");
+    if (button) {
+      button.disabled = true;
+      button.textContent = "A enviar...";
+    }
+
+    const { error } = await sb.rpc("send_private_message", {
+      p_conversation_id: activeConversationId,
+      p_body: body
+    });
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Enviar";
+    }
+
+    if (error) {
+      console.error(error);
+      msgToast(error.message || "Não foi possível enviar.");
+      return;
+    }
+
+    input.value = "";
+    if (typeof playSound === "function") playSound("success");
+    await loadMessages(activeConversationId);
+    await loadConversations();
+  };
+
+  const previousSetViewMessages = window.setView;
+  window.setView = function(view) {
+    if (view === "messages") {
+      if (typeof playSound === "function") playSound("tap");
+      currentView = "messages";
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("navMessages")?.classList.add("active");
+      document.getElementById("mobileMessages")?.classList.add("active");
+      const searchArea = document.getElementById("searchArea");
+      if (searchArea) searchArea.style.display = "none";
+      return window.renderMessagesPage();
+    }
+    return previousSetViewMessages ? previousSetViewMessages(view) : null;
+  };
+
+  // Se existir um botão antigo de SMS, passa a abrir mensagens reais.
+  window.showMessagesComingSoon = function() {
+    window.setView("messages");
+  };
+
+  console.log("[SHITAGRAM vClean11] mensagens privadas simples carregadas");
 })();
 </script>
 
