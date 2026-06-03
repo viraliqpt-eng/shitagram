@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Notificações reais melhoradas</title>
+  <title>SHITAGRAM™ App — Privacidade</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=C4bgDfB6W6ULBadgpK_hrJ5SwI_JSmtbRfUr0gzxL5d6BAHtJMu9Eug_Yc6fR8sI9snJmk7wDOXLC8ttlmNkVufkNVyeqDE3A90mxOmpHgT_VNv9bpDmEFcC0eewfvr65ZtQfs5R727HQvYm0jSmFTwS3KskkB5htvu0zp8vqoDFoiYFOWBM4oPHi7Or3_0hQF0tian7ykaXeysSk4Ozb6dcuRyihX89kHkX5R_JYudnvT3YWQ9oe6oHuyYbP4KkgfGFrzo8Ak0knx1zseE9ew" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -10302,7 +10302,368 @@ async function claimActivationBonus() {
     if (typeof window.loadConversations === "function") await window.loadConversations();
   };
 
-  console.log("[SHITAGRAM vClean11.1] bloqueio/segurança nas mensagens carregado");
+  console.log("[SHITAGRAM vClean11.2] bloqueio/segurança nas mensagens carregado");
+})();
+</script>
+
+
+<!-- vClean11.2 — Preferências de privacidade -->
+<style>
+  .privacy-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .privacy-card {
+    background: rgba(9,9,9,0.96);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .privacy-card h2 {
+    color: var(--brand-yellow);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .privacy-card p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .privacy-option {
+    display: grid;
+    gap: 7px;
+    margin: 14px 0;
+  }
+
+  .privacy-option label {
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+  }
+
+  .privacy-option select,
+  .privacy-option input[type="text"] {
+    width: 100%;
+    background: #111;
+    border: 1px solid #2d2d2d;
+    color: white;
+    border-radius: 13px;
+    padding: 13px 14px;
+    outline: none;
+    font-size: 14px;
+  }
+
+  .privacy-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border: 1px solid #242424;
+    background: #101010;
+    border-radius: 14px;
+    padding: 13px;
+    margin: 10px 0;
+  }
+
+  .privacy-toggle strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .privacy-toggle span {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .privacy-toggle input {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--brand-yellow);
+    flex: 0 0 auto;
+  }
+
+  .privacy-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .privacy-actions button {
+    border: 0;
+    border-radius: 13px;
+    padding: 12px 14px;
+    font-weight: 900;
+  }
+
+  .privacy-save {
+    background: var(--brand-yellow);
+    color: #050505;
+  }
+
+  .privacy-secondary {
+    background: #171717;
+    color: white;
+    border: 1px solid #303030 !important;
+  }
+
+  .privacy-note {
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 12px;
+  }
+</style>
+
+<script>
+(function() {
+  const VERSION_PRIVACY = "vClean11.2-privacy";
+
+  function toastSafe(message) {
+    if (typeof toastMsg === "function") return toastMsg(message);
+    if (typeof showToast === "function") return showToast(message);
+    alert(message);
+  }
+
+  function getMainView() {
+    return document.getElementById("mainView");
+  }
+
+  function getUserSafe() {
+    try {
+      if (typeof currentUser !== "undefined" && currentUser) return currentUser;
+    } catch (_) {}
+    try {
+      if (window.currentUser) return window.currentUser;
+    } catch (_) {}
+    return null;
+  }
+
+  function getProfileSafe() {
+    try {
+      if (typeof currentProfile !== "undefined" && currentProfile) return currentProfile;
+    } catch (_) {}
+    try {
+      if (window.currentProfile) return window.currentProfile;
+    } catch (_) {}
+    return null;
+  }
+
+  function addPrivacyButtons() {
+    const nav = document.querySelector(".nav-menu");
+    if (nav && !document.getElementById("navPrivacy")) {
+      const btn = document.createElement("button");
+      btn.id = "navPrivacy";
+      btn.type = "button";
+      btn.className = "nav-item";
+      btn.onclick = function() { window.setView("privacy"); };
+      btn.innerHTML = '<i class="fa-solid fa-user-shield"></i><label>Privacidade</label>';
+      const profileBtn = document.getElementById("navProfile");
+      if (profileBtn && profileBtn.parentNode === nav) {
+        nav.insertBefore(btn, profileBtn.nextSibling);
+      } else {
+        nav.appendChild(btn);
+      }
+    }
+
+    const mobile = document.querySelector(".mobile-bottom-nav");
+    if (mobile && !document.getElementById("mobilePrivacy")) {
+      const btn = document.createElement("button");
+      btn.id = "mobilePrivacy";
+      btn.type = "button";
+      btn.onclick = function() { window.setView("privacy"); };
+      btn.innerHTML = '<i class="fa-solid fa-user-shield"></i><span>Priv</span>';
+      mobile.appendChild(btn);
+    }
+  }
+
+  function activatePrivacyNav() {
+    document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+    const d = document.getElementById("navPrivacy");
+    const m = document.getElementById("mobilePrivacy");
+    if (d) d.classList.add("active");
+    if (m) m.classList.add("active");
+    const searchArea = document.getElementById("searchArea");
+    if (searchArea) searchArea.style.display = "none";
+  }
+
+  async function loadPrivacyProfile() {
+    const user = getUserSafe();
+    if (!user) return null;
+
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id, username, display_name, message_privacy, profile_visibility, hide_location, hide_activity, block_unknown_invites, country, city")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.error("[privacy] load profile error", error);
+      return getProfileSafe() || { id: user.id };
+    }
+
+    return data;
+  }
+
+  window.renderPrivacySettings = async function() {
+    const main = getMainView();
+    const user = getUserSafe();
+
+    if (!main) return;
+
+    if (!user) {
+      main.innerHTML = `
+        <section class="view-title-card">
+          <h1>🔒 Privacidade</h1>
+          <p>Inicia sessão para configurar quem pode ver o teu perfil e enviar mensagens.</p>
+        </section>
+      `;
+      return;
+    }
+
+    main.innerHTML = `
+      <section class="view-title-card">
+        <h1>🔒 Privacidade</h1>
+        <p>Controla mensagens, perfil público, localização do Mood Map e convites.</p>
+      </section>
+
+      <section class="privacy-grid">
+        <article class="privacy-card">
+          <h2>Definições de privacidade</h2>
+          <p>Estas opções ajudam-te a controlar a tua experiência na beta do SHITAGRAM™.</p>
+
+          <div class="privacy-option">
+            <label>Quem pode enviar-te mensagens?</label>
+            <select id="privacyMessagePrivacy">
+              <option value="everyone">Todos</option>
+              <option value="following">Só quem sigo</option>
+              <option value="nobody">Ninguém</option>
+            </select>
+          </div>
+
+          <div class="privacy-option">
+            <label>Visibilidade do perfil</label>
+            <select id="privacyProfileVisibility">
+              <option value="public">Perfil público</option>
+              <option value="private">Perfil privado</option>
+            </select>
+          </div>
+
+          <label class="privacy-toggle">
+            <span>
+              <strong>Esconder país/cidade no perfil</strong>
+              <span>O Mood Map continua a usar dados agregados, mas o teu perfil não mostra localização.</span>
+            </span>
+            <input id="privacyHideLocation" type="checkbox">
+          </label>
+
+          <label class="privacy-toggle">
+            <span>
+              <strong>Esconder atividade e XP no perfil público</strong>
+              <span>Outros utilizadores não veem XP, atividade recente ou estatísticas públicas.</span>
+            </span>
+            <input id="privacyHideActivity" type="checkbox">
+          </label>
+
+          <label class="privacy-toggle">
+            <span>
+              <strong>Bloquear convites de desconhecidos</strong>
+              <span>Ajuda a evitar convites e abordagens de contas que não segues.</span>
+            </span>
+            <input id="privacyBlockUnknownInvites" type="checkbox">
+          </label>
+
+          <div class="privacy-actions">
+            <button class="privacy-save" onclick="savePrivacySettings()">Guardar preferências</button>
+            <button class="privacy-secondary" onclick="setView('profile')">Voltar ao perfil</button>
+          </div>
+
+          <div class="privacy-note">
+            Nota: mensagens privadas continuam protegidas por bloqueios e regras de segurança. Utilizadores bloqueados não conseguem iniciar novas conversas.
+          </div>
+        </article>
+      </section>
+    `;
+
+    const profile = await loadPrivacyProfile();
+    if (!profile) return;
+
+    document.getElementById("privacyMessagePrivacy").value = profile.message_privacy || "everyone";
+    document.getElementById("privacyProfileVisibility").value = profile.profile_visibility || "public";
+    document.getElementById("privacyHideLocation").checked = !!profile.hide_location;
+    document.getElementById("privacyHideActivity").checked = !!profile.hide_activity;
+    document.getElementById("privacyBlockUnknownInvites").checked = !!profile.block_unknown_invites;
+  };
+
+  window.savePrivacySettings = async function() {
+    const user = getUserSafe();
+    if (!user) return toastSafe("Tens de iniciar sessão.");
+
+    const payload = {
+      message_privacy: document.getElementById("privacyMessagePrivacy")?.value || "everyone",
+      profile_visibility: document.getElementById("privacyProfileVisibility")?.value || "public",
+      hide_location: !!document.getElementById("privacyHideLocation")?.checked,
+      hide_activity: !!document.getElementById("privacyHideActivity")?.checked,
+      block_unknown_invites: !!document.getElementById("privacyBlockUnknownInvites")?.checked
+    };
+
+    const { error } = await sb
+      .from("profiles")
+      .update(payload)
+      .eq("id", user.id);
+
+    if (error) {
+      console.error("[privacy] save error", error);
+      return toastSafe(error.message || "Não foi possível guardar as preferências.");
+    }
+
+    try {
+      if (typeof currentProfile !== "undefined" && currentProfile) {
+        Object.assign(currentProfile, payload);
+      }
+    } catch (_) {}
+
+    if (typeof playSound === "function") playSound("success");
+    toastSafe("Preferências de privacidade guardadas.");
+  };
+
+  const previousSetView = window.setView;
+  window.setView = function(view) {
+    if (view === "privacy") {
+      try { if (typeof playSound === "function") playSound("tap"); } catch (_) {}
+      window.currentView = "privacy";
+      activatePrivacyNav();
+      window.renderPrivacySettings();
+      return;
+    }
+
+    return previousSetView ? previousSetView(view) : undefined;
+  };
+
+  const previousRenderCurrentView = window.renderCurrentView;
+  window.renderCurrentView = function() {
+    if (window.currentView === "privacy") {
+      return window.renderPrivacySettings();
+    }
+    return previousRenderCurrentView ? previousRenderCurrentView() : undefined;
+  };
+
+  document.addEventListener("DOMContentLoaded", addPrivacyButtons);
+  setTimeout(addPrivacyButtons, 400);
+  setTimeout(addPrivacyButtons, 1200);
+
+  console.log("[SHITAGRAM " + VERSION_PRIVACY + "] Preferências de privacidade carregadas.");
 })();
 </script>
 
