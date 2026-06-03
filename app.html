@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=9P7Jxm9_fjiMRPl62C4aCWYsXAWV24PD-PqnA6HtMarMItLUGmvxXZEpi3PA3vTsM3QIXrYHYqxliRI0Qr-mcPmX_3BlmKGqxXt1uxluu6hzbA_TOUNcHUh90mvT9GsZVpF-dYYVJUvVmmk3VsCwHhkW_YS4N6E0cX73aE-B3xbUSdtRpUhXf9pXhI001SFm7un9lP5vjlkMX-3lRvmyi9UR-WWx13AbFNBWazskurkaPkGOlB0ZMOYYgBKBtjOLAihd7OXuQTVtuf5BHJhmoA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -10664,6 +10664,319 @@ async function claimActivationBonus() {
   setTimeout(addPrivacyButtons, 1200);
 
   console.log("[SHITAGRAM " + VERSION_PRIVACY + "] Preferências de privacidade carregadas.");
+})();
+</script>
+
+
+<script>
+/* SHITAGRAM™ vClean11.3 — Denúncias e moderação de mensagens privadas */
+(function(){
+  const V = "vClean11.3";
+  window.shitagramVersion = V;
+
+  function getSb(){
+    try { return sb || supabase || window.supabaseClient || window.supabase; }
+    catch(_) { return window.supabaseClient || window.supabase; }
+  }
+
+  function current(){
+    try { return currentUser || window.currentUser || null; }
+    catch(_) { return window.currentUser || null; }
+  }
+
+  function prof(){
+    try { return currentProfile || window.currentProfile || null; }
+    catch(_) { return window.currentProfile || null; }
+  }
+
+  function toast(message){
+    if (typeof showToast === "function") return showToast(message);
+    alert(message);
+  }
+
+  function esc(str = ""){
+    return String(str).replace(/[&<>"']/g, m => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    }[m]));
+  }
+
+  function isAdmin(){
+    const p = prof();
+    return p && ["admin","moderator"].includes(String(p.role || "").toLowerCase());
+  }
+
+  function addV113Styles(){
+    if (document.getElementById("v113MessageModerationStyles")) return;
+    const style = document.createElement("style");
+    style.id = "v113MessageModerationStyles";
+    style.textContent = `
+      .message-report-btn{
+        margin-top:7px;
+        border:0;
+        background:transparent;
+        color:#ffcc00;
+        font-size:11px;
+        font-weight:900;
+        text-decoration:underline;
+      }
+      .message-bubble-row.mine .message-report-btn{ display:none; }
+      .message-moderation-grid{
+        display:grid;
+        gap:12px;
+      }
+      .message-report-card{
+        background:#0c0c0c;
+        border:1px solid #282828;
+        border-radius:18px;
+        padding:16px;
+      }
+      .message-report-card h3{
+        color:#ffcc00;
+        font-size:16px;
+        margin-bottom:7px;
+      }
+      .message-report-card p{
+        color:#d9d9d9;
+        font-size:13px;
+        line-height:1.45;
+        margin:5px 0;
+      }
+      .message-report-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:12px;
+      }
+      .message-report-actions button{
+        border:1px solid #333;
+        background:#111;
+        color:#fff;
+        border-radius:999px;
+        padding:9px 12px;
+        font-weight:900;
+        font-size:12px;
+      }
+      .message-report-actions button.warn{ color:#ffcc00; border-color:rgba(255,204,0,.45); }
+      .message-report-actions button.danger{ color:#ff7373; border-color:rgba(255,77,77,.45); }
+      .message-report-actions button.ok{ color:#46e084; border-color:rgba(70,224,132,.45); }
+    `;
+    document.head.appendChild(style);
+  }
+
+  addV113Styles();
+
+  // Adiciona botão "Denunciar mensagem" às mensagens recebidas sem perder o render antigo.
+  const previousLoadMessages113 = window.loadMessages;
+  window.loadMessages = async function(conversationId, silent = false){
+    if (typeof previousLoadMessages113 === "function") {
+      await previousLoadMessages113(conversationId, silent);
+    }
+
+    const body = document.getElementById("messageThreadBody");
+    const s = getSb();
+    const user = current();
+    if (!body || !s || !user || !conversationId) return;
+
+    // Se o render anterior já colocou botões, não duplica.
+    if (body.querySelector(".message-report-btn")) return;
+
+    const { data } = await s
+      .from("private_messages")
+      .select("id, sender_id")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: true })
+      .limit(150);
+
+    const ids = (data || []).filter(m => m.sender_id !== user.id).map(m => m.id);
+    const rows = Array.from(body.querySelectorAll(".message-bubble-row:not(.mine) .message-bubble"));
+
+    rows.forEach((bubble, index) => {
+      const messageId = ids[index];
+      if (!messageId) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "message-report-btn";
+      btn.textContent = "Denunciar mensagem";
+      btn.onclick = () => window.reportPrivateMessage(messageId);
+      bubble.appendChild(btn);
+    });
+  };
+
+  window.reportPrivateMessage = async function(messageId){
+    const s = getSb();
+    if (!s || !messageId) return toast("Mensagem inválida.");
+
+    const reason = prompt(
+      "Motivo da denúncia:",
+      "Assédio, spam ou conteúdo abusivo"
+    );
+    if (!reason) return;
+
+    const details = prompt("Detalhes opcionais:", "") || "";
+
+    const { error } = await s.rpc("report_private_message", {
+      p_message_id: messageId,
+      p_reason: reason,
+      p_details: details
+    });
+
+    if (error) {
+      console.error(error);
+      return toast(error.message || "Não foi possível denunciar a mensagem.");
+    }
+
+    if (typeof playSound === "function") playSound("success");
+    toast("Mensagem denunciada para moderação.");
+  };
+
+  // Painel admin de denúncias de mensagens.
+  window.renderMessageModerationPanel = async function(){
+    const main = document.getElementById("mainView");
+    const searchArea = document.getElementById("searchArea");
+    if (searchArea) searchArea.style.display = "none";
+    if (!main) return;
+
+    if (!isAdmin()) {
+      main.innerHTML = `
+        <section class="view-title-card">
+          <h1>🛡️ Moderação de mensagens</h1>
+          <p>Esta área é apenas para administradores e moderadores.</p>
+        </section>
+      `;
+      return;
+    }
+
+    main.innerHTML = `
+      <section class="view-title-card">
+        <h1>🛡️ Moderação de mensagens privadas</h1>
+        <p>Denúncias de mensagens e conversas. Podes ignorar, ocultar/remover mensagem ou bloquear o autor.</p>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="renderMessageModerationPanel()">Recarregar</button>
+          <button class="btn-secondary" onclick="setView('moderation')">Moderação de posts</button>
+        </div>
+      </section>
+
+      <section id="messageModerationList" class="message-moderation-grid">
+        <article class="post-card"><div class="post-content"><p>A carregar denúncias...</p></div></article>
+      </section>
+    `;
+
+    const list = document.getElementById("messageModerationList");
+    const { data, error } = await getSb().rpc("get_private_message_reports");
+
+    if (error) {
+      console.error(error);
+      list.innerHTML = `
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Erro ao carregar denúncias</h2>
+            <p>${esc(error.message || "Verifica se o SQL da vClean11.3 foi aplicado.")}</p>
+          </div>
+        </article>
+      `;
+      return;
+    }
+
+    const rows = data || [];
+    if (!rows.length) {
+      list.innerHTML = `
+        <article class="post-card">
+          <div class="post-content">
+            <h2>Sem denúncias de mensagens abertas</h2>
+            <p>Quando alguém denunciar uma mensagem privada, ela aparece aqui.</p>
+          </div>
+        </article>
+      `;
+      return;
+    }
+
+    list.innerHTML = rows.map(r => `
+      <article class="message-report-card">
+        <h3>🚩 ${esc(r.reason || "Denúncia de mensagem")}</h3>
+        <p><strong>Mensagem:</strong> ${esc(r.message_body || "Mensagem removida/indisponível")}</p>
+        <p><strong>Autor:</strong> @${esc(r.reported_username || "utilizador")} · <strong>Denunciante:</strong> @${esc(r.reporter_username || "utilizador")}</p>
+        ${r.details ? `<p><strong>Detalhes:</strong> ${esc(r.details)}</p>` : ""}
+        <p style="color:#aaa;font-size:12px;">${esc(new Date(r.created_at).toLocaleString("pt-PT"))}</p>
+        <div class="message-report-actions">
+          <button class="ok" onclick="moderatePrivateMessageReport('${r.report_id}','ignore')">Ignorar</button>
+          <button class="warn" onclick="moderatePrivateMessageReport('${r.report_id}','hide')">Ocultar mensagem</button>
+          <button class="danger" onclick="moderatePrivateMessageReport('${r.report_id}','remove')">Remover mensagem</button>
+          <button class="danger" onclick="moderatePrivateMessageReport('${r.report_id}','block')">Bloquear autor</button>
+        </div>
+      </article>
+    `).join("");
+  };
+
+  window.moderatePrivateMessageReport = async function(reportId, action){
+    const labels = {
+      ignore: "ignorar esta denúncia",
+      hide: "ocultar esta mensagem",
+      remove: "remover esta mensagem",
+      block: "bloquear o autor desta mensagem"
+    };
+
+    if (!confirm("Confirmas que queres " + (labels[action] || "executar esta ação") + "?")) return;
+
+    const { error } = await getSb().rpc("moderate_private_message_report", {
+      p_report_id: reportId,
+      p_action: action
+    });
+
+    if (error) {
+      console.error(error);
+      return toast(error.message || "Não foi possível moderar.");
+    }
+
+    if (typeof playSound === "function") playSound(action === "ignore" ? "success" : "delete");
+    toast("Ação de moderação aplicada.");
+    await window.renderMessageModerationPanel();
+  };
+
+  // Botão admin no menu.
+  function addMessageModerationButtons(){
+    if (!isAdmin()) return;
+
+    const navMenu = document.querySelector(".nav-menu");
+    if (navMenu && !document.getElementById("navMessageModeration")) {
+      const btn = document.createElement("button");
+      btn.id = "navMessageModeration";
+      btn.className = "nav-item";
+      btn.type = "button";
+      btn.onclick = () => setView("messageModeration");
+      btn.innerHTML = `<i class="fa-solid fa-shield-heart"></i><label>Mod. Mensagens</label>`;
+      navMenu.appendChild(btn);
+    }
+
+    const mobileNav = document.querySelector(".mobile-bottom-nav");
+    if (mobileNav && !document.getElementById("mobileMessageModeration")) {
+      const btn = document.createElement("button");
+      btn.id = "mobileMessageModeration";
+      btn.type = "button";
+      btn.onclick = () => setView("messageModeration");
+      btn.innerHTML = `<i class="fa-solid fa-shield-heart"></i><span>Msg Mod</span>`;
+      mobileNav.appendChild(btn);
+    }
+  }
+
+  const previousSetView113 = window.setView;
+  window.setView = function(view){
+    if (view === "messageModeration") {
+      window.currentView = "messageModeration";
+      document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".mobile-bottom-nav button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("navMessageModeration")?.classList.add("active");
+      document.getElementById("mobileMessageModeration")?.classList.add("active");
+      return window.renderMessageModerationPanel();
+    }
+    return previousSetView113 ? previousSetView113(view) : undefined;
+  };
+
+  document.addEventListener("DOMContentLoaded", () => setTimeout(addMessageModerationButtons, 600));
+  setTimeout(addMessageModerationButtons, 1200);
+  setTimeout(addMessageModerationButtons, 2500);
+
+  console.log("[SHITAGRAM " + V + "] Denúncias e moderação de mensagens carregadas.");
 })();
 </script>
 
