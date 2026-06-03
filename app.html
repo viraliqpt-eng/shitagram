@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — Privacidade</title>
+  <title>SHITAGRAM™ App — vClean11.6 Logs Admin</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Z6WkoQWiOf-VFXnWmqDIdwNHnQ7Cv-iUac5yfAKBNpOrvGYju2pIvfsbubbsWGmEy9LsDG7J7MgAZYhrnj5yUDMP6CxqdpUxClzR3sNTOETJUbTBYpseJPV1NOlwHTI-kXgwMsv8GKvnKxu5dC8jlorkT2oEmHr6CSsG5GA1sF3dSlR2Ve6Ld-scDIif4yloXaiawLl1_UsbIEYxzfRFstXoLQPgEJa0xSmH7uN2xdWfL7E2sEVlOz-JvRFrf7k8OpEmdihrEnrJwVzIt6Tc5A" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -11373,6 +11373,169 @@ async function claimActivationBonus() {
   setTimeout(addAuditButtons, 2600);
 
   console.log("[SHITAGRAM vClean11.5.1] app.html corrigido: Auditoria abre audit.html");
+})();
+</script>
+
+
+<!-- SHITAGRAM™ vClean11.6 — Integração total dos logs admin -->
+<script>
+(function(){
+  "use strict";
+
+  const AUDIT_RPC_MAP = {
+    // Beta access control
+    approve_beta_user: { action: "beta_approved", targetType: "profile", targetIdKey: "p_user_id", targetUserKey: "p_user_id", risk: "medium" },
+    block_beta_user: { action: "beta_blocked", targetType: "profile", targetIdKey: "p_user_id", targetUserKey: "p_user_id", risk: "high" },
+    set_beta_user_pending: { action: "beta_pending", targetType: "profile", targetIdKey: "p_user_id", targetUserKey: "p_user_id", risk: "medium" },
+    approve_beta_invite: { action: "beta_invite_approved", targetType: "invite", targetIdKey: "p_invite_id", risk: "medium" },
+
+    // Post moderation
+    moderate_report: { action: "post_report_moderated", targetType: "post", targetIdKey: "p_post_id", risk: "high" },
+    moderate_post_status: { action: "post_status_changed", targetType: "post", targetIdKey: "p_post_id", risk: "high" },
+
+    // Private message moderation
+    moderate_private_message_report: { action: "private_message_report_moderated", targetType: "message_report", targetIdKey: "p_report_id", risk: "high" },
+    report_private_message: null, // denúncia feita por utilizador, não é ação admin
+    report_conversation: null,
+
+    // Message safety / user blocks
+    block_user: { action: "user_blocked_from_messages", targetType: "profile", targetIdKey: "p_blocked_id", targetUserKey: "p_blocked_id", risk: "high" },
+    unblock_user: { action: "user_unblocked_from_messages", targetType: "profile", targetIdKey: "p_blocked_id", targetUserKey: "p_blocked_id", risk: "medium" },
+    delete_own_private_message: null, // ação do próprio utilizador, não é ação admin
+
+    // Anti-spam / security
+    set_user_security_status: { action: "security_state_changed", targetType: "profile", targetIdKey: "p_user_id", targetUserKey: "p_user_id", risk: "high" },
+    set_user_security_state_with_audit: null, // esta função já grava log no SQL
+
+    // Roles / audit helpers
+    log_admin_action: null
+  };
+
+  function asText(value) {
+    if (value === null || value === undefined) return null;
+    try { return String(value); } catch (_) { return null; }
+  }
+
+  function getArg(args, key) {
+    if (!args || !key) return null;
+    return args[key] ?? null;
+  }
+
+  async function auditLogAdminRpc(rpcName, rpcArgs, rpcResult) {
+    try {
+      const rule = AUDIT_RPC_MAP[rpcName];
+      if (!rule) return;
+
+      const sb = window.sb;
+      if (!sb || typeof sb.rpc !== "function") return;
+
+      const targetId = asText(getArg(rpcArgs, rule.targetIdKey));
+      const targetUserId = getArg(rpcArgs, rule.targetUserKey);
+
+      const details = {
+        source: "vClean11.6_rpc_interceptor",
+        rpc: rpcName,
+        rpc_args: rpcArgs || {},
+        risk: rule.risk || "normal",
+        result_ok: !rpcResult?.error,
+        path: location.pathname,
+        at: new Date().toISOString()
+      };
+
+      await sb.rpc("log_admin_action", {
+        p_action_type: rule.action,
+        p_target_type: rule.targetType || "unknown",
+        p_target_id: targetId,
+        p_target_user_id: targetUserId || null,
+        p_details: details
+      });
+    } catch (err) {
+      // Nunca bloquear a ação principal por causa do log.
+      console.warn("[SHITAGRAM vClean11.6] audit log falhou:", err?.message || err);
+    }
+  }
+
+  function patchRpcClient() {
+    const sb = window.sb;
+    if (!sb || typeof sb.rpc !== "function" || sb.__shitagramAuditPatched) return false;
+
+    const originalRpc = sb.rpc.bind(sb);
+
+    sb.rpc = async function(name, args, options) {
+      const result = await originalRpc(name, args, options);
+
+      if (AUDIT_RPC_MAP[name] && !result?.error) {
+        auditLogAdminRpc(name, args || {}, result);
+      }
+
+      return result;
+    };
+
+    sb.__shitagramAuditPatched = true;
+    console.log("[SHITAGRAM vClean11.6] Logs admin integrados em RPCs críticos.");
+    return true;
+  }
+
+  function addAuditIntegrationBadge() {
+    try {
+      if (!document.body || document.getElementById("auditIntegrationBadge")) return;
+      const isAdmin =
+        (String(window.currentProfile?.role || "").toLowerCase() === "admin") ||
+        (String(window.currentUser?.email || "").toLowerCase() === "viraliqpt@gmail.com");
+
+      if (!isAdmin) return;
+
+      const badge = document.createElement("button");
+      badge.id = "auditIntegrationBadge";
+      badge.type = "button";
+      badge.title = "Logs admin ativos";
+      badge.innerHTML = "🧾";
+      badge.style.cssText = [
+        "position:fixed",
+        "right:18px",
+        "bottom:190px",
+        "z-index:9999",
+        "width:44px",
+        "height:44px",
+        "border-radius:999px",
+        "border:1px solid rgba(255,204,0,.45)",
+        "background:#101010",
+        "color:#ffcc00",
+        "font-size:20px",
+        "box-shadow:0 10px 25px rgba(0,0,0,.35)",
+        "cursor:pointer"
+      ].join(";");
+
+      badge.onclick = function() {
+        if (typeof window.openAuditPage === "function") {
+          window.openAuditPage();
+        } else {
+          location.href = "audit.html";
+        }
+      };
+
+      document.body.appendChild(badge);
+    } catch (_) {}
+  }
+
+  function bootAuditIntegration() {
+    patchRpcClient();
+    addAuditIntegrationBadge();
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setTimeout(bootAuditIntegration, 200);
+    setTimeout(bootAuditIntegration, 1000);
+    setTimeout(bootAuditIntegration, 2500);
+  });
+
+  setTimeout(bootAuditIntegration, 500);
+  setTimeout(bootAuditIntegration, 1800);
+
+  window.ShitagramAudit = {
+    patchRpcClient,
+    auditLogAdminRpc
+  };
 })();
 </script>
 
