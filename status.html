@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SHITAGRAM™ — Estado da candidatura</title>
+<title>SHITAGRAM™ — Estado da candidatura beta</title>
 <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
 <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<style>
+<script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=bzuXxZK9MRF0VmqnBeKH4WR7jGpD1Qoz-xXUXse_V5ckArFfjyNUGxlR97CKDLuvp06poEksOVNPwtTZvCI0DRl-wzCB0MNHzezX9HQInBpRNSWCJMreMYKuEs6ODkpY8O87JYYz5jTTD_hcS-tnCZUQ9CPSnlG1cuOlhkBiYTKrlCl0twTcSmpoGEjp8FjUTriAvuRcEPvuyPeQrZs6wBWR1ShITtOSVSuTMpReVbVbIa-9n0k3LFr__JVARCfplD2Wdk03ejFVbD8lpE4vRQ" charset="UTF-8"></script><style>
 :root{--bg:#020202;--card:#0b0b0b;--yellow:#ffcc00;--muted:#b8b8b8;--border:#252525;--green:#20c767;--red:#ff5a5f}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,system-ui;background:radial-gradient(circle at top,rgba(255,204,0,.13),transparent 34%),var(--bg);color:white}
@@ -49,9 +49,10 @@ footer a{color:#cfcfcf;text-decoration:none;margin-right:14px}
       <div class="tag">Estado da candidatura beta</div>
     </div>
     <nav class="nav">
-      <a class="btn dark" href="index.html">Landing</a>
-      <a class="btn dark" href="beta.html">Candidatura</a>
-      <a class="btn yellow" href="app.html">Entrar na app</a>
+      <a class="btn dark js-track" data-event="status_nav_landing" href="index.html">Landing</a>
+      <a class="btn dark js-track" data-event="status_nav_beta" href="beta.html">Candidatura</a>
+      <a class="btn dark js-track" data-event="status_nav_investors" href="investors.html">Investidores</a>
+      <a class="btn yellow js-track" data-event="status_nav_app" href="app.html">Entrar na app</a>
     </nav>
   </header>
 
@@ -81,10 +82,13 @@ footer a{color:#cfcfcf;text-decoration:none;margin-right:14px}
   <footer>
     <div>© 2026 SHITAGRAM™ · Beta fechada</div>
     <div>
-      <a href="legal.html#regras">Regras</a>
-      <a href="legal.html#termos">Termos</a>
-      <a href="legal.html#privacidade">Privacidade</a>
-      <a href="investors.html">Investidores</a>
+      <a class="js-track" data-event="status_footer_landing" href="index.html">Landing</a>
+      <a class="js-track" data-event="status_footer_beta" href="beta.html">Beta</a>
+      <a class="js-track" data-event="status_footer_app" href="app.html">App</a>
+      <a class="js-track" data-event="status_footer_rules" href="legal.html#regras">Regras</a>
+      <a class="js-track" data-event="status_footer_terms" href="legal.html#termos">Termos</a>
+      <a class="js-track" data-event="status_footer_privacy" href="legal.html#privacidade">Privacidade</a>
+      <a class="js-track" data-event="status_footer_investors" href="investors.html">Investidores</a>
     </div>
   </footer>
 </div>
@@ -100,6 +104,38 @@ const form = document.getElementById("statusForm");
 const emailInput = document.getElementById("email");
 const resultBox = document.getElementById("resultBox");
 const submitBtn = document.getElementById("submitBtn");
+
+function getAnalyticsSessionId() {
+  let id = localStorage.getItem("shitagram_session_id");
+  if (!id) {
+    id = crypto && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+    localStorage.setItem("shitagram_session_id", id);
+  }
+  return id;
+}
+
+async function trackPublicClick(eventName, metadata = {}) {
+  try {
+    await supabase.from("app_events").insert({
+      event_name: eventName,
+      source: "status_v12_4",
+      session_id: getAnalyticsSessionId(),
+      metadata
+    });
+  } catch (err) {
+    console.warn("[SHITAGRAM status tracking]", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  trackPublicClick("status_page_view", { path: location.pathname });
+  document.querySelectorAll(".js-track").forEach(link => {
+    link.addEventListener("click", () => {
+      trackPublicClick(link.dataset.event || "status_click", { href: link.getAttribute("href"), text: link.textContent.trim() });
+    });
+  });
+});
+
 
 function statusCopy(status){
   const map = {
@@ -170,6 +206,7 @@ form.addEventListener("submit", async (e) => {
     if (error) throw error;
 
     const row = Array.isArray(data) ? data[0] : data;
+    await trackPublicClick("status_check_submit", { email_domain: (email.split("@")[1] || ""), result: (row && row.status) || "not_found" });
     showResult(row || { status: "not_found" });
   } catch (err) {
     console.error("[SHITAGRAM status] erro:", err);
