@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SHITAGRAM™ — Investor Metrics</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#050505;--card:#111;--line:#242424;--yellow:#ffcc00;--muted:#aaa;--text:#fff;--green:#10b981;--red:#ef4444}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#241d02 0,#050505 34%,#000 100%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+    .wrap{max-width:1180px;margin:0 auto;padding:32px 18px 60px}
+    header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:28px}
+    .logo{font-size:34px;font-weight:1000;color:var(--yellow);letter-spacing:-1px}
+    .sub{color:var(--muted);margin-top:4px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:16px;padding:13px 18px;font-weight:900;text-decoration:none;cursor:pointer;background:#171717;color:#fff;border:1px solid #2b2b2b}
+    .btn.primary{background:var(--yellow);color:#000}
+    .hero{background:linear-gradient(135deg,rgba(255,204,0,.16),rgba(255,255,255,.04));border:1px solid rgba(255,204,0,.32);border-radius:28px;padding:28px;margin-bottom:22px}
+    h1{font-size:44px;line-height:1.02;margin:0 0 12px} h2{font-size:24px;margin:0 0 14px;color:var(--yellow)}
+    p{color:#d6d6d6;line-height:1.55}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+    .card{background:rgba(17,17,17,.88);border:1px solid var(--line);border-radius:22px;padding:18px}
+    .metric{font-size:32px;font-weight:1000;color:var(--yellow);margin-top:8px}
+    .label{color:#cfcfcf;font-size:14px}
+    .section{background:rgba(17,17,17,.86);border:1px solid var(--line);border-radius:26px;padding:22px;margin-top:18px}
+    .rows{display:grid;gap:10px}
+    .row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+    .row:last-child{border-bottom:0}
+    .pill{display:inline-flex;border-radius:999px;background:rgba(255,204,0,.13);border:1px solid rgba(255,204,0,.35);color:var(--yellow);padding:7px 10px;font-weight:900;font-size:13px}
+    .status{margin-top:12px;color:#cfcfcf}
+    footer{display:flex;gap:14px;flex-wrap:wrap;color:#888;border-top:1px solid #1f1f1f;margin-top:36px;padding-top:18px}
+    footer a{color:#aaa;text-decoration:none;font-weight:800}
+    @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}h1{font-size:36px}header{align-items:flex-start;flex-direction:column}}
+    @media(max-width:520px){.grid{grid-template-columns:1fr}.metric{font-size:28px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="logo">SHITAGRAM™</div>
+        <div class="sub">Investor Metrics Dashboard · Beta</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="investors.html">Investidores</a>
+        <a class="btn primary" href="app.html">Entrar na app</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="pill">Métricas agregadas</span>
+      <h1>O pulso da beta em tempo real.</h1>
+      <p>Esta página resume sinais de tração, atividade, segurança, Mood Map e interesse Premium para apresentação a investidores.</p>
+      <button class="btn primary" onclick="loadMetrics()">Recarregar métricas</button>
+      <div id="status" class="status">A carregar métricas...</div>
+    </section>
+
+    <section class="grid" id="metricsGrid"></section>
+
+    <section class="section">
+      <h2>💰 Projeção Premium</h2>
+      <p>Estimativa com preço base de <strong>2,99€/mês</strong>. A projeção usa cenários de conversão de utilizadores aprovados.</p>
+      <div class="rows" id="revenueRows"></div>
+    </section>
+
+    <section class="section">
+      <h2>🛡️ Segurança e moderação</h2>
+      <div class="rows" id="safetyRows"></div>
+    </section>
+
+    <section class="section">
+      <h2>📌 Resumo para investidores</h2>
+      <p id="investorSummary">A carregar resumo...</p>
+    </section>
+
+    <footer>
+      <span>© 2026 SHITAGRAM™ · Beta</span>
+      <a href="index.html">Landing</a>
+      <a href="beta.html">Beta</a>
+      <a href="premium.html">Premium</a>
+      <a href="legal.html">Legal</a>
+    </footer>
+  </div>
+
+<script>
+const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function n(v){ return Number(v || 0).toLocaleString("pt-PT"); }
+function eur(v){ return Number(v || 0).toLocaleString("pt-PT",{style:"currency",currency:"EUR"}); }
+
+async function loadMetrics(){
+  const status = document.getElementById("status");
+  status.textContent = "A carregar métricas...";
+  try{
+    const { data, error } = await supabase.rpc("get_investor_metrics");
+    if(error) throw error;
+    const m = data || {};
+
+    const gridItems = [
+      ["🧪 Beta signups", m.beta_signups],
+      ["✅ Utilizadores aprovados", m.approved_users],
+      ["👑 Premium ativos", m.premium_active],
+      ["💛 Interessados Premium", m.premium_interest],
+      ["📝 Posts publicados", m.posts_active],
+      ["💬 Comentários", m.comments_count],
+      ["💩 Reações", m.reactions_count],
+      ["🌍 Mood events", m.mood_events],
+      ["🚩 Denúncias abertas", m.open_reports],
+      ["🛡️ Ações admin", m.admin_actions],
+      ["📈 Eventos app 7d", m.app_events_7d],
+      ["👀 Visitas Premium", m.premium_visits]
+    ];
+
+    document.getElementById("metricsGrid").innerHTML = gridItems.map(([label,value]) => `
+      <div class="card"><div class="label">${label}</div><div class="metric">${n(value)}</div></div>
+    `).join("");
+
+    const approved = Number(m.approved_users || 0);
+    const price = 2.99;
+    const scenarios = [1,3,5].map(p => {
+      const users = Math.round(approved * (p/100));
+      return [p, users, users * price];
+    });
+
+    document.getElementById("revenueRows").innerHTML = scenarios.map(([p,users,total]) => `
+      <div class="row"><span>${p}% de conversão · ${n(users)} utilizadores</span><strong>${eur(total)}/mês</strong></div>
+    `).join("");
+
+    document.getElementById("safetyRows").innerHTML = `
+      <div class="row"><span>Denúncias abertas</span><strong>${n(m.open_reports)}</strong></div>
+      <div class="row"><span>Reports de mensagens privadas</span><strong>${n(m.private_message_reports)}</strong></div>
+      <div class="row"><span>Eventos de rate limit / anti-spam</span><strong>${n(m.rate_limit_events)}</strong></div>
+      <div class="row"><span>Ações administrativas registadas</span><strong>${n(m.admin_actions)}</strong></div>
+    `;
+
+    document.getElementById("investorSummary").innerHTML =
+      `A beta tem <strong>${n(m.beta_signups)}</strong> candidaturas, <strong>${n(m.approved_users)}</strong> utilizadores aprovados, ` +
+      `<strong>${n(m.posts_active)}</strong> posts ativos e <strong>${n(m.mood_events)}</strong> sinais emocionais agregados no Mood Map. ` +
+      `O interesse Premium registado é de <strong>${n(m.premium_interest)}</strong> pessoas, com <strong>${n(m.premium_active)}</strong> ativações manuais.`;
+
+    status.textContent = "Métricas atualizadas.";
+  }catch(e){
+    console.error(e);
+    status.textContent = "Erro ao carregar métricas: " + (e.message || JSON.stringify(e));
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadMetrics);
+</script>
+</body>
+</html>
