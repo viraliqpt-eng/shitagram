@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ App — vClean11.6 Logs Admin</title>
+  <title>SHITAGRAM™ App — vClean12.6 Premium integrado</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
@@ -11,7 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Z6WkoQWiOf-VFXnWmqDIdwNHnQ7Cv-iUac5yfAKBNpOrvGYju2pIvfsbubbsWGmEy9LsDG7J7MgAZYhrnj5yUDMP6CxqdpUxClzR3sNTOETJUbTBYpseJPV1NOlwHTI-kXgwMsv8GKvnKxu5dC8jlorkT2oEmHr6CSsG5GA1sF3dSlR2Ve6Ld-scDIif4yloXaiawLl1_UsbIEYxzfRFstXoLQPgEJa0xSmH7uN2xdWfL7E2sEVlOz-JvRFrf7k8OpEmdihrEnrJwVzIt6Tc5A" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -2743,6 +2743,10 @@
           <i class="fa-solid fa-gift"></i><label>Loja</label>
         </button>
 
+        <button id="navPremium" class="nav-item" onclick="setView('premium')" title="Premium experimental">
+          <i class="fa-solid fa-crown"></i><label>Premium</label>
+        </button>
+
         <button id="navProfile" class="nav-item" onclick="setView('profile')">
           <i class="fa-solid fa-user"></i><label>Perfil</label>
         </button>
@@ -2886,6 +2890,10 @@
 
     <button id="mobileRanking" onclick="setView('ranking')">
       <i class="fa-solid fa-trophy"></i><span>Ranking</span>
+    </button>
+
+    <button id="mobilePremium" onclick="setView('premium')">
+      <i class="fa-solid fa-crown"></i><span>Premium</span>
     </button>
 
     <button id="mobileProfile" onclick="setView('profile')">
@@ -3558,7 +3566,7 @@
         const { data, error } = await withTimeout(
           sb
             .from("profiles")
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed, is_premium, premium_until, premium_monthly_coins_claimed_at, premium_boosts_left, premium_badge")
             .eq("id", currentUser.id)
             .maybeSingle(),
           9000,
@@ -3628,7 +3636,7 @@
               community_rules_accepted: false,
               first_login_bonus_claimed: false
             }, { onConflict: "id" })
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed, is_premium, premium_until, premium_monthly_coins_claimed_at, premium_boosts_left, premium_badge")
             .single(),
           9000,
           "Criação do perfil"
@@ -3893,6 +3901,11 @@
         document.getElementById("navShop")?.classList.add("active");
       }
 
+      if (view === "premium") {
+        document.getElementById("navPremium")?.classList.add("active");
+        document.getElementById("mobilePremium")?.classList.add("active");
+      }
+
       if (view === "profile") {
         document.getElementById("navProfile")?.classList.add("active");
         document.getElementById("mobileProfile")?.classList.add("active");
@@ -3938,6 +3951,7 @@
       if (currentView === "analytics") renderAnalyticsPage();
       if (currentView === "beta_access") renderBetaAccessAdminPage();
       if (currentView === "activation") renderActivationChecklistPage();
+      if (currentView === "premium") renderPremiumPage();
     }
 
     function openStore(tab = "presentes") {
@@ -4129,7 +4143,7 @@
               coins: Number(currentProfile?.coins || 0) + bonus
             })
             .eq("id", currentUser.id)
-            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
+            .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed, is_premium, premium_until, premium_monthly_coins_claimed_at, premium_boosts_left, premium_badge")
             .single(),
           9000,
           "Onboarding"
@@ -6599,7 +6613,7 @@
       mainView.innerHTML = `
         <section class="view-title-card">
           <h1>🔐 Beta access control</h1>
-          <p>Aprova, rejeita ou bloqueia utilizadores antes de entrarem na beta pública.</p>
+          <p>Aprova candidaturas da landing, convites e contas pendentes.</p>
         </section>
 
         <article class="post-card">
@@ -6611,10 +6625,67 @@
       `;
 
       try {
-        const { data, error } = await sb.rpc("get_beta_access_requests", { p_limit: 60 });
-        if (error) throw error;
+        const profileReq = await sb.rpc("get_beta_access_requests", { p_limit: 80 });
+        const waitlistReq = await sb.rpc("get_beta_waitlist_requests", { p_limit: 80 });
 
-        const rows = data || [];
+        let profileRows = [];
+        let waitlistRows = [];
+
+        if (!profileReq.error && Array.isArray(profileReq.data)) {
+          profileRows = profileReq.data.map(row => ({
+            type: "profile",
+            id: row.user_id,
+            email: row.email || "",
+            name: row.display_name || row.username || row.email || "Utilizador",
+            username: row.username || "",
+            reason: row.invited_by_username ? "Convite de @" + row.invited_by_username : "",
+            status: row.beta_status || "pending",
+            created_at: row.created_at || row.requested_at || null
+          }));
+        }
+
+        if (!waitlistReq.error && Array.isArray(waitlistReq.data)) {
+          waitlistRows = waitlistReq.data.map(row => ({
+            type: "waitlist",
+            id: row.id,
+            email: row.email || "",
+            name: row.name || row.email || "Candidatura",
+            username: row.desired_username || row.username || "",
+            reason: row.reason || "",
+            status: row.status || "pending",
+            created_at: row.created_at || null
+          }));
+        } else if (waitlistReq.error) {
+          console.warn("[SHITAGRAM beta] get_beta_waitlist_requests falhou:", waitlistReq.error);
+          const fallback = await sb
+            .from("beta_waitlist")
+            .select("id,name,email,username,desired_username,reason,status,created_at")
+            .in("status", ["pending", "rejected", "blocked"])
+            .order("created_at", { ascending: false })
+            .limit(80);
+
+          if (!fallback.error && Array.isArray(fallback.data)) {
+            waitlistRows = fallback.data.map(row => ({
+              type: "waitlist",
+              id: row.id,
+              email: row.email || "",
+              name: row.name || row.email || "Candidatura",
+              username: row.desired_username || row.username || "",
+              reason: row.reason || "",
+              status: row.status || "pending",
+              created_at: row.created_at || null
+            }));
+          } else if (fallback.error) {
+            throw fallback.error;
+          }
+        }
+
+        const rows = [...waitlistRows, ...profileRows].sort((a, b) => {
+          const da = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const db = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return db - da;
+        });
+
         if (!rows.length) {
           mainView.innerHTML = `
             <section class="view-title-card">
@@ -6640,32 +6711,42 @@
         mainView.innerHTML = `
           <section class="view-title-card">
             <h1>🔐 Beta access control</h1>
-            <p>${rows.length} pedido(s) encontrado(s).</p>
+            <p>${rows.length} pedido(s) encontrado(s), incluindo candidaturas da landing.</p>
           </section>
 
           <section class="beta-admin-grid">
-            ${rows.map(row => `
-              <article class="beta-request-row">
-                <div>
-                  <strong>${escapeHtml(row.username ? "@" + row.username.replace(/^@/, "") : row.email || "Utilizador")}</strong><br>
-                  <small>${escapeHtml(row.email || "email não disponível")}</small><br>
-                  <span class="beta-status-pill ${escapeHtml(row.beta_status || "pending")}">${escapeHtml(row.beta_status || "pending")}</span>
-                  ${row.invited_by_username ? `<small style="display:block;margin-top:7px;">Convite de @${escapeHtml(row.invited_by_username)}</small>` : ""}
-                  ${row.created_at ? `<small style="display:block;margin-top:4px;">Criado em ${new Date(row.created_at).toLocaleString("pt-PT")}</small>` : ""}
-                </div>
-                <div class="beta-request-actions">
-                  <button class="btn-primary" onclick="approveBetaUser('${row.user_id}')">
-                    <i class="fa-solid fa-check"></i> Aprovar
-                  </button>
-                  <button class="btn-secondary" onclick="rejectBetaUser('${row.user_id}')">
-                    <i class="fa-solid fa-clock"></i> Manter pendente
-                  </button>
-                  <button class="btn-secondary" onclick="blockBetaUser('${row.user_id}')">
-                    <i class="fa-solid fa-ban"></i> Bloquear
-                  </button>
-                </div>
-              </article>
-            `).join("")}
+            ${rows.map(row => {
+              const safeId = escapeHtml(row.id || "");
+              const safeType = escapeHtml(row.type || "profile");
+              const usernameText = row.username ? "@" + String(row.username).replace(/^@/, "") : "sem username";
+              const title = row.type === "waitlist" ? (row.name || "Candidatura beta") : usernameText;
+              const sub = row.email || "email não disponível";
+              const created = row.created_at ? new Date(row.created_at).toLocaleString("pt-PT") : "sem data";
+              return `
+                <article class="beta-request-row">
+                  <div>
+                    <strong>${escapeHtml(title)}</strong>
+                    <small style="display:block;margin-top:4px;">${escapeHtml(sub)}</small>
+                    <small style="display:block;margin-top:4px;">Username desejado: ${escapeHtml(usernameText)}</small>
+                    <span class="beta-status-pill ${escapeHtml(row.status || "pending")}">${escapeHtml(row.status || "pending")}</span>
+                    <small style="display:block;margin-top:7px;">Origem: ${row.type === "waitlist" ? "Candidatura landing" : "Conta registada"}</small>
+                    ${row.reason ? `<small style="display:block;margin-top:4px;max-width:560px;">Motivo: ${escapeHtml(row.reason)}</small>` : ""}
+                    <small style="display:block;margin-top:4px;">Criado em ${escapeHtml(created)}</small>
+                  </div>
+                  <div class="beta-request-actions">
+                    <button class="btn-primary" onclick="approveBetaAccessItem('${safeType}','${safeId}')">
+                      <i class="fa-solid fa-check"></i> Aprovar
+                    </button>
+                    <button class="btn-secondary" onclick="pendingBetaAccessItem('${safeType}','${safeId}')">
+                      <i class="fa-solid fa-clock"></i> Pendente
+                    </button>
+                    <button class="btn-secondary" onclick="blockBetaAccessItem('${safeType}','${safeId}')">
+                      <i class="fa-solid fa-ban"></i> Bloquear
+                    </button>
+                  </div>
+                </article>
+              `;
+            }).join("")}
           </section>
         `;
       } catch (err) {
@@ -6678,6 +6759,7 @@
             <div class="post-content">
               <h2>Erro</h2>
               <p>${escapeHtml(err.message || "Não foi possível carregar os pedidos de acesso.")}</p>
+              <p style="color:var(--muted);margin-top:8px;">Confirma se executaste o SQL v12.2 que liga a tabela beta_waitlist ao painel.</p>
             </div>
             <div class="post-divider"></div>
             <div class="post-actions">
@@ -6690,43 +6772,70 @@
       }
     }
 
-    async function approveBetaUser(userId) {
+    async function approveBetaAccessItem(type, id) {
       try {
-        const { error } = await sb.rpc("approve_beta_user", { p_user_id: userId });
-        if (error) throw error;
-        showToast("Utilizador aprovado.");
-        window.trackAppEvent?.("beta_user_approved", { userId }, "app");
+        let res;
+        if (type === "waitlist") {
+          res = await sb.rpc("approve_beta_waitlist", { p_waitlist_id: id });
+        } else {
+          res = await sb.rpc("approve_beta_user", { p_user_id: id });
+        }
+        if (res.error) throw res.error;
+        showToast("Pedido aprovado.");
+        window.trackAppEvent?.("beta_access_approved", { type, id }, "app");
         renderBetaAccessAdminPage();
       } catch (err) {
-        showToast(err.message || "Erro ao aprovar utilizador.");
+        showToast(err.message || "Erro ao aprovar pedido.");
       }
     }
 
-    async function rejectBetaUser(userId) {
+    async function pendingBetaAccessItem(type, id) {
       try {
-        const { error } = await sb.rpc("set_beta_user_pending", { p_user_id: userId });
-        if (error) throw error;
-        showToast("Utilizador mantido em pendente.");
-        window.trackAppEvent?.("beta_user_pending", { userId }, "app");
+        let res;
+        if (type === "waitlist") {
+          res = await sb.rpc("pending_beta_waitlist", { p_waitlist_id: id });
+        } else {
+          res = await sb.rpc("set_beta_user_pending", { p_user_id: id });
+        }
+        if (res.error) throw res.error;
+        showToast("Pedido colocado em pendente.");
+        window.trackAppEvent?.("beta_access_pending", { type, id }, "app");
         renderBetaAccessAdminPage();
       } catch (err) {
-        showToast(err.message || "Erro ao atualizar utilizador.");
+        showToast(err.message || "Erro ao atualizar pedido.");
       }
     }
 
-    async function blockBetaUser(userId) {
-      const ok = confirm("Queres bloquear este utilizador da beta?");
+    async function blockBetaAccessItem(type, id) {
+      const ok = confirm("Queres bloquear este pedido de acesso beta?");
       if (!ok) return;
 
       try {
-        const { error } = await sb.rpc("block_beta_user", { p_user_id: userId, p_reason: "Bloqueado no painel beta" });
-        if (error) throw error;
-        showToast("Utilizador bloqueado.");
-        window.trackAppEvent?.("beta_user_blocked", { userId }, "app");
+        let res;
+        if (type === "waitlist") {
+          res = await sb.rpc("block_beta_waitlist", { p_waitlist_id: id, p_reason: "Bloqueado no painel beta" });
+        } else {
+          res = await sb.rpc("block_beta_user", { p_user_id: id, p_reason: "Bloqueado no painel beta" });
+        }
+        if (res.error) throw res.error;
+        showToast("Pedido bloqueado.");
+        window.trackAppEvent?.("beta_access_blocked", { type, id }, "app");
         renderBetaAccessAdminPage();
       } catch (err) {
-        showToast(err.message || "Erro ao bloquear utilizador.");
+        showToast(err.message || "Erro ao bloquear pedido.");
       }
+    }
+
+    async function approveBetaUser(userId) {
+      return approveBetaAccessItem("profile", userId);
+    }
+
+    async function rejectBetaUser(userId) {
+      return pendingBetaAccessItem("profile", userId);
+    }
+
+    async function blockBetaUser(userId) {
+      return blockBetaAccessItem("profile", userId);
     }
 
     function enforceBetaAccessForCurrentView() {
@@ -7151,7 +7260,7 @@
 
       const { data, error } = await sb
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed")
+        .select("id, username, display_name, avatar_url, bio, xp, coins, level, posts_count, role, invite_code, invite_limit, invited_count, founder_beta, beta_status, country, city, onboarding_completed, community_rules_accepted, interests, first_login_bonus_claimed, is_premium, premium_until, premium_monthly_coins_claimed_at, premium_boosts_left, premium_badge")
         .eq("id", currentUser.id)
         .maybeSingle();
 
@@ -11377,7 +11486,7 @@ async function claimActivationBonus() {
 </script>
 
 
-<!-- SHITAGRAM™ vClean11.6 — Integração total dos logs admin -->
+<!-- SHITAGRAM™ vClean12.2 — Integração total dos logs admin -->
 <script>
 (function(){
   "use strict";
@@ -11433,7 +11542,7 @@ async function claimActivationBonus() {
       const targetUserId = getArg(rpcArgs, rule.targetUserKey);
 
       const details = {
-        source: "vClean11.6_rpc_interceptor",
+        source: "vClean12.2_rpc_interceptor",
         rpc: rpcName,
         rpc_args: rpcArgs || {},
         risk: rule.risk || "normal",
@@ -11451,7 +11560,7 @@ async function claimActivationBonus() {
       });
     } catch (err) {
       // Nunca bloquear a ação principal por causa do log.
-      console.warn("[SHITAGRAM vClean11.6] audit log falhou:", err?.message || err);
+      console.warn("[SHITAGRAM vClean12.2] audit log falhou:", err?.message || err);
     }
   }
 
@@ -11472,7 +11581,7 @@ async function claimActivationBonus() {
     };
 
     sb.__shitagramAuditPatched = true;
-    console.log("[SHITAGRAM vClean11.6] Logs admin integrados em RPCs críticos.");
+    console.log("[SHITAGRAM vClean12.2] Logs admin integrados em RPCs críticos.");
     return true;
   }
 
@@ -11538,6 +11647,410 @@ async function claimActivationBonus() {
   };
 })();
 </script>
+
+
+<style>
+  /* vClean12.6 — Premium integrado */
+  .premium-badge,
+  .premium-profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #ffcc00, #ff8a00);
+    color: #050505;
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 1000;
+    box-shadow: 0 0 22px rgba(255,204,0,.22);
+    width: fit-content;
+  }
+
+  .premium-avatar-frame {
+    padding: 3px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ffcc00, #fff3a4, #ff8a00);
+    box-shadow: 0 0 28px rgba(255,204,0,.35);
+  }
+
+  .premium-avatar-frame img {
+    display: block;
+    border-radius: 999px;
+  }
+
+  .premium-hero-card {
+    background:
+      radial-gradient(circle at top left, rgba(255,204,0,.24), transparent 34%),
+      radial-gradient(circle at bottom right, rgba(255,138,0,.16), transparent 38%),
+      #090909;
+    border: 1px solid rgba(255,204,0,.32);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .premium-hero-card h1 {
+    font-size: clamp(30px, 5vw, 56px);
+    line-height: .98;
+    margin-bottom: 12px;
+  }
+
+  .premium-hero-card h1 span {
+    color: var(--brand-yellow);
+  }
+
+  .premium-hero-card p {
+    color: var(--text-secondary);
+    max-width: 760px;
+    line-height: 1.55;
+  }
+
+  .premium-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 14px;
+  }
+
+  .premium-card {
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .premium-card h3 {
+    color: var(--brand-yellow);
+    margin-bottom: 8px;
+  }
+
+  .premium-status-card {
+    background: rgba(255,204,0,.08);
+    border: 1px solid rgba(255,204,0,.24);
+    border-radius: 18px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .premium-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .premium-cta-row button,
+  .premium-cta-row a {
+    border: 0;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-weight: 1000;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .premium-primary {
+    background: var(--brand-yellow);
+    color: #050505;
+  }
+
+  .premium-secondary {
+    background: #151515;
+    color: white;
+    border: 1px solid rgba(255,255,255,.12) !important;
+  }
+
+  .premium-shop-box {
+    margin: 12px 0 16px;
+    padding: 14px;
+    border: 1px solid rgba(255,204,0,.26);
+    border-radius: 16px;
+    background: rgba(255,204,0,.07);
+  }
+
+  .premium-mini-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .premium-mini-row:last-child {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 720px) {
+    .premium-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+/* vClean12.6 — Premium integrado na app */
+(function() {
+  const PREMIUM_PAGE_URL = "premium.html";
+  const PREMIUM_ADMIN_URL = "premium_admin.html";
+
+  function premiumIsActive(profile) {
+    if (!profile || !profile.is_premium) return false;
+    if (!profile.premium_until) return true;
+    return new Date(profile.premium_until).getTime() > Date.now();
+  }
+
+  function premiumUntilLabel(profile) {
+    if (!profile?.premium_until) return "ativo manualmente";
+    try {
+      return new Date(profile.premium_until).toLocaleDateString("pt-PT");
+    } catch (_) {
+      return "ativo";
+    }
+  }
+
+  window.isPremiumActive = function() {
+    return premiumIsActive(currentProfile);
+  };
+
+  window.openPremiumPage = function() {
+    try { trackAppEvent?.("premium_open_page", { source: "app" }); } catch (_) {}
+    location.href = PREMIUM_PAGE_URL;
+  };
+
+  window.openPremiumAdminPage = function() {
+    location.href = PREMIUM_ADMIN_URL;
+  };
+
+  window.renderPremiumPage = function() {
+    const isPremium = premiumIsActive(currentProfile);
+    const boosts = Number(currentProfile?.premium_boosts_left || 0);
+    const until = premiumUntilLabel(currentProfile);
+    const isAdmin = typeof isCurrentModerator === "function" && isCurrentModerator();
+
+    mainView.innerHTML = `
+      <section class="premium-hero-card">
+        <div class="premium-badge"><i class="fa-solid fa-crown"></i> SHITAGRAM™ Premium</div>
+        <h1>Mais destaque. <span>Mais ShitCoins.</span><br>Mais vergonha no topo.</h1>
+        <p>
+          O Premium está em fase experimental. Ainda não há pagamentos reais.
+          Nesta fase, o objetivo é validar se os utilizadores valorizam boosts, estatuto,
+          presentes exclusivos e benefícios mensais.
+        </p>
+
+        <div class="premium-status-card">
+          <h2>${isPremium ? "👑 Premium ativo" : "🔒 Premium ainda não ativo"}</h2>
+          <p>
+            ${isPremium
+              ? `A tua conta tem Premium até <strong>${escapeHtml(until)}</strong>. Boosts Premium disponíveis: <strong>${formatNumber(boosts)}</strong>.`
+              : "Podes demonstrar interesse no Premium. O admin pode ativar 30 dias manualmente durante a beta."}
+          </p>
+        </div>
+
+        <div class="premium-cta-row">
+          <button class="premium-primary" onclick="openPremiumPage()">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Quero Premium — 2,99€/mês
+          </button>
+          <button class="premium-secondary" onclick="claimPremiumBenefits()">
+            <i class="fa-solid fa-coins"></i>
+            Receber benefícios mensais
+          </button>
+          ${isAdmin ? `
+            <button class="premium-secondary" onclick="openPremiumAdminPage()">
+              <i class="fa-solid fa-user-shield"></i>
+              Admin Premium
+            </button>
+          ` : ""}
+        </div>
+      </section>
+
+      <section class="view-title-card">
+        <h1>🎁 Benefícios Premium</h1>
+        <p>Benefícios experimentais para testar valor antes de pagamentos reais.</p>
+      </section>
+
+      <div class="premium-grid">
+        <article class="premium-card">
+          <h3>👑 Badge Premium</h3>
+          <p>Mostra estatuto especial no perfil e nos cards públicos.</p>
+        </article>
+        <article class="premium-card">
+          <h3>🖼️ Moldura no avatar</h3>
+          <p>Avatar com destaque visual amarelo/dourado dentro da comunidade.</p>
+        </article>
+        <article class="premium-card">
+          <h3>🪙 1.000 ShitCoins/mês</h3>
+          <p>Crédito mensal para presentes, boosts e interações especiais.</p>
+        </article>
+        <article class="premium-card">
+          <h3>🚀 3 boosts mensais</h3>
+          <p>Boosts para dar mais visibilidade aos teus micos.</p>
+        </article>
+        <article class="premium-card">
+          <h3>🎁 Presentes exclusivos</h3>
+          <p>Catálogo premium preparado para a fase seguinte.</p>
+        </article>
+        <article class="premium-card">
+          <h3>📊 Estatísticas extra</h3>
+          <p>Base para estatísticas avançadas de perfil e desempenho.</p>
+        </article>
+      </div>
+    `;
+  };
+
+  window.claimPremiumBenefits = async function() {
+    if (!currentUser) {
+      openAuthModal?.("login");
+      return;
+    }
+
+    if (!premiumIsActive(currentProfile)) {
+      showToast("Premium ainda não está ativo nesta conta.");
+      return;
+    }
+
+    try {
+      const { data, error } = await sb.rpc("claim_premium_monthly_benefits");
+      if (error) throw error;
+      showToast(data?.message || "Benefícios Premium recebidos.");
+      await loadProfile();
+      renderPremiumPage();
+      updateAuthUi();
+    } catch (error) {
+      console.error("[SHITAGRAM premium] claim benefits", error);
+      showToast(error.message || "Não foi possível receber benefícios Premium.");
+    }
+  };
+
+  function decoratePremiumDom() {
+    if (!premiumIsActive(currentProfile)) return;
+
+    document.querySelectorAll(".profile-cover-card .profile-main-row").forEach(row => {
+      if (!row.querySelector(".premium-profile-badge")) {
+        const target = row.querySelector("div[style*='flex:1']") || row.children[1];
+        if (target) {
+          target.insertAdjacentHTML("afterbegin", `<span class="premium-profile-badge"><i class="fa-solid fa-crown"></i> Premium Beta</span>`);
+        }
+      }
+
+      const img = row.querySelector(".profile-big-avatar");
+      if (img && !img.parentElement.classList.contains("premium-avatar-frame")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "premium-avatar-frame";
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+      }
+    });
+
+    document.querySelectorAll(".profile-name").forEach(el => {
+      if (!el.dataset.premiumApplied) {
+        el.innerHTML = `${escapeHtml(el.textContent || "")} <span title="Premium Beta">👑</span>`;
+        el.dataset.premiumApplied = "1";
+      }
+    });
+  }
+
+  function injectPremiumNavVisibility() {
+    const navPremium = document.getElementById("navPremium");
+    const mobilePremium = document.getElementById("mobilePremium");
+    if (navPremium) navPremium.style.display = "flex";
+    if (mobilePremium) mobilePremium.style.display = "grid";
+  }
+
+  const oldUpdateAuthUi = window.updateAuthUi || updateAuthUi;
+  window.updateAuthUi = function() {
+    oldUpdateAuthUi.apply(this, arguments);
+    injectPremiumNavVisibility();
+    setTimeout(decoratePremiumDom, 50);
+  };
+
+  const oldRenderProfilePage = window.renderProfilePage || renderProfilePage;
+  window.renderProfilePage = function() {
+    oldRenderProfilePage.apply(this, arguments);
+    setTimeout(decoratePremiumDom, 30);
+  };
+
+  if (typeof renderPublicProfile === "function") {
+    const oldRenderPublicProfile = renderPublicProfile;
+    window.renderPublicProfile = function(profile, userPosts) {
+      oldRenderPublicProfile.apply(this, arguments);
+      if (premiumIsActive(profile)) {
+        setTimeout(() => {
+          document.querySelectorAll(".profile-cover-card .profile-main-row").forEach(row => {
+            if (!row.querySelector(".premium-profile-badge")) {
+              const target = row.querySelector("div[style*='flex:1']") || row.children[1];
+              if (target) target.insertAdjacentHTML("afterbegin", `<span class="premium-profile-badge"><i class="fa-solid fa-crown"></i> Premium Beta</span>`);
+            }
+          });
+        }, 30);
+      }
+    };
+  }
+
+  if (typeof renderShopPage === "function") {
+    const oldRenderShopPage = renderShopPage;
+    window.renderShopPage = function() {
+      oldRenderShopPage.apply(this, arguments);
+
+      const target = document.querySelector(".shop-header-card") || mainView.querySelector(".view-title-card");
+      if (!target || document.querySelector(".premium-shop-box")) return;
+
+      const isPremium = premiumIsActive(currentProfile);
+      target.insertAdjacentHTML("afterend", `
+        <div class="premium-shop-box">
+          <div class="premium-mini-row">
+            <strong>👑 Premium</strong>
+            <span>${isPremium ? "Ativo" : "Disponível em beta"}</span>
+          </div>
+          <div class="premium-mini-row">
+            <span>1.000 ShitCoins/mês</span>
+            <span>${isPremium ? "incluído" : "Premium"}</span>
+          </div>
+          <div class="premium-mini-row">
+            <span>3 boosts mensais</span>
+            <span>${formatNumber(Number(currentProfile?.premium_boosts_left || 0))} disponíveis</span>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="shop-primary-btn" onclick="setView('premium')">Ver Premium</button>
+            <button class="shop-primary-btn" onclick="claimPremiumBenefits()">Receber benefícios</button>
+          </div>
+        </div>
+      `);
+    };
+  }
+
+  const oldRenderPostCard = window.renderPostCard || (typeof renderPostCard === "function" ? renderPostCard : null);
+  if (oldRenderPostCard) {
+    window.renderPostCard = function(post) {
+      let card = oldRenderPostCard.apply(this, arguments);
+      try {
+        const isAuthorPremium = !!post.author_is_premium || !!post.is_premium || !!post.profiles?.is_premium;
+        if (isAuthorPremium && typeof card === "string") {
+          card = card.replace(/(<div class="post-author[^>]*>.*?<\/div>)/s, `$1 <span class="premium-badge" style="margin-left:8px;">👑 Premium</span>`);
+        }
+      } catch (_) {}
+      return card;
+    };
+  }
+
+  const oldRenderCurrentView = window.renderCurrentView || renderCurrentView;
+  window.renderCurrentView = function() {
+    if (currentView === "premium") {
+      renderPremiumPage();
+      return;
+    }
+    oldRenderCurrentView.apply(this, arguments);
+    setTimeout(decoratePremiumDom, 50);
+  };
+
+  // Garante botão em navegações criadas antes deste patch
+  document.addEventListener("DOMContentLoaded", () => {
+    injectPremiumNavVisibility();
+  });
+})();
+</script>
+<!-- /vClean12.6 -->
 
 </body>
 </html>
