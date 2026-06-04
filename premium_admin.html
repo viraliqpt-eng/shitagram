@@ -1,84 +1,141 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SHITAGRAM™ — Admin Premium</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHITAGRAM™ Premium Analytics</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=lQ4gklJI8HolwTtPHAJVrnIviB8wYTeEitlOq5E1_efXDC33xz3lKXFOCWlqu0_T5pI53oXpafpjHeIDtGSuCgHQBPAqsfcXYuYL8aKzH7BmdJmZnGYZmjtTBFKviWoynOsrRx4e0rzQFHrtcAgX0S1MJ2V-oPButEZIZx8pu7t4fRCSKEhoMBr_AdNakS5Zk_pcS6nPK2V11e5NTk58soGqjanDRCoPhwWfd88BAnxe-XsrdcM5BHKG7EXGtifCAtCP9DL1CcYzmDhTldwlMw" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body{margin:0;background:#050505;color:#fff;font-family:Inter,system-ui,sans-serif}.wrap{width:min(1100px,92vw);margin:auto;padding:30px 0 60px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.logo{font-size:26px;font-weight:1000;color:#ffcc00}.btn{border:0;border-radius:14px;padding:12px 16px;background:#171717;color:white;font-weight:900;cursor:pointer;text-decoration:none}.primary{background:#ffcc00;color:#000}
-    .card{background:#101010;border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:22px;margin-top:18px}.muted{color:#aaa}.row{display:grid;grid-template-columns:1.1fr 1fr .9fr .8fr;gap:12px;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding:14px 0}.tag{color:#ffcc00;font-weight:900}
-    input{background:#080808;border:1px solid rgba(255,255,255,.16);color:white;border-radius:12px;padding:12px;width:100%}.msg{padding:14px;border-radius:14px;background:#151515;color:#ddd;margin-top:14px}
-    @media(max-width:800px){.row{grid-template-columns:1fr}.actions{display:flex;gap:8px;flex-wrap:wrap}header{align-items:flex-start;flex-direction:column;gap:12px}}
+    :root{--yellow:#ffcc00;--bg:#050505;--card:#111;--muted:#b8b8b8;--line:rgba(255,255,255,.1)}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#221b00,#050505 48%,#000);font-family:Inter,system-ui,Arial,sans-serif;color:white}
+    .wrap{max-width:1200px;margin:0 auto;padding:28px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.logo{font-size:30px;font-weight:1000;color:var(--yellow)}
+    a,button{border:0;border-radius:16px;padding:12px 16px;font-weight:900;text-decoration:none;cursor:pointer}.btn{background:#151515;color:white;border:1px solid var(--line)}.primary{background:var(--yellow);color:#050505}
+    .hero,.card{background:rgba(17,17,17,.92);border:1px solid var(--line);border-radius:26px;padding:24px;margin-top:22px}.hero h1{margin:0 0 8px;font-size:34px}.muted{color:#aaa}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}.metric{background:#0b0b0b;border:1px solid var(--line);border-radius:20px;padding:18px}.metric b{display:block;font-size:30px;color:var(--yellow)}.metric span{color:#bbb;font-weight:800}
+    table{width:100%;border-collapse:collapse;margin-top:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--yellow)}td{color:#ddd}
+    .pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#1b1b1b;border:1px solid var(--line);font-weight:900}.ok{color:#9cffc2}.warn{color:#ffd36a}
+    .error{background:rgba(180,40,40,.18);border:1px solid rgba(255,100,100,.35);color:#ffd0d0;padding:14px;border-radius:16px;margin-top:18px;display:none}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.wrap{padding:18px}}@media(max-width:560px){.grid{grid-template-columns:1fr}table{font-size:13px}}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div><div class="logo">SHITAGRAM™ Admin Premium</div><div class="muted">Interesse premium · Sem pagamentos reais</div></div>
-    <div style="display:flex;gap:10px"><a class="btn" href="app.html">Voltar à app</a><button class="btn primary" onclick="loadPremium()">Recarregar</button></div>
-  </header>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="logo">SHITAGRAM™</div>
+        <div class="muted">vClean12.7 — Premium Analytics</div>
+      </div>
+      <div>
+        <a class="btn" href="app.html">Voltar à app</a>
+        <a class="btn" href="premium.html">Premium</a>
+        <button class="primary" onclick="loadAll()">Recarregar</button>
+      </div>
+    </div>
 
-  <div class="card">
-    <h2>💎 Interessados no Premium</h2>
-    <p class="muted">Lista pessoas que clicaram em “Quero Premium”. Se já existir perfil, podes ativar Premium manualmente por 30 dias.</p>
-    <div id="premiumList" class="msg">A carregar...</div>
+    <section class="hero">
+      <h1>👑 Premium Analytics</h1>
+      <p class="muted">Mede visitas, cliques, interessados, ativações manuais e potencial de receita mensal antes de integrares pagamentos reais.</p>
+      <div id="error" class="error"></div>
+      <div class="grid" id="metrics">
+        <div class="metric"><b>—</b><span>A carregar...</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>📈 Projeções de receita mensal</h2>
+      <p class="muted">Baseadas nos perfis atuais e preço experimental de 2,99€/mês.</p>
+      <div class="grid" id="projections"></div>
+    </section>
+
+    <section class="card">
+      <h2>🙋 Interessados Premium</h2>
+      <div id="interestTable" class="muted">A carregar interessados...</div>
+    </section>
+
+    <section class="card">
+      <h2>🧭 Eventos Premium recentes</h2>
+      <div id="eventsTable" class="muted">A carregar eventos...</div>
+    </section>
   </div>
-</div>
 
 <script>
 const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadPremium(){
-  const box = document.getElementById("premiumList");
-  box.textContent = "A carregar...";
-  const { data: sessionData } = await supabase.auth.getSession();
-  if (!sessionData.session) {
-    box.innerHTML = 'Tens de entrar primeiro na <a style="color:#ffcc00" href="app.html">app</a> como admin.';
-    return;
-  }
-  const { data, error } = await supabase.from("premium_interest_admin_view").select("*").order("created_at", { ascending:false }).limit(100);
-  if (error) {
-    box.textContent = "Erro ao carregar: " + error.message;
-    return;
-  }
-  if (!data || !data.length) {
-    box.textContent = "Ainda não há interessados no Premium.";
-    return;
-  }
-  box.innerHTML = data.map(item => `
-    <div class="row">
-      <div>
-        <b>${item.name || "Sem nome"}</b><br>
-        <span class="muted">${item.email || ""}</span><br>
-        <span class="muted">@${item.username || "sem_username"}</span>
-      </div>
-      <div>
-        <span class="tag">${item.intent || "interested"}</span><br>
-        <span class="muted">${item.reason ? item.reason.substring(0,120) : "Sem motivo"}</span>
-      </div>
-      <div>
-        Perfil: ${item.profile_id ? "✅ encontrado" : "❌ não existe"}<br>
-        Premium: ${item.is_premium ? "💎 ativo" : "não"}
-      </div>
-      <div class="actions">
-        ${item.profile_id ? `<button class="btn primary" onclick="setPremium('${item.profile_id}',true)">Dar 30 dias</button><button class="btn" onclick="setPremium('${item.profile_id}',false)">Desativar</button>` : `<span class="muted">Aguardar conta</span>`}
-      </div>
-    </div>
-  `).join("");
+function showError(msg){
+  const el=document.getElementById("error");
+  el.textContent=msg;
+  el.style.display="block";
+}
+function hideError(){ document.getElementById("error").style.display="none"; }
+
+async function loadMetrics(){
+  const { data, error } = await sb.rpc("get_premium_analytics");
+  if(error){ showError("Erro ao carregar analytics: " + error.message); return; }
+  const m = data || {};
+  document.getElementById("metrics").innerHTML = `
+    <div class="metric"><b>${m.visits ?? 0}</b><span>Visitas ao Premium</span></div>
+    <div class="metric"><b>${m.clicks ?? 0}</b><span>Cliques Quero Premium</span></div>
+    <div class="metric"><b>${m.interests ?? 0}</b><span>Interessados</span></div>
+    <div class="metric"><b>${m.activated ?? 0}</b><span>Premium ativos</span></div>
+    <div class="metric"><b>${m.conversion_interest_percent ?? 0}%</b><span>Visita → Interesse</span></div>
+    <div class="metric"><b>${m.activation_rate_percent ?? 0}%</b><span>Interesse → Ativado</span></div>
+    <div class="metric"><b>${m.profiles_total ?? 0}</b><span>Perfis totais</span></div>
+    <div class="metric"><b>2,99€</b><span>Preço simulado</span></div>
+  `;
+  document.getElementById("projections").innerHTML = `
+    <div class="metric"><b>${Number(m.mrr_1_percent ?? 0).toFixed(2)}€</b><span>MRR com 1% premium</span></div>
+    <div class="metric"><b>${Number(m.mrr_3_percent ?? 0).toFixed(2)}€</b><span>MRR com 3% premium</span></div>
+    <div class="metric"><b>${Number(m.mrr_5_percent ?? 0).toFixed(2)}€</b><span>MRR com 5% premium</span></div>
+    <div class="metric"><b>${Number((m.activated ?? 0)*2.99).toFixed(2)}€</b><span>MRR ativado manualmente</span></div>
+  `;
 }
 
-async function setPremium(profileId, enable){
-  const { error } = await supabase.rpc("set_user_premium", { target_user_id: profileId, enable_premium: enable, days: 30 });
-  if (error) alert(error.message || "Erro ao alterar premium");
-  await loadPremium();
+async function loadInterests(){
+  const { data, error } = await sb.from("premium_interest_admin_view").select("*").order("created_at",{ascending:false}).limit(100);
+  if(error){ document.getElementById("interestTable").innerHTML = "Erro: " + error.message; return; }
+  if(!data || !data.length){ document.getElementById("interestTable").innerHTML = "Ainda sem interessados Premium."; return; }
+  document.getElementById("interestTable").innerHTML = `
+    <table>
+      <thead><tr><th>Nome</th><th>Email</th><th>Username</th><th>Intenção</th><th>Premium</th><th>Data</th></tr></thead>
+      <tbody>${data.map(r=>`
+        <tr>
+          <td>${r.name || "—"}</td>
+          <td>${r.email || "—"}</td>
+          <td>${r.username || r.profile_username || "—"}</td>
+          <td><span class="pill">${r.intent || "—"}</span></td>
+          <td>${r.is_premium ? '<span class="pill ok">Ativo</span>' : '<span class="pill warn">Não ativo</span>'}</td>
+          <td>${r.created_at ? new Date(r.created_at).toLocaleString("pt-PT") : "—"}</td>
+        </tr>`).join("")}</tbody>
+    </table>`;
 }
 
-document.addEventListener("DOMContentLoaded", loadPremium);
+async function loadEvents(){
+  const { data, error } = await sb.from("premium_page_events").select("*").order("created_at",{ascending:false}).limit(80);
+  if(error){ document.getElementById("eventsTable").innerHTML = "Erro: " + error.message; return; }
+  if(!data || !data.length){ document.getElementById("eventsTable").innerHTML = "Ainda sem eventos Premium."; return; }
+  document.getElementById("eventsTable").innerHTML = `
+    <table>
+      <thead><tr><th>Evento</th><th>Fonte</th><th>Metadata</th><th>Data</th></tr></thead>
+      <tbody>${data.map(r=>`
+        <tr>
+          <td>${r.event_name}</td>
+          <td>${r.source || "—"}</td>
+          <td><code>${JSON.stringify(r.metadata || {})}</code></td>
+          <td>${new Date(r.created_at).toLocaleString("pt-PT")}</td>
+        </tr>`).join("")}</tbody>
+    </table>`;
+}
+
+async function loadAll(){
+  hideError();
+  await loadMetrics();
+  await loadInterests();
+  await loadEvents();
+}
+loadAll();
 </script>
 </body>
 </html>
