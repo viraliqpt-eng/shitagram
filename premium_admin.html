@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SHITAGRAM™ — Admin Premium</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body{margin:0;background:#050505;color:#fff;font-family:Inter,system-ui,sans-serif}.wrap{width:min(1100px,92vw);margin:auto;padding:30px 0 60px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.logo{font-size:26px;font-weight:1000;color:#ffcc00}.btn{border:0;border-radius:14px;padding:12px 16px;background:#171717;color:white;font-weight:900;cursor:pointer;text-decoration:none}.primary{background:#ffcc00;color:#000}
+    .card{background:#101010;border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:22px;margin-top:18px}.muted{color:#aaa}.row{display:grid;grid-template-columns:1.1fr 1fr .9fr .8fr;gap:12px;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding:14px 0}.tag{color:#ffcc00;font-weight:900}
+    input{background:#080808;border:1px solid rgba(255,255,255,.16);color:white;border-radius:12px;padding:12px;width:100%}.msg{padding:14px;border-radius:14px;background:#151515;color:#ddd;margin-top:14px}
+    @media(max-width:800px){.row{grid-template-columns:1fr}.actions{display:flex;gap:8px;flex-wrap:wrap}header{align-items:flex-start;flex-direction:column;gap:12px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><div class="logo">SHITAGRAM™ Admin Premium</div><div class="muted">Interesse premium · Sem pagamentos reais</div></div>
+    <div style="display:flex;gap:10px"><a class="btn" href="app.html">Voltar à app</a><button class="btn primary" onclick="loadPremium()">Recarregar</button></div>
+  </header>
+
+  <div class="card">
+    <h2>💎 Interessados no Premium</h2>
+    <p class="muted">Lista pessoas que clicaram em “Quero Premium”. Se já existir perfil, podes ativar Premium manualmente por 30 dias.</p>
+    <div id="premiumList" class="msg">A carregar...</div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadPremium(){
+  const box = document.getElementById("premiumList");
+  box.textContent = "A carregar...";
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) {
+    box.innerHTML = 'Tens de entrar primeiro na <a style="color:#ffcc00" href="app.html">app</a> como admin.';
+    return;
+  }
+  const { data, error } = await supabase.from("premium_interest_admin_view").select("*").order("created_at", { ascending:false }).limit(100);
+  if (error) {
+    box.textContent = "Erro ao carregar: " + error.message;
+    return;
+  }
+  if (!data || !data.length) {
+    box.textContent = "Ainda não há interessados no Premium.";
+    return;
+  }
+  box.innerHTML = data.map(item => `
+    <div class="row">
+      <div>
+        <b>${item.name || "Sem nome"}</b><br>
+        <span class="muted">${item.email || ""}</span><br>
+        <span class="muted">@${item.username || "sem_username"}</span>
+      </div>
+      <div>
+        <span class="tag">${item.intent || "interested"}</span><br>
+        <span class="muted">${item.reason ? item.reason.substring(0,120) : "Sem motivo"}</span>
+      </div>
+      <div>
+        Perfil: ${item.profile_id ? "✅ encontrado" : "❌ não existe"}<br>
+        Premium: ${item.is_premium ? "💎 ativo" : "não"}
+      </div>
+      <div class="actions">
+        ${item.profile_id ? `<button class="btn primary" onclick="setPremium('${item.profile_id}',true)">Dar 30 dias</button><button class="btn" onclick="setPremium('${item.profile_id}',false)">Desativar</button>` : `<span class="muted">Aguardar conta</span>`}
+      </div>
+    </div>
+  `).join("");
+}
+
+async function setPremium(profileId, enable){
+  const { error } = await supabase.rpc("set_user_premium", { target_user_id: profileId, enable_premium: enable, days: 30 });
+  if (error) alert(error.message || "Erro ao alterar premium");
+  await loadPremium();
+}
+
+document.addEventListener("DOMContentLoaded", loadPremium);
+</script>
+</body>
+</html>
