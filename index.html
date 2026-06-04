@@ -1,176 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHITAGRAM™ — Beta fechada</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SHITAGRAM™ — Publica o mico. Ganha XP.</title>
+  <meta name="description" content="SHITAGRAM™ é a rede social beta onde momentos embaraçosos viram XP, ranking, Mood Map e estatuto." />
+  <meta name="theme-color" content="#050505" />
+
+  <meta property="og:title" content="SHITAGRAM™ — Publica o mico. Ganha XP." />
+  <meta property="og:description" content="A rede social onde os teus micos viram XP, ranking e estatuto." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://shitagram.pt/" />
+  <meta property="og:image" content="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SHITAGRAM™ — Publica o mico. Ganha XP." />
+  <meta name="twitter:description" content="A rede social onde os teus micos viram XP, ranking e estatuto." />
+  <meta name="twitter:image" content="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
+
+  <link rel="canonical" href="https://shitagram.pt/" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=RQnPSUkeek_Pz7kVAwXmIHGgtw6O7YYRKuU9Xz14u3sKxCg80NSZEihMr09yiRaqLA8yAtbTPb2s5aXwBNWNYe6WPnPrPwmjm9FrO76jxqLUKJlUqJ-rKLqfj_3zmyH9hZdWs4nWPECAMadj_VASivBHW6xTi6RhFba0h8pF_N2DfvZ8rrdfqEpcGXWdvC4ytpb8hrikAgdCQRxCSfEsNjlzgmS8QPGEPOQqLxtRR2HpetNYCYWlgHTZIJ-QH82HD6K2RIvKFb2izSDXrbIwkA" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root{--bg:#020202;--card:#0b0b0b;--line:#252525;--yellow:#ffcc00;--txt:#fff;--muted:#aaa;--green:#2eff88}
-    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,sans-serif}
-    html{scroll-behavior:smooth}
-    body{min-height:100vh;color:var(--txt);background:
-      radial-gradient(circle at top left,rgba(255,204,0,.18),transparent 34%),
-      radial-gradient(circle at bottom right,rgba(255,204,0,.08),transparent 36%),#020202}
-    a{text-decoration:none;color:inherit}
-    .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
-    header{position:sticky;top:0;z-index:20;background:rgba(2,2,2,.75);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
-    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .logo{font-weight:950;font-size:28px;letter-spacing:-1.5px;color:var(--yellow);text-shadow:0 0 24px rgba(255,204,0,.22)}
-    .logo strong{color:#fff}.logo span{font-size:10px;color:#fff;vertical-align:super;margin-left:2px}
-    .navlinks{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .btn,.navlinks a{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #2a2a2a;background:#101010;color:#fff;border-radius:999px;padding:12px 16px;font-weight:900;font-size:13px}
-    .btn.primary{background:var(--yellow);border-color:var(--yellow);color:#050505;box-shadow:0 14px 45px rgba(255,204,0,.18)}
-    .btn:hover,.navlinks a:hover{transform:translateY(-1px);border-color:rgba(255,204,0,.55)}
-    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;padding:78px 0 38px}
-    .eyebrow{display:inline-flex;gap:8px;align-items:center;background:rgba(255,204,0,.1);border:1px solid rgba(255,204,0,.22);color:var(--yellow);padding:9px 12px;border-radius:999px;font-size:13px;font-weight:950;margin-bottom:20px}
-    h1{font-size:clamp(42px,7vw,86px);line-height:.92;letter-spacing:-4px;margin-bottom:20px}
+    :root{--bg:#050505;--card:#101010;--line:#252525;--yellow:#ffcc00;--muted:#aaa;--text:#fff}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at top,#241e04 0,#050505 35%,#000 100%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+    .wrap{max-width:1180px;margin:0 auto;padding:34px 18px 70px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:46px}
+    .logo{font-size:34px;font-weight:1000;color:var(--yellow);letter-spacing:-1px}
+    .tag{color:#bbb;font-size:13px;font-weight:800}
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:16px;padding:13px 18px;background:#151515;color:#fff;border:1px solid #2b2b2b;font-weight:950}
+    .btn.primary{background:var(--yellow);color:#000;border-color:var(--yellow)}
+    .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;align-items:center}
+    h1{font-size:70px;line-height:.95;letter-spacing:-3px;margin:0 0 20px}
     h1 span{color:var(--yellow)}
-    .lead{font-size:18px;color:#e0e0e0;line-height:1.55;max-width:650px}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-    .hero-card{background:linear-gradient(135deg,rgba(255,204,0,.12),rgba(255,255,255,.03));border:1px solid rgba(255,204,0,.25);border-radius:28px;padding:28px;box-shadow:0 40px 90px rgba(0,0,0,.35)}
-    .hero-card h2{font-size:26px;color:var(--yellow);margin-bottom:12px}
-    .hero-card p{color:#d4d4d4;line-height:1.55;margin-bottom:18px}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-    .stat{background:#101010;border:1px solid #242424;border-radius:18px;padding:14px}
-    .stat b{display:block;color:var(--yellow);font-size:24px}.stat span{font-size:12px;color:#aaa;font-weight:800}
-    section{padding:34px 0}
-    .section-title{font-size:34px;letter-spacing:-1px;margin-bottom:12px}.section-title span{color:var(--yellow)}
-    .section-lead{color:#cfcfcf;line-height:1.55;max-width:760px;margin-bottom:20px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .card{background:rgba(12,12,12,.86);border:1px solid #242424;border-radius:24px;padding:22px}
-    .card .icon{font-size:28px;margin-bottom:14px}.card h3{font-size:18px;margin-bottom:8px}.card p{color:#c9c9c9;line-height:1.5}
-    .link-panel{background:linear-gradient(135deg,rgba(255,204,0,.12),rgba(255,255,255,.02));border:1px solid rgba(255,204,0,.22);border-radius:28px;padding:26px}
-    .link-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
-    .link-card{background:#0b0b0b;border:1px solid #242424;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px}
-    .link-card h3{color:var(--yellow);font-size:17px}.link-card p{color:#c8c8c8;line-height:1.45;font-size:14px}.link-card .btn{width:100%;margin-top:auto}
-    .footer{border-top:1px solid #191919;padding:30px 0;color:#888;font-size:13px;margin-top:30px}.footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.footer-links{display:flex;gap:14px;flex-wrap:wrap}.footer a{color:#d8d8d8;font-weight:850}.footer a:hover{color:var(--yellow)}
-    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(12px);opacity:0;background:#111;border:1px solid rgba(255,204,0,.35);border-radius:999px;padding:13px 18px;font-weight:900;z-index:99;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:42px}.grid,.link-grid{grid-template-columns:1fr}.nav{height:auto;padding:16px 0;align-items:flex-start}.navlinks{justify-content:flex-end}.navlinks a:not(.primary){display:none}h1{letter-spacing:-2px}.stats{grid-template-columns:1fr}.hero-card{padding:22px}}
+    p{color:#d7d7d7;line-height:1.55;font-size:18px}
+    .card{background:rgba(16,16,16,.88);border:1px solid var(--line);border-radius:28px;padding:26px}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+    .feature{background:rgba(16,16,16,.88);border:1px solid var(--line);border-radius:22px;padding:18px}
+    .feature h3{margin:0 0 8px;color:#fff}
+    .feature p{font-size:15px;margin:0;color:#bbb}
+    .section{margin-top:36px;background:rgba(16,16,16,.86);border:1px solid var(--line);border-radius:28px;padding:26px}
+    h2{margin:0 0 12px;color:var(--yellow);font-size:28px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .step{background:#0b0b0b;border:1px solid #202020;border-radius:20px;padding:18px}
+    .num{width:34px;height:34px;border-radius:999px;background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center;font-weight:1000;margin-bottom:10px}
+    footer{display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid #202020;margin-top:46px;padding-top:18px;color:#888}
+    footer a{color:#aaa;text-decoration:none;font-weight:800}
+    @media(max-width:860px){.hero{grid-template-columns:1fr}h1{font-size:48px}.features,.steps{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap nav">
-      <a class="logo js-track" data-event="click_logo" href="index.html">SHITA<strong>GRAM</strong><span>™</span></a>
-      <div class="navlinks">
-        <a class="js-track" data-event="click_beta" href="beta.html">Entrar na beta</a>
-        <a class="js-track" data-event="click_status" href="status.html">Ver estado</a>
-        <a class="js-track" data-event="click_investors" href="investors.html">Investidores</a>
-        <a class="btn primary js-track" data-event="click_app" href="app.html">Entrar na app</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="hero">
+  <div class="wrap">
+    <header>
       <div>
-        <div class="eyebrow">🔒 Beta fechada · Humor, XP e moderação</div>
+        <div class="logo">SHITAGRAM™</div>
+        <div class="tag">Beta fechada · Humor, XP e moderação</div>
+      </div>
+      <nav>
+        <a class="btn" href="beta.html">Entrar na beta</a>
+        <a class="btn" href="status.html">Ver estado</a>
+        <a class="btn" href="investors.html">Investidores</a>
+        <a class="btn primary" href="app.html">Entrar na app</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <section>
         <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
-        <p class="lead">O SHITAGRAM™ é uma rede social onde momentos embaraçosos viram estatuto, ShitCoins™, ranking, Mood Map e interação social — com segurança e moderação desde a beta.</p>
-        <div class="cta">
-          <a class="btn primary js-track" data-event="hero_click_beta" href="beta.html">Quero entrar na beta</a>
-          <a class="btn js-track" data-event="hero_click_status" href="status.html">Ver estado da candidatura</a>
-          <a class="btn js-track" data-event="hero_click_app" href="app.html">Entrar na app</a>
+        <p>O SHITAGRAM™ é uma rede social em beta fechada onde momentos embaraçosos viram estatuto, rankings, ShitCoins™, Mood Map e comunidade.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
+          <a class="btn primary" href="beta.html">Quero entrar na beta</a>
+          <a class="btn" href="legal.html">Ver regras</a>
+          <a class="btn" href="premium.html">Premium experimental</a>
         </div>
-      </div>
-      <div class="hero-card">
-        <h2>🎟️ Beta controlada</h2>
-        <p>Primeiro captamos candidatos, depois aprovamos acessos na app. Assim a comunidade cresce sem perder controlo.</p>
-        <div class="stats">
-          <div class="stat"><b>XP</b><span>gamificação</span></div>
-          <div class="stat"><b>🌍</b><span>Mood Map</span></div>
-          <div class="stat"><b>🛡️</b><span>moderação</span></div>
+      </section>
+
+      <aside class="card">
+        <h2>🌍 Mood Map</h2>
+        <p>O estado emocional coletivo da comunidade, agregado por país e cidade — sem localização exata e sem expor utilizadores.</p>
+        <div class="feature" style="margin-top:18px">
+          <h3>Portugal hoje</h3>
+          <p>💩 Vergonha coletiva · 😭 Drama emocional · 🤡 Caos social</p>
         </div>
+      </aside>
+    </main>
+
+    <section class="features">
+      <div class="feature"><h3>💩 Feed de micos</h3><p>Publica histórias, reage, comenta e sobe no ranking.</p></div>
+      <div class="feature"><h3>🎬 ShitClips™</h3><p>Vídeos curtos com micos, presentes e partilhas.</p></div>
+      <div class="feature"><h3>🎁 Loja</h3><p>ShitCoins™, presentes, boosts e benefícios Premium.</p></div>
+      <div class="feature"><h3>🛡️ Segurança</h3><p>Denúncias, filtros, moderação e beta controlada.</p></div>
+      <div class="feature"><h3>👑 Premium</h3><p>Teste experimental sem pagamentos reais nesta fase.</p></div>
+      <div class="feature"><h3>📊 Investidores</h3><p>Analytics, métricas agregadas e projeções de receita.</p></div>
+    </section>
+
+    <section class="section">
+      <h2>Como funciona</h2>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><strong>Candidata-te à beta</strong><p>Entra na lista e acompanha o estado da candidatura.</p></div>
+        <div class="step"><div class="num">2</div><strong>Publica o primeiro mico</strong><p>Ganha XP, recebe reações e aparece no Mood Map.</p></div>
+        <div class="step"><div class="num">3</div><strong>Sobe no ranking</strong><p>Usa ShitCoins™, presentes e boosts para ganhar destaque.</p></div>
       </div>
     </section>
 
-    <section>
-      <h2 class="section-title">O que torna isto <span>diferente</span></h2>
-      <p class="section-lead">Não é só um feed. É uma comunidade gamificada onde os micos geram interações, dados emocionais agregados e dinâmicas sociais controladas.</p>
-      <div class="grid">
-        <div class="card"><div class="icon">💩</div><h3>Feed de micos</h3><p>Histórias, imagens e ShitClips™ com reações, comentários, presentes e boosts.</p></div>
-        <div class="card"><div class="icon">🌍</div><h3>Mood Map</h3><p>Mostra o clima emocional agregado da comunidade por país e cidade.</p></div>
-        <div class="card"><div class="icon">🛡️</div><h3>Beta segura</h3><p>Acessos controlados, denúncias, privacidade, anti-spam e logs administrativos.</p></div>
-      </div>
-    </section>
-
-    <section class="link-panel">
-      <h2 class="section-title">Escolhe o próximo <span>passo</span></h2>
-      <p class="section-lead">Toda a estrutura pública fica ligada: candidatura, estado, app, investidores e regras.</p>
-      <div class="link-grid">
-        <div class="link-card"><h3>🚀 Entrar na beta</h3><p>Preenche a candidatura e entra na lista de primeiros utilizadores.</p><a class="btn primary js-track" data-event="panel_click_beta" href="beta.html">Candidatar-me</a></div>
-        <div class="link-card"><h3>🔎 Estado</h3><p>Consulta se a tua candidatura está pendente, aprovada ou bloqueada.</p><a class="btn js-track" data-event="panel_click_status" href="status.html">Ver estado</a></div>
-        <div class="link-card"><h3>📱 App</h3><p>Utilizadores aprovados podem entrar diretamente na app.</p><a class="btn js-track" data-event="panel_click_app" href="app.html">Entrar na app</a></div>
-        <div class="link-card"><h3>💼 Investidores</h3><p>Conhece a visão, o Mood Map, segurança e monetização futura.</p><a class="btn js-track" data-event="panel_click_investors" href="investors.html">Ver pitch</a></div>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title">Antes de entrares: <span>regras claras</span></h2>
-      <p class="section-lead">O objetivo é rir do próprio mico, não expor terceiros. Não publiques dados pessoais, conteúdo íntimo, bullying, ódio, violência ou spam.</p>
-      <a class="btn js-track" data-event="click_legal" href="legal.html">Ver regras, termos e privacidade</a>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="wrap">
-      <div>© 2026 SHITAGRAM™ · Beta fechada · A vergonha agora dá XP.</div>
-      <div class="footer-links">
-        <a class="js-track" data-event="footer_beta" href="beta.html">Entrar na beta</a>
-        <a class="js-track" data-event="footer_status" href="status.html">Estado da candidatura</a>
-        <a class="js-track" data-event="footer_app" href="app.html">Entrar na app</a>
-        <a class="js-track" data-event="footer_investors" href="investors.html">Investidores</a>
-        <a class="js-track" data-event="footer_legal" href="legal.html#regras">Regras</a>
-        <a class="js-track" data-event="footer_terms" href="legal.html#termos">Termos</a>
-        <a class="js-track" data-event="footer_privacy" href="legal.html#privacidade">Privacidade</a>
-      </div>
-    </div>
-  </footer>
-
-  <div id="toast" class="toast">Clique registado</div>
-
-  <script>
-    const SUPABASE_URL = "https://dcupiiifnffdsyyccyac.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    function getAnalyticsSessionId() {
-      let id = localStorage.getItem("shitagram_session_id");
-      if (!id) {
-        id = crypto && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
-        localStorage.setItem("shitagram_session_id", id);
-      }
-      return id;
-    }
-
-    async function trackPublicClick(eventName, metadata = {}) {
-      try {
-        await supabase.from("app_events").insert({
-          event_name: eventName,
-          source: "landing_v12_4",
-          session_id: getAnalyticsSessionId(),
-          metadata
-        });
-      } catch (err) {
-        console.warn("[SHITAGRAM landing tracking]", err);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      trackPublicClick("landing_view", { path: location.pathname, ref: new URLSearchParams(location.search).get("ref") || null });
-      document.querySelectorAll(".js-track").forEach(link => {
-        link.addEventListener("click", () => {
-          trackPublicClick(link.dataset.event || "landing_click", {
-            href: link.getAttribute("href"),
-            text: link.textContent.trim()
-          });
-        });
-      });
-    });
-  </script>
+    <footer>
+      <span>© 2026 SHITAGRAM™ · Beta fechada</span>
+      <a href="beta.html">Beta</a>
+      <a href="status.html">Estado</a>
+      <a href="premium.html">Premium</a>
+      <a href="investors.html">Investidores</a>
+      <a href="legal.html">Regras · Termos · Privacidade</a>
+    </footer>
+  </div>
 </body>
 </html>
