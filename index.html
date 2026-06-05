@@ -1,21 +1,20 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-  <meta name="author" content="SHITAGRAM™" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SHITAGRAM™ — Publica o mico. Ganha XP.</title>
-  <meta name="description" content="No SHITAGRAM™, publicas micos, recebes reações, ganhas XP/ShitCoins™ e sobes no ranking da vergonha." />
+  <title>SHITAGRAM™ — Vê micos. Publica o teu. Sobe no ranking.</title>
+  <meta name="description" content="Entra no SHITAGRAM™ para ver micos da comunidade, publicar o teu, ganhar XP/ShitCoins™ e subir no ranking da vergonha." />
   <meta name="theme-color" content="#050505" />
-  <meta property="og:title" content="SHITAGRAM™ — Publica o mico. Ganha XP." />
-  <meta property="og:description" content="Publica um mico, recebe reações, ganha XP/ShitCoins™ e sobe no ranking da vergonha." />
+  <meta property="og:title" content="SHITAGRAM™ — Vê micos. Publica o teu." />
+  <meta property="og:description" content="Vê micos da comunidade, publica o teu, ganha XP/ShitCoins™ e sobe no ranking da vergonha." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://shitagram.pt/" />
   <meta property="og:image" content="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="canonical" href="https://shitagram.pt/" />
   <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
   <link rel="apple-touch-icon" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png" />
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=basNbNYkFGMyGFSShqj897jXuBZpmKAS5GUbJ6xla4p_m_L0TeFQ7ipXsbihBQD1b_-zXWIUC6FRsm6Nw9DFUDUf_gM0fyCWIu9HaJDFOAEnRiIxUd_M1_JPAw1ynuryKRkTUeFr_h4S-mY-OR8KNsctLdM48EdiCe4KBrPOWNC8jIwK5TxoR5DEOuTBDdH0VX5an2Q6DcuaDPxPcyu-lYC9km1zkJv72C6f4lQvF2GlrvDYDGW1AXtRsOI8Ok1wpdmgcWGhH4OzqRD52Bbd3w" charset="UTF-8"></script><style>
+  <style>
     :root{--bg:#050505;--card:#101010;--line:#252525;--yellow:#ffcc00;--muted:#aaa;--text:#fff}
     *{box-sizing:border-box}
     body{margin:0;background:radial-gradient(circle at top,#241e04 0,#050505 35%,#000 100%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
@@ -26,11 +25,12 @@
     nav{display:flex;gap:10px;flex-wrap:wrap}
     .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:16px;padding:13px 18px;background:#151515;color:#fff;border:1px solid #2b2b2b;font-weight:950;cursor:pointer}
     .btn.primary{background:var(--yellow);color:#000;border-color:var(--yellow)}
-    .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;align-items:center}
-    h1{font-size:68px;line-height:.95;letter-spacing:-3px;margin:0 0 20px}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center}
+    h1{font-size:66px;line-height:.95;letter-spacing:-3px;margin:0 0 20px}
     h1 span{color:var(--yellow)}
     p{color:#d7d7d7;line-height:1.55;font-size:18px}
-    .hero-lead{font-size:20px;max-width:700px}
+    .hero-lead{font-size:20px;max-width:720px}
+    .curiosity{margin:18px 0 0;padding:16px 18px;border:1px solid rgba(255,204,0,.32);background:rgba(255,204,0,.10);border-radius:20px;color:#fff;font-weight:900}
     .card{background:rgba(16,16,16,.88);border:1px solid var(--line);border-radius:28px;padding:26px}
     .quick-flow{margin:22px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
     .flow-item{background:linear-gradient(180deg,rgba(255,204,0,.13),rgba(255,255,255,.03));border:1px solid rgba(255,204,0,.26);border-radius:18px;padding:14px}
@@ -45,6 +45,10 @@
     .feature p{font-size:15px;margin:0;color:#bbb}
     .section{margin-top:36px;background:rgba(16,16,16,.86);border:1px solid var(--line);border-radius:28px;padding:26px}
     h2{margin:0 0 12px;color:var(--yellow);font-size:28px}
+    .mico-preview{display:grid;gap:12px;margin-top:18px}
+    .mico-card{padding:15px;border:1px solid rgba(255,255,255,.09);background:#0b0b0b;border-radius:18px}
+    .mico-card strong{display:block;color:#fff;margin-bottom:5px}
+    .mico-card span{color:#cfcfcf;font-size:14px}
     .ranking-preview{display:grid;gap:12px;margin-top:18px}
     .rank-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid rgba(255,255,255,.09);background:#0b0b0b;border-radius:18px}
     .rank-row strong{color:#fff}
@@ -52,7 +56,7 @@
     footer{display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid #202020;margin-top:46px;padding-top:18px;color:#888}
     footer a{color:#aaa;text-decoration:none;font-weight:800}
     @media(max-width:940px){.hero{grid-template-columns:1fr}h1{font-size:48px}.features{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}.quick-flow{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){h1{font-size:42px}.quick-flow{grid-template-columns:1fr}nav,.btn{width:100%}.btn{padding:14px 16px}}
+    @media(max-width:560px){h1{font-size:40px}.quick-flow{grid-template-columns:1fr}nav,.btn{width:100%}.btn{padding:14px 16px}}
   </style>
 </head>
 <body>
@@ -60,7 +64,7 @@
     <header>
       <div>
         <div class="logo">SHITAGRAM™</div>
-        <div class="tag">Beta fechada · Humor, XP, ranking e moderação</div>
+        <div class="tag">Beta fechada · Micos, humor, XP e ranking</div>
       </div>
       <nav>
         <a class="btn" href="beta.html">Entrar na beta</a>
@@ -72,55 +76,63 @@
 
     <main class="hero">
       <section>
-        <h1>Publica o mico. <span>Ganha XP.</span> Sobe na vergonha.</h1>
-        <p class="hero-lead">No SHITAGRAM™, publicas momentos embaraçosos, recebes reações, ganhas XP/ShitCoins™ e competes no ranking da vergonha.</p>
+        <h1>Vê os micos. <span>Publica o teu.</span> Sobe no ranking.</h1>
+        <p class="hero-lead">O SHITAGRAM™ é uma rede social em beta fechada para veres micos da comunidade, publicares o teu e ganhares XP/ShitCoins™ no ranking da vergonha.</p>
+
+        <div class="curiosity">👀 Entra pela curiosidade. Fica pelos micos, reações e ranking.</div>
 
         <div class="quick-flow" aria-label="Como funciona">
-          <div class="flow-item"><div class="flow-number">1</div><strong>Publica um mico</strong><span>Conta uma situação embaraçosa, engraçada ou absurda.</span></div>
-          <div class="flow-item"><div class="flow-number">2</div><strong>Recebe reações</strong><span>A comunidade reage, comenta e envia presentes.</span></div>
-          <div class="flow-item"><div class="flow-number">3</div><strong>Ganha XP/ShitCoins™</strong><span>Cada interação ajuda-te a desbloquear estatuto.</span></div>
-          <div class="flow-item"><div class="flow-number">4</div><strong>Sobe no ranking</strong><span>Quanto melhor o mico, maior o destaque.</span></div>
+          <div class="flow-item"><div class="flow-number">1</div><strong>Vê micos</strong><span>Descobre histórias embaraçosas, engraçadas ou absurdas.</span></div>
+          <div class="flow-item"><div class="flow-number">2</div><strong>Publica o teu</strong><span>Conta um momento que merecia virar post.</span></div>
+          <div class="flow-item"><div class="flow-number">3</div><strong>Recebe reações</strong><span>A comunidade comenta, reage e envia presentes.</span></div>
+          <div class="flow-item"><div class="flow-number">4</div><strong>Sobe no ranking</strong><span>Ganha XP/ShitCoins™ e destaque na vergonha.</span></div>
         </div>
 
         <div class="benefit-strip">
+          <span class="pill">👀 Ver micos da comunidade</span>
           <span class="pill">🏆 Ranking da vergonha</span>
           <span class="pill">💰 ShitCoins™</span>
-          <span class="pill">🎁 Presentes</span>
           <span class="pill">🌍 Mood Map</span>
           <span class="pill">🏅 Badge Fundador Beta</span>
         </div>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
-          <a class="btn primary" href="beta.html">Quero testar a beta</a>
+          <a class="btn primary" href="beta.html">Quero ver a beta</a>
           <a class="btn" href="status.html">Ver estado da candidatura</a>
           <a class="btn" href="legal.html">Ver regras</a>
         </div>
       </section>
 
       <aside class="card">
-        <h2>O que ganhas?</h2>
-        <p>Não é só publicar por publicar. Cada mico pode dar-te XP, ShitCoins™, presentes, badges e posição no ranking.</p>
-        <div class="ranking-preview">
-          <div class="rank-row"><strong>🥇 Mico lendário</strong><span>+250 XP</span></div>
-          <div class="rank-row"><strong>💩 Reações recebidas</strong><span>+XP</span></div>
-          <div class="rank-row"><strong>🎁 Presentes enviados</strong><span>+estatuto</span></div>
-          <div class="rank-row"><strong>🌍 Mood Map</strong><span>clima coletivo</span></div>
+        <h2>O que vais encontrar?</h2>
+        <p>A primeira motivação é simples: curiosidade. Ver o que as pessoas publicam, reagir e decidir se também tens um mico para contar.</p>
+
+        <div class="mico-preview">
+          <div class="mico-card"><strong>💩 Feed de micos</strong><span>Posts curtos, embaraçosos, engraçados e fáceis de comentar.</span></div>
+          <div class="mico-card"><strong>😂 Reações da comunidade</strong><span>Quanto mais reações, mais o mico ganha força.</span></div>
+          <div class="mico-card"><strong>🏆 Ranking da vergonha</strong><span>Os micos com mais impacto sobem no ranking.</span></div>
+          <div class="mico-card"><strong>🌍 Mood Map</strong><span>O clima emocional coletivo da comunidade.</span></div>
         </div>
       </aside>
     </main>
 
     <section class="features">
+      <div class="feature"><h3>👀 Curiosidade social</h3><p>Entra para ver os micos da comunidade antes de publicares o teu.</p></div>
       <div class="feature"><h3>💩 Feed de micos</h3><p>Publica histórias, reage, comenta e sobe no ranking.</p></div>
       <div class="feature"><h3>🎬 ShitClips™</h3><p>Vídeos curtos de micos com presentes, comentários e partilhas.</p></div>
       <div class="feature"><h3>🎁 Loja</h3><p>Usa ShitCoins™ para presentes, boosts e benefícios Premium.</p></div>
-      <div class="feature"><h3>🌍 Mood Map</h3><p>Vê o estado emocional coletivo por país e cidade, de forma agregada.</p></div>
       <div class="feature"><h3>🛡️ Segurança</h3><p>Denúncias, moderação, anti-spam e beta controlada.</p></div>
       <div class="feature"><h3>👑 Premium experimental</h3><p>Benefícios Premium em teste, ainda sem pagamentos reais.</p></div>
     </section>
 
     <section class="section">
-      <h2>Porque entrar agora?</h2>
-      <p>Os primeiros beta-testers ajudam a decidir o futuro da comunidade e podem receber badge Fundador Beta, ShitCoins iniciais e acesso antecipado a novas funcionalidades.</p>
+      <h2>O que ganhas?</h2>
+      <p>Depois da curiosidade vem a progressão: cada reação, comentário e presente pode ajudar-te a ganhar XP, ShitCoins™ e estatuto.</p>
+      <div class="ranking-preview">
+        <div class="rank-row"><strong>🥇 Mico lendário</strong><span>+250 XP</span></div>
+        <div class="rank-row"><strong>💩 Reações recebidas</strong><span>+XP</span></div>
+        <div class="rank-row"><strong>🎁 Presentes enviados</strong><span>+estatuto</span></div>
+      </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
         <a class="btn primary" href="beta.html">Candidatar-me à beta</a>
         <a class="btn" href="premium.html">Ver Premium experimental</a>
@@ -135,7 +147,7 @@
       <a href="premium.html">Premium</a>
       <a href="investors.html">Investidores</a>
       <a href="legal.html">Regras · Termos · Privacidade</a>
-          <a href="mailto:contacto@shitagram.pt">Contacto</a>
+      <a href="mailto:contacto@shitagram.pt">Contacto</a>
     </footer>
   </div>
 </body>
