@@ -61,6 +61,7 @@
         <a href="#battle" class="hover:text-brand-pink">Batalha</a>
         <a href="#marcar" class="hover:text-brand-pink">Marcar</a>
         <a href="#ranking" class="hover:text-brand-pink">Ranking</a>
+        <a href="#perfil" class="hover:text-brand-pink">Perfil</a>
         <a href="#progresso" class="hover:text-brand-pink">Progresso</a>
         <a href="index.html#mico-battle-live" class="hover:text-brand-pink">Landing</a>
       </nav>
@@ -200,6 +201,66 @@
       </div>
     </section>
 
+
+    <section id="perfil" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8 relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-56 h-56 bg-brand-pink/15 rounded-full blur-[70px]"></div>
+        <span class="relative z-10 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+          <i class="fa-solid fa-id-card"></i> Perfil público
+        </span>
+        <h2 class="relative z-10 font-display font-black text-2xl text-white mt-5">Cartão da Arena</h2>
+        <p class="relative z-10 text-zinc-400 text-sm mt-2 leading-relaxed">Cria um cartão partilhável do teu estatuto na Arena. Ideal para enviar no WhatsApp, Instagram ou TikTok quando ganhares uma batalha.</p>
+        <div class="relative z-10 mt-6 space-y-3">
+          <label class="block text-[11px] text-zinc-500 font-black uppercase tracking-wider">Nome de jogador</label>
+          <input id="profileNameInput" oninput="updateProfileName(this.value)" class="w-full bg-brand-dark border border-white/10 rounded-2xl px-4 py-3 text-white outline-none focus:border-brand-pink" placeholder="MicoMaster" />
+          <label class="block text-[11px] text-zinc-500 font-black uppercase tracking-wider pt-2">Frase curta</label>
+          <input id="profileTaglineInput" oninput="updateProfileTagline(this.value)" class="w-full bg-brand-dark border border-white/10 rounded-2xl px-4 py-3 text-white outline-none focus:border-brand-pink" placeholder="Vence em 60 segundos." />
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 glass rounded-3xl p-6 lg:p-8">
+        <div id="arenaProfileCard" class="rounded-[2rem] border border-white/10 bg-gradient-to-br from-brand-card via-brand-dark to-black p-6 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-brand-pink/10 via-transparent to-brand-purple/15"></div>
+          <div class="relative z-10 flex flex-col sm:flex-row sm:items-center gap-5">
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-brand-pink to-brand-purple flex items-center justify-center text-5xl shadow-[0_0_45px_rgba(255,46,147,.35)]">💩</div>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 id="profileCardName" class="font-display font-black text-3xl text-white">MicoMaster</h3>
+                <span id="profileCardTier" class="text-[10px] bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-2.5 py-1 rounded-full font-black uppercase">Fundador</span>
+              </div>
+              <p id="profileCardTagline" class="text-zinc-400 text-sm mt-1">Vence em 60 segundos.</p>
+              <div class="mt-4 grid grid-cols-3 gap-2 max-w-md">
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-3 text-center"><span id="profileWins" class="block text-2xl font-black text-brand-pink">19</span><span class="text-[9px] text-zinc-500 font-black uppercase">Wins</span></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-3 text-center"><span id="profileCoins" class="block text-2xl font-black text-yellow-400">1250</span><span class="text-[9px] text-zinc-500 font-black uppercase">Coins</span></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-3 text-center"><span id="profileRank" class="block text-2xl font-black text-brand-purple">#12</span><span class="text-[9px] text-zinc-500 font-black uppercase">Ranking</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="relative z-10 mt-6 pt-5 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p class="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Link público demo</p>
+              <p id="profilePublicLink" class="text-zinc-300 text-sm font-bold truncate">shitagram.pt/arena.html?player=MicoMaster</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <button onclick="copyProfileCard()" class="tap px-4 py-2.5 rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black hover:bg-brand-pink/15"><i class="fa-solid fa-share-nodes mr-1"></i> Copiar cartão</button>
+              <button onclick="downloadBackup()" class="tap px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-black hover:bg-white/10"><i class="fa-solid fa-download mr-1"></i> Backup</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h3 class="font-display font-black text-white">Backup e restauração</h3>
+            <p class="text-zinc-400 text-xs mt-1">Exporta ou importa o progresso local da demo para não perder wins, coins e compras.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="backupFileInput" type="file" accept="application/json" class="hidden" onchange="importBackup(event)" />
+            <button onclick="document.getElementById('backupFileInput').click()" class="tap px-4 py-2.5 rounded-xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black hover:bg-brand-purple/15"><i class="fa-solid fa-upload mr-1"></i> Importar backup</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="progresso" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8">
         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
@@ -280,20 +341,20 @@
     const defaultState = { theme:'Romance Falhado', leftScore:3280, rightScore:2650, running:false, time:60, interval:null, wins:19, arenaCoins:1250, ownedShop:[], equippedShop:null, scheduled:[
       {opponent:'@GaffeQueen', theme:'Vergonha em Público', time:'Hoje, 21:30'},
       {opponent:'@ReiDosMicos', theme:'Caos Total', time:'Amanhã, 18:00'}
-    ], lastSaved:null };
+    ], lastSaved:null, profileName:'MicoMaster', profileTagline:'Vence em 60 segundos.' };
     let state = JSON.parse(JSON.stringify(defaultState));
     const comments = ['RuiMico: Ele não superou ainda 😂','MicoQueen: Rainha do drama! 💅💔','ShitaFan: Explosão neleee 🚀','Anonimo: O lado rosa está forte 👀','Vexameiro: Usa o escudo agora! 🛡️'];
     const ranking = [
       ['GaffeQueen','43','72%','28.900'], ['MicoMaster','19','68%','18.420'], ['ReiDosMicos','16','61%','15.850'], ['VexamePro','14','57%','13.210'], ['TropeceiDeNovo','11','52%','10.480']
     ];
 
-    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); }
+    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); }
     function renderThemes(){ const el=document.getElementById('themeButtons'); el.innerHTML=''; Object.keys(themes).forEach(name=>{ const b=document.createElement('button'); b.className='tap w-full text-left rounded-2xl px-3 py-3 border text-xs font-bold transition-all '+(name===state.theme?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-300 hover:border-brand-pink/30'); b.innerHTML=`<span class="block">${name}</span><span class="text-[10px] text-zinc-500">Cores automáticas de batalha</span>`; b.onclick=()=>{state.theme=name; applyTheme(name); renderThemes(); saveProgress(); showToast('Tema alterado',`A roupa mudou para o tema ${name}.`)}; el.appendChild(b); }); }
     function renderEffects(){ const el=document.getElementById('effectButtons'); el.innerHTML=''; effects.forEach(e=>{ const b=document.createElement('button'); b.className='tap rounded-2xl bg-white/5 border border-white/10 p-3 text-center hover:border-brand-pink/40 transition-all'; b.innerHTML=`<div class="text-2xl">${e.icon}</div><div class="text-[10px] font-black text-white mt-1">${e.name}</div><div class="text-[9px] text-yellow-400 font-bold">${e.cost}</div>`; b.onclick=()=>useEffect(e); el.appendChild(b); }); }
     function applyTheme(name){ const t=themes[name]; document.getElementById('activeThemeLabel').textContent=name; document.getElementById('playerLeftPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.leftBg} to-black transition-all duration-500`; document.getElementById('playerRightPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.rightBg} to-black transition-all duration-500`; document.getElementById('leftClothes').style.background=t.leftColor; document.getElementById('rightClothes').style.background=t.rightColor; document.getElementById('leftClothes').style.boxShadow=`0 0 35px ${t.leftColor}`; document.getElementById('rightClothes').style.boxShadow=`0 0 35px ${t.rightColor}`; document.getElementById('leftClothesText').textContent=`Roupa ${t.left} ativada`; document.getElementById('rightClothesText').textContent=`Roupa ${t.right} ativada`; document.getElementById('leftClothesText').style.color=t.leftColor; document.getElementById('rightClothesText').style.color=t.rightColor; document.getElementById('leftFace').textContent=t.faceL; document.getElementById('rightFace').textContent=t.faceR; document.getElementById('leftParticles').innerHTML=t.particles.map(x=>`<span>${x}</span>`).join(''); document.getElementById('rightParticles').innerHTML=t.particlesR.map(x=>`<span>${x}</span>`).join(''); }
     function updateScores(){ document.getElementById('scoreLeft').textContent=state.leftScore.toLocaleString('pt-PT'); document.getElementById('scoreRight').textContent=state.rightScore.toLocaleString('pt-PT'); const total=state.leftScore+state.rightScore; document.getElementById('barLeft').style.width=Math.max(5,Math.round(state.leftScore/total*100))+'%'; document.getElementById('barRight').style.width=Math.max(5,Math.round(state.rightScore/total*100))+'%'; }
     function startBattle(){ if(state.running) return; state.running=true; state.time=60; document.getElementById('battleState').textContent='A decorrer'; showToast('Batalha iniciada','Tens 60 segundos para vencer na arena.'); clearInterval(state.interval); state.interval=setInterval(()=>{ state.time--; state.leftScore += Math.floor(Math.random()*55); state.rightScore += Math.floor(Math.random()*55); updateScores(); document.getElementById('timer').textContent='00:'+String(state.time).padStart(2,'0'); if(state.time<=0){ endBattle(); } },1000); }
-    function endBattle(){ clearInterval(state.interval); state.running=false; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
+    function endBattle(){ clearInterval(state.interval); state.running=false; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); renderProfile(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
     function useEffect(e){ if(!state.running){ showToast('Batalha ainda não começou','Carrega em Entrar agora para ativar efeitos.','fa-solid fa-circle-info'); return; } if(e.side==='left') state.leftScore+=e.power; else state.rightScore+=e.power; updateScores(); saveProgress(); renderProgress(); flashPanel(e.side); addComment(`ArenaBot: ${e.name} ativado! ${e.icon}`); showToast('Efeito ativado',`${e.name} deu impacto na pontuação.`); }
     function flashPanel(side){ const el=document.getElementById(side==='left'?'playerLeftPanel':'playerRightPanel'); el.classList.add('scale-[1.02]'); setTimeout(()=>el.classList.remove('scale-[1.02]'),250); }
     function renderComments(){ const el=document.getElementById('liveComments'); el.innerHTML=comments.slice(0,5).map(c=>`<p class="text-zinc-300"><strong class="text-white">${c.split(':')[0]}:</strong>${c.substring(c.indexOf(':')+1)}</p>`).join(''); }
@@ -369,7 +430,9 @@
         ownedShop: state.ownedShop,
         equippedShop: state.equippedShop,
         scheduled: state.scheduled,
-        lastSaved: new Date().toISOString()
+        lastSaved: new Date().toISOString(),
+        profileName: state.profileName,
+        profileTagline: state.profileTagline
       };
     }
     function loadProgress(){
@@ -420,8 +483,82 @@
     function resetProgress(){
       localStorage.removeItem(storageKey);
       state=JSON.parse(JSON.stringify(defaultState));
-      renderThemes(); renderScheduled(); renderArenaShop(); applyTheme(state.theme); updateScores(); renderProgress(); renderRanking();
+      renderThemes(); renderScheduled(); renderArenaShop(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); renderRanking();
       showToast('Demo reiniciada','O progresso local foi limpo e a Arena voltou ao estado inicial.','fa-solid fa-rotate-left');
+    }
+
+
+    function getProfileTier(){
+      if(state.wins >= 50) return 'Lenda da Arena';
+      if(state.wins >= 25) return 'Mico Pro';
+      if(state.wins >= 10) return 'Fundador';
+      return 'Novato da Arena';
+    }
+    function renderProfile(){
+      const name=state.profileName || 'MicoMaster';
+      const tagline=state.profileTagline || 'Vence em 60 segundos.';
+      const nameInput=document.getElementById('profileNameInput');
+      const taglineInput=document.getElementById('profileTaglineInput');
+      if(nameInput) nameInput.value=name;
+      if(taglineInput) taglineInput.value=tagline;
+      const cardName=document.getElementById('profileCardName');
+      const cardTag=document.getElementById('profileCardTagline');
+      const tier=document.getElementById('profileCardTier');
+      const wins=document.getElementById('profileWins');
+      const coins=document.getElementById('profileCoins');
+      const link=document.getElementById('profilePublicLink');
+      if(cardName) cardName.textContent=name;
+      if(cardTag) cardTag.textContent=tagline;
+      if(tier) tier.textContent=getProfileTier();
+      if(wins) wins.textContent=state.wins;
+      if(coins) coins.textContent=state.arenaCoins.toLocaleString('pt-PT');
+      if(link) link.textContent='shitagram.pt/arena.html?player='+encodeURIComponent(name).replaceAll('%20','-');
+    }
+    function updateProfileName(value){
+      state.profileName=(value || 'MicoMaster').trim().slice(0,32) || 'MicoMaster';
+      renderProfile(); saveProgress(); renderProgress();
+    }
+    function updateProfileTagline(value){
+      state.profileTagline=(value || 'Vence em 60 segundos.').trim().slice(0,80) || 'Vence em 60 segundos.';
+      renderProfile(); saveProgress();
+    }
+    function copyProfileCard(){
+      const equipped=state.equippedShop ? (shopItems.find(i=>i.id===state.equippedShop)?.name || 'Item equipado') : 'Nenhum';
+      const text=`🏆 SHITAGRAM™ Arena\nJogador: ${state.profileName || 'MicoMaster'}\nTítulo: ${getProfileTier()}\nWins: ${state.wins}\nArena Coins: ${state.arenaCoins}\nTema ativo: ${state.theme}\nItem equipado: ${equipped}\n${document.getElementById('profilePublicLink')?.textContent || 'shitagram.pt/arena.html'}`;
+      if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+      showToast('Cartão copiado','O perfil da Arena foi copiado para partilhar.','fa-solid fa-share-nodes');
+    }
+    function downloadBackup(){
+      saveProgress();
+      const data=localStorage.getItem(storageKey) || JSON.stringify(getSavableState(), null, 2);
+      const blob=new Blob([data], {type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='shitagram-arena-backup.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Backup criado','O ficheiro JSON do progresso foi descarregado.','fa-solid fa-download');
+    }
+    function importBackup(event){
+      const file=event.target.files && event.target.files[0];
+      if(!file) return;
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const imported=JSON.parse(reader.result);
+          state={...state,...imported,running:false,time:60,interval:null};
+          localStorage.setItem(storageKey, JSON.stringify(getSavableState()));
+          renderThemes(); renderScheduled(); renderArenaShop(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile();
+          showToast('Backup importado','O progresso da Arena foi restaurado neste navegador.','fa-solid fa-upload');
+        }catch(e){
+          showToast('Backup inválido','Não foi possível ler o ficheiro JSON.','fa-solid fa-triangle-exclamation');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value='';
     }
 
     function renderScheduled(){ const el=document.getElementById('scheduledList'); el.innerHTML=state.scheduled.map((b,i)=>`<div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h3 class="font-bold text-white">MicoMaster vs ${b.opponent}</h3><p class="text-xs text-zinc-400 mt-1">${b.theme} • ${b.time}</p></div><button onclick="joinScheduled(${i})" class="tap px-4 py-2 rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black">Entrar</button></div>`).join(''); }
