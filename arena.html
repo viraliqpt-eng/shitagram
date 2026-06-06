@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ Arena Live</title>
+  <title>SHITAGRAM™ Arena Live tipo TikTok</title>
   <meta name="theme-color" content="#05020c" />
   <link rel="manifest" href="./manifest.json" />
   <style>
@@ -15,7 +15,7 @@
   <header class="topbar">
     <div class="wrap nav">
       <a href="./index.html" class="logo">SHIT<span>AGRAM</span>™</a>
-      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#live">Live</a><a href="#gifts">Sound Gifts</a></nav>
+      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#live">Live</a><a href="#gifts">Sound Gifts</a><a href="#tecnico">Técnico</a></nav>
       <button class="btn small secondary" onclick="location.href='./index.html'">Voltar ao site</button>
     </div>
   </header>
@@ -24,7 +24,7 @@
     <section class="hero wrap">
       <span class="pill"><span class="dot"></span> v20 Live tipo TikTok</span>
       <h1>ARENA <span class="grad">SEM CÓDIGOS</span></h1>
-      <p class="lead">Cria uma batalha, convida o rival, liga a câmara e começa a live em poucos toques.</p>
+      <p class="lead">Fluxo público simplificado: criar batalha, convidar rival, aceitar, ligar câmara e começar. Os códigos técnicos deixam de aparecer para o utilizador comum.</p>
     </section>
 
     <section id="criar" class="section wrap grid grid12">
@@ -75,13 +75,15 @@
             </div>
           </div>
         </div>
+
+        <div class="notice" style="margin-top:16px"><b>Nota técnica:</b> nesta versão a experiência pública já fica como TikTok. Para ligação automática real entre dois telemóveis sem códigos, o próximo passo técnico é ligar Supabase + LiveKit/Agora para gerir salas, convites e vídeo.</div>
       </div>
 
       <div class="card">
         <div class="title"><div><h2>Como fica para o rival</h2><p>O utilizador recebe apenas um convite claro.</p></div></div>
         <div class="steps">
           <div class="step"><div class="num">1</div><div><b>Recebe convite</b><span>“MicoMaster convidou-te para uma Mico Battle Live.”</span></div></div>
-          <div class="step"><div class="num">2</div><div><b>Toca em aceitar</b><span>Só toca em aceitar e entra na sala.</span></div></div>
+          <div class="step"><div class="num">2</div><div><b>Toca em aceitar</b><span>Não vê Código A, Código B nem texto técnico.</span></div></div>
           <div class="step"><div class="num">3</div><div><b>Entra na sala</b><span>Liga a câmara, confirma “Estou pronto” e aguarda a contagem.</span></div></div>
           <div class="step"><div class="num">4</div><div><b>Batalha começa</b><span>3, 2, 1, BATALHA. Ecrã dividido com os dois jogadores.</span></div></div>
         </div>
@@ -138,6 +140,14 @@
         <div class="chat" id="chat"><p><b>Sistema:</b> Cria uma batalha para começar.</p></div>
       </div>
     </section>
+
+    <section id="tecnico" class="section wrap">
+      <div class="card">
+        <div class="title"><div><h2>Modo técnico escondido</h2><p>O utilizador comum não deve ver isto.</p></div></div>
+        <p class="mini">A versão anterior com Código A / Código B só deve existir para testes manuais de WebRTC. A versão pública deve usar sala automática com backend.</p>
+        <div class="notice"><b>Para ficar 100% real tipo TikTok:</b> implementar Supabase para convites/salas/estado e LiveKit ou Agora para vídeo em tempo real. Assim o utilizador só toca em “Criar”, “Aceitar” e “Estou pronto”.</div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer wrap">© 2026 SHITAGRAM™ Arena · Live Battle UI simplificada</footer>
@@ -150,7 +160,7 @@
     function toast(t,d){$('toastTitle').textContent=t;$('toastText').textContent=d;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3200)}
     function addChat(name,msg){const p=document.createElement('p');p.innerHTML='<b>'+name+':</b> '+msg;$('chat').appendChild(p);$('chat').scrollTop=$('chat').scrollHeight}
     function chooseRival(btn,name){selectedRival=name;document.querySelectorAll('#rivalChoices .choice').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
-    function createBattle(){const code=Math.floor(1000+Math.random()*8999);$('roomCode').textContent=code;$('invitedName').textContent=selectedRival;$('invitedTheme').textContent=$('battleTheme').value;$('playerBName').textContent=selectedRival;$('liveTheme').textContent=$('battleTheme').value;show('screenInvite');addChat('Sistema','Convite enviado para '+selectedRival+'.');toast('Convite enviado','Agora o rival só precisa aceitar o convite.')}
+    function createBattle(){const code=Math.floor(1000+Math.random()*8999);$('roomCode').textContent=code;$('invitedName').textContent=selectedRival;$('invitedTheme').textContent=$('battleTheme').value;$('playerBName').textContent=selectedRival;$('liveTheme').textContent=$('battleTheme').value;show('screenInvite');addChat('Sistema','Convite enviado para '+selectedRival+'.');toast('Convite enviado','Agora o rival só precisa aceitar. Sem códigos técnicos visíveis.')}
     function copyInviteText(){const text=`🔥 Mico Battle Live\n\nMicoMaster convidou-te para uma batalha de 60 segundos.\nTema: ${$('battleTheme').value}\n\nEntra aqui: https://shitagram.pt/arena.html`;navigator.clipboard?.writeText(text);toast('Convite copiado','Envia por WhatsApp ou mensagem direta.')}
     function simulateAccept(){show('screenLobby');$('rivalStatus').textContent='Aceitou convite';addChat('Sistema',selectedRival+' entrou na sala.');toast('Rival entrou','Agora liga a câmara e marca como pronto.')}
     async function startCamera(){try{localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$('localVideo').srcObject=localStream;$('localPlaceholder').style.display='none';$('camStatus').textContent='Ligada';$('camStatus').className='ok';toast('Câmara ligada','Imagem limpa, sem filtro de roupa.')}catch(e){toast('Erro na câmara','Permite acesso à câmara no navegador e usa HTTPS.')}}

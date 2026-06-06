@@ -1,14 +1,151 @@
-<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#05020c"><title>A app <span class="grad">SHITAGRAM™</span></title><link rel="stylesheet" href="./shitagram_theme_roxo_rosa_global.css?v=20.4"><style>
-:root{
-  --bg:#05020c;--bg2:#0b0615;--card:#10091d;--card2:#160d28;--line:rgba(236,72,153,.24);
-  --text:#ffffff;--muted:#c9c2d4;--soft:#948aa3;--pink:#ff2e93;--pink2:#ec4899;--purple:#7c3aed;--violet:#a855f7;--fuchsia:#d946ef;
-  --grad:linear-gradient(135deg,#7c3aed 0%,#d946ef 48%,#ff2e93 100%);
-  --glow:0 0 34px rgba(217,70,239,.18),0 0 70px rgba(124,58,237,.12);
-}
-*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:radial-gradient(circle at 70% 0%,rgba(124,58,237,.18),transparent 32%),radial-gradient(circle at 20% 20%,rgba(255,46,147,.10),transparent 28%),var(--bg)!important;color:var(--text)!important;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5;overflow-x:hidden}
-a{color:inherit;text-decoration:none}.wrap{max-width:1120px;margin:0 auto;padding:0 22px}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:28px 22px}.logo{font-weight:1000;font-size:28px;letter-spacing:-1px}.logo span{color:var(--pink)!important}.nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav a,.pill{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:999px;padding:12px 18px;font-weight:850;color:#fff!important;box-shadow:none!important}.nav a.primary,.btn.primary{background:var(--grad)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 10px 34px rgba(255,46,147,.25)!important}.hero{padding:62px 0 42px}.hero-card{background:linear-gradient(145deg,rgba(22,13,40,.86),rgba(8,4,15,.92))!important;border:1px solid var(--line)!important;border-radius:30px;padding:42px;box-shadow:var(--glow)}h1{font-size:clamp(42px,8vw,88px);line-height:.96;margin:0 0 24px;font-weight:1000;letter-spacing:-4px}.grad,.accent{background:var(--grad)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}.lead{font-size:20px;color:var(--muted)!important;max-width:820px;margin:0 0 28px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:15px 22px;font-weight:950;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:white!important;cursor:pointer}.grid{display:grid;gap:18px}.grid3{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:repeat(2,1fr)}.card{background:linear-gradient(180deg,rgba(22,13,40,.72),rgba(6,3,11,.92))!important;border:1px solid rgba(236,72,153,.18)!important;border-radius:24px;padding:24px;box-shadow:0 0 0 1px rgba(124,58,237,.05),0 24px 80px rgba(0,0,0,.25)}.card h3,.card h2,.section-title{color:#fff!important;margin:0 0 10px;font-size:24px;font-weight:1000}.card h3 span,.section-title span{color:var(--pink)!important}.card p,.card li,.muted{color:var(--muted)!important}.section{padding:28px 0}.section-title{font-size:32px;margin-bottom:16px;color:var(--pink)!important}.notice{border-left:4px solid var(--pink)!important;background:rgba(255,46,147,.08)!important;border-radius:18px;padding:18px 20px;color:var(--muted)!important}.form{display:grid;gap:14px}.input, input, textarea, select{width:100%;background:rgba(255,255,255,.055)!important;border:1px solid rgba(236,72,153,.18)!important;border-radius:16px;padding:15px 16px;color:#fff!important;font:inherit;outline:none}textarea{min-height:130px}.input:focus,input:focus,textarea:focus,select:focus{border-color:var(--pink)!important;box-shadow:0 0 0 4px rgba(255,46,147,.12)!important}.table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:18px}.table th,.table td{padding:14px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;color:var(--muted)}.table th{color:#fff;background:rgba(236,72,153,.12)}.footer{padding:42px 22px;color:var(--soft);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.08);margin-top:48px}.tagrow{display:flex;gap:10px;flex-wrap:wrap}.tag{border:1px solid rgba(236,72,153,.22);background:rgba(236,72,153,.08);border-radius:999px;padding:8px 12px;color:#fff;font-weight:800;font-size:13px}.phone{max-width:360px;margin:auto;border:7px solid #15101e;border-radius:44px;padding:18px;background:#05020c;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 60px rgba(217,70,239,.22)}.feed-item{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:14px;margin-top:12px}
-/* FORCE REMOVE OLD GOLD/YELLOW BRANDING */
-[style*="yellow"],[style*="gold"],[style*="#ffc"],[style*="#ffcc"],[style*="#facc15"],[style*="#eab308"]{color:var(--pink)!important;background:var(--grad)!important;border-color:var(--pink)!important}
-button,.button{box-shadow:none} button.primary,.primary{background:var(--grad)!important;color:#fff!important;border-color:transparent!important}
-@media (max-width:800px){.top{align-items:flex-start;flex-direction:column}.grid3,.grid2{grid-template-columns:1fr}h1{letter-spacing:-2px}.hero-card{padding:28px}.nav{justify-content:flex-start}.lead{font-size:17px}}
-</style></head><body><header class="wrap top"><a class="logo" href="./index.html">SHIT<span>AGRAM</span>™</a><nav class="nav"><a href="./index.html">Landing</a><a href="./beta.html">Beta</a><a href="./estado.html">Estado</a><a href="./app.html">App</a><a href="./arena.html">Arena</a><a class="primary" href="./premium.html">Premium</a></nav></header><main class="wrap"><section class="hero"><div class="hero-card"><h1>A app <span class="grad">SHITAGRAM™</span></h1><p class="lead">Feed, ranking, presentes, loja e Arena com identidade roxo/rosa oficial.</p><div class="tagrow"><span class="tag">Roxo/Rosa v20.4</span><span class="tag">Tema forçado</span><span class="tag">Sem amarelo</span></div></div></section><section class="section grid grid2"><div class="card"><h2>Feed real do SHITAGRAM™</h2><p>Publica micos, ganha XP, recebe reações e sobe no ranking.</p><div class="feed-item"><strong>@pedro_mico</strong><p>Hoje fui acenar para alguém e era para a pessoa atrás de mim...</p><span class="tag">+250 XP</span></div><div class="feed-item"><strong>@micoqueen</strong><p>Enviei print para o grupo errado. Socorro.</p><span class="tag">+120 XP</span></div></div><div class="card"><h2>Top da vergonha</h2><ol><li>@pedro_mico — 12 450 XP</li><li>@ana_costa — 9 870 XP</li><li>@joao_silva — 7 250 XP</li></ol><a class="btn primary" href="./arena.html">Entrar na Arena</a></div></section></main><footer class="wrap footer"><span>© 2026 SHITAGRAM™ · identidade roxo/rosa oficial</span><span><a href="./regras.html">Regras</a> · <a href="./termos.html">Termos</a> · <a href="./privacidade.html">Privacidade</a> · <a href="mailto:contacto@shitagram.pt">Contacto</a></span></footer></body></html>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#05020c" />
+  <title>SHITAGRAM™ App — Feed, Perfil e Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#05020c;--bg2:#080411;--card:#0e071a;--card2:#140b24;--line:rgba(236,72,153,.22);
+      --text:#fff;--muted:#cfc6db;--soft:#8f849f;--pink:#ff2e93;--pink2:#ec4899;--purple:#7c3aed;--fuchsia:#d946ef;
+      --grad:linear-gradient(135deg,#7c3aed 0%,#d946ef 48%,#ff2e93 100%);
+      --glow:0 0 32px rgba(255,46,147,.22),0 0 80px rgba(124,58,237,.12);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 55% -10%,rgba(124,58,237,.22),transparent 34%),radial-gradient(circle at 78% 22%,rgba(255,46,147,.10),transparent 28%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button{cursor:pointer;border:none}.hidden{display:none!important}
+    .app-shell{min-height:100vh;display:grid;grid-template-columns:290px 1fr 330px;gap:22px;padding:22px;max-width:1620px;margin:0 auto}.glass{background:linear-gradient(180deg,rgba(20,11,36,.82),rgba(7,3,13,.94));border:1px solid rgba(236,72,153,.18);border-radius:var(--radius);box-shadow:0 22px 70px rgba(0,0,0,.32)}
+    .sidebar{position:sticky;top:22px;height:calc(100vh - 44px);display:flex;flex-direction:column;padding:22px;overflow:auto}.logo{font-weight:1000;font-size:27px;letter-spacing:-1px}.logo span{color:var(--pink)}.status-pill{margin-top:8px;color:var(--soft);font-size:12px;font-weight:800}.menu{display:flex;flex-direction:column;gap:8px;margin-top:24px}.menu button,.menu a{width:100%;display:flex;align-items:center;gap:14px;border-radius:18px;padding:15px 16px;color:var(--muted);background:transparent;font-weight:900;text-align:left}.menu button:hover,.menu a:hover,.menu .active{background:rgba(255,46,147,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(236,72,153,.18)}.ico{width:26px;text-align:center;font-size:20px}.sidebar-spacer{flex:1}.user-card{margin-top:18px;padding:16px;border-radius:22px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}.user-line{display:flex;align-items:center;gap:12px}.avatar{width:48px;height:48px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 20px rgba(255,46,147,.28);overflow:hidden}.user-name{font-weight:950}.user-sub{color:var(--soft);font-size:12px;font-weight:700}.coins{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-weight:950}.small-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;color:var(--soft);font-size:12px;font-weight:700}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:13px 18px;font-weight:950;background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.10)}.btn.primary{background:var(--grad);box-shadow:var(--glow);border:0}.btn.ghost{background:rgba(255,255,255,.045)}.btn.danger{background:rgba(244,63,94,.12);color:#fecdd3;border:1px solid rgba(244,63,94,.22)}
+    .main{min-width:0}.topbar{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,var(--bg),rgba(5,2,12,.82));padding:0 0 16px}.topbar-inner{display:flex;align-items:center;gap:14px}.search{flex:1;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);border-radius:999px;padding:14px 18px;color:var(--soft)}.search input{flex:1;background:transparent;border:0;color:#fff;outline:0;font-size:15px}.account-actions{display:flex;align-items:center;gap:10px}.profile-mini{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(236,72,153,.18);font-weight:900}.profile-mini .avatar{width:34px;height:34px;font-size:18px}.hero{margin:4px 0 18px;padding:26px;border-radius:28px;background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(255,46,147,.10));border:1px solid rgba(236,72,153,.24);box-shadow:var(--glow);display:flex;justify-content:space-between;gap:20px;align-items:center}.hero h1{margin:0;font-size:clamp(26px,4vw,44px);line-height:1.05;letter-spacing:-1.5px}.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{margin:8px 0 0;color:var(--muted)}
+    .notice{padding:18px;border-radius:22px;background:rgba(255,46,147,.08);border:1px solid rgba(255,46,147,.18);color:var(--muted);margin-bottom:18px}.section{display:none}.section.active{display:block}.grid{display:grid;gap:16px}.grid2{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.card{padding:22px;border-radius:24px;background:linear-gradient(180deg,rgba(20,11,36,.78),rgba(7,3,13,.94));border:1px solid rgba(236,72,153,.16)}.card h2,.card h3{margin:0 0 10px;font-size:21px}.card p{color:var(--muted);margin:0}.feed-post{margin-bottom:16px}.post-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.post-author{display:flex;gap:12px;align-items:center}.post-body{margin-top:14px;font-size:17px;color:#eee}.post-media{margin-top:14px;border-radius:20px;height:220px;background:radial-gradient(circle at 50% 35%,rgba(255,46,147,.34),rgba(124,58,237,.16) 38%,rgba(255,255,255,.04));display:flex;align-items:center;justify-content:center;font-size:60px}.post-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:800;color:#fff}.input,textarea{width:100%;border-radius:17px;padding:15px 16px;background:rgba(255,255,255,.055);border:1px solid rgba(236,72,153,.18);color:#fff;outline:0}textarea{min-height:140px;resize:vertical}.input:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,46,147,.12)}.rightbar{position:sticky;top:22px;height:calc(100vh - 44px);display:flex;flex-direction:column;gap:14px;overflow:auto}.side-card{padding:20px}.rank-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);font-weight:850}.rank-left{display:flex;align-items:center;gap:10px}.badge-num{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:1000}.gift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.gift{height:64px;border-radius:18px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid rgba(255,255,255,.08)}.auth-gate{padding:28px;text-align:center}.auth-gate h2{font-size:30px;margin:0 0 8px}.auth-gate p{color:var(--muted)}.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}.modal-card{width:min(520px,100%);padding:28px;border-radius:30px;background:linear-gradient(180deg,#140b24,#080411);border:1px solid rgba(236,72,153,.24);box-shadow:var(--glow)}.modal-card h2{margin:0 0 8px}.modal-card p{color:var(--muted);margin:0 0 18px}.form{display:grid;gap:12px}.row{display:flex;gap:10px;flex-wrap:wrap}.toast{position:fixed;bottom:24px;right:24px;z-index:120;background:#140b24;border:1px solid rgba(236,72,153,.25);box-shadow:var(--glow);border-radius:18px;padding:14px 16px;color:#fff;transform:translateY(30px);opacity:0;transition:.25s}.toast.show{transform:translateY(0);opacity:1}.mobile-bottom{display:none}.mobile-more{display:none}.empty{padding:26px;text-align:center;color:var(--muted)}
+    @media(max-width:1180px){.app-shell{grid-template-columns:250px 1fr}.rightbar{display:none}.hero{align-items:flex-start;flex-direction:column}.grid3{grid-template-columns:1fr 1fr}}
+    @media(max-width:820px){body{padding-bottom:86px}.app-shell{display:block;padding:14px}.sidebar{display:none}.topbar{padding:0 0 12px}.topbar-inner{flex-wrap:wrap}.search{order:2;flex-basis:100%;border-radius:18px}.account-actions{margin-left:auto}.hero{padding:20px}.grid2,.grid3{grid-template-columns:1fr}.mobile-bottom{position:fixed;left:0;right:0;bottom:0;z-index:90;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));background:rgba(5,2,12,.94);backdrop-filter:blur(20px);border-top:1px solid rgba(236,72,153,.18)}.mobile-bottom button{padding:8px 4px;border-radius:14px;background:transparent;color:var(--muted);font-weight:850;font-size:11px}.mobile-bottom button.active{background:rgba(255,46,147,.12);color:#fff}.mobile-bottom span{display:block;font-size:20px;margin-bottom:2px}.mobile-more{display:block}.modal-card{padding:22px}.post-media{height:180px}.profile-mini .name-text{display:none}}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <a class="logo" href="./index.html">SHIT<span>AGRAM</span>™</a>
+      <div class="status-pill" id="loginStatusText">Visitante · entra para guardar progresso</div>
+      <nav class="menu" aria-label="Menu principal">
+        <button data-section="feed" class="active"><span class="ico">🏠</span>Feed</button>
+        <button data-section="clips"><span class="ico">🎬</span>ShitClips™</button>
+        <button data-section="publicar"><span class="ico">➕</span>Publicar</button>
+        <button data-section="ranking"><span class="ico">🏆</span>Ranking</button>
+        <button data-section="perfil"><span class="ico">👤</span>Perfil</button>
+        <a href="./arena.html"><span class="ico">⚔️</span>Arena Live</a>
+        <button data-section="loja"><span class="ico">🎁</span>Loja</button>
+        <a href="./premium.html"><span class="ico">👑</span>Premium</a>
+        <button data-section="mensagens"><span class="ico">💬</span>Mensagens</button>
+        <button data-section="convites"><span class="ico">🎟️</span>Convites</button>
+        <button data-section="privacidade"><span class="ico">🔐</span>Privacidade</button>
+        <button data-section="definicoes"><span class="ico">⚙️</span>Definições</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="small-links"><a href="./regras.html">Regras</a><a href="./termos.html">Termos</a><a href="./privacidade.html">Privacidade</a></div>
+      <div class="user-card" id="sideUserCard"></div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div class="search"><span>🔎</span><input type="search" placeholder="Procurar micos ou @utilizadores..." oninput="searchPosts(this.value)"></div>
+          <div class="account-actions" id="accountActions"></div>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div><h1>Publica o mico. <span class="grad">Ganha XP.</span> Entra na Arena.</h1><p id="heroSub">Tudo claro: Feed, Publicar, Ranking, Perfil e Sair sempre visíveis.</p></div>
+        <button class="btn primary" onclick="guardedNav('publicar')">+ Publicar mico</button>
+      </section>
+
+      <section id="gate" class="glass auth-gate hidden">
+        <h2>Entra para usar a app completa</h2>
+        <p>Como visitante podes ver o feed, mas para publicar, guardar XP, ver perfil e entrar na Arena com conta precisas de login.</p>
+        <div class="row" style="justify-content:center;margin-top:18px"><button class="btn primary" onclick="openAuth('login')">Entrar</button><button class="btn" onclick="openAuth('register')">Criar conta</button></div>
+      </section>
+
+      <section id="feed" class="section active"></section>
+      <section id="clips" class="section"></section>
+      <section id="publicar" class="section"></section>
+      <section id="ranking" class="section"></section>
+      <section id="perfil" class="section"></section>
+      <section id="loja" class="section"></section>
+      <section id="mensagens" class="section"></section>
+      <section id="convites" class="section"></section>
+      <section id="privacidade" class="section"></section>
+      <section id="definicoes" class="section"></section>
+    </main>
+
+    <aside class="rightbar">
+      <div class="glass side-card"><h3>🏆 Top da vergonha</h3><div id="sideRanking"></div><button class="btn ghost" style="width:100%;margin-top:12px" onclick="navTo('ranking')">Ver ranking completo</button></div>
+      <div class="glass side-card"><h3>🎁 Presentes em alta</h3><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">😂</div><div class="gift">🌹</div><div class="gift">👑</div><div class="gift">⚡</div></div><button class="btn ghost" style="width:100%;margin-top:12px" onclick="navTo('loja')">Ver loja</button></div>
+      <div class="glass side-card"><h3>⚔️ Arena</h3><p class="muted">Batalhas live de 60 segundos, 4 efeitos e Sound Gifts™.</p><a class="btn primary" style="width:100%;margin-top:12px" href="./arena.html">Entrar na Arena</a></div>
+    </aside>
+  </div>
+
+  <nav class="mobile-bottom" aria-label="Menu mobile">
+    <button data-section="feed" class="active"><span>🏠</span>Feed</button>
+    <button data-section="clips"><span>🎬</span>Clips</button>
+    <button data-section="publicar"><span>➕</span>Publicar</button>
+    <button data-section="ranking"><span>🏆</span>Ranking</button>
+    <button data-section="perfil"><span>👤</span>Perfil</button>
+  </nav>
+
+  <div class="modal hidden" id="authModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2 id="authTitle">Entrar</h2><p id="authText">Acede ao teu Feed, Perfil, XP e Arena.</p>
+      <div class="form">
+        <input class="input" id="authName" placeholder="Nome de utilizador" />
+        <input class="input" id="authEmail" placeholder="Email" type="email" />
+        <input class="input" id="authPass" placeholder="Password" type="password" />
+        <button class="btn primary" id="authSubmit" onclick="submitAuth()">Entrar</button>
+        <button class="btn ghost" onclick="toggleAuthMode()" id="authToggle">Ainda não tens conta? Criar conta</button>
+        <button class="btn ghost" onclick="closeAuth()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">OK</div>
+
+  <script>
+    const KEY='shitagram_user_v20_6';
+    const POSTS_KEY='shitagram_posts_v20_6';
+    let authMode='login';
+    let user=JSON.parse(localStorage.getItem(KEY)||'null');
+    let posts=JSON.parse(localStorage.getItem(POSTS_KEY)||'null') || [
+      {user:'MicoMaster', avatar:'💩', city:'Lisboa', text:'Fui acenar a alguém na rua e afinal era para a pessoa atrás de mim...', xp:250, hearts:234, comments:45},
+      {user:'VeraDesastrada', avatar:'🫣', city:'Porto', text:'Enviei “amo-te” para o grupo da empresa. Era só para a pessoa certa.', xp:180, hearts:146, comments:31},
+      {user:'RainhaDoDrama', avatar:'💅', city:'Coimbra', text:'Disse “igualmente” ao empregado quando ele disse “bom apetite”.', xp:120, hearts:89, comments:12}
+    ];
+    const rankings=[['MicoMaster','12 450 XP'],['RainhaDoDrama','9 870 XP'],['VeraDesastrada','7 250 XP'],['PedroMico','5 400 XP']];
+    function save(){localStorage.setItem(KEY,JSON.stringify(user));localStorage.setItem(POSTS_KEY,JSON.stringify(posts));}
+    function isLogged(){return !!user}
+    function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+    function openAuth(mode='login'){authMode=mode;renderAuth();document.getElementById('authModal').classList.remove('hidden')}
+    function closeAuth(){document.getElementById('authModal').classList.add('hidden')}
+    function toggleAuthMode(){authMode=authMode==='login'?'register':'login';renderAuth()}
+    function renderAuth(){document.getElementById('authTitle').textContent=authMode==='login'?'Entrar na tua conta':'Criar conta grátis';document.getElementById('authText').textContent=authMode==='login'?'Continua de onde ficaste: XP, perfil, Arena e publicações.':'Cria um perfil de teste para experimentar a app sem confusão.';document.getElementById('authSubmit').textContent=authMode==='login'?'Entrar':'Criar conta';document.getElementById('authToggle').textContent=authMode==='login'?'Ainda não tens conta? Criar conta':'Já tens conta? Entrar'}
+    function submitAuth(){const name=document.getElementById('authName').value.trim()||'Visitante';const email=document.getElementById('authEmail').value.trim()||'teste@shitagram.pt';user={name:name.replace(/^@/,''),email,avatar:'😎',xp:user?.xp||1250,coins:user?.coins||2340,level:user?.level||6,createdAt:new Date().toISOString()};save();closeAuth();renderAll();showToast(authMode==='login'?'Entraste na tua conta':'Conta criada com sucesso')}
+    function logout(){user=null;localStorage.removeItem(KEY);renderAll();navTo('feed');showToast('Sessão terminada')}
+    function requireLogin(section){if(!isLogged()){document.getElementById('gate').classList.remove('hidden');showToast('Entra ou cria conta para continuar');openAuth('login');return false}document.getElementById('gate').classList.add('hidden');return true}
+    function guardedNav(section){const protected=['publicar','perfil','mensagens','convites','definicoes'];if(protected.includes(section)&&!requireLogin(section))return;navTo(section)}
+    function navTo(section){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(section)?.classList.add('active');document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===section));document.getElementById('gate').classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'});renderSection(section)}
+    document.querySelectorAll('[data-section]').forEach(btn=>btn.addEventListener('click',()=>guardedNav(btn.dataset.section)));
+    function renderAccount(){const actions=document.getElementById('accountActions');const side=document.getElementById('sideUserCard');const status=document.getElementById('loginStatusText');if(isLogged()){actions.innerHTML=`<button class="btn ghost" onclick="navTo('perfil')">👤 <span class="name-text">${user.name}</span></button><a class="btn ghost" href="./arena.html">⚔️ Arena</a><button class="btn danger" onclick="logout()">Sair</button>`;status.textContent='Sessão iniciada · progresso guardado';side.innerHTML=`<div class="user-line"><div class="avatar">${user.avatar}</div><div><div class="user-name">${user.name}</div><div class="user-sub">Grau ${user.level} · ${user.xp} XP</div></div></div><div class="coins"><span>💜 ${user.coins}</span><button class="btn ghost" onclick="navTo('perfil')">Perfil</button></div>`}else{actions.innerHTML=`<button class="btn ghost" onclick="openAuth('login')">Entrar</button><button class="btn primary" onclick="openAuth('register')">Criar conta</button>`;status.textContent='Visitante · entra para guardar progresso';side.innerHTML=`<div class="user-line"><div class="avatar">👀</div><div><div class="user-name">Visitante</div><div class="user-sub">Sem sessão iniciada</div></div></div><div class="row" style="margin-top:14px"><button class="btn primary" onclick="openAuth('login')">Entrar</button><button class="btn ghost" onclick="openAuth('register')">Criar</button></div>`}}
+    function renderSide(){document.getElementById('sideRanking').innerHTML=rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><span>@${r[0]}</span></div><span>${r[1]}</span></div>`).join('')}
+    function renderFeed(list=posts){document.getElementById('feed').innerHTML=`${!isLogged()?'<div class="notice"><strong>Estás em modo visitante.</strong> Podes explorar, mas para publicar, guardar XP e ver o perfil deves entrar ou criar conta.</div>':''}${list.length?list.map(p=>`<article class="glass card feed-post"><div class="post-head"><div class="post-author"><div class="avatar">${p.avatar}</div><div><strong>@${p.user}</strong><div class="user-sub">📍 ${p.city||'Portugal'} · agora</div></div></div><span class="chip">+${p.xp} XP</span></div><div class="post-body">${p.text}</div><div class="post-media">🙈</div><div class="post-actions"><button class="chip" onclick="showToast('Reação enviada')">💜 ${p.hearts}</button><button class="chip">💬 ${p.comments}</button><button class="chip" onclick="showToast('Partilha copiada')">🔗 Partilhar</button></div></article>`).join(''):'<div class="glass empty">Nenhum mico encontrado.</div>'}`}
+    function renderSection(s){if(s==='feed')renderFeed();if(s==='clips')document.getElementById('clips').innerHTML=`<div class="glass card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e melhores momentos da Arena.</p><div class="post-media">🎬</div></div>`;if(s==='publicar')document.getElementById('publicar').innerHTML=`<div class="glass card"><h2>➕ Publicar mico</h2><p>Conta o teu momento embaraçoso. Podes usar nome ou modo anónimo.</p><div class="form" style="margin-top:16px"><textarea id="newPostText" placeholder="Ex: Fui cumprimentar alguém e não era comigo..."></textarea><button class="btn primary" onclick="publishPost()">Publicar agora</button></div></div>`;if(s==='ranking')document.getElementById('ranking').innerHTML=`<div class="glass card"><h2>🏆 Ranking da vergonha</h2>${rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><strong>@${r[0]}</strong></div><span>${r[1]}</span></div>`).join('')}</div>`;if(s==='perfil')document.getElementById('perfil').innerHTML=isLogged()?`<div class="glass card"><h2>👤 O meu perfil</h2><div class="user-line"><div class="avatar">${user.avatar}</div><div><h3 style="margin:0">@${user.name}</h3><p>${user.email}</p></div></div><div class="grid grid3" style="margin-top:18px"><div class="card"><h3>${user.xp}</h3><p>XP</p></div><div class="card"><h3>${user.coins}</h3><p>ShitCoins</p></div><div class="card"><h3>${posts.filter(p=>p.user===user.name).length}</h3><p>Micos publicados</p></div></div><div class="row" style="margin-top:18px"><a class="btn primary" href="./arena.html">Entrar na Arena</a><button class="btn danger" onclick="logout()">Sair da conta</button></div></div>`:'';if(s==='loja')document.getElementById('loja').innerHTML=`<div class="glass card"><h2>🎁 Loja</h2><p>Compra presentes, boosts, molduras e efeitos com ShitCoins.</p><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">👑</div><div class="gift">⚡</div><div class="gift">🌹</div><div class="gift">😂</div></div></div>`;if(s==='mensagens')document.getElementById('mensagens').innerHTML=`<div class="glass card"><h2>💬 Mensagens</h2><p>As mensagens privadas aparecem aqui. Em breve com Supabase real.</p></div>`;if(s==='convites')document.getElementById('convites').innerHTML=`<div class="glass card"><h2>🎟️ Convites</h2><p>Envia convites para amigos entrarem na beta e na Arena.</p><button class="btn primary" onclick="navigator.clipboard?.writeText('https://shitagram.pt/beta.html');showToast('Link copiado')">Copiar convite</button></div>`;if(s==='privacidade')document.getElementById('privacidade').innerHTML=`<div class="glass card"><h2>🔐 Privacidade</h2><p>Controla anonimato, visibilidade do perfil e dados da conta.</p><div class="grid grid2" style="margin-top:16px"><div class="card"><h3>Modo anónimo</h3><p>Publica sem mostrar o nome.</p></div><div class="card"><h3>Segurança</h3><p>Denúncias, moderação e fair play.</p></div></div></div>`;if(s==='definicoes')document.getElementById('definicoes').innerHTML=`<div class="glass card"><h2>⚙️ Definições</h2><p>Conta, sessão e preferências.</p><div class="row" style="margin-top:16px"><button class="btn danger" onclick="logout()">Sair</button><button class="btn ghost" onclick="localStorage.clear();location.reload()">Reset demo</button></div></div>`}
+    function publishPost(){const el=document.getElementById('newPostText');const txt=el.value.trim();if(!txt)return showToast('Escreve um mico primeiro');posts.unshift({user:user.name,avatar:user.avatar,city:'Portugal',text:txt,xp:250,hearts:0,comments:0});user.xp+=250;user.coins+=80;save();renderAll();navTo('feed');showToast('+250 XP · Mico publicado')}
+    function searchPosts(q){q=(q||'').toLowerCase();renderFeed(posts.filter(p=>p.text.toLowerCase().includes(q)||p.user.toLowerCase().includes(q)))}
+    function renderAll(){renderAccount();renderSide();renderFeed();renderSection(document.querySelector('.section.active')?.id||'feed')}
+    renderAll();
+  </script>
+</body>
+</html>
