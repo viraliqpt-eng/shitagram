@@ -68,6 +68,57 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #ff2e93;
         }
+
+
+        /* Compatibilidade mobile iOS/Android */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        button, a, input, textarea {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        input, textarea, select, button {
+            font-size: 16px; /* evita zoom automático em inputs no iOS */
+        }
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media (max-width: 767px) {
+            header { padding-left: 1rem; padding-right: 1rem; }
+            header a { font-size: 1.1rem; }
+            header button { padding: 0.65rem 0.9rem; font-size: 0.75rem; border-radius: 999px; }
+            main { padding-top: 2rem; padding-bottom: 2rem; gap: 3rem; }
+            section { scroll-margin-top: 84px; }
+            h1 { font-size: clamp(2rem, 10vw, 3rem) !important; line-height: 1.08 !important; }
+            h2 { font-size: 1.35rem !important; }
+            h3 { font-size: 1.35rem !important; }
+            p, li, label { line-height: 1.55; }
+            .mobile-card-padding { padding: 1.25rem !important; }
+            #hero-phones { width: 100%; gap: 0; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+            .hero-main-phone { width: min(78vw, 280px) !important; margin-left: auto; margin-right: auto; }
+            .hero-secondary-phone { display: none !important; }
+            .app-mock-phone, .premium-mock-phone { width: min(78vw, 320px) !important; }
+            .mobile-stack-actions { width: 100%; }
+            .modal-mobile-panel { max-height: 90svh; overflow-y: auto; }
+        }
+
+        @media (max-width: 420px) {
+            main { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
+            .rounded-3xl { border-radius: 1.25rem; }
+            .hero-main-phone { width: min(84vw, 260px) !important; }
+            .app-mock-phone, .premium-mock-phone { width: min(84vw, 300px) !important; }
+        }
+
     </style>
 </head>
 <body class="relative min-h-screen">
@@ -199,11 +250,11 @@
             </div>
 
             <!-- Centro: Maquetas de telemóvel (Duas) -->
-            <div class="lg:col-span-4 flex justify-center items-center gap-4 relative py-10 lg:py-0">
+            <div id="hero-phones" class="lg:col-span-4 flex justify-center items-center gap-4 relative py-10 lg:py-0">
                 <div class="absolute inset-0 bg-brand-purple/20 rounded-full blur-[80px] pointer-events-none scale-75"></div>
 
                 <!-- TELEMÓVEL 1: Perfil e Feed (Frente) -->
-                <div class="w-[260px] xs:w-[280px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
+                <div class="hero-main-phone w-[260px] xs:w-[280px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
                     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-28 bg-zinc-800 rounded-b-xl z-20 flex items-center justify-center">
                         <span class="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2"></span>
                         <span class="w-8 h-1 bg-zinc-700 rounded-full"></span>
@@ -270,7 +321,7 @@
                 </div>
 
                 <!-- TELEMÓVEL 2: Leaderboard (Trás) -->
-                <div class="w-[240px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-xl relative -ml-12 lg:-ml-10 z-0 scale-95 opacity-80 hover:opacity-100 hover:scale-100 hover:z-20 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+                <div class="hero-secondary-phone w-[240px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-xl relative -ml-12 lg:-ml-10 z-0 scale-95 opacity-80 hover:opacity-100 hover:scale-100 hover:z-20 transition-all duration-300 flex flex-col justify-between overflow-hidden">
                     <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-24 bg-zinc-800 rounded-b-xl z-20"></div>
 
                     <div class="flex justify-between items-center px-3 pt-1 text-[10px] text-zinc-600 font-bold">
@@ -678,7 +729,7 @@
                     <div class="absolute inset-0 bg-brand-purple/20 rounded-full blur-[60px] pointer-events-none scale-75"></div>
 
                     <!-- Corpo do Telemóvel -->
-                    <div class="w-[300px] sm:w-[320px] aspect-[9/18.5] rounded-[48px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
+                    <div class="app-mock-phone w-[300px] sm:w-[320px] aspect-[9/18.5] rounded-[48px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
                         
                         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-zinc-800 rounded-b-2xl z-20 flex items-center justify-center">
                             <span class="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2"></span>
@@ -908,7 +959,7 @@
                     <div class="lg:col-span-6 flex justify-center relative">
                         <div class="absolute inset-0 bg-brand-pink/15 rounded-full blur-[60px] pointer-events-none scale-75"></div>
 
-                        <div class="w-[280px] aspect-[9/18.5] rounded-[44px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
+                        <div class="premium-mock-phone w-[280px] aspect-[9/18.5] rounded-[44px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
                             <!-- Top Status -->
                             <div class="flex justify-between items-center px-4 pt-1 text-[10px] text-zinc-400 font-bold">
                                 <span>9:41</span>
@@ -1331,7 +1382,7 @@
     <div id="premium-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
         <div class="absolute inset-0" onclick="closePremiumModal()"></div>
 
-        <div class="bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
+        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
             <button onclick="closePremiumModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1389,7 +1440,7 @@
     <div id="rules-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
         <div class="absolute inset-0" onclick="closeRulesModal()"></div>
 
-        <div class="bg-brand-card border border-white/15 w-full max-w-lg rounded-3xl p-6 lg:p-8 text-left relative z-10 shadow-2xl space-y-5">
+        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-lg rounded-3xl p-6 lg:p-8 text-left relative z-10 shadow-2xl space-y-5">
             <button onclick="closeRulesModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1442,7 +1493,7 @@
     <div id="beta-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
         <div class="absolute inset-0" onclick="closeBetaModal()"></div>
 
-        <div class="bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
+        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
             <button onclick="closeBetaModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
