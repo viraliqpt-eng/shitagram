@@ -6,6 +6,10 @@
   <title>SHITAGRAM™ Arena Live Real</title>
   <meta name="theme-color" content="#05020c" />
   <link rel="manifest" href="./manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SHITAGRAM Arena" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <script src="./livekit-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
   <style>
@@ -17,7 +21,7 @@
   <header class="topbar">
     <div class="wrap nav">
       <a href="./index.html" class="logo">SHIT<span>AGRAM</span>™</a>
-      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#prelive">Pré-live</a><a href="#live">Live</a><a href="#gifts">Gifts</a></nav>
+      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#prelive">Pré-live</a><a href="#live">Live</a><a href="#gifts">Gifts</a><a href="#instalar">Instalar</a></nav>
       <button class="btn small secondary" onclick="location.href='./app.html'">Entrar na app</button>
     </div>
   </header>
@@ -142,6 +146,43 @@
         <div class="row"><input class="input" id="chatInput" placeholder="Escreve uma mensagem..."><button class="btn" onclick="sendChat()">Enviar</button></div>
       </div>
     </section>
+
+
+    <section id="instalar" class="section wrap">
+      <div class="card glow">
+        <div class="title">
+          <div>
+            <h2>Instalar a Arena</h2>
+            <p>Usa a Arena como app no computador, Android ou iPhone.</p>
+          </div>
+          <span class="themeBadge">PWA Mobile/Desktop</span>
+        </div>
+        <div class="grid grid12">
+          <div class="flowPanel">
+            <h3 style="margin:0 0 10px;font-size:20px">Instalação rápida</h3>
+            <p class="mini">Depois de instalada, a Arena abre em ecrã próprio, sem parecer apenas uma página do navegador.</p>
+            <div style="height:14px"></div>
+            <button class="btn" id="installBtn" onclick="installPWA()">Instalar app</button>
+            <button class="btn secondary" style="margin-left:8px" onclick="copyInstallInstructions()">Copiar instruções</button>
+            <div style="height:14px"></div>
+            <div class="statusList">
+              <div class="status"><b>Estado PWA</b><span id="pwaStatus">A verificar...</span></div>
+              <div class="status"><b>Service Worker</b><span id="swStatus">A verificar...</span></div>
+              <div class="status"><b>Manifest</b><span id="manifestStatus">A verificar...</span></div>
+            </div>
+          </div>
+          <div class="flowPanel">
+            <h3 style="margin:0 0 10px;font-size:20px">Como instalar</h3>
+            <div class="statusList">
+              <div class="status"><b>Android / Chrome</b><span>Menu ⋮ → Instalar app</span></div>
+              <div class="status"><b>iPhone / Safari</b><span>Partilhar → Adicionar ao ecrã principal</span></div>
+              <div class="status"><b>Computador</b><span>Ícone de instalar na barra do Chrome/Edge</span></div>
+            </div>
+            <p class="notice" style="margin-top:14px">No iPhone, a instalação é sempre pelo Safari. No Android e computador, o botão “Instalar app” pode aparecer quando o navegador permitir.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
   <footer class="footer">© 2026 SHITAGRAM™ · Arena Live Real</footer>
   <div class="toast" id="toast"><b id="toastTitle">Aviso</b><span id="toastText">Mensagem</span></div>
@@ -184,6 +225,30 @@ function sendGift(emoji,name,points){state.scoreA+=points;updateScore();floatGif
 function useEffect(emoji,name,points){state.scoreA+=points;updateScore();floatGift(emoji);beep();addChat(state.playerName,`ativou ${emoji} ${name} (+${points})`)}
 function sendChat(){const msg=$('chatInput').value.trim();if(!msg)return;addChat(state.playerName,msg);$('chatInput').value=''}
 window.addEventListener('load',()=>{const endpoint=window.SHITAGRAM_LIVEKIT_TOKEN_ENDPOINT||'';const liveUrl=window.SHITAGRAM_LIVEKIT_URL||'';$('livekitStatus').innerHTML=(endpoint&&liveUrl)?'<span class="ok">Configurável</span>':'<span class="bad">Por configurar</span>';updateScore();});
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredInstallPrompt=e;const btn=$('installBtn');if(btn)btn.textContent='Instalar app';const st=$('pwaStatus');if(st)st.innerHTML='<span class="ok">Pronta para instalar</span>';});
+async function installPWA(){
+  if(deferredInstallPrompt){deferredInstallPrompt.prompt();const choice=await deferredInstallPrompt.userChoice;toast('Instalação',choice.outcome==='accepted'?'Instalação iniciada.':'Instalação cancelada.');deferredInstallPrompt=null;return;}
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIOS){toast('Instalar no iPhone','Abre no Safari: Partilhar → Adicionar ao ecrã principal.');}
+  else{toast('Instalar app','No Chrome/Edge, procura o ícone de instalar na barra ou Menu ⋮ → Instalar app.');}
+}
+function copyInstallInstructions(){
+  const txt=`SHITAGRAM™ Arena\n\nAndroid/Chrome: abre https://shitagram.pt/arena.html → menu ⋮ → Instalar app.\n\niPhone/Safari: abre https://shitagram.pt/arena.html → Partilhar → Adicionar ao ecrã principal.\n\nComputador Chrome/Edge: abre https://shitagram.pt/arena.html → ícone de instalar na barra do navegador.`;
+  navigator.clipboard?.writeText(txt).then(()=>toast('Copiado','Instruções de instalação copiadas.')).catch(()=>toast('Instruções',txt));
+}
+async function initPWA(){
+  const sw=$('swStatus'), mf=$('manifestStatus'), ps=$('pwaStatus');
+  try{
+    if('serviceWorker' in navigator){await navigator.serviceWorker.register('./sw.js'); if(sw)sw.innerHTML='<span class="ok">Ativo</span>';} else {if(sw)sw.innerHTML='<span class="bad">Não suportado</span>';}
+  }catch(e){if(sw)sw.innerHTML='<span class="bad">Erro</span>';}
+  try{const r=await fetch('./manifest.json',{cache:'no-store'}); if(mf)mf.innerHTML=r.ok?'<span class="ok">Encontrado</span>':'<span class="bad">Erro</span>';}catch(e){if(mf)mf.innerHTML='<span class="bad">Erro</span>';}
+  if(ps && !deferredInstallPrompt) ps.textContent='Usa as instruções do teu dispositivo';
+}
+window.addEventListener('appinstalled',()=>toast('Instalada','A Arena foi instalada com sucesso.'));
+window.addEventListener('load',initPWA);
+
 </script>
 </body>
 </html>
