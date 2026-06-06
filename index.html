@@ -1,2497 +1,554 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!doctype html>
+<html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHITAGRAM™ - Os teus micos viram histórias</title>
-    <meta name="description" content="SHITAGRAM™ é uma rede social experimental de humor onde podes publicar micos, reagir, ganhar XP, ShitCoins e subir no ranking da vergonha.">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome para ícones premium -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            dark: '#05020c',
-                            card: '#0d081b',
-                            pink: '#ff2e93',
-                            purple: '#7c3aed',
-                            fuchsia: '#d946ef',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #05020c;
-            color: #f4f4f5;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-        /* Efeitos de Glow Neon */
-        .neon-glow-pink {
-            box-shadow: 0 0 30px rgba(255, 46, 147, 0.25);
-        }
-        .neon-glow-purple {
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
-        }
-        .bg-gradient-text {
-            background: linear-gradient(135deg, #ff2e93 0%, #d946ef 50%, #7c3aed 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #05020c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e1135;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff2e93;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SHITAGRAM™ — Os teus micos viram histórias, reações e ranking</title>
+  <meta name="description" content="A rede social de humor onde podes ver, publicar e rir dos momentos mais embaraçosos da vida real.">
+  <meta name="theme-color" content="#06020d">
+  <meta property="og:title" content="SHITAGRAM™ — Os teus micos viram histórias">
+  <meta property="og:description" content="Vê micos, publica o teu, ganha XP e sobe no ranking da vergonha.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shitagram.pt/">
+  <meta property="og:image" content="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
+  <link rel="canonical" href="https://shitagram.pt/">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/GtH7xNR6/Untitled-design-(4).png">
 
+  <style>
+    :root{
+      --bg:#06020d;
+      --panel:#0d0718;
+      --panel2:#130b26;
+      --line:#4a2164;
+      --soft-line:rgba(255,255,255,.10);
+      --pink:#ff3aa8;
+      --pink2:#ff68c4;
+      --purple:#8b35ff;
+      --purple2:#b05cff;
+      --text:#ffffff;
+      --muted:#b8adc8;
+      --muted2:#8f849d;
+      --green:#22c55e;
+    }
 
-        /* Compatibilidade mobile iOS/Android */
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-        button, a, input, textarea {
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        input, textarea, select, button {
-            font-size: 16px; /* evita zoom automático em inputs no iOS */
-        }
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: env(safe-area-inset-left);
-                padding-right: env(safe-area-inset-right);
-            }
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(139,53,255,.23),transparent 30%),
+        radial-gradient(circle at 18% 18%,rgba(255,58,168,.14),transparent 25%),
+        radial-gradient(circle at 80% 35%,rgba(139,53,255,.15),transparent 30%),
+        linear-gradient(180deg,#080314 0%,#05020c 55%,#020105 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      overflow-x:hidden;
+    }
 
-        @media (max-width: 767px) {
-            header { padding-left: 1rem; padding-right: 1rem; }
-            header a { font-size: 1.1rem; }
-            header button { padding: 0.65rem 0.9rem; font-size: 0.75rem; border-radius: 999px; }
-            main { padding-top: 2rem; padding-bottom: 2rem; gap: 3rem; }
-            section { scroll-margin-top: 84px; }
-            h1 { font-size: clamp(2rem, 10vw, 3rem) !important; line-height: 1.08 !important; }
-            h2 { font-size: 1.35rem !important; }
-            h3 { font-size: 1.35rem !important; }
-            p, li, label { line-height: 1.55; }
-            .mobile-card-padding { padding: 1.25rem !important; }
-            #hero-phones { width: 100%; gap: 0; padding-top: 0.75rem; padding-bottom: 0.75rem; }
-            .hero-main-phone { width: min(78vw, 280px) !important; margin-left: auto; margin-right: auto; }
-            .hero-secondary-phone { display: none !important; }
-            .app-mock-phone, .premium-mock-phone { width: min(78vw, 320px) !important; }
-            .mobile-stack-actions { width: 100%; }
-            .modal-mobile-panel { max-height: 90svh; overflow-y: auto; }
-        }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 75%);
+      pointer-events:none;
+    }
 
-        @media (max-width: 420px) {
-            main { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
-            .rounded-3xl { border-radius: 1.25rem; }
-            .hero-main-phone { width: min(84vw, 260px) !important; }
-            .app-mock-phone, .premium-mock-phone { width: min(84vw, 300px) !important; }
-        }
+    a{color:inherit}
+    .wrap{position:relative;max-width:1200px;margin:auto;padding:26px 18px 80px}
 
+    .nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      padding:18px 22px;
+      border:1px solid var(--soft-line);
+      border-radius:18px;
+      background:rgba(9,5,18,.78);
+      backdrop-filter:blur(14px);
+      position:sticky;
+      top:14px;
+      z-index:20;
+      box-shadow:0 18px 55px rgba(0,0,0,.28);
+    }
 
-        @media (max-width: 420px) {
-            #mico-battle-live .aspect-\[9\/19\] {
-                width: min(100%, 300px) !important;
-            }
-            #mico-battle-live .text-\[9px\] {
-                font-size: 8px;
-            }
-        }
-    </style>
+    .logo{font-weight:1000;font-size:28px;letter-spacing:-1.2px}
+    .logo span{color:var(--pink)}
+    .links{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+    .links a{font-size:14px;font-weight:850;text-decoration:none;color:#eee;opacity:.86}
+    .links a:hover{opacity:1;color:var(--pink2)}
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.055);
+      color:#fff;
+      text-decoration:none;
+      border-radius:14px;
+      padding:13px 18px;
+      font-weight:1000;
+      cursor:pointer;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(255,58,168,.5)}
+    .btn.primary{
+      border:0;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      box-shadow:0 0 28px rgba(255,58,168,.28);
+    }
+    .btn.pink{
+      border:0;
+      background:linear-gradient(135deg,#ff2f9a,#ff6bc7);
+      box-shadow:0 0 28px rgba(255,58,168,.28);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.03fr .97fr;
+      gap:36px;
+      align-items:center;
+      margin-top:52px;
+      padding:34px;
+      border:1px solid var(--soft-line);
+      border-radius:28px;
+      background:linear-gradient(135deg,rgba(13,7,24,.76),rgba(11,5,20,.42));
+      box-shadow:0 0 80px rgba(139,53,255,.10);
+    }
+
+    .kicker{
+      display:inline-flex;
+      border:1px solid rgba(255,58,168,.35);
+      background:rgba(255,58,168,.10);
+      color:var(--pink2);
+      border-radius:999px;
+      padding:7px 12px;
+      font-weight:950;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+
+    h1{
+      font-size:60px;
+      line-height:.98;
+      margin:18px 0;
+      letter-spacing:-2.3px;
+    }
+    h1 span,.grad{
+      background:linear-gradient(135deg,var(--pink),#ff74d4,var(--purple2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    h2{font-size:38px;line-height:1.06;margin:0 0 10px;letter-spacing:-1px}
+    h3{font-size:22px;margin:0 0 8px}
+    p{color:var(--muted);line-height:1.6;font-size:17px}
+    .lead{font-size:19px;max-width:600px}
+    .section{margin-top:78px}
+    .section-head{margin-bottom:20px}
+    .section-title{font-size:32px;margin:0;color:#fff}
+    .section-sub{margin:5px 0 0;color:#cabeda}
+
+    .checks{display:grid;gap:10px;margin:22px 0}
+    .checks div{display:flex;gap:10px;align-items:center;color:#eee;font-weight:780}
+    .check{
+      width:22px;height:22px;border-radius:999px;background:var(--pink);
+      display:grid;place-items:center;font-size:13px;box-shadow:0 0 16px rgba(255,58,168,.35);
+    }
+
+    .badges{
+      display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.08);
+      padding-top:20px;margin-top:22px;color:#a99db8;font-size:12px;font-weight:700
+    }
+
+    .mock{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+    .phone{
+      border:6px solid #23202a;
+      background:#080511;
+      border-radius:44px;
+      min-height:560px;
+      padding:18px;
+      box-shadow:0 25px 80px rgba(139,53,255,.25), inset 0 0 0 1px rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+    }
+    .phone:before{
+      content:"";
+      position:absolute;
+      top:0;left:50%;transform:translateX(-50%);
+      width:120px;height:20px;background:#23202a;border-radius:0 0 16px 16px;
+    }
+    .phone.small{min-height:500px;transform:translateX(-38px) scale(.92);opacity:.9}
+    .profile{
+      text-align:center;background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.085);
+      border-radius:24px;padding:18px;margin-top:20px;
+    }
+    .avatar{
+      font-size:44px;width:84px;height:84px;margin:auto;border-radius:50%;
+      background:#191321;display:grid;place-items:center;box-shadow:inset 0 0 18px rgba(0,0,0,.35)
+    }
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;color:#aaa;font-size:11px}
+    .stats b{display:block;color:#fff;font-size:16px}
+    .post,.rank,.mini{
+      background:rgba(255,255,255,.052);
+      border:1px solid rgba(255,255,255,.085);
+      border-radius:16px;
+      padding:13px;
+      margin-top:12px;
+    }
+    .rank{display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .sidecards{display:grid;gap:14px}
+    .sidecards .mini{padding:20px}
+    .sidecards .mini h3{margin:0 0 8px}
+
+    .box{
+      border:1px solid var(--line);
+      border-radius:30px;
+      background:linear-gradient(135deg,rgba(13,7,24,.82),rgba(16,8,31,.60));
+      padding:36px;
+      box-shadow:0 0 55px rgba(139,53,255,.12);
+      overflow:hidden;
+    }
+    .center{text-align:center}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:stretch}
+    .step{
+      min-height:245px;
+      padding:28px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:22px;
+      background:linear-gradient(180deg,rgba(139,53,255,.18),rgba(255,255,255,.03));
+      text-align:center;
+    }
+    .emoji{font-size:54px;margin-bottom:10px}
+    .num{
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      border-radius:8px;padding:4px 9px;font-weight:1000;margin-right:6px
+    }
+
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .metric{
+      text-align:center;padding:26px;border-radius:20px;background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.085);min-height:150px;display:grid;place-items:center;
+    }
+    .metric b{font-size:50px;color:var(--pink2);display:block;line-height:1}
+    .community-cta{
+      margin-top:22px;padding:18px;border-radius:20px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(6,2,13,.65);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap
+    }
+    .faces{display:flex;margin-right:8px}
+    .faces span{width:42px;height:42px;border-radius:999px;background:#1b1129;border:2px solid #0d0718;margin-left:-8px;display:grid;place-items:center}
+    .security{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .security .step{min-height:210px}
+    .chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .chip{padding:10px 16px;background:rgba(255,255,255,.06);border-radius:12px;border:1px solid rgba(255,255,255,.06);font-weight:800}
+
+    .after{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:28px;text-align:left}
+    .after-card{padding:18px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+    .after-card b{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:999px;background:rgba(139,53,255,.13);border:1px solid rgba(139,53,255,.35);color:var(--pink2);margin-bottom:10px}
+    .share{max-width:760px;margin:28px auto 0;text-align:center}
+    .sharebar{display:flex;gap:10px;background:#10091b;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:10px}
+    .sharebar input{flex:1;background:transparent;border:0;color:#fff;font-size:19px;outline:0;min-width:0}
+    .socials{font-size:34px;letter-spacing:8px}
+
+    .appgrid,.premiumgrid{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:center}
+    .feature-list{display:grid;gap:26px}
+    .fitem{display:flex;gap:16px;align-items:flex-start}
+    .icon{
+      flex:0 0 54px;width:54px;height:54px;border:1px solid var(--line);border-radius:50%;
+      display:grid;place-items:center;font-size:25px;color:var(--pink);box-shadow:0 0 18px rgba(255,58,168,.18)
+    }
+    .feed-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:18px 0 12px;color:#aaa;font-size:12px}
+    .feed-tabs span{padding-bottom:8px;text-align:center;border-bottom:2px solid transparent}
+    .feed-tabs span:first-child{color:#fff;border-color:var(--pink)}
+    .media{
+      height:165px;border-radius:16px;margin:12px 0;display:grid;place-items:center;font-size:70px;
+      background:linear-gradient(135deg,#2b123b,#0d0718);border:1px solid rgba(255,255,255,.08)
+    }
+    .price{text-align:center;margin-top:34px}
+    .price b{font-size:52px;color:var(--pink2)}
+
+    footer{
+      margin-top:70px;border-top:1px solid rgba(255,255,255,.08);padding-top:20px;
+      display:flex;gap:14px;flex-wrap:wrap;color:#8f8499
+    }
+    footer a{color:#cfc4d9;text-decoration:none;font-weight:800}
+
+    @media(max-width:980px){
+      .hero,.appgrid,.premiumgrid{grid-template-columns:1fr}
+      .mock{grid-template-columns:1fr}
+      .phone.small{transform:none}
+      .steps,.metrics,.security,.after{grid-template-columns:1fr}
+      h1{font-size:42px}
+      .links{display:none}
+      .box,.hero{padding:22px}
+    }
+  </style>
 </head>
-<body class="relative min-h-screen">
-
-    <!-- Orbes de luz decorativos em background -->
-    <div class="absolute top-20 left-1/4 w-[400px] h-[400px] bg-brand-pink/10 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute top-80 right-1/4 w-[500px] h-[500px] bg-brand-purple/15 rounded-full blur-[150px] pointer-events-none"></div>
-    <div class="absolute bottom-40 left-10 w-[300px] h-[300px] bg-brand-fuchsia/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <!-- NOTIFICAÇÃO TOAST CUSTOMIZADA -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-out bg-brand-card border border-white/10 px-5 py-4 rounded-xl flex items-center gap-3 shadow-2xl max-w-sm pointer-events-none">
-        <div id="toast-icon" class="w-10 h-10 rounded-full flex items-center justify-center bg-brand-pink/20 text-brand-pink text-lg">
-            <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <div>
-            <h4 id="toast-title" class="font-bold text-white text-sm">Sucesso!</h4>
-            <p id="toast-desc" class="text-zinc-400 text-xs mt-0.5">Operação realizada com sucesso.</p>
-        </div>
-    </div>
-
-    <!-- HEADER / NAV -->
-    <header class="sticky top-0 z-40 w-full bg-brand-dark/80 backdrop-blur-md border-b border-white/5 px-4 lg:px-12 py-4">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Logo -->
-            <a href="#" class="flex items-center gap-2 font-display font-extrabold text-2xl tracking-wider text-white">
-                SHIT<span class="text-brand-pink">AGRAM</span><span class="text-[10px] align-super text-zinc-500 font-bold ml-0.5">TM</span>
-            </a>
-
-            <!-- Menu de Navegação -->
-            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-300">
-                <a href="#como-funciona-detalhado" class="hover:text-brand-pink transition-colors">Como funciona</a>
-                <a href="#prova-social" class="hover:text-brand-pink transition-colors">Comunidade</a>
-                <a href="#confianca-seguranca" class="hover:text-brand-pink transition-colors">Segurança</a>
-                <a href="#feed-app" class="hover:text-brand-pink transition-colors">Feed / App</a>
-                <a href="#mico-battle-live" class="hover:text-brand-pink transition-colors">Battle Live</a>
-                <a href="arena.html" class="hover:text-brand-pink transition-colors">Arena</a>
-                <a href="#premium-experimental" class="hover:text-brand-pink transition-colors">Premium</a>
-                <a href="#como-funciona" class="hover:text-brand-pink transition-colors">Laboratório</a>
-                <a href="#loja" class="hover:text-brand-pink transition-colors">Loja</a>
-            </nav>
-
-            <!-- CTA Entrada -->
-            <div>
-                <button onclick="openBetaModal()" class="px-5 py-2.5 rounded-full font-display font-bold text-sm bg-gradient-to-r from-brand-purple to-brand-pink text-white hover:scale-105 transition-transform shadow-lg neon-glow-purple">
-                    Entrar na beta
-                </button>
-            </div>
-        </div>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a href="index.html" class="logo" style="text-decoration:none">SHIT<span>AGRAM™</span></a>
+      <nav class="links">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#comunidade">Comunidade</a>
+        <a href="#seguranca">Segurança</a>
+        <a href="#app">App</a>
+        <a href="#premium">Premium</a>
+      </nav>
+      <a class="btn primary" href="beta.html">Entrar na beta</a>
     </header>
 
-    <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 lg:px-12 py-8 lg:py-16 space-y-24">
+    <main>
+      <section class="hero" id="hero">
+        <div>
+          <span class="kicker">Beta fechada em Portugal</span>
+          <h1>OS TEUS MICOS <span>VIRAM HISTÓRIAS, REAÇÕES E RANKING.</span></h1>
+          <p class="lead">A rede social de humor onde podes ver, publicar e rir dos momentos mais embaraçosos da vida real.</p>
 
-        <!-- ================= HERO / LANDING SECTION ================= -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <!-- Esquerda: Copywriting principal -->
-            <div class="lg:col-span-5 space-y-8">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-semibold tracking-wide uppercase">
-                    <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span>
-                    Beta Fechada em Portugal
-                </div>
-                
-                <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-[46px] leading-[1.1] text-white">
-                    OS TEUS MICOS<br>
-                    <span class="bg-gradient-text">VIRAM HISTÓRIAS, REAÇÕES E RANKING.</span>
-                </h1>
-                
-                <p class="text-zinc-400 text-base sm:text-lg leading-relaxed max-w-md">
-                    A rede social de humor onde podes ver, publicar e rir dos melhores momentos embaraçosos da vida real.
-                </p>
+          <div class="checks">
+            <div><span class="check">✓</span>Publica os teus micos</div>
+            <div><span class="check">✓</span>Reage e comenta</div>
+            <div><span class="check">✓</span>Ganha XP e ShitCoins</div>
+            <div><span class="check">✓</span>Sobe no ranking da vergonha</div>
+          </div>
 
-                <!-- Lista de benefícios -->
-                <ul class="space-y-3 text-zinc-300">
-                    <li class="flex items-center gap-3">
-                        <span class="w-5 h-5 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <span class="font-medium">Publica os teus micos</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-5 h-5 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <span class="font-medium">Reage e comenta</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-5 h-5 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <span class="font-medium">Ganha XP e ShitCoins</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-5 h-5 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <span class="font-medium">Sobe no ranking da vergonha</span>
-                    </li>
-                </ul>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px">
+            <a class="btn pink" href="beta.html">Quero entrar na beta gratuita</a>
+            <a class="btn" href="#como-funciona">Ver como funciona</a>
+          </div>
 
-                <!-- CTAs -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                    <button onclick="openBetaModal()" class="px-6 py-4 rounded-xl font-display font-bold text-sm bg-gradient-to-r from-brand-pink to-brand-fuchsia text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg">
-                        Quero entrar na beta gratuita
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                    <a href="#como-funciona-detalhado" class="px-6 py-4 rounded-xl font-display font-bold text-sm bg-white/5 hover:bg-white/10 text-white border border-white/15 transition-all flex items-center justify-center">
-                        Ver como funciona
-                    </a>
-                </div>
+          <div class="badges">
+            <span>🔒 Beta fechada</span>
+            <span>💜 Gratuito nesta fase</span>
+            <span>🏅 Badge Fundador</span>
+            <span>🪙 ShitCoins de boas-vindas</span>
+          </div>
+        </div>
 
-                <!-- Rodapé de badges / info -->
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-3 pt-6 border-t border-white/5 text-zinc-500 text-xs">
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock text-brand-pink text-[10px]"></i>
-                        <span>Beta fechada</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-wallet text-brand-purple text-[10px]"></i>
-                        <span>Gratuito nesta fase</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-award text-yellow-500 text-[10px]"></i>
-                        <span>Badges Fundador</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-coins text-amber-500 text-[10px]"></i>
-                        <span>ShitCoins de boas-vindas</span>
-                    </div>
-                </div>
+        <div class="mock">
+          <div class="phone">
+            <div class="profile">
+              <div class="avatar">💩</div>
+              <h3>MicoMaster 👑</h3>
+              <span class="grad" style="font-weight:1000">Membro Fundador</span>
+              <div class="stats">
+                <div><b>127</b>Micos</div>
+                <div><b>3.2k</b>Seguidores</div>
+                <div><b>812</b>A seguir</div>
+              </div>
+            </div>
+            <div class="post">
+              <b>🔥 Micos em destaque</b><br><br>
+              Fui acenar a alguém na rua e afinal era para a pessoa atrás de mim... 💩<br><br>
+              ♡ 314 · 💬 45 · <span class="grad" style="font-weight:1000">+250 XP</span>
+            </div>
+            <div class="post">Enviei mensagem à pessoa errada 😭<br>♡ 212 · 💬 67</div>
+          </div>
+
+          <div class="phone small">
+            <h3 class="center">Ranking da Vergonha</h3>
+            <div class="rank"><span>🥇 MicoMaster</span><b>9.2k XP</b></div>
+            <div class="rank"><span>🥈 VexamePro</span><b>8.4k XP</b></div>
+            <div class="rank"><span>🥉 Rei dos Micos</span><b>7.3k XP</b></div>
+            <div class="rank"><span>🤡 Ooo Tio!</span><b>6.4k XP</b></div>
+            <div style="margin-top:18px"><a class="btn primary" href="app.html">Ver ranking completo</a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="como-funciona">
+        <div class="section-head">
+          <h2 class="section-title">COMO FUNCIONA</h2>
+          <p class="section-sub">Vê, publica, reage e sobe no ranking.</p>
+        </div>
+        <div class="box center">
+          <h2>COMO FUNCIONA</h2>
+          <p>É rápido, simples e viciante.</p>
+          <div class="steps">
+            <div class="step">
+              <div class="emoji">👀</div>
+              <h3><span class="num">1</span>Vê os micos</h3>
+              <p>Explora os melhores micos da comunidade e reage aos teus favoritos.</p>
+            </div>
+            <div class="step">
+              <div class="emoji">✏️</div>
+              <h3><span class="num">2</span>Publica o teu</h3>
+              <p>Conta o teu mico de forma anónima ou com nome e recebe reações da comunidade.</p>
+            </div>
+            <div class="step">
+              <div class="emoji">🏆</div>
+              <h3><span class="num">3</span>Ganha e sobe</h3>
+              <p>Ganha XP e ShitCoins, sobe no ranking e torna-te uma lenda da vergonha.</p>
+            </div>
+          </div>
+          <div style="margin-top:28px">
+            <a class="btn pink" href="beta.html">Quero entrar na beta gratuita</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="comunidade">
+        <div class="section-head">
+          <h2 class="section-title">COMUNIDADE</h2>
+          <p class="section-sub">A comunidade está a crescer.</p>
+        </div>
+        <div class="box center">
+          <h2>A COMUNIDADE JÁ ESTÁ A CRESCER</h2>
+          <p>Junta-te aos primeiros fundadores do SHITAGRAM™.</p>
+          <div class="metrics">
+            <div class="metric"><div><b>327</b><span>Pessoas já pediram acesso à beta</span></div></div>
+            <div class="metric"><div><b>48</b><span>Micos publicados em teste</span></div></div>
+            <div class="metric"><div><b>12</b><span>Cidades no Mood Map</span></div></div>
+            <div class="metric"><div><b>89%</b><span>Dos testers recomendam aos amigos</span></div></div>
+          </div>
+          <div class="community-cta">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="faces"><span>👩</span><span>👨</span><span>👩‍💻</span><span>🧑</span></div>
+              <b>Junta-te aos primeiros fundadores.</b>
+            </div>
+            <a class="btn pink" href="beta.html">Quero entrar na beta gratuita</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="seguranca">
+        <div class="section-head">
+          <h2 class="section-title">SEGURANÇA</h2>
+          <p class="section-sub">Humor com regras, segurança e respeito.</p>
+        </div>
+        <div class="box center">
+          <h2>HUMOR SIM. BULLYING NÃO.</h2>
+          <p>Regras claras, denúncias fáceis e moderação ativa para manter a comunidade divertida e segura.</p>
+          <div class="security">
+            <div class="step"><div class="emoji">✅</div><h3>Regras claras</h3><p>Podes rir à vontade, mas não expor, humilhar ou perseguir outros.</p></div>
+            <div class="step"><div class="emoji">🔔</div><h3>Denúncias fáceis</h3><p>Qualquer conteúdo inadequado pode ser denunciado.</p></div>
+            <div class="step"><div class="emoji">🛡️</div><h3>Moderação ativa</h3><p>A equipa analisa denúncias e mantém o ambiente seguro.</p></div>
+            <div class="step"><div class="emoji">🕵️</div><h3>Anónimo opcional</h3><p>Podes publicar com nome ou de forma anónima. Tu escolhes.</p></div>
+          </div>
+          <h3 class="grad" style="margin-top:24px">Zero tolerância para:</h3>
+          <div class="chips">
+            <span class="chip">Bullying</span>
+            <span class="chip">Ódio</span>
+            <span class="chip">Discriminação</span>
+            <span class="chip">Spam</span>
+            <span class="chip">Conteúdo ilegal</span>
+          </div>
+          <div style="margin-top:24px"><a class="btn" href="legal.html">Ver todas as regras</a></div>
+        </div>
+      </section>
+
+      <section class="section" id="pedido">
+        <div class="section-head">
+          <h2 class="section-title">PEDIDO RECEBIDO</h2>
+          <p class="section-sub">O teu pedido foi recebido com sucesso.</p>
+        </div>
+        <div class="box center">
+          <h2>✅ Recebemos o teu pedido!</h2>
+          <p>Agora convida amigos, partilha o link e sobe na lista de espera.</p>
+          <div class="after">
+            <div class="after-card"><b>01</b><h3>Vamos analisar o teu pedido.</h3><p>Receberás um email assim que fores aceite na beta.</p></div>
+            <div class="after-card"><b>02</b><h3>Convida amigos</h3><p>Convida amigos e sobe na lista de espera para teres prioridade.</p></div>
+            <div class="after-card"><b>03</b><h3>Prepara-te</h3><p>Os primeiros fundadores recebem Badge, ShitCoins e convites exclusivos.</p></div>
+          </div>
+
+          <div class="share">
+            <h3>Partilha o SHITAGRAM™ e ganha prioridade <span class="grad">na entrada.</span></h3>
+            <div class="sharebar">
+              <input id="shareLink" value="https://shitagram.pt/beta.html" readonly>
+              <button class="btn primary" onclick="navigator.clipboard.writeText(document.getElementById('shareLink').value);this.textContent='Copiado ✓'">Copiar link</button>
+            </div>
+            <p class="socials">🟢 📸 🎵 𝕏 🔗</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="app">
+        <div class="section-head">
+          <h2 class="section-title">APP</h2>
+          <p class="section-sub">Uma experiência simples, rápida e viciante.</p>
+        </div>
+        <div class="box appgrid">
+          <div class="phone">
+            <h3>SHIT<span class="grad">AGRAM™</span> <span style="float:right">🪙 2.350</span></h3>
+            <div class="feed-tabs"><span>Para ti</span><span>Seguindo</span><span>Novos</span><span>Top</span></div>
+            <div class="post">
+              <b>MicoMaster</b><br>
+              <small style="color:var(--muted2)">📍 Lisboa</small>
+              <p>Fui acenar a alguém e não era para mim...</p>
+              <div class="media">🙈</div>
+              ❤️ 234 · 💬 45 · 🔁 12 · <span class="grad" style="font-weight:1000">+250 XP</span>
+            </div>
+            <div class="post"><b>VeraDesastrada</b><br>Vergonha nível nacional...</div>
+          </div>
+
+          <div class="feature-list">
+            <div class="fitem"><div class="icon">☾</div><div><h2>Design escuro</h2><p>Uma app escura, simples e feita para rir sem complicações.</p></div></div>
+            <div class="fitem"><div class="icon">✎</div><div><h2>Publicação rápida</h2><p>Publica o teu mico em poucos segundos, com nome ou em modo anónimo.</p></div></div>
+            <div class="fitem"><div class="icon">♡</div><div><h2>Reações e comentários</h2><p>Interação leve para rir, comentar e descobrir novos micos.</p></div></div>
+            <div class="fitem"><div class="icon">☆</div><div><h2>XP, ShitCoins e ranking</h2><p>Progressão visível para tornar a experiência mais divertida.</p></div></div>
+            <div class="fitem"><div class="icon">☄</div><div><h2>Navegação simples</h2><p>Feed, publicar, ranking e perfil sempre à mão.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="premium">
+        <div class="section-head">
+          <h2 class="section-title">PREMIUM EXPERIMENTAL</h2>
+          <p class="section-sub">Funcionalidades extra em fase experimental.</p>
+        </div>
+        <div class="box">
+          <h2 class="center grad" style="font-size:52px">PREMIUM EXPERIMENTAL</h2>
+          <p class="center">Mais opções. Mais personalização. Ainda mais micos.</p>
+          <div class="premiumgrid">
+            <div class="feature-list">
+              <div class="fitem"><div class="icon">☆</div><div><h2>Perfil premium</h2><p>Destaque-te com badges e troféus exclusivos.</p></div></div>
+              <div class="fitem"><div class="icon">🪙</div><div><h2>Mais ShitCoins</h2><p>Recebe mais ShitCoins e apoia o projeto.</p></div></div>
+              <div class="fitem"><div class="icon">💎</div><div><h2>Recursos exclusivos</h2><p>Acesso antecipado a novas funcionalidades e testes.</p></div></div>
+              <div class="fitem"><div class="icon">🛡️</div><div><h2>Emblema VIP</h2><p>Mostra o teu estatuto premium no perfil.</p></div></div>
             </div>
 
-            <!-- Centro: Maquetas de telemóvel (Duas) -->
-            <div id="hero-phones" class="lg:col-span-4 flex justify-center items-center gap-4 relative py-10 lg:py-0">
-                <div class="absolute inset-0 bg-brand-purple/20 rounded-full blur-[80px] pointer-events-none scale-75"></div>
-
-                <!-- TELEMÓVEL 1: Perfil e Feed (Frente) -->
-                <div class="hero-main-phone w-[260px] xs:w-[280px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-28 bg-zinc-800 rounded-b-xl z-20 flex items-center justify-center">
-                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2"></span>
-                        <span class="w-8 h-1 bg-zinc-700 rounded-full"></span>
-                    </div>
-
-                    <div class="flex justify-between items-center px-3 pt-1 text-[10px] text-zinc-500 font-bold z-10">
-                        <span>12:45</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fa-solid fa-signal"></i>
-                            <i class="fa-solid fa-wifi"></i>
-                            <i class="fa-solid fa-battery-three-quarters text-xs"></i>
-                        </div>
-                    </div>
-
-                    <!-- Conteúdo Interno da App -->
-                    <div class="flex-1 flex flex-col pt-4 overflow-y-auto no-scrollbar justify-start text-left">
-                        <div class="bg-white/5 border border-white/5 rounded-2xl p-3 text-center mt-2 relative">
-                            <!-- Avatar equipado de moldura -->
-                            <div class="relative w-16 h-16 mx-auto mb-2">
-                                <div id="phone-avatar-frame" class="absolute -inset-1 rounded-full bg-transparent transition-all duration-300"></div>
-                                <div class="w-full h-full rounded-full bg-zinc-800 flex items-center justify-center text-3xl shadow-inner relative z-10">
-                                    💩
-                                </div>
-                            </div>
-                            <h3 class="font-bold text-white text-sm flex items-center justify-center gap-1">
-                                <span class="phone-username-label">MicoMaster</span>
-                                <span class="text-xs text-yellow-500" title="Fundador" id="hero-phone-crown"><i class="fa-solid fa-crown"></i></span>
-                            </h3>
-                            <span id="phone-user-title" class="text-[9px] text-brand-pink font-semibold uppercase tracking-wider block mt-0.5">Membro Fundador</span>
-                            
-                            <!-- Stats -->
-                            <div class="grid grid-cols-3 gap-1 mt-3 border-t border-white/5 pt-2 text-[10px] text-zinc-400">
-                                <div>
-                                    <span class="block text-white font-bold" id="phone-mico-count">127</span>
-                                    <span>Micos</span>
-                                </div>
-                                <div>
-                                    <span class="block text-white font-bold">3.2k</span>
-                                    <span>Seguidores</span>
-                                </div>
-                                <div>
-                                    <span class="block text-white font-bold" id="phone-user-coins">1,000</span>
-                                    <span>ShitCoins</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-2 text-[9px] bg-brand-purple/20 text-brand-fuchsia px-2 py-0.5 rounded-full inline-block font-bold">
-                                Nível <span id="phone-user-level">12</span> — <span id="phone-user-xp">2,230</span> XP
-                            </div>
-                        </div>
-
-                        <!-- Secção Micos em Destaque -->
-                        <div class="mt-4 space-y-2.5">
-                            <div class="flex items-center justify-between text-xs text-zinc-400 font-bold px-1">
-                                <span><i class="fa-solid fa-fire text-brand-pink mr-1"></i> Micos em destaque</span>
-                                <span class="text-[10px] text-zinc-600">Ver todos</span>
-                            </div>
-
-                            <div id="phone-feed-container" class="space-y-2 max-h-[180px] overflow-y-auto pr-0.5 text-xs">
-                                <!-- Injetado via JS -->
-                            </div>
-                        </div>
-                    </div>
+            <div class="phone">
+              <div class="profile">
+                <div class="avatar" style="box-shadow:0 0 32px var(--pink)">💩</div>
+                <h3>MicoMaster</h3>
+                <span class="btn primary" style="padding:6px 12px">Premium</span>
+                <div class="stats">
+                  <div><b>176</b>Micos</div>
+                  <div><b>5.8k</b>Seguidores</div>
+                  <div><b>960</b>A seguir</div>
                 </div>
-
-                <!-- TELEMÓVEL 2: Leaderboard (Trás) -->
-                <div class="hero-secondary-phone w-[240px] aspect-[9/19] rounded-[36px] border-4 border-zinc-800 bg-brand-dark p-3 shadow-xl relative -ml-12 lg:-ml-10 z-0 scale-95 opacity-80 hover:opacity-100 hover:scale-100 hover:z-20 transition-all duration-300 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-24 bg-zinc-800 rounded-b-xl z-20"></div>
-
-                    <div class="flex justify-between items-center px-3 pt-1 text-[10px] text-zinc-600 font-bold">
-                        <span>12:45</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fa-solid fa-signal"></i>
-                            <i class="fa-solid fa-battery-three-quarters text-xs"></i>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 flex flex-col pt-5 text-left">
-                        <div class="text-xs font-extrabold text-white text-center tracking-wide uppercase mt-1">
-                            Ranking da Vergonha
-                        </div>
-                        
-                        <div class="grid grid-cols-3 gap-0.5 bg-white/5 rounded-lg p-0.5 mt-2.5 text-[9px] font-bold text-center text-zinc-400">
-                            <span class="bg-brand-pink text-white rounded-md py-0.5">Semanal</span>
-                            <span>Mensal</span>
-                            <span>Geral</span>
-                        </div>
-
-                        <!-- Lista de Ranking no Telemóvel -->
-                        <div class="mt-3 space-y-1.5 flex-1 overflow-y-auto">
-                            <div class="flex items-center justify-between bg-white/5 p-1.5 rounded-lg border border-brand-pink/20">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-yellow-500 font-bold text-xs w-4 text-center">1</span>
-                                    <span class="text-sm">💩</span>
-                                    <span class="text-[10px] text-white font-semibold truncate max-w-[80px]">MicoMaster</span>
-                                </div>
-                                <span class="text-[10px] text-brand-pink font-bold">9.2k XP</span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/5 p-1.5 rounded-lg border border-white/5">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-zinc-400 font-bold text-xs w-4 text-center">2</span>
-                                    <span class="text-sm">🫣</span>
-                                    <span class="text-[10px] text-white truncate max-w-[80px]">VexamePro</span>
-                                </div>
-                                <span class="text-[10px] text-zinc-400">8.4k XP</span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/5 p-1.5 rounded-lg border border-white/5">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-amber-600 font-bold text-xs w-4 text-center">3</span>
-                                    <span class="text-sm">👑</span>
-                                    <span class="text-[10px] text-white truncate max-w-[80px]">ReiMicos</span>
-                                </div>
-                                <span class="text-[10px] text-zinc-400">7.3k XP</span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/5 p-1.5 rounded-lg border border-white/5">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-zinc-500 font-bold text-xs w-4 text-center">4</span>
-                                    <span class="text-sm">🤡</span>
-                                    <span class="text-[10px] text-white truncate max-w-[80px]">Ooo Tio!</span>
-                                </div>
-                                <span class="text-[10px] text-zinc-400">6.4k XP</span>
-                            </div>
-                            <div class="flex items-center justify-between bg-white/5 p-1.5 rounded-lg border border-white/5">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-zinc-500 font-bold text-xs w-4 text-center">5</span>
-                                    <span class="text-sm">🐭</span>
-                                    <span class="text-[10px] text-white truncate max-w-[80px]">MicoMedroso</span>
-                                </div>
-                                <span class="text-[10px] text-zinc-400">5.7k XP</span>
-                            </div>
-                        </div>
-
-                        <a href="#ranking" class="mt-2 block bg-brand-purple hover:bg-brand-purple/90 text-white text-[9px] font-bold text-center py-1.5 rounded-lg uppercase tracking-wider transition-colors">
-                            Ver ranking completo
-                        </a>
-                    </div>
-                </div>
+                <div class="post">🏅 Premium desde Maio 2025</div>
+              </div>
             </div>
-
-            <!-- Direita: Cards de Valorização -->
-            <div class="lg:col-span-3 space-y-4">
-                <div class="bg-brand-card/60 backdrop-blur-md border border-white/10 p-5 rounded-2xl hover:border-brand-pink/40 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-heart-crack"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-white text-base">Humor sim. Bullying não.</h3>
-                    <p class="text-zinc-400 text-xs mt-2 leading-relaxed">
-                        Regras claras, denúncias e moderação ativa para manter a comunidade segura e divertida.
-                    </p>
-                </div>
-
-                <div class="bg-brand-card/60 backdrop-blur-md border border-white/10 p-5 rounded-2xl hover:border-brand-purple/40 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-user-secret"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-white text-base">Anónimo (opcional)</h3>
-                    <p class="text-zinc-400 text-xs mt-2 leading-relaxed">
-                        Podes publicar com nome ou de forma anónima. A escolha é tua.
-                    </p>
-                </div>
-
-                <div class="bg-brand-card/60 backdrop-blur-md border border-white/10 p-5 rounded-2xl hover:border-yellow-500/40 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-crown"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-white text-base">Primeiros fundadores</h3>
-                    <p class="text-zinc-400 text-xs mt-2 leading-relaxed">
-                        Os primeiros membros recebem Badge Fundador, 1000 ShitCoins e 5 convites para amigos.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= SECCÃO COMO FUNCIONA (INCORPORADA DA SEGUNDA IMAGEM) ================= -->
-        <section id="como-funciona-detalhado" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">COMO FUNCIONA</h2>
-                <p class="text-zinc-400 text-sm">Vê, publica, reage e sobe no ranking.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="max-w-3xl mx-auto text-center space-y-2 mb-10">
-                    <h3 class="font-display font-extrabold text-2xl lg:text-3xl text-white tracking-wide uppercase">COMO FUNCIONA</h3>
-                    <p class="text-zinc-300 text-sm font-medium">É rápido, simples e viciante.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-11 gap-6 items-center">
-                    <!-- Passo 1 -->
-                    <div class="lg:col-span-3 bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[260px] hover:border-brand-pink/30 transition-all duration-300">
-                        <div class="text-4xl py-2 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">👀</div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-5 h-5 rounded bg-brand-pink text-white flex items-center justify-center font-bold text-xs">1</span>
-                            <h4 class="font-bold text-white text-sm">Vê os micos</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Explora os melhores micos da comunidade e reage aos teus favoritos.
-                        </p>
-                    </div>
-
-                    <div class="hidden lg:flex lg:col-span-1 justify-center items-center">
-                        <i class="fa-solid fa-chevron-right text-brand-purple/40 text-lg animate-pulse"></i>
-                    </div>
-
-                    <!-- Passo 2 -->
-                    <div class="lg:col-span-3 bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[260px] hover:border-brand-purple/30 transition-all duration-300">
-                        <div class="text-4xl py-2 text-brand-pink drop-shadow-[0_0_15px_rgba(255,46,147,0.2)]">✏️</div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-5 h-5 rounded bg-brand-purple text-white flex items-center justify-center font-bold text-xs">2</span>
-                            <h4 class="font-bold text-white text-sm">Publica o teu</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Conta o teu mico de forma anónima ou com nome e recebe reações da comunidade.
-                        </p>
-                    </div>
-
-                    <div class="hidden lg:flex lg:col-span-1 justify-center items-center">
-                        <i class="fa-solid fa-chevron-right text-brand-pink/40 text-lg animate-pulse"></i>
-                    </div>
-
-                    <!-- Passo 3 -->
-                    <div class="lg:col-span-3 bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[260px] hover:border-brand-fuchsia/30 transition-all duration-300">
-                        <div class="text-4xl py-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]">🏆</div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-5 h-5 rounded bg-brand-fuchsia text-white flex items-center justify-center font-bold text-xs">3</span>
-                            <h4 class="font-bold text-white text-sm">Ganha e sobe</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Ganha XP e ShitCoins, sobe no ranking e torna-te uma lenda da vergonha.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="flex justify-center pt-10">
-                    <button onclick="openBetaModal()" class="px-8 py-3.5 rounded-2xl font-display font-bold text-sm bg-brand-pink hover:bg-brand-pink/90 text-white transition-all duration-300 shadow-lg hover:shadow-brand-pink/20 hover:scale-[1.02] neon-glow-pink">
-                        Quero entrar na beta gratuita
-                    </button>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= SECÇÃO COMUNIDADE (INCORPORADA DA TERCEIRA IMAGEM) ================= -->
-        <section id="prova-social" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">COMUNIDADE</h2>
-                <p class="text-zinc-400 text-sm">A comunidade está a crescer.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="max-w-3xl mx-auto text-center space-y-2 mb-10">
-                    <h3 class="font-display font-extrabold text-2xl lg:text-3xl text-white tracking-wide uppercase">A COMUNIDADE JÁ ESTÁ A CRESCER</h3>
-                    <p class="text-zinc-300 text-sm font-medium">E tu podes fazer parte desde o início.</p>
-                </div>
-
-                <!-- Grid de 4 Estatísticas -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center justify-center min-h-[160px] hover:border-brand-pink/20 transition-all">
-                        <span id="social-stat-waitlist" class="text-4xl lg:text-5xl font-black text-brand-pink tracking-tight drop-shadow-[0_0_15px_rgba(255,46,147,0.15)]">327</span>
-                        <span class="text-zinc-300 text-xs mt-3 leading-snug">Pessoas já pediram acesso à beta</span>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center justify-center min-h-[160px] hover:border-brand-purple/20 transition-all">
-                        <span id="social-stat-micos" class="text-4xl lg:text-5xl font-black text-brand-pink tracking-tight drop-shadow-[0_0_15px_rgba(255,46,147,0.15)]">48</span>
-                        <span class="text-zinc-300 text-xs mt-3 leading-snug">Micos publicados em teste</span>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center justify-center min-h-[160px] hover:border-brand-fuchsia/20 transition-all">
-                        <span class="text-4xl lg:text-5xl font-black text-brand-pink tracking-tight drop-shadow-[0_0_15px_rgba(255,46,147,0.15)]">12</span>
-                        <span class="text-zinc-300 text-xs mt-3 leading-snug">Cidades no Mood Map</span>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center justify-center min-h-[160px] hover:border-brand-pink/20 transition-all">
-                        <span class="text-4xl lg:text-5xl font-black text-brand-pink tracking-tight drop-shadow-[0_0_15px_rgba(255,46,147,0.15)]">89%</span>
-                        <span class="text-zinc-300 text-xs mt-3 leading-snug">Dos testers recomendam aos amigos</span>
-                    </div>
-                </div>
-
-                <div class="bg-brand-dark/60 border border-white/10 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="flex -space-x-3 overflow-hidden">
-                            <span class="inline-block h-10 w-10 rounded-full ring-2 ring-brand-card bg-zinc-800 flex items-center justify-center text-xl">👩‍💻</span>
-                            <span class="inline-block h-10 w-10 rounded-full ring-2 ring-brand-card bg-zinc-700 flex items-center justify-center text-xl">👨‍🎨</span>
-                            <span class="inline-block h-10 w-10 rounded-full ring-2 ring-brand-card bg-zinc-800 flex items-center justify-center text-xl">👩‍💼</span>
-                            <span class="inline-block h-10 w-10 rounded-full ring-2 ring-brand-card bg-zinc-700 flex items-center justify-center text-xl">👨‍🚀</span>
-                        </div>
-                        <p class="text-zinc-300 text-xs font-medium">Junta-te a centenas de futuros fundadores.</p>
-                    </div>
-
-                    <button onclick="openBetaModal()" class="w-full md:w-auto px-6 py-3 rounded-xl font-display font-bold text-xs bg-brand-pink hover:bg-brand-pink/90 text-white transition-all duration-300 shadow-md">
-                        Quero entrar na beta gratuita
-                    </button>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= SECÇÃO SEGURANÇA (INCORPORADA DA QUARTA IMAGEM) ================= -->
-        <section id="confianca-seguranca" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">SEGURANÇA</h2>
-                <p class="text-zinc-400 text-sm">Humor com regras, segurança e respeito.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="max-w-3xl mx-auto text-center space-y-2.5 mb-10">
-                    <h3 class="font-display font-extrabold text-2xl lg:text-3xl text-white tracking-wide uppercase">HUMOR SIM. BULLYING NÃO.</h3>
-                    <p class="text-zinc-300 text-xs lg:text-sm max-w-xl mx-auto leading-relaxed">
-                        O SHITAGRAM™ tem regras claras para garantir diversão sem humilhar ou expor ninguém.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[220px] hover:border-brand-purple/30 transition-all duration-300">
-                        <div class="w-12 h-12 rounded-xl bg-brand-purple/10 border border-brand-purple/20 text-brand-purple flex items-center justify-center text-xl drop-shadow-[0_0_10px_rgba(124,58,237,0.15)]">
-                            <i class="fa-solid fa-clipboard-check"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Regras claras</h4>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Podes rir à vontade, mas não expor, humilhar ou perseguir outros.
-                        </p>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[220px] hover:border-brand-purple/30 transition-all duration-300">
-                        <div class="w-12 h-12 rounded-xl bg-brand-purple/10 border border-brand-purple/20 text-brand-purple flex items-center justify-center text-xl drop-shadow-[0_0_10px_rgba(124,58,237,0.15)]">
-                            <i class="fa-solid fa-bell"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Denúncias fáceis</h4>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Qualquer conteúdo inadequado pode ser denunciado facilmente na plataforma.
-                        </p>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[220px] hover:border-brand-purple/30 transition-all duration-300">
-                        <div class="w-12 h-12 rounded-xl bg-brand-purple/10 border border-brand-purple/20 text-brand-purple flex items-center justify-center text-xl drop-shadow-[0_0_10px_rgba(124,58,237,0.15)]">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Moderação ativa</h4>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            A nossa equipa analisa denúncias e mantém o ambiente seguro.
-                        </p>
-                    </div>
-
-                    <div class="bg-brand-dark/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4 min-h-[220px] hover:border-brand-purple/30 transition-all duration-300">
-                        <div class="w-12 h-12 rounded-xl bg-brand-purple/10 border border-brand-purple/20 text-brand-purple flex items-center justify-center text-xl drop-shadow-[0_0_10px_rgba(124,58,237,0.15)]">
-                            <i class="fa-solid fa-user-secret"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Anónimo (opcional)</h4>
-                        <p class="text-zinc-400 text-xs leading-relaxed">
-                            Podes publicar com nome ou de forma anónima. Tu escolhes o que te deixa confortável.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-brand-dark/60 border border-white/10 rounded-2xl p-6 mb-8 text-center space-y-4">
-                    <span class="block text-brand-pink text-xs font-bold uppercase tracking-wider">Zero tolerância para:</span>
-                    <div class="flex flex-wrap justify-center gap-2 lg:gap-3">
-                        <span class="bg-white/5 border border-white/5 text-zinc-300 text-xs px-4 py-2 rounded-xl font-medium">Bullying</span>
-                        <span class="bg-white/5 border border-white/5 text-zinc-300 text-xs px-4 py-2 rounded-xl font-medium">Ódio</span>
-                        <span class="bg-white/5 border border-white/5 text-zinc-300 text-xs px-4 py-2 rounded-xl font-medium">Discriminação</span>
-                        <span class="bg-white/5 border border-white/5 text-zinc-300 text-xs px-4 py-2 rounded-xl font-medium">Spam</span>
-                        <span class="bg-white/5 border border-white/5 text-zinc-300 text-xs px-4 py-2 rounded-xl font-medium">Conteúdo ilegal</span>
-                    </div>
-                </div>
-
-                <div class="flex justify-center">
-                    <button onclick="openRulesModal()" class="px-6 py-2.5 rounded-xl border border-white/10 hover:border-brand-pink text-white font-medium text-xs bg-brand-dark hover:bg-brand-pink/10 transition-all duration-300">
-                        Ver todas as regras
-                    </button>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= SECÇÃO PEDIDO RECEBIDO (INCORPORADA DA QUINTA IMAGEM) ================= -->
-        <section id="pos-candidatura" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">PEDIDO RECEBIDO</h2>
-                <p class="text-zinc-400 text-sm">O teu pedido foi recebido com sucesso.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="flex flex-col items-center text-center space-y-4 mb-10">
-                    <div class="w-14 h-14 rounded-full bg-brand-purple/20 text-brand-purple flex items-center justify-center text-2xl border border-brand-purple/30 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-                    <h3 class="font-display font-black text-2xl lg:text-3xl text-white tracking-wide">Recebemos o teu pedido!</h3>
-                    <p class="text-zinc-400 text-sm">Obrigado por querer fazer parte do SHITAGRAM™.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 border-b border-white/5 pb-10 text-left">
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/30 rounded-full w-8 h-8 flex items-center justify-center">01</span>
-                            <h4 class="font-bold text-white text-sm">Vamos analisar o teu pedido.</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs pl-11 leading-relaxed">
-                            Receberás um email assim que fores aceite na beta.
-                        </p>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/30 rounded-full w-8 h-8 flex items-center justify-center">02</span>
-                            <h4 class="font-bold text-white text-sm">Convida amigos</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs pl-11 leading-relaxed">
-                            Convida amigos e sobe na lista de espera para teres prioridade.
-                        </p>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/30 rounded-full w-8 h-8 flex items-center justify-center">03</span>
-                            <h4 class="font-bold text-white text-sm">Prepara-te</h4>
-                        </div>
-                        <p class="text-zinc-400 text-xs pl-11 leading-relaxed">
-                            Os primeiros fundadores recebem Badge, ShitCoins e convites exclusivos.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="max-w-xl mx-auto text-center space-y-6">
-                    <p class="text-white text-sm font-semibold">
-                        Partilha o SHITAGRAM™ e ganha prioridade <span class="text-brand-pink">na entrada.</span>
-                    </p>
-
-                    <div class="flex bg-brand-dark border border-white/10 rounded-2xl p-1.5 pl-4 items-center justify-between gap-3 shadow-inner">
-                        <input type="text" readonly id="share-link-input-static" value="https://shitagram.pt/beta" class="bg-transparent text-zinc-400 text-xs focus:outline-none flex-1 truncate select-all">
-                        <button onclick="copyShareLink('share-link-input-static')" class="px-5 py-2.5 rounded-xl bg-brand-purple text-white font-bold text-xs hover:bg-brand-purple/95 transition-all shadow">
-                            Copiar link
-                        </button>
-                    </div>
-
-                    <div class="space-y-3">
-                        <p class="text-zinc-500 text-xs">Envia a amigos, grupos e redes sociais!</p>
-                        <div class="flex justify-center items-center gap-3.5">
-                            <button onclick="simulateSocialShare('WhatsApp')" class="w-11 h-11 rounded-full bg-[#25D366] text-white flex items-center justify-center text-lg hover:scale-110 transition-transform shadow-lg shadow-green-500/10">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </button>
-                            <button onclick="simulateSocialShare('Instagram')" class="w-11 h-11 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center text-lg hover:scale-110 transition-transform shadow-lg shadow-pink-500/10">
-                                <i class="fa-brands fa-instagram"></i>
-                            </button>
-                            <button onclick="simulateSocialShare('TikTok')" class="w-11 h-11 rounded-full bg-black border border-zinc-800 text-white flex items-center justify-center text-lg hover:scale-110 transition-transform shadow-lg shadow-white/5">
-                                <i class="fa-brands fa-tiktok"></i>
-                            </button>
-                            <button onclick="simulateSocialShare('Twitter/X')" class="w-11 h-11 rounded-full bg-[#1DA1F2] text-white flex items-center justify-center text-lg hover:scale-110 transition-transform shadow-lg shadow-sky-500/10">
-                                <i class="fa-brands fa-x-twitter"></i>
-                            </button>
-                            <button onclick="copyShareLink('share-link-input-static')" class="w-11 h-11 rounded-full bg-zinc-800 text-zinc-300 flex items-center justify-center text-lg hover:scale-110 hover:text-white hover:bg-zinc-700 transition-all shadow-lg">
-                                <i class="fa-solid fa-link"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= SECÇÃO 6. FEED / APP MOCKUP (INCORPORADA DA SEXTA IMAGEM) ================= -->
-        <section id="feed-app" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">APP</h2>
-                <p class="text-zinc-400 text-sm">Uma experiência simples, rápida e viciante.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div class="absolute inset-0 bg-brand-purple/5 rounded-3xl blur-[100px] pointer-events-none"></div>
-
-                <!-- Lado Esquerdo: Telemóvel de Feed -->
-                <div class="lg:col-span-6 flex justify-center relative">
-                    <div class="absolute inset-0 bg-brand-purple/20 rounded-full blur-[60px] pointer-events-none scale-75"></div>
-
-                    <!-- Corpo do Telemóvel -->
-                    <div class="app-mock-phone w-[300px] sm:w-[320px] aspect-[9/18.5] rounded-[48px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
-                        
-                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 h-5 w-32 bg-zinc-800 rounded-b-2xl z-20 flex items-center justify-center">
-                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2"></span>
-                            <span class="w-8 h-1 bg-zinc-700 rounded-full"></span>
-                        </div>
-
-                        <div class="flex justify-between items-center px-4 pt-1 text-[11px] text-zinc-400 font-bold z-10">
-                            <span>01:01</span>
-                            <div class="flex items-center gap-1.5">
-                                <i class="fa-solid fa-signal"></i>
-                                <i class="fa-solid fa-wifi"></i>
-                                <i class="fa-solid fa-battery-full text-xs text-brand-pink"></i>
-                            </div>
-                        </div>
-
-                        <div class="pt-4 px-3 flex justify-between items-center border-b border-white/5 pb-2.5">
-                            <span class="font-display font-black text-sm text-white tracking-wider">SHIT<span class="text-brand-pink">AGRAM™</span></span>
-                            <div class="flex items-center gap-1.5 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">
-                                <i class="fa-solid fa-coins text-yellow-500 text-[10px] animate-pulse"></i>
-                                <span class="text-[10px] text-white font-extrabold" id="phone-feed-coins">1,000</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-4 gap-0.5 text-center text-[10px] font-bold text-zinc-500 pt-2 border-b border-white/5">
-                            <button onclick="switchFeedAppTab('para-ti', this)" class="pb-1.5 text-white border-b-2 border-brand-pink active-app-tab">Para ti</button>
-                            <button onclick="switchFeedAppTab('seguindo', this)" class="pb-1.5 hover:text-zinc-300">Seguindo</button>
-                            <button onclick="switchFeedAppTab('novos', this)" class="pb-1.5 hover:text-zinc-300">Novos</button>
-                            <button onclick="switchFeedAppTab('top', this)" class="pb-1.5 hover:text-zinc-300">Top</button>
-                        </div>
-
-                        <!-- Feed de Micos Rolável -->
-                        <div class="flex-1 overflow-y-auto no-scrollbar py-3 space-y-3.5 text-left" id="phone-app-feed-scroll">
-                            
-                            <div class="bg-white/5 border border-white/5 rounded-2xl p-3 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xl">💩</span>
-                                        <div>
-                                            <h5 class="text-xs font-bold text-white flex items-center gap-1">
-                                                <span class="phone-username-label">MicoMaster</span>
-                                                <span class="premium-badge-span hidden text-[8px] bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-black px-1.5 py-0.5 rounded-full uppercase tracking-widest"><i class="fa-solid fa-star text-[7px] mr-0.5"></i>Premium</span>
-                                            </h5>
-                                            <p class="text-[9px] text-zinc-500 flex items-center gap-1">
-                                                <i class="fa-solid fa-location-dot text-[8px] text-brand-pink"></i> Lisboa
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button class="text-zinc-600 hover:text-white"><i class="fa-solid fa-ellipsis"></i></button>
-                                </div>
-
-                                <p class="text-[11px] text-zinc-300 leading-snug" id="phone-app-top-text">
-                                    Fui acenar a alguém na rua com grande entusiasmo e afinal era para a pessoa atrás de mim...
-                                </p>
-
-                                <div class="aspect-video w-full rounded-xl overflow-hidden relative border border-white/5">
-                                    <svg viewBox="0 0 400 300" class="w-full h-full">
-                                        <defs>
-                                            <linearGradient id="svg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stop-color="#1c1033" />
-                                                <stop offset="100%" stop-color="#090514" />
-                                            </linearGradient>
-                                        </defs>
-                                        <rect width="100%" height="100%" fill="url(#svg-grad)" />
-                                        <circle cx="200" cy="115" r="42" fill="#ff2e93" opacity="0.15" />
-                                        <circle cx="200" cy="115" r="32" fill="#ff2e93" opacity="0.3" />
-                                        <path d="M140,240 C140,165 260,165 260,240 Z" fill="#7c3aed" opacity="0.4" />
-                                        <path d="M200,105 L200,140" stroke="#7c3aed" stroke-width="8" stroke-linecap="round" />
-                                        <path d="M165,180 Q200,120 200,100" stroke="#ff2e93" stroke-width="6" stroke-linecap="round" fill="none" />
-                                        <path d="M110,80 L115,90 M115,80 L110,90" stroke="#d946ef" stroke-width="2" />
-                                        <path d="M280,70 L285,80 M285,70 L280,80" stroke="#d946ef" stroke-width="2" />
-                                        <text x="50%" y="270" dominant-baseline="middle" text-anchor="middle" fill="#ff2e93" font-family="sans-serif" font-size="11" font-weight="800" class="uppercase tracking-widest">Vergonha Consumada</text>
-                                    </svg>
-                                </div>
-
-                                <div class="flex items-center justify-between text-[10px] text-zinc-500 pt-2 border-t border-white/5">
-                                    <div class="flex items-center gap-3">
-                                        <button onclick="toggleMockLike(this)" class="flex items-center gap-1 hover:text-brand-pink transition-colors">
-                                            <i class="fa-solid fa-heart text-zinc-600 transition-colors"></i>
-                                            <span class="like-count">234</span>
-                                        </button>
-                                        <button onclick="showToast('Comentários Simulado', 'Brevemente poderás comentar diretamente a partir do feed de teste!', 'fa-solid fa-comments')" class="flex items-center gap-1 hover:text-white">
-                                            <i class="fa-regular fa-comment"></i>
-                                            <span>45</span>
-                                        </button>
-                                    </div>
-                                    <span class="text-brand-fuchsia font-extrabold">+250 XP</span>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="border-t border-white/5 pt-2 grid grid-cols-5 gap-1 text-[9px] text-zinc-500 font-bold text-center">
-                            <button class="text-brand-pink flex flex-col items-center gap-0.5">
-                                <i class="fa-solid fa-house text-sm"></i>
-                                <span>Início</span>
-                            </button>
-                            <button onclick="showToast('Explorar', 'Navega no Mood Map interativo e descobre micos da tua região!', 'fa-solid fa-magnifying-glass')" class="hover:text-white flex flex-col items-center gap-0.5">
-                                <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                                <span>Explorar</span>
-                            </button>
-                            <button onclick="document.getElementById('como-funciona').scrollIntoView({behavior: 'smooth'})" class="flex flex-col items-center justify-center -mt-3.5 bg-gradient-to-tr from-brand-pink to-brand-purple text-white w-9 h-9 rounded-xl shadow-lg border border-brand-pink/20 hover:scale-105 transition-transform mx-auto">
-                                <i class="fa-solid fa-plus text-sm"></i>
-                            </button>
-                            <button onclick="document.getElementById('ranking').scrollIntoView({behavior: 'smooth'})" class="hover:text-white flex flex-col items-center gap-0.5">
-                                <i class="fa-solid fa-chart-simple text-sm"></i>
-                                <span>Ranking</span>
-                            </button>
-                            <button onclick="showToast('Perfil', 'O teu perfil com títulos e badges comprados na loja está ativo na simulação!', 'fa-solid fa-user')" class="hover:text-white flex flex-col items-center gap-0.5">
-                                <i class="fa-solid fa-user text-sm"></i>
-                                <span>Perfil</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-6 space-y-6 text-left">
-                    <div class="flex items-start gap-4 group">
-                        <div class="w-11 h-11 rounded-full border border-brand-purple bg-brand-purple/10 flex items-center justify-center text-brand-purple text-lg transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(124,58,237,0.25)]">
-                            <i class="fa-solid fa-moon"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-display font-bold text-white text-base">Design escuro para conforto visual</h4>
-                            <p class="text-zinc-400 text-xs mt-1 leading-relaxed">
-                                Interface optimizada para a noite para que possas ler os micos dos outros na cama sem queimar as retinas.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-4 group">
-                        <div class="w-11 h-11 rounded-full border border-brand-pink bg-brand-pink/10 flex items-center justify-center text-brand-pink text-lg transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(255,46,147,0.25)]">
-                            <i class="fa-solid fa-pencil"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-display font-bold text-white text-base">Publicação rápida e anónima</h4>
-                            <p class="text-zinc-400 text-xs mt-1 leading-relaxed">
-                                Sem complicações. Um botão focado na entrada rápida para expelires a tua vergonha num par de segundos.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-4 group">
-                        <div class="w-11 h-11 rounded-full border border-brand-purple bg-brand-purple/10 flex items-center justify-center text-brand-purple text-lg transition-transform group-hover:scale-110 shadow-[0_0_15px_rgba(124,58,237,0.25)]">
-                            <i class="fa-solid fa-comment-dots"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-display font-bold text-white text-base">Reações e comentários</h4>
-                            <p class="text-zinc-400 text-xs mt-1 leading-relaxed">
-                                Um sistema leve para te rires com as maiores gaffes nacionais e comentares de forma amigável.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-
-        <!-- ================= SECÇÃO 7. MICO BATTLE LIVE ================= -->
-        <section id="mico-battle-live" class="space-y-6">
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">MICO BATTLE LIVE</h2>
-                <p class="text-zinc-400 text-sm">1 minuto. 2 jogadores. 4 efeitos. 1 vencedor.</p>
-            </div>
-
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="absolute inset-0 bg-brand-pink/5 rounded-3xl blur-[120px] pointer-events-none"></div>
-                <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-brand-purple/20 rounded-full blur-[150px] pointer-events-none"></div>
-
-                <div class="max-w-4xl mx-auto text-center space-y-4 mb-12 relative z-10">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-bold uppercase tracking-wider">
-                        <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span>
-                        Ao vivo em breve
-                    </div>
-
-                    <h3 class="font-display font-black text-4xl lg:text-6xl text-white tracking-tight">
-                        MICO <span class="bg-gradient-text">BATTLE LIVE</span>
-                    </h3>
-
-                    <p class="text-lg lg:text-xl text-white font-bold">
-                        1 minuto. 2 jogadores. 4 efeitos. 1 vencedor.
-                    </p>
-
-                    <p class="text-zinc-400 text-sm lg:text-base max-w-2xl mx-auto leading-relaxed">
-                        Entra em batalhas ao vivo de 60 segundos, escolhe o tema, ativa efeitos especiais e deixa a comunidade decidir quem vence.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
-
-                    <!-- Cards Esquerda -->
-                    <div class="lg:col-span-3 space-y-6 order-2 lg:order-1">
-                        <div class="bg-brand-dark/60 border border-brand-pink/20 rounded-3xl p-6 hover:border-brand-pink/50 transition-all">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl mb-5">
-                                <i class="fa-solid fa-shirt"></i>
-                            </div>
-                            <h4 class="font-display font-extrabold text-white text-lg leading-tight">
-                                Roupa muda com o tema
-                            </h4>
-                            <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
-                                Cada batalha altera automaticamente as cores dos jogadores conforme o tema escolhido.
-                            </p>
-                        </div>
-
-                        <div class="bg-brand-dark/60 border border-brand-purple/20 rounded-3xl p-6 hover:border-brand-purple/50 transition-all">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-xl mb-5">
-                                <i class="fa-solid fa-calendar-days"></i>
-                            </div>
-                            <h4 class="font-display font-extrabold text-white text-lg leading-tight">
-                                Batalhas marcadas
-                            </h4>
-                            <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
-                                Ambos podem agendar a hora do confronto e avisar os seguidores antes da arena abrir.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Telemóvel Central -->
-                    <div class="lg:col-span-6 flex justify-center order-1 lg:order-2">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-brand-pink/20 rounded-full blur-[90px] pointer-events-none scale-90"></div>
-
-                            <div class="w-[310px] sm:w-[350px] aspect-[9/19] rounded-[48px] border-[6px] border-zinc-800 bg-brand-dark p-4 shadow-2xl relative z-10 overflow-hidden">
-
-                                <!-- Notch -->
-                                <div class="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-36 bg-zinc-900 rounded-b-2xl z-20"></div>
-
-                                <!-- Status -->
-                                <div class="flex justify-between items-center px-4 pt-1 text-[11px] text-zinc-400 font-bold relative z-10">
-                                    <span>9:41</span>
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-signal"></i>
-                                        <i class="fa-solid fa-wifi"></i>
-                                        <i class="fa-solid fa-battery-full"></i>
-                                    </div>
-                                </div>
-
-                                <!-- Header da Battle -->
-                                <div class="pt-7 text-center space-y-3">
-                                    <div class="flex items-center justify-center gap-2 text-white font-display font-extrabold text-base">
-                                        <span>MicoMaster</span>
-                                        <span class="text-brand-pink text-xs">VS</span>
-                                        <span>VexamePro</span>
-                                    </div>
-
-                                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-brand-pink/20 text-brand-pink font-black text-2xl">
-                                        <i class="fa-regular fa-clock text-base"></i>
-                                        <span>00:43</span>
-                                    </div>
-
-                                    <div class="mx-auto inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-300 text-[11px] font-bold">
-                                        💔 Tema: Romance Falhado
-                                    </div>
-                                </div>
-
-                                <!-- Barra de Pontuação -->
-                                <div class="mt-5 bg-white/5 border border-white/5 rounded-2xl p-3">
-                                    <div class="flex items-center justify-between text-xs font-black">
-                                        <span class="text-brand-pink">3.280</span>
-                                        <span class="text-zinc-500 text-[10px] border border-white/10 rounded-full px-2 py-0.5">VS</span>
-                                        <span class="text-brand-purple">2.650</span>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-2 mt-2">
-                                        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                                            <div class="h-full w-[68%] bg-brand-pink rounded-full"></div>
-                                        </div>
-                                        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                                            <div class="h-full w-[54%] bg-brand-purple rounded-full"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Área dos Jogadores -->
-                                <div class="mt-4 grid grid-cols-2 gap-1 rounded-3xl overflow-hidden border border-white/10 relative">
-                                    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-brand-pink/70 z-10 shadow-[0_0_20px_rgba(255,46,147,0.8)]"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                                        <span class="text-brand-pink font-black text-4xl drop-shadow-[0_0_15px_rgba(255,46,147,1)]">VS</span>
-                                    </div>
-
-                                    <!-- Jogador 1 -->
-                                    <div class="bg-gradient-to-b from-red-900/60 to-black min-h-[250px] p-3 flex flex-col justify-between relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-red-500/10"></div>
-                                        <div class="relative z-10">
-                                            <div class="flex items-center gap-2">
-                                                <span class="w-8 h-8 rounded-full bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-lg">💩</span>
-                                                <div>
-                                                    <h5 class="text-white text-xs font-bold">MicoMaster</h5>
-                                                    <p class="text-yellow-400 text-[9px] font-black">WIN +1</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="relative z-10 text-center py-8">
-                                            <div class="mx-auto w-24 h-24 rounded-full bg-red-500/20 border border-red-400/40 flex items-center justify-center text-5xl shadow-[0_0_35px_rgba(239,68,68,0.35)]">
-                                                🥲
-                                            </div>
-                                            <div class="mt-4 mx-auto w-28 h-20 rounded-t-3xl bg-red-600 border border-red-400/40 shadow-[0_0_30px_rgba(239,68,68,0.45)]"></div>
-                                            <p class="text-red-200 text-[10px] mt-2 font-bold">Roupa vermelha ativada</p>
-                                        </div>
-
-                                        <div class="relative z-10 flex justify-center gap-2 text-lg">
-                                            <span>❤️</span>
-                                            <span>💔</span>
-                                            <span>😂</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Jogador 2 -->
-                                    <div class="bg-gradient-to-b from-pink-900/60 to-black min-h-[250px] p-3 flex flex-col justify-between relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-brand-pink/10"></div>
-                                        <div class="relative z-10">
-                                            <div class="flex items-center justify-end gap-2">
-                                                <div class="text-right">
-                                                    <h5 class="text-white text-xs font-bold">VexamePro</h5>
-                                                    <p class="text-yellow-400 text-[9px] font-black">WIN 0</p>
-                                                </div>
-                                                <span class="w-8 h-8 rounded-full bg-brand-pink/20 border border-brand-pink/30 flex items-center justify-center text-lg">🫣</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="relative z-10 text-center py-8">
-                                            <div class="mx-auto w-24 h-24 rounded-full bg-brand-pink/20 border border-brand-pink/50 flex items-center justify-center text-5xl shadow-[0_0_35px_rgba(255,46,147,0.35)]">
-                                                😳
-                                            </div>
-                                            <div class="mt-4 mx-auto w-28 h-20 rounded-t-3xl bg-brand-pink border border-pink-300/40 shadow-[0_0_30px_rgba(255,46,147,0.45)]"></div>
-                                            <p class="text-pink-200 text-[10px] mt-2 font-bold">Roupa rosa ativada</p>
-                                        </div>
-
-                                        <div class="relative z-10 flex justify-center gap-2 text-lg">
-                                            <span>💘</span>
-                                            <span>😂</span>
-                                            <span>👏</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Reações -->
-                                <div class="mt-3 bg-white/5 border border-white/5 rounded-2xl px-3 py-2 flex items-center justify-between text-[11px]">
-                                    <span class="text-brand-pink font-black">2.1K</span>
-                                    <span class="text-zinc-400 font-bold">REAÇÕES AO VIVO</span>
-                                    <span class="text-brand-purple font-black">1.6K</span>
-                                </div>
-
-                                <!-- Efeitos -->
-                                <div class="mt-3 grid grid-cols-4 gap-2">
-                                    <button class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-2 text-center">
-                                        <div class="text-xl">🪙</div>
-                                        <div class="text-[9px] text-white font-bold mt-1">ShitCoins</div>
-                                        <div class="text-[8px] text-yellow-400 font-bold">100</div>
-                                    </button>
-
-                                    <button class="bg-red-500/10 border border-red-500/30 rounded-2xl p-2 text-center">
-                                        <div class="text-xl">💥</div>
-                                        <div class="text-[9px] text-white font-bold mt-1">Explosão</div>
-                                        <div class="text-[8px] text-yellow-400 font-bold">150</div>
-                                    </button>
-
-                                    <button class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-2 text-center">
-                                        <div class="text-xl">🛡️</div>
-                                        <div class="text-[9px] text-white font-bold mt-1">Escudo</div>
-                                        <div class="text-[8px] text-yellow-400 font-bold">120</div>
-                                    </button>
-
-                                    <button class="bg-brand-purple/10 border border-brand-purple/30 rounded-2xl p-2 text-center">
-                                        <div class="text-xl">⚡</div>
-                                        <div class="text-[9px] text-white font-bold mt-1">Combo</div>
-                                        <div class="text-[8px] text-yellow-400 font-bold">200</div>
-                                    </button>
-                                </div>
-
-                                <!-- Comentários -->
-                                <div class="mt-3 bg-black/30 border border-white/5 rounded-2xl p-3 space-y-1.5">
-                                    <p class="text-[10px] text-zinc-300"><strong class="text-white">RuiMico:</strong> Ele não superou ainda 😂</p>
-                                    <p class="text-[10px] text-zinc-300"><strong class="text-white">MicoQueen:</strong> Rainha do drama! 💅💔</p>
-                                    <p class="text-[10px] text-zinc-300"><strong class="text-white">ShitaFan:</strong> Explosão neleee 🚀</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cards Direita -->
-                    <div class="lg:col-span-3 space-y-6 order-3">
-                        <div class="bg-brand-dark/60 border border-brand-purple/20 rounded-3xl p-6 hover:border-brand-purple/50 transition-all">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-xl mb-5">
-                                <i class="fa-solid fa-bolt"></i>
-                            </div>
-                            <h4 class="font-display font-extrabold text-white text-lg leading-tight">
-                                4 efeitos por jogador
-                            </h4>
-                            <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
-                                Cada jogador escolhe a sua estratégia antes do duelo começar.
-                            </p>
-                        </div>
-
-                        <div class="bg-brand-dark/60 border border-brand-pink/20 rounded-3xl p-6 hover:border-brand-pink/50 transition-all">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl mb-5">
-                                <i class="fa-solid fa-trophy"></i>
-                            </div>
-                            <h4 class="font-display font-extrabold text-white text-lg leading-tight">
-                                Wins e ranking
-                            </h4>
-                            <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
-                                Cada vitória sobe o estatuto do jogador na arena e no ranking.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CTA Final -->
-                <div class="mt-12 max-w-3xl mx-auto bg-brand-dark/70 border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                    <div class="flex items-center gap-4 text-center md:text-left">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-purple/20 border border-brand-purple/40 text-brand-purple flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(124,58,237,0.35)]">
-                            <i class="fa-solid fa-crown"></i>
-                        </div>
-
-                        <div>
-                            <h4 class="font-display font-extrabold text-white text-xl">
-                                Arena SHITAGRAM™
-                            </h4>
-                            <p class="text-zinc-400 text-sm mt-1">
-                                Mostra quem manda. Vence em 60 segundos.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                        <button onclick="openBetaModal()" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-bold text-sm hover:scale-[1.02] transition-transform shadow-lg">
-                            Entrar na arena
-                        </button>
-
-                        <button onclick="showToast('Batalhas Marcadas', 'Em breve poderás ver e agendar batalhas ao vivo no SHITAGRAM™.', 'fa-solid fa-calendar-days')" class="px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-display font-bold text-sm hover:bg-white/10 transition-all">
-                            Ver batalhas marcadas
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= NOVA: SECÇÃO 8. PREMIUM EXPERIMENTAL (INCORPORADA DA SÉTIMA IMAGEM) ================= -->
-        <section id="premium-experimental" class="space-y-6">
-            <!-- Cabeçalho Exterior do Bloco -->
-            <div class="text-left space-y-1">
-                <h2 class="font-display font-bold text-2xl text-white tracking-tight">PREMIUM EXPERIMENTAL</h2>
-                <p class="text-zinc-400 text-sm">Funcionalidades extra em fase experimental.</p>
-            </div>
-
-            <!-- Contentor Principal (Borda Arredondada e Fundo Escuro) -->
-            <div class="bg-brand-card/30 border border-white/10 rounded-3xl p-6 lg:p-12 relative overflow-hidden">
-                <div class="absolute inset-0 bg-brand-pink/5 rounded-3xl blur-[120px] pointer-events-none"></div>
-
-                <div class="max-w-3xl mx-auto text-center space-y-3 mb-12">
-                    <h3 class="font-display font-extrabold text-3xl lg:text-4xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-fuchsia to-brand-purple uppercase drop-shadow-[0_0_15px_rgba(255,46,147,0.15)]">PREMIUM EXPERIMENTAL</h3>
-                    <p class="text-zinc-300 text-sm font-medium">Mais opções. Mais personalização. Ainda mais micos.</p>
-                </div>
-
-                <!-- Grid Telemóvel + Bulletpoints -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    
-                    <!-- Lado Esquerdo: Bulletpoints Premium da Imagem -->
-                    <div class="lg:col-span-6 space-y-8 text-left">
-                        
-                        <!-- Ponto 1 -->
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-xl shadow-[0_0_10px_rgba(234,179,8,0.1)] transition-transform group-hover:scale-105">
-                                <i class="fa-regular fa-star"></i>
-                            </div>
-                            <div class="space-y-1">
-                                <h4 class="font-display font-extrabold text-white text-base">Perfil premium</h4>
-                                <p class="text-zinc-400 text-xs leading-relaxed">Destaque-te com badges e troféus exclusivos no teu perfil de utilizador.</p>
-                            </div>
-                        </div>
-
-                        <!-- Ponto 2 -->
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shadow-[0_0_10px_rgba(245,158,11,0.1)] transition-transform group-hover:scale-105">
-                                <i class="fa-solid fa-coins"></i>
-                            </div>
-                            <div class="space-y-1">
-                                <h4 class="font-display font-extrabold text-white text-base">Mais ShitCoins</h4>
-                                <p class="text-zinc-400 text-xs leading-relaxed">Recebe mais ShitCoins e apoia o projeto humorístico do SHITAGRAM™.</p>
-                            </div>
-                        </div>
-
-                        <!-- Ponto 3 -->
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-12 h-12 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl shadow-[0_0_10px_rgba(255,46,147,0.1)] transition-transform group-hover:scale-105">
-                                <i class="fa-solid fa-gem"></i>
-                            </div>
-                            <div class="space-y-1">
-                                <h4 class="font-display font-extrabold text-white text-base">Recursos exclusivos</h4>
-                                <p class="text-zinc-400 text-xs leading-relaxed">Acesso antecipado a novas funcionalidades satíricas, testes e layouts inovadores.</p>
-                            </div>
-                        </div>
-
-                        <!-- Ponto 4 -->
-                        <div class="flex items-start gap-4 group">
-                            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-xl shadow-[0_0_10px_rgba(234,179,8,0.1)] transition-transform group-hover:scale-105">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <div class="space-y-1">
-                                <h4 class="font-display font-extrabold text-white text-base">Emblema VIP</h4>
-                                <p class="text-zinc-400 text-xs leading-relaxed">Mostra o teu estatuto premium cintilante no teu feed e perfil.</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Lado Direito: Telemóvel de Perfil Premium Realista -->
-                    <div class="lg:col-span-6 flex justify-center relative">
-                        <div class="absolute inset-0 bg-brand-pink/15 rounded-full blur-[60px] pointer-events-none scale-75"></div>
-
-                        <div class="premium-mock-phone w-[280px] aspect-[9/18.5] rounded-[44px] border-[6px] border-zinc-800 bg-brand-dark p-3.5 shadow-2xl relative z-10 flex flex-col justify-between overflow-hidden">
-                            <!-- Top Status -->
-                            <div class="flex justify-between items-center px-4 pt-1 text-[10px] text-zinc-400 font-bold">
-                                <span>9:41</span>
-                                <div class="flex items-center gap-1">
-                                    <i class="fa-solid fa-signal"></i>
-                                    <i class="fa-solid fa-battery-full text-xs"></i>
-                                </div>
-                            </div>
-
-                            <!-- Perfil Interno Completo Premium -->
-                            <div class="flex-1 flex flex-col justify-center text-center space-y-4 pt-3">
-                                
-                                <!-- Avatar -->
-                                <div class="relative w-20 h-20 mx-auto">
-                                    <!-- Aura Premium Neon Brilhante -->
-                                    <div class="absolute -inset-1.5 rounded-full bg-gradient-to-r from-yellow-400 via-brand-pink to-brand-purple animate-pulse blur-[2px]"></div>
-                                    <div class="w-full h-full rounded-full bg-zinc-800 flex items-center justify-center text-4xl shadow-inner relative z-10 border border-white/10">
-                                        💩
-                                    </div>
-                                </div>
-
-                                <!-- Username & Premium Badge -->
-                                <div class="space-y-1">
-                                    <h4 class="font-display font-bold text-white text-base">MicoMaster</h4>
-                                    <!-- Badge roxo idêntico à imagem -->
-                                    <span class="inline-flex items-center gap-1 bg-[#1c1033] border border-brand-purple/40 text-brand-fuchsia text-[9px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">
-                                        <i class="fa-solid fa-check text-[7px]"></i> Premium
-                                    </span>
-                                </div>
-
-                                <!-- Nível e Progresso -->
-                                <div class="space-y-1 max-w-[200px] mx-auto w-full">
-                                    <div class="flex justify-between text-[10px] text-zinc-400 font-bold">
-                                        <span>Nível 18 - 4.750 XP</span>
-                                        <span class="text-brand-pink">SHIT</span>
-                                    </div>
-                                    <!-- Progress Bar -->
-                                    <div class="w-full bg-white/5 rounded-full h-1.5 border border-white/5 overflow-hidden">
-                                        <div class="bg-gradient-to-r from-brand-purple to-brand-pink h-full w-[80%] rounded-full"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Stats -->
-                                <div class="grid grid-cols-3 gap-1 bg-white/5 border border-white/5 rounded-xl py-2 text-[11px] text-zinc-400">
-                                    <div>
-                                        <span class="block text-white font-extrabold">176</span>
-                                        <span class="text-[9px] text-zinc-500 font-semibold uppercase">Micos</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-white font-extrabold">5.8k</span>
-                                        <span class="text-[9px] text-zinc-500 font-semibold uppercase">Seguidores</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-white font-extrabold">960</span>
-                                        <span class="text-[9px] text-zinc-500 font-semibold uppercase">A seguir</span>
-                                    </div>
-                                </div>
-
-                                <!-- Secção Conquistas -->
-                                <div class="space-y-2 text-left">
-                                    <span class="text-[9px] text-zinc-500 font-extrabold uppercase tracking-wider block px-1">Conquistas</span>
-                                    <div class="grid grid-cols-4 gap-2">
-                                        <div class="bg-white/5 rounded-lg py-2 text-center text-yellow-500 border border-yellow-500/10" title="Mestre de Micos">
-                                            <i class="fa-solid fa-award text-sm"></i>
-                                            <span class="block text-[7px] text-zinc-400 mt-1">MicoLevel</span>
-                                        </div>
-                                        <div class="bg-white/5 rounded-lg py-2 text-center text-brand-purple border border-brand-purple/10" title="Apoiante Ativo">
-                                            <i class="fa-solid fa-circle-dollar-to-slot text-sm"></i>
-                                            <span class="block text-[7px] text-zinc-400 mt-1">Apoiador</span>
-                                        </div>
-                                        <div class="bg-white/5 rounded-lg py-2 text-center text-brand-pink border border-brand-pink/10" title="Lenda">
-                                            <i class="fa-solid fa-crown text-sm"></i>
-                                            <span class="block text-[7px] text-zinc-400 mt-1">Lenda</span>
-                                        </div>
-                                        <div class="bg-white/5 rounded-lg py-2 text-center text-brand-fuchsia border border-brand-fuchsia/10" title="Soberano do Humor">
-                                            <i class="fa-solid fa-shield-heart text-sm"></i>
-                                            <span class="block text-[7px] text-zinc-400 mt-1">Soberano</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Golden Card Base "Premium desde Maio 2025" -->
-                                <div class="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center justify-between text-left">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="w-8 h-8 rounded-lg bg-yellow-500/15 border border-yellow-500/30 text-yellow-500 flex items-center justify-center text-sm shadow-[0_0_10px_rgba(234,179,8,0.15)]">
-                                            <i class="fa-solid fa-shield-halved"></i>
-                                        </div>
-                                        <div>
-                                            <h5 class="text-[11px] font-bold text-white">Estatuto VIP Ativo</h5>
-                                            <p class="text-[8px] text-zinc-400">Premium desde Maio 2025</p>
-                                        </div>
-                                    </div>
-                                    <i class="fa-solid fa-circle-check text-yellow-500 text-xs"></i>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Preço e Botão Saber Mais (Base) -->
-                <div class="pt-12 text-center space-y-4 max-w-sm mx-auto">
-                    <div class="space-y-1">
-                        <p class="text-zinc-500 text-xs font-semibold">Preço de teste (experimental)</p>
-                        <h4 class="text-3xl font-black text-brand-pink">2,99€ <span class="text-zinc-400 text-sm font-normal">/ mês</span></h4>
-                        <p class="text-zinc-400 text-[10px]">Sem compromisso. Cancela quando quiseres.</p>
-                    </div>
-
-                    <!-- Botão do Modal Premium -->
-                    <button onclick="openPremiumModal()" id="btn-premium-toggle" class="w-full py-4 rounded-2xl bg-brand-purple hover:bg-brand-purple/90 text-white font-display font-extrabold text-sm transition-all duration-300 shadow-lg hover:scale-[1.02] neon-glow-purple">
-                        Saber mais (em breve)
-                    </button>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- ================= LABORATÓRIO DO VEXAME (SIMULADOR INTERATIVO) ================= -->
-        <section class="bg-brand-card/40 border border-white/5 rounded-3xl p-6 lg:p-10 relative overflow-hidden" id="como-funciona">
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-pink/10 rounded-full blur-[80px]"></div>
-            
-            <div class="max-w-3xl mx-auto text-center space-y-4 mb-8">
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-pink bg-brand-pink/10 px-3 py-1 rounded-full">Experimenta em tempo real</span>
-                <h2 class="font-display font-extrabold text-3xl text-white">Laboratório do Vexame</h2>
-                <p class="text-zinc-400 text-sm max-w-lg mx-auto">
-                    Escreve um mico real ou inventado abaixo para simular a reação, ganhar moedas no simulador e ver a tua publicação entrar na pré-visualização da rede.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
-                <!-- Painel de Input -->
-                <div class="md:col-span-7 bg-white/5 rounded-2xl p-6 border border-white/10 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <label class="block text-sm font-bold text-zinc-300">"E tu, qual foi o teu mico hoje?"</label>
-                        <textarea id="mico-input" rows="3" placeholder="Ex: Fui dar um beijinho de despedida e batemos com as cabeças..." class="w-full bg-brand-dark/50 border border-white/10 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-brand-pink placeholder-zinc-500 resize-none transition-colors"></textarea>
-                        
-                        <!-- Categorias Divertidas -->
-                        <div>
-                            <span class="block text-xs font-semibold text-zinc-500 mb-2">Categoria do Vexame:</span>
-                            <div class="flex flex-wrap gap-2" id="category-selector">
-                                <button onclick="selectCategory(this, 'Romântico 💔')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs text-zinc-300 border border-white/5 hover:border-white/20 transition-all font-medium active-category">Romântico 💔</button>
-                                <button onclick="selectCategory(this, 'Gaffe Clássica 🤐')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs text-zinc-300 border border-white/5 hover:border-white/20 transition-all font-medium">Gaffe Clássica 🤐</button>
-                                <button onclick="selectCategory(this, 'Tecnológico 📱')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs text-zinc-300 border border-white/5 hover:border-white/20 transition-all font-medium">Tecnológico 📱</button>
-                                <button onclick="selectCategory(this, 'Desastrado 🚶‍♂️')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-xs text-zinc-300 border border-white/5 hover:border-white/20 transition-all font-medium">Desastrado 🚶‍♂️</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 pt-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <div class="text-xs text-zinc-500 flex items-center gap-2">
-                            <i class="fa-solid fa-shield text-brand-pink"></i>
-                            <span>A publicação fica segura e focada no humor amigável.</span>
-                        </div>
-                        <button onclick="postSimulatedMico()" id="btn-publish" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-bold text-sm hover:opacity-95 transition-opacity flex items-center justify-center gap-2">
-                            <span>Publicar na demo</span>
-                            <i class="fa-solid fa-paper-plane text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Painel de Feedback e Resultados -->
-                <div class="md:col-span-5 bg-brand-dark/80 rounded-2xl p-6 border border-white/10 flex flex-col justify-center items-center text-center relative overflow-hidden">
-                    <!-- Estado Inicial / Neutro -->
-                    <div id="sim-state-idle" class="space-y-4">
-                        <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl mx-auto text-zinc-400">
-                            <i class="fa-solid fa-calculator"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Pronto para Analisar</h4>
-                        <p class="text-zinc-500 text-xs max-w-xs leading-relaxed">
-                            O motor da vergonha SHITAGRAM AI irá avaliar o potencial de entertainment do teu mico.
-                        </p>
-                    </div>
-
-                    <!-- Estado Processamento -->
-                    <div id="sim-state-loading" class="hidden space-y-4">
-                        <div class="relative w-16 h-16 mx-auto">
-                            <div class="absolute inset-0 rounded-full border-4 border-zinc-800"></div>
-                            <div class="absolute inset-0 rounded-full border-4 border-brand-pink border-t-transparent animate-spin"></div>
-                        </div>
-                        <h4 class="font-bold text-white text-sm" id="loading-text">Analisando o grau de vergonha...</h4>
-                        <p class="text-zinc-500 text-xs">Cálculo de penalização pública em curso.</p>
-                    </div>
-
-                    <!-- Estado Resultado do Cálculo -->
-                    <div id="sim-state-result" class="hidden space-y-6 w-full">
-                        <div class="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 text-green-500 flex items-center justify-center text-3xl mx-auto animate-bounce">
-                            💩
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-display font-black text-xl text-white">Mico Aprovado com Sucesso!</h4>
-                            <p class="text-xs text-zinc-400">Reconhecimento de embaraço público de alta classe.</p>
-                        </div>
-                        
-                        <!-- Recompensas ganhas -->
-                        <div class="grid grid-cols-2 gap-3 max-w-xs mx-auto">
-                            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
-                                <span class="block text-xl font-bold text-yellow-500" id="earned-coins">+120</span>
-                                <span class="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">ShitCoins Ganhas</span>
-                            </div>
-                            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
-                                <span class="block text-xl font-bold text-brand-fuchsia" id="earned-xp">+250</span>
-                                <span class="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">XP Recebido</span>
-                            </div>
-                        </div>
-
-                        <p class="text-zinc-500 text-[10px]">
-                            Dica: Usa as tuas novas ShitCoins na Loja em baixo para comprar itens!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= RANKING DA VERGONHA COMPLETO (INTERATIVO) ================= -->
-        <section id="ranking" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
-            <!-- Esquerda: Tabela de Rankings interativa -->
-            <div class="lg:col-span-8 bg-brand-card/40 border border-white/5 rounded-3xl p-6 lg:p-8 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="font-display font-extrabold text-2xl text-white">Tabela de Classificação</h3>
-                        <p class="text-zinc-500 text-xs mt-1">Quem andou a passar mais vergonhas recentemente em Portugal.</p>
-                    </div>
-                    
-                    <!-- Seletores de Abas de Classificação -->
-                    <div class="flex bg-white/5 rounded-xl p-1 text-xs font-bold text-zinc-400">
-                        <button onclick="switchRankingTab('semanal')" id="tab-semanal" class="px-4 py-2 bg-brand-pink text-white rounded-lg transition-all">Semanal</button>
-                        <button onclick="switchRankingTab('mensal')" id="tab-mensal" class="px-4 py-2 hover:text-white transition-all font-medium">Mensal</button>
-                        <button onclick="switchRankingTab('geral')" id="tab-geral" class="px-4 py-2 hover:text-white transition-all font-medium">Geral</button>
-                    </div>
-                </div>
-
-                <!-- Pesquisa Rápida Mock -->
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-500 text-sm"></i>
-                    <input type="text" id="ranking-search" oninput="filterRankingTable()" placeholder="Pesquisar utilizador no ranking..." class="w-full bg-brand-dark/50 border border-white/5 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink placeholder-zinc-500 transition-colors">
-                </div>
-
-                <!-- Tabela de Classificação -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-white/5 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
-                                <th class="py-3 px-4">Posição</th>
-                                <th class="py-3 px-4">Utilizador</th>
-                                <th class="py-3 px-4">Patamar</th>
-                                <th class="py-3 px-4 text-right">XP Acumulado</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ranking-table-body" class="divide-y divide-white/5 text-sm">
-                            <!-- Injetado dinamicamente via Javascript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Direita: Factos Engraçados / Destaque Semanal -->
-            <div class="lg:col-span-4 space-y-6">
-                <div class="bg-gradient-to-br from-brand-card to-brand-dark border border-white/10 rounded-3xl p-6 relative overflow-hidden">
-                    <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-brand-purple/10 rounded-full blur-[40px]"></div>
-                    
-                    <span class="text-[10px] bg-brand-purple/30 text-brand-fuchsia px-2.5 py-1 rounded-full inline-block font-bold tracking-wider uppercase mb-4">
-                        Mico Dourado da Semana 👑
-                    </span>
-
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-3xl">🤐</span>
-                        <div>
-                            <h4 class="font-bold text-white text-base">@GaffeQueen</h4>
-                            <p class="text-[10px] text-zinc-500">Há 2 dias atrás • Lisboa</p>
-                        </div>
-                    </div>
-
-                    <p class="text-zinc-300 text-sm leading-relaxed italic">
-                        "Estava a entrar no elevador com o administrador executivo da empresa. Ele disse 'Bom fim de semana' e eu, em pânico total, respondi 'Obrigado, amo-te!' com um piscar de olho de autoconfiança fingida."
-                    </p>
-
-                    <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs">
-                        <div class="flex items-center gap-1.5 text-zinc-400">
-                            <i class="fa-solid fa-heart text-brand-pink"></i>
-                            <span class="font-bold text-white">2.4k</span> Reações
-                        </div>
-                        <div class="flex items-center gap-1.5 text-zinc-400">
-                            <i class="fa-solid fa-award text-amber-500"></i>
-                            <span class="text-yellow-500 font-bold">+500 ShitCoins</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Estatísticas Globais da Beta -->
-                <div class="bg-brand-card/30 border border-white/5 p-6 rounded-3xl space-y-4">
-                    <h4 class="font-display font-bold text-white text-sm">Estatísticas em Tempo Real</h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <span class="block text-xl font-bold text-white font-display">12,450</span>
-                            <span class="text-[10px] text-zinc-500 font-medium">Micos Registados</span>
-                        </div>
-                        <div>
-                            <span class="block text-xl font-bold text-white font-display">342k</span>
-                            <span class="text-[10px] text-zinc-500 font-medium">Reações / Risos</span>
-                        </div>
-                        <div>
-                            <span class="block text-xl font-bold text-white font-display">1.2M</span>
-                            <span class="text-[10px] text-zinc-500 font-medium">ShitCoins Emitidas</span>
-                        </div>
-                        <div>
-                            <span class="block text-xl font-bold text-white font-display">98.4%</span>
-                            <span class="text-[10px] text-zinc-500 font-medium">Taxa de Auto-Humor</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ================= LOJA DE SHITCOINS (SIMULADOR DO SALDO) ================= -->
-        <section id="loja" class="space-y-8">
-            <div class="bg-gradient-to-r from-brand-card to-brand-dark border border-brand-pink/10 rounded-3xl p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                <div class="absolute -left-12 -top-12 w-32 h-32 bg-yellow-500/10 rounded-full blur-[40px]"></div>
-                
-                <div class="space-y-2 text-left">
-                    <span class="text-xs font-bold text-yellow-500 tracking-wider uppercase"><i class="fa-solid fa-coins mr-1"></i> Loja de ShitCoins</span>
-                    <h2 class="font-display font-black text-2xl text-white">Gasta as tuas moedas virtuais!</h2>
-                    <p class="text-zinc-400 text-xs max-w-lg">
-                        Começas a tua jornada com <span class="text-white font-bold">1000 ShitCoins</span> de fundador gratuito. Escreve micos em cima para acumular mais e compra cosméticos hilariantes para equipar no teu mockup de telemóvel!
-                    </p>
-                </div>
-
-                <!-- Contador de moedas em tempo real -->
-                <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-2xl animate-spin-slow">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
-                    <div class="text-left">
-                        <span class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider">O teu Saldo de Teste</span>
-                        <span class="text-2xl font-black text-white" id="current-user-coins">1000</span> <span class="text-yellow-500 font-bold text-xs">ShitCoins</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lista de Itens Disponíveis para Compra -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
-                <!-- Item 1 -->
-                <div class="bg-brand-card/30 border border-white/5 p-5 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-lg mb-3">
-                            <i class="fa-solid fa-crown"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Título: Mestre do Vexame</h4>
-                        <p class="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                            Equipa um título especial por cima do teu nome no perfil da app!
-                        </p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span class="text-xs font-bold text-yellow-500">400 ShitCoins</span>
-                        <button onclick="buyTitleItem('Mestre do Vexame', 400)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-brand-pink hover:text-white border border-white/10 hover:border-brand-pink text-zinc-300 font-bold text-[10px] transition-all">Comprar</button>
-                    </div>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="bg-brand-card/30 border border-white/5 p-5 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-lg mb-3">
-                            <i class="fa-solid fa-skull-crossbones"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Título: Sobrevivente Social</h4>
-                        <p class="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                            Perfeito para quem já passou tantas que se tornou imune à vergonha.
-                        </p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span class="text-xs font-bold text-yellow-500">600 ShitCoins</span>
-                        <button onclick="buyTitleItem('Sobrevivente Social', 600)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-brand-purple hover:text-white border border-white/10 hover:border-brand-purple text-zinc-300 font-bold text-[10px] transition-all">Comprar</button>
-                    </div>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="bg-brand-card/30 border border-white/5 p-5 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center text-lg mb-3">
-                            <i class="fa-solid fa-circle"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Moldura Dourada de Avatar</h4>
-                        <p class="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                            Uma aura brilhante e dourada de nobreza que rodeia o teu avatar de poop!
-                        </p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span class="text-xs font-bold text-yellow-500">500 ShitCoins</span>
-                        <button onclick="buyFrameItem('gold', 500)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-yellow-500 hover:text-black border border-white/10 hover:border-yellow-500 text-zinc-300 font-bold text-[10px] transition-all">Comprar</button>
-                    </div>
-                </div>
-
-                <!-- Item 4 -->
-                <div class="bg-brand-card/30 border border-white/5 p-5 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-brand-fuchsia/10 text-brand-fuchsia flex items-center justify-center text-lg mb-3">
-                            <i class="fa-solid fa-broom"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm">Limpar Mico do Histórico</h4>
-                        <p class="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                            Apaga um mico antigo com demasiado arrependimento de volta ao esquecimento.
-                        </p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span class="text-xs font-bold text-yellow-500">800 ShitCoins</span>
-                        <button onclick="buyCleanHistory(800)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-brand-fuchsia hover:text-white border border-white/10 hover:border-brand-fuchsia text-zinc-300 font-bold text-[10px] transition-all">Comprar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+          </div>
+
+          <div class="price">
+            <p>Preço de teste experimental</p>
+            <b>2,99€</b> / mês
+            <p>Sem compromisso. Cancela quando quiseres.</p>
+            <a class="btn primary" href="premium.html">Saber mais</a>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- ================= NOVO: MODAL EXPERIMENTAL PREMIUM (COMPRAS & ATIVAÇÃO DE PRESTÍGIO) ================= -->
-    <div id="premium-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
-        <div class="absolute inset-0" onclick="closePremiumModal()"></div>
-
-        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
-            <button onclick="closePremiumModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <!-- Ícone Principal -->
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-yellow-500 via-brand-pink to-brand-purple flex items-center justify-center text-3xl mx-auto shadow-lg animate-pulse">
-                👑
-            </div>
-
-            <!-- Cabeçalho -->
-            <div class="space-y-2 text-center">
-                <span class="text-[10px] bg-brand-pink/20 text-brand-pink font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">MicoVIP Experimental</span>
-                <h3 class="font-display font-extrabold text-2xl text-white">Experimenta o Premium de Teste!</h3>
-                <p class="text-zinc-400 text-xs">
-                    Experimenta o estatuto VIP gratuitamente nesta versão de teste e vê as mudanças instantâneas no teu perfil.
-                </p>
-            </div>
-
-            <!-- Preço de teste e ação -->
-            <div class="bg-brand-dark border border-white/10 p-5 rounded-2xl space-y-4">
-                <div class="flex justify-between items-center text-left">
-                    <div>
-                        <span class="text-xs text-zinc-500 font-bold">PLANO DE TESTE</span>
-                        <h4 class="text-xl font-black text-white">MicoVIP Mensal</h4>
-                    </div>
-                    <div class="text-right">
-                        <span class="block text-brand-pink font-black text-lg">Grátis na versão de teste</span>
-                        <span class="text-[9px] text-zinc-500 line-through">2,99€ / mês</span>
-                    </div>
-                </div>
-
-                <ul class="text-left text-[11px] text-zinc-400 space-y-2 border-t border-white/5 pt-3">
-                    <li class="flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-yellow-500"></i>
-                        <span>Aura Dourada no Avatar de Poop</span>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-yellow-500"></i>
-                        <span>Badge Roxo "Premium" visível no Feed</span>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-yellow-500"></i>
-                        <span>Título Especial "MicoVIP" desbloqueado</span>
-                    </li>
-                </ul>
-            </div>
-
-            <button id="btn-claim-premium" onclick="activatePremiumTrial()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-bold text-sm hover:opacity-95 transition-all shadow-lg">
-                Ativar Estatuto Premium Gratuito
-            </button>
-        </div>
-    </div>
-
-    <!-- ================= MODAL DE REGULAMENTO COMPLETO ================= -->
-    <div id="rules-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
-        <div class="absolute inset-0" onclick="closeRulesModal()"></div>
-
-        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-lg rounded-3xl p-6 lg:p-8 text-left relative z-10 shadow-2xl space-y-5">
-            <button onclick="closeRulesModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="w-12 h-12 rounded-xl bg-brand-pink/15 text-brand-pink flex items-center justify-center text-xl shadow-lg">
-                <i class="fa-solid fa-gavel"></i>
-            </div>
-
-            <div class="space-y-1">
-                <h3 class="font-display font-extrabold text-xl text-white">Regulamento do SHITAGRAM™</h3>
-                <p class="text-zinc-400 text-xs">
-                    Compromete-te com a nossa comunidade saudável e recebe uma recompensa!
-                </p>
-            </div>
-
-            <div class="space-y-3.5 max-h-[250px] overflow-y-auto pr-2 text-xs text-zinc-300">
-                <div class="bg-white/5 p-3 rounded-xl border border-white/5 space-y-1">
-                    <h4 class="font-bold text-white">1. Propriedade Intelectual do Vexame</h4>
-                    <p class="text-zinc-400 leading-relaxed">Os micos publicados devem ser reais, humorísticos e não violar a privacidade de terceiros. Foca o teu humor em ti mesmo!</p>
-                </div>
-                <div class="bg-white/5 p-3 rounded-xl border border-white/5 space-y-1">
-                    <h4 class="font-bold text-white">2. Proibição Absoluta de Bullying</h4>
-                    <p class="text-zinc-400 leading-relaxed">Qualquer tentativa de expor, chantagear ou rebaixar outra pessoa de forma maldosa resultará em banimento imediato sem reembolso de moedas.</p>
-                </div>
-                <div class="bg-white/5 p-3 rounded-xl border border-white/5 space-y-1">
-                    <h4 class="font-bold text-white">3. Direito de Anonimato</h4>
-                    <p class="text-zinc-400 leading-relaxed">Tens o direito absoluto de ocultar a tua identidade em qualquer publicação. Respeitamos a privacidade do teu embaraço.</p>
-                </div>
-            </div>
-
-            <div class="border-t border-white/5 pt-4 space-y-4">
-                <div class="flex items-start gap-3">
-                    <input type="checkbox" id="rules-agree" onchange="toggleRulesAgreement()" class="mt-1 rounded accent-brand-pink h-4 w-4">
-                    <label for="rules-agree" class="text-[11px] text-zinc-400 leading-relaxed">
-                        Declaro que li as regras e prometo espalhar apenas humor amigável, livre de ódio ou humilhações públicas.
-                    </label>
-                </div>
-
-                <div class="flex gap-3">
-                    <button id="rules-reward-btn" onclick="claimRulesReward()" disabled class="w-full py-3 rounded-xl bg-white/5 text-zinc-500 font-bold text-xs cursor-not-allowed transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-gift"></i>
-                        <span>Reclamar +150 ShitCoins</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= WAITLIST / REGISTO BETA MODAL ================= -->
-    <div id="beta-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/95 backdrop-blur-md hidden transition-all duration-300">
-        <div class="absolute inset-0" onclick="closeBetaModal()"></div>
-
-        <div class="modal-mobile-panel bg-brand-card border border-white/15 w-full max-w-md rounded-3xl p-6 lg:p-8 text-center relative z-10 shadow-2xl space-y-6">
-            <button onclick="closeBetaModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <!-- FORMULÁRIO -->
-            <div id="waitlist-form-container" class="space-y-6">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-pink to-brand-purple flex items-center justify-center text-2xl mx-auto shadow-lg">🚀</div>
-                <div class="space-y-2 text-center">
-                    <h3 class="font-display font-extrabold text-2xl text-white">Quero Entrar na Beta!</h3>
-                    <p class="text-zinc-400 text-xs">
-                        Garante o teu lugar como fundador oficial e reclama <span class="text-white font-bold">1000 ShitCoins</span> grátis no lançamento em Portugal.
-                    </p>
-                </div>
-
-                <form onsubmit="submitWaitlist(event)" class="space-y-4 text-left">
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Nome Completo</label>
-                        <input type="text" id="beta-name" required placeholder="Ex: Gonçalo Silva" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
-                    </div>
-                    
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Endereço de E-mail</label>
-                        <input type="email" id="beta-email" required placeholder="Ex: goncalo@email.com" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Handle do Instagram (Opcional)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-500 text-sm">@</span>
-                            <input type="text" id="beta-handle" placeholder="goncalosilva" class="w-full bg-brand-dark border border-white/10 rounded-xl pl-8 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-2 pt-2">
-                        <input type="checkbox" id="beta-terms" required class="mt-0.5 rounded accent-brand-pink">
-                        <label for="beta-terms" class="text-[10px] text-zinc-500 leading-snug">
-                            Aceito os termos da comunidade e concordo em receber notificações de acesso exclusivo quando os convites estiverem disponíveis.
-                        </label>
-                    </div>
-
-                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-bold text-sm hover:opacity-95 transition-opacity mt-4 flex items-center justify-center gap-2">
-                        Garantir Acesso à Beta Gratuito
-                    </button>
-                </form>
-            </div>
-
-            <!-- ESTADO DE SUCESSO DO MODAL -->
-            <div id="waitlist-success" class="hidden space-y-6 text-left">
-                <div class="flex flex-col items-center text-center space-y-3">
-                    <div class="w-14 h-14 rounded-full bg-brand-purple/20 text-brand-purple flex items-center justify-center text-2xl border border-brand-purple/30 shadow-[0_0_20px_rgba(124,58,237,0.3)] animate-pulse">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-                    <h3 class="font-display font-black text-2xl text-white tracking-wide uppercase">Recebemos o teu pedido!</h3>
-                    <p class="text-zinc-400 text-xs">Obrigado por querer fazer parte do SHITAGRAM™.</p>
-                </div>
-
-                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                    <span class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">A tua Posição Atual</span>
-                    <span class="block text-3xl font-black text-white" id="waitlist-pos">#4,821</span>
-                    <span class="text-[9px] text-zinc-400 font-medium block mt-1">
-                        Utiliza os botões de partilha abaixo para subires na lista e obteres acesso imediato!
-                    </span>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-b border-white/5 py-4 text-xs text-zinc-300">
-                    <div class="space-y-1">
-                        <h5 class="font-bold text-white flex items-center gap-1.5">
-                            <span class="text-[10px] font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/20 w-5 h-5 rounded-full flex items-center justify-center">01</span>
-                            Análise
-                        </h5>
-                        <p class="text-[11px] text-zinc-400 leading-normal pl-6">Análise em curso de candidatura.</p>
-                    </div>
-                    <div class="space-y-1">
-                        <h5 class="font-bold text-white flex items-center gap-1.5">
-                            <span class="text-[10px] font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/20 w-5 h-5 rounded-full flex items-center justify-center">02</span>
-                            Convida
-                        </h5>
-                        <p class="text-[11px] text-zinc-400 leading-normal pl-6">Sobe posições partilhando o link.</p>
-                    </div>
-                    <div class="space-y-1">
-                        <h5 class="font-bold text-white flex items-center gap-1.5">
-                            <span class="text-[10px] font-bold text-brand-purple bg-brand-purple/10 border border-brand-purple/20 w-5 h-5 rounded-full flex items-center justify-center">03</span>
-                            Prepara-te
-                        </h5>
-                        <p class="text-[11px] text-zinc-400 leading-normal pl-6">Reclama badges e ShitCoins!</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4 text-center">
-                    <p class="text-xs text-zinc-300 font-semibold">
-                        Partilha o SHITAGRAM™ e ganha prioridade <span class="text-brand-pink">na entrada.</span>
-                    </p>
-
-                    <div class="flex bg-brand-dark border border-white/10 rounded-xl p-1 items-center justify-between gap-2 shadow-inner">
-                        <input type="text" readonly id="share-link-input-modal" value="https://shitagram.pt/beta" class="bg-transparent text-zinc-400 text-xs focus:outline-none flex-1 truncate select-all pl-3">
-                        <button onclick="copyShareLink('share-link-input-modal')" class="px-4 py-2 rounded-lg bg-brand-purple text-white font-bold text-[10px] hover:bg-brand-purple/95 transition-all">
-                            Copiar link
-                        </button>
-                    </div>
-
-                    <div class="flex justify-center items-center gap-3 pt-1">
-                        <button onclick="simulateSocialShare('WhatsApp')" class="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center text-sm hover:scale-105 transition-transform shadow-md">
-                            <i class="fa-brands fa-whatsapp"></i>
-                        </button>
-                        <button onclick="simulateSocialShare('Instagram')" class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center text-sm hover:scale-105 transition-transform shadow-md">
-                            <i class="fa-brands fa-instagram"></i>
-                        </button>
-                        <button onclick="simulateSocialShare('TikTok')" class="w-9 h-9 rounded-full bg-black border border-zinc-800 text-white flex items-center justify-center text-sm hover:scale-105 transition-transform shadow-md">
-                            <i class="fa-brands fa-tiktok"></i>
-                        </button>
-                        <button onclick="simulateSocialShare('Twitter/X')" class="w-9 h-9 rounded-full bg-[#1DA1F2] text-white flex items-center justify-center text-sm hover:scale-105 transition-transform shadow-md">
-                            <i class="fa-brands fa-x-twitter"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-4 flex justify-center">
-                    <button onclick="closeBetaModal()" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-xs border border-white/10 transition-colors text-center">
-                        Fechar janela
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ================= FOOTER / RODAPÉ ================= -->
-    <footer class="border-t border-white/5 bg-brand-card/20 py-12 px-4 lg:px-12 mt-20 text-center">
-        <div class="max-w-7xl mx-auto space-y-6">
-            <h3 class="font-display font-black text-xl text-white">SHIT<span class="text-brand-pink">AGRAM</span></h3>
-            
-            <p class="text-zinc-500 text-xs max-w-md mx-auto leading-relaxed">
-                Rir de nós próprios é o melhor remédio (ou pelo menos dá moedas virtuais). O SHITAGRAM é uma plataforma satírica e experimental de humor social.
-            </p>
-
-            <div class="flex flex-wrap justify-center gap-6 text-xs text-zinc-400 font-medium">
-                <a href="#como-funciona-detalhado" class="hover:text-brand-pink transition-colors">Como funciona</a>
-                <a href="#prova-social" class="hover:text-brand-pink transition-colors">Comunidade</a>
-                <a href="#ranking" class="hover:text-brand-pink transition-colors">Ranking</a>
-                <a href="#mico-battle-live" class="hover:text-brand-pink transition-colors">Battle Live</a>
-                <a href="arena.html" class="hover:text-brand-pink transition-colors">Arena</a>
-                <a href="#loja" class="hover:text-brand-pink transition-colors">Loja de Teste</a>
-            </div>
-
-            <p class="text-[10px] text-zinc-600">
-                © 2026 SHITAGRAM™ Portugal. Todos os direitos reservados. Beta experimental em Portugal.
-            </p>
-        </div>
+    <footer>
+      <span>© 2026 SHITAGRAM™</span>
+      <a href="beta.html">Beta</a>
+      <a href="status.html">Estado</a>
+      <a href="legal.html">Regras</a>
+      <a href="premium.html">Premium</a>
+      <a href="mailto:contacto@shitagram.pt">contacto@shitagram.pt</a>
     </footer>
-
-
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
-    <script>
-        // ESTADO GLOBAL DA APLICAÇÃO DE SIMULAÇÃO
-        const state = {
-            userCoins: 1000,
-            userXP: 2230,
-            userLevel: 12,
-            micoCount: 127,
-            totalBetaWaitlist: 327, 
-            totalMicosInTest: 48,   
-            rulesRewardClaimed: false, 
-            hasRegistered: false,      
-            waitlistPosition: 4821,    
-            isPremium: false,          // Estatuto Premium reativo de simulação!
-            equippedTitle: "Membro Fundador",
-            equippedFrame: "transparent",
-            selectedCategory: "Romântico 💔",
-            activeRankingTab: "semanal",
-            activeMood: "vergonha-alheia",
-            micosList: [
-                { id: 1, text: "Fui acenar a alguém na rua com grande entusiasmo e afinal era para a pessoa atrás de mim...", hearts: 234, comments: 45, xp: 250, category: "Gaffe Clássica 🤐" },
-                { id: 2, text: "Enviei uma mensagem a queixar-me do meu senhorio ao próprio senhorio por engano.", hearts: 312, comments: 67, xp: 250, category: "Tecnológico 📱" }
-            ],
-            rankings: {
-                semanal: [
-                    { rank: 1, user: "MicoMaster", xp: 9250, badge: "Fundador", avatar: "💩" },
-                    { rank: 2, user: "VexameProfessional", xp: 8410, badge: "Beta Tester", avatar: "🫣" },
-                    { rank: 3, user: "Rei dos Micos", xp: 7350, badge: "Lenda", avatar: "👑" },
-                    { rank: 4, user: "Ooo Tio!", xp: 6480, badge: "Iniciante", avatar: "🤡" },
-                    { rank: 5, user: "Mico Medroso", xp: 5710, badge: "Silencioso", avatar: "🐭" }
-                ],
-                mensal: [
-                    { rank: 1, user: "Rei dos Micos", xp: 32400, badge: "Lenda", avatar: "👑" },
-                    { rank: 2, user: "MicoMaster", xp: 28900, badge: "Fundador", avatar: "💩" },
-                    { rank: 3, user: "GaffeQueen", xp: 25400, badge: "Diva", avatar: "💅" },
-                    { rank: 4, user: "VexameProfessional", xp: 22100, badge: "Beta Tester", avatar: "🫣" },
-                    { rank: 5, user: "TropeceiDeNovo", xp: 19800, badge: "Iniciante", avatar: "🚶‍♂️" }
-                ],
-                geral: [
-                    { rank: 1, user: "GaffeQueen", xp: 145000, badge: "Diva", avatar: "💅" },
-                    { rank: 2, user: "Rei dos Micos", xp: 132000, badge: "Lenda", avatar: "👑" },
-                    { rank: 3, user: "MicoMaster", xp: 118000, badge: "Fundador", avatar: "💩" },
-                    { rank: 4, user: "VexameProfessional", xp: 98000, badge: "Beta Tester", avatar: "🫣" },
-                    { rank: 5, user: "SenhorDesastre", xp: 87000, badge: "Desastre", avatar: "🌪️" }
-                ]
-            },
-            moodStories: {
-                "vergonha-alheia": [
-                    { author: "@AnonimoDoPorto", avatar: "🤔", text: "Estava no café no Porto a berrar ao telemóvel a falar mal do meu chefe com pormenores cruéis, até me virar e ver que ele estava sentado na mesa imediatamente atrás de mim a tomar um pequeno-almoço reforçado...", score: "8.9/10", region: "Porto" },
-                    { author: "@VexameGeral", avatar: "🫣", text: "Uma rapariga no metro de Lisboa começou a cantar alto fado achando que tinha os auscultadores ligados, mas os cabos estavam desconectados. Toda a carruagem ficou a ouvi-la desafinar durante 3 estações sem que ninguém dissesse nada.", score: "9.2/10", region: "Lisboa" }
-                ],
-                "gaffe-suprema": [
-                    { author: "@SuperSincero", avatar: "🤐", text: "Fui apresentar um pitch a investidores estrangeiros em Braga e, em vez de dizer 'We are excited about the sheet data' (Estudos de dados da folha de cálculo), baralhei-me e disse 'We are excited about the shit data' com um slide gigante cheio de gráficos atrás.", score: "9.5/10", region: "Braga" },
-                    { author: "@Tropecei", avatar: "🚶‍♂️", text: "Vi uma porta de vidro extremamente limpa num shopping em Coimbra. Fui a andar confiante, a acenar a um amigo e dei uma cabeçada tão violenta no vidro que fez eco pela praça de alimentação inteira.", score: "8.4/10", region: "Coimbra" }
-                ],
-                "romance-falhado": [
-                    { author: "@CupidoCego", avatar: "💔", text: "Tentei impressionar o meu crush do gym em Faro piscando o olho no espelho enquanto pegava num haltere pesado. O haltere escorregou da mão, caiu em cheio em cima do meu pé e tive de ser retirado de maca a choramingar.", score: "9.8/10", region: "Algarve" },
-                    { author: "@RomeuSemJulieta", avatar: "🤡", text: "Mandei um enorme ramo de flores para o escritório da minha pretendente com um poema romântico assinado 'O teu admirador secreto'. No dia seguinte soube que ela achou que era uma ameaça assustadora e chamou a segurança do edifício.", score: "9.0/10", region: "Lisboa" }
-                ]
-            }
-        };
-
-        // INICIALIZAÇÃO
-        window.onload = function() {
-            renderPhoneFeed();
-            renderRankingTable();
-            updateUIVariables();
-        };
-
-        // ATUALIZAÇÃO DA INTERFACE COM AS VARIÁVEIS DO ESTADO
-        function updateUIVariables() {
-            const formattedCoins = formatNumber(state.userCoins);
-            document.getElementById('current-user-coins').innerText = formattedCoins;
-            document.getElementById('phone-user-coins').innerText = formattedCoins;
-            document.getElementById('phone-feed-coins').innerText = formattedCoins; 
-            document.getElementById('phone-user-xp').innerText = formatNumber(state.userXP);
-            document.getElementById('phone-user-level').innerText = state.userLevel;
-            document.getElementById('phone-mico-count').innerText = state.micoCount;
-            document.getElementById('phone-user-title').innerText = state.equippedTitle;
-
-            // Reatividade em Prova Social
-            document.getElementById('social-stat-waitlist').innerText = formatNumber(state.totalBetaWaitlist);
-            document.getElementById('social-stat-micos').innerText = formatNumber(state.totalMicosInTest);
-
-            // Aura de moldura de avatar (Dourado de compras ou Neon Premium)
-            const avatarFrame = document.getElementById('phone-avatar-frame');
-            if (state.isPremium) {
-                // Aura Neon Arco-íris VIP Premium
-                avatarFrame.className = "absolute -inset-1.5 rounded-full bg-gradient-to-r from-yellow-400 via-brand-pink to-brand-purple animate-pulse blur-[1px] transition-all duration-300";
-            } else if (state.equippedFrame === 'gold') {
-                avatarFrame.className = "absolute -inset-1 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-300 animate-pulse transition-all duration-300";
-            } else {
-                avatarFrame.className = "absolute -inset-1 rounded-full bg-transparent transition-all duration-300";
-            }
-
-            // Ativação reativa de badges "Premium" nos ecrãs de telemóveis
-            const premiumBadges = document.querySelectorAll('.premium-badge-span');
-            premiumBadges.forEach(badge => {
-                if (state.isPremium) {
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
-            });
-
-            // Alteração de nomes de utilizador para "VIP"
-            const usernameLabels = document.querySelectorAll('.phone-username-label');
-            usernameLabels.forEach(label => {
-                if (state.isPremium) {
-                    label.innerHTML = `MicoMaster <i class="fa-solid fa-crown text-[10px] text-yellow-500"></i>`;
-                } else {
-                    label.innerText = `MicoMaster`;
-                }
-            });
-        }
-
-        // RENDERIZAR O FEED DO TELEMÓVEL MOCK
-        function renderPhoneFeed() {
-            const feedContainer = document.getElementById('phone-feed-container');
-            feedContainer.innerHTML = '';
-
-            state.micosList.forEach(mico => {
-                const card = document.createElement('div');
-                card.className = "bg-white/5 p-2.5 rounded-xl border border-white/5 space-y-1.5 hover:border-brand-pink/30 transition-colors";
-                card.innerHTML = `
-                    <p class="text-[11px] text-zinc-300 leading-snug">${mico.text}</p>
-                    <div class="flex items-center justify-between text-[10px] text-zinc-500 pt-1 border-t border-white/5">
-                        <div class="flex items-center gap-2">
-                            <span><i class="fa-solid fa-heart text-brand-pink mr-0.5"></i> ${mico.hearts}</span>
-                            <span><i class="fa-solid fa-comment mr-0.5"></i> ${mico.comments}</span>
-                        </div>
-                        <span class="text-brand-fuchsia font-semibold">+${mico.xp} XP</span>
-                    </div>
-                `;
-                feedContainer.appendChild(card);
-            });
-        }
-
-        // CONTROLADOR DE CATEGORIAS
-        function selectCategory(buttonElement, categoryName) {
-            const buttons = document.querySelectorAll('#category-selector button');
-            buttons.forEach(btn => btn.classList.remove('bg-brand-pink', 'text-white'));
-            buttonElement.classList.add('bg-brand-pink', 'text-white');
-            state.selectedCategory = categoryName;
-        }
-
-        // SUBMETER MICO SIMULADO
-        function postSimulatedMico() {
-            const input = document.getElementById('mico-input');
-            const micoText = input.value.trim();
-
-            if (!micoText) {
-                showToast("Erro de Processamento", "Por favor, escreve alguma história de mico para publicar!", "fa-solid fa-triangle-exclamation");
-                return;
-            }
-
-            document.getElementById('sim-state-idle').classList.add('hidden');
-            document.getElementById('sim-state-result').classList.add('hidden');
-            document.getElementById('sim-state-loading').classList.remove('hidden');
-
-            const loadingTexts = [
-                "Analisando grau de vergonha...",
-                "Medindo índice de riso público...",
-                "Calculando bónus de humilhação..."
-            ];
-
-            let textIndex = 0;
-            const textInterval = setInterval(() => {
-                if (textIndex < loadingTexts.length - 1) {
-                    textIndex++;
-                    document.getElementById('loading-text').innerText = loadingTexts[textIndex];
-                }
-            }, 600);
-
-            setTimeout(() => {
-                clearInterval(textInterval);
-
-                const coinsReward = Math.floor(Math.random() * 80) + 50; 
-                const xpReward = Math.floor(Math.random() * 150) + 100; 
-
-                state.userCoins += coinsReward;
-                state.userXP += xpReward;
-                state.micoCount += 1;
-                state.totalMicosInTest += 1; 
-
-                if (state.userXP > (state.userLevel * 250)) {
-                    state.userLevel += 1;
-                    showToast("Subiste de Nível! 🚀", `Alcançaste o Nível ${state.userLevel}! És agora mais famoso na vergonha.`, "fa-solid fa-circle-up");
-                }
-
-                state.micosList.unshift({
-                    id: Date.now(),
-                    text: micoText,
-                    hearts: Math.floor(Math.random() * 20) + 5,
-                    comments: Math.floor(Math.random() * 5),
-                    xp: xpReward,
-                    category: state.selectedCategory
-                });
-
-                document.getElementById('earned-coins').innerText = `+${coinsReward}`;
-                document.getElementById('earned-xp').innerText = `+${xpReward}`;
-
-                const appTopText = document.getElementById('phone-app-top-text');
-                if (appTopText) {
-                    appTopText.innerText = micoText;
-                }
-
-                document.getElementById('sim-state-loading').classList.add('hidden');
-                document.getElementById('sim-state-result').classList.remove('hidden');
-
-                renderPhoneFeed();
-                updateUIVariables();
-                input.value = ''; 
-
-                showToast("Mico Publicado!", "Vê a tua publicação na pré-visualização da app!", "fa-solid fa-mobile-screen");
-
-            }, 2000);
-        }
-
-        // INTERAÇÃO DE LIKE EM TEMPO REAL NOS TELEMÓVEIS MOCK
-        function toggleMockLike(btn) {
-            const heartIcon = btn.querySelector('i');
-            const countSpan = btn.querySelector('.like-count');
-            let currentLikes = parseInt(countSpan.innerText);
-
-            if (heartIcon.classList.contains('fa-regular') || heartIcon.classList.contains('text-zinc-600')) {
-                heartIcon.className = "fa-solid fa-heart text-brand-pink animate-bounce";
-                countSpan.innerText = currentLikes + 1;
-                showToast("Voto Registado! ❤️", "O teu voto de riso foi contabilizado com sucesso no feed virtual!", "fa-solid fa-heart");
-            } else {
-                heartIcon.className = "fa-regular fa-heart text-zinc-500";
-                countSpan.innerText = currentLikes - 1;
-            }
-        }
-
-        // GERIR COMPRAS NA LOJA DE SHITCOINS
-        function buyTitleItem(titleName, cost) {
-            if (state.userCoins < cost) {
-                showToast("Moedas Insuficientes!", "Escreve mais micos no simulador em cima para ganhar ShitCoins de teste!", "fa-solid fa-wallet");
-                return;
-            }
-
-            state.userCoins -= cost;
-            state.equippedTitle = titleName;
-            updateUIVariables();
-            showToast("Equipado com Sucesso!", `Compraste e equipaste o título: "${titleName}"!`, "fa-solid fa-crown");
-        }
-
-        function buyFrameItem(frameType, cost) {
-            if (state.userCoins < cost) {
-                showToast("Moedas Insuficientes!", "Escreve mais micos no simulador para acumular moedas de teste!", "fa-solid fa-wallet");
-                return;
-            }
-
-            state.userCoins -= cost;
-            state.equippedFrame = frameType;
-            updateUIVariables();
-            showToast("Visual Atualizado!", "O teu avatar do mockup agora tem uma moldura dourada radiante!", "fa-solid fa-sparkles");
-        }
-
-        function buyCleanHistory(cost) {
-            if (state.userCoins < cost) {
-                showToast("Moedas Insuficientes!", "Sem moedas suficientes para apagar as tuas pegadas embaraçosas.", "fa-solid fa-wallet");
-                return;
-            }
-
-            if (state.micosList.length <= 1) {
-                showToast("Sem Micos Suficientes!", "Não precisas de apagar nada, o teu histórico está limpo!", "fa-solid fa-circle-info");
-                return;
-            }
-
-            state.userCoins -= cost;
-            state.micosList.pop(); 
-            updateUIVariables();
-            renderPhoneFeed();
-            showToast("Memória Apagada!", "O teu mico mais antigo foi permanentemente limpo do histórico virtual.", "fa-solid fa-trash-can");
-        }
-
-        // REGULAMENTO E RECOMPENSAS
-        function toggleRulesAgreement() {
-            if (state.rulesRewardClaimed) return;
-            const checkbox = document.getElementById('rules-agree');
-            const btn = document.getElementById('rules-reward-btn');
-            
-            if (checkbox.checked) {
-                btn.disabled = false;
-                btn.className = "w-full py-3 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-bold text-xs cursor-pointer hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg";
-            } else {
-                btn.disabled = true;
-                btn.className = "w-full py-3 rounded-xl bg-white/5 text-zinc-500 font-bold text-xs cursor-not-allowed transition-all flex items-center justify-center gap-2";
-            }
-        }
-
-        function claimRulesReward() {
-            if (state.rulesRewardClaimed) return;
-            state.rulesRewardClaimed = true;
-            state.userCoins += 150;
-            updateUIVariables();
-            showToast("Recompensa Entregue! 🎁", "Ganhaste +150 ShitCoins por te comprometeres contra o bullying!", "fa-solid fa-gift");
-            closeRulesModal();
-        }
-
-        // MODAIS CONTROLADORES
-        function openRulesModal() {
-            const modal = document.getElementById('rules-modal');
-            modal.classList.remove('hidden');
-            const btn = document.getElementById('rules-reward-btn');
-            if (state.rulesRewardClaimed) {
-                btn.className = "w-full py-3 rounded-xl bg-green-500/20 text-green-500 font-bold text-xs cursor-default flex items-center justify-center gap-2";
-                btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Recompensa já resgatada!`;
-            } else {
-                document.getElementById('rules-agree').checked = false;
-                btn.disabled = true;
-                btn.className = "w-full py-3 rounded-xl bg-white/5 text-zinc-500 font-bold text-xs cursor-not-allowed transition-all";
-            }
-        }
-
-        function closeRulesModal() {
-            document.getElementById('rules-modal').classList.add('hidden');
-        }
-
-        function openPremiumModal() {
-            const modal = document.getElementById('premium-modal');
-            modal.classList.remove('hidden');
-            const btn = document.getElementById('btn-claim-premium');
-            
-            if (state.isPremium) {
-                btn.className = "w-full py-3.5 rounded-xl bg-green-500/20 text-green-500 font-black text-sm cursor-default flex items-center justify-center gap-2";
-                btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Plano Premium Ativo de Teste!`;
-            } else {
-                btn.className = "w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-bold text-sm hover:opacity-95 transition-all shadow-lg";
-                btn.innerHTML = `Ativar Estatuto Premium Gratuito`;
-            }
-        }
-
-        function closePremiumModal() {
-            document.getElementById('premium-modal').classList.add('hidden');
-        }
-
-        // ATIVAÇÃO REATIVA DO PREMIUM EXPERIMENTAL
-        function activatePremiumTrial() {
-            if (state.isPremium) return;
-
-            state.isPremium = true;
-            state.equippedTitle = "Membro VIP Premium";
-            state.userXP += 2520; // Eleva o XP fictício para o nível 18 para combinar com a imagem!
-            state.userLevel = 18;
-            updateUIVariables();
-
-            // Alterar o aspeto do botão de gatilho principal da Secção 7
-            const mainTriggerBtn = document.getElementById('btn-premium-toggle');
-            mainTriggerBtn.innerText = "Estatuto Premium Ativado! 👑";
-            mainTriggerBtn.className = "w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-display font-black text-sm transition-all shadow-lg hover:scale-105";
-
-            showToast("Subscrição Ativa! 👑", "És agora MicoVIP de teste! Verifica a aura mágica nos teus mockups!", "fa-solid fa-gem");
-            closePremiumModal();
-        }
-
-        // COPIAR LINK DE PARTILHA
-        function copyShareLink(inputId) {
-            const copyText = document.getElementById(inputId);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); 
-            
-            try {
-                document.execCommand("copy");
-                showToast("Link Copiado! 🔗", "Partilhado com sucesso! Sobe posições partilhando com amigos.", "fa-solid fa-link");
-                boostPriority();
-            } catch (err) {
-                showToast("Erro na Cópia", "Copia manualmente o endereço.", "fa-solid fa-triangle-exclamation");
-            }
-        }
-
-        function simulateSocialShare(network) {
-            showToast(`A partilhar no ${network}...`, "A calcular o teu impulso de prioridade...", "fa-solid fa-arrows-spin");
-            setTimeout(() => {
-                boostPriority();
-                showToast("Partilha Efetuada! 🚀", `Ganhaste maior prioridade na lista através do ${network}!`, "fa-solid fa-award");
-            }, 1000);
-        }
-
-        function boostPriority() {
-            const jump = Math.floor(Math.random() * 40) + 15;
-            state.waitlistPosition = Math.max(1, state.waitlistPosition - jump);
-            const posEl = document.getElementById('waitlist-pos');
-            if (posEl) {
-                posEl.innerText = `#${state.waitlistPosition.toLocaleString()}`;
-                posEl.classList.add('text-brand-pink', 'scale-105');
-                setTimeout(() => {
-                    posEl.classList.remove('text-brand-pink', 'scale-105');
-                }, 400);
-            }
-        }
-
-        // SISTEMA DE RANKING
-        function switchRankingTab(tabName) {
-            state.activeRankingTab = tabName;
-            const buttons = document.querySelectorAll('#ranking button');
-            buttons.forEach(btn => btn.className = "px-4 py-2 hover:text-white transition-all font-medium");
-            const currentBtn = document.getElementById(`tab-${tabName}`);
-            currentBtn.className = "px-4 py-2 bg-brand-pink text-white rounded-lg transition-all font-bold";
-            renderRankingTable();
-        }
-
-        // ALTERNAR ABAS NO TELEMÓVEL FEED (SECÇÃO 6)
-        function switchFeedAppTab(tabId, btn) {
-            const buttons = btn.parentNode.querySelectorAll('button');
-            buttons.forEach(b => {
-                b.className = "pb-1.5 hover:text-zinc-300";
-            });
-            btn.className = "pb-1.5 text-white border-b-2 border-brand-pink active-app-tab";
-            showToast(`Feed Filtrado`, `A carregar publicações da aba "${btn.innerText}"...`, "fa-solid fa-arrows-spin");
-        }
-
-        function renderRankingTable(filterText = '') {
-            const tableBody = document.getElementById('ranking-table-body');
-            tableBody.innerHTML = '';
-            const currentData = state.rankings[state.activeRankingTab];
-            const filteredData = currentData.filter(item => 
-                item.user.toLowerCase().includes(filterText.toLowerCase())
-            );
-
-            if (filteredData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-zinc-500">Nenhum mico-utilizador encontrado.</td></tr>`;
-                return;
-            }
-
-            filteredData.forEach(item => {
-                const isUser = item.user === "MicoMaster";
-                const row = document.createElement('tr');
-                row.className = `border-b border-white/5 hover:bg-white/5 transition-colors ${isUser ? 'bg-brand-pink/5 font-semibold' : ''}`;
-                
-                let rankDisplay = item.rank;
-                if (item.rank === 1) rankDisplay = `<span class="text-yellow-500 text-lg"><i class="fa-solid fa-medal"></i></span>`;
-                else if (item.rank === 2) rankDisplay = `<span class="text-zinc-400 text-lg"><i class="fa-solid fa-medal"></i></span>`;
-                else if (item.rank === 3) rankDisplay = `<span class="text-amber-600 text-lg"><i class="fa-solid fa-medal"></i></span>`;
-
-                row.innerHTML = `
-                    <td class="py-4 px-4 font-bold text-zinc-400">${rankDisplay}</td>
-                    <td class="py-4 px-4 flex items-center gap-2.5">
-                        <span class="text-lg">${item.avatar}</span>
-                        <div>
-                            <span class="text-white font-semibold">${item.user}</span>
-                            ${isUser ? '<span class="ml-1.5 text-[9px] bg-brand-pink/20 text-brand-pink px-1.5 py-0.5 rounded font-bold uppercase">Tu</span>' : ''}
-                        </div>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] bg-white/5 border border-white/5 text-zinc-400 font-semibold">${item.badge}</span>
-                    </td>
-                    <td class="py-4 px-4 text-right font-bold text-brand-pink">${formatNumber(item.xp)} XP</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        function filterRankingTable() {
-            const input = document.getElementById('ranking-search');
-            renderRankingTable(input.value);
-        }
-
-        // SISTEMA MOOD MAP
-        function selectMood(moodId, buttonElement) {
-            state.activeMood = moodId;
-            const buttons = document.querySelectorAll('#moodmap button');
-            buttons.forEach(btn => btn.classList.remove('active-mood', 'border-brand-pink', 'border-brand-purple', 'border-brand-fuchsia'));
-
-            buttonElement.classList.add('active-mood');
-            if (moodId === 'vergonha-alheia') {
-                buttonElement.classList.add('border-brand-pink');
-                document.getElementById('mood-title').innerText = "Filtro Ativo: Vergonha Alheia";
-            } else if (moodId === 'gaffe-suprema') {
-                buttonElement.classList.add('border-brand-purple');
-                document.getElementById('mood-title').innerText = "Filtro Ativo: Gaffe Suprema";
-            } else if (moodId === 'romance-falhado') {
-                buttonElement.classList.add('border-brand-fuchsia');
-                document.getElementById('mood-title').innerText = "Filtro Ativo: Amor à Rasca";
-            }
-            generateNewMoodStory(true);
-        }
-
-        function generateNewMoodStory(firstLoad = false) {
-            const stories = state.moodStories[state.activeMood];
-            const randomIndex = Math.floor(Math.random() * stories.length);
-            const story = stories[randomIndex];
-            const textElement = document.getElementById('mood-story-text');
-            textElement.style.opacity = 0;
-            
-            setTimeout(() => {
-                textElement.innerText = `"${story.text}"`;
-                document.getElementById('mood-author').innerText = story.author;
-                document.getElementById('mood-avatar').innerText = story.avatar;
-                document.getElementById('mood-region').innerText = `Portugal Continental • ${story.region}`;
-                textElement.style.opacity = 1;
-            }, 200);
-        }
-
-        // REGISTO BETA WAITLIST
-        function openBetaModal() {
-            const modal = document.getElementById('beta-modal');
-            modal.classList.remove('hidden');
-            document.getElementById('waitlist-form-container').classList.remove('hidden');
-            document.getElementById('waitlist-success').classList.add('hidden');
-        }
-
-        function closeBetaModal() {
-            document.getElementById('beta-modal').classList.add('hidden');
-        }
-
-        // SUBMETER WAITLIST
-        function submitWaitlist(event) {
-            event.preventDefault();
-            const name = document.getElementById('beta-name').value;
-            state.totalBetaWaitlist += 1; 
-            state.hasRegistered = true;
-            state.waitlistPosition = Math.floor(Math.random() * 500) + 4500; 
-
-            document.getElementById('waitlist-form-container').classList.add('hidden');
-            document.getElementById('waitlist-success').classList.remove('hidden');
-            document.getElementById('waitlist-pos').innerText = `#${state.waitlistPosition.toLocaleString()}`;
-            updateUIVariables(); 
-            showToast("Pedido Submetido!", `${name}, o teu lugar na fila de fundadores foi garantido!`, "fa-solid fa-circle-check");
-        }
-
-        // TOASTS DE INTERFACE
-        function showToast(title, description, iconClass = "fa-solid fa-circle-check") {
-            const toast = document.getElementById('toast');
-            const toastTitle = document.getElementById('toast-title');
-            const toastDesc = document.getElementById('toast-desc');
-            const toastIcon = document.getElementById('toast-icon');
-
-            toastTitle.innerText = title;
-            toastDesc.innerText = description;
-            toastIcon.innerHTML = `<i class="${iconClass}"></i>`;
-
-            if (title.includes("Erro") || title.includes("Insuficientes")) {
-                toastIcon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500 text-lg";
-            } else {
-                toastIcon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-brand-pink/20 text-brand-pink text-lg";
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 4000);
-        }
-
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-    </script>
+  </div>
 </body>
 </html>
