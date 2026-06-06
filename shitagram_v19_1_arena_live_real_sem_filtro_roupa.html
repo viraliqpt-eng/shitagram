@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SHITAGRAM™ Arena Live Real</title>
+  <meta name="theme-color" content="#05020c" />
+  <link rel="manifest" href="./manifest.json" />
+  <style>
+    :root{--bg:#05020c;--card:#0d081b;--pink:#ff2e93;--purple:#7c3aed;--fuchsia:#d946ef;--text:#f4f4f5;--muted:#a1a1aa;--line:rgba(255,255,255,.1);--green:#22c55e;--red:#ef4444;--yellow:#eab308;--blue:#38bdf8}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,.22),transparent 36%),radial-gradient(circle at 15% 25%,rgba(255,46,147,.12),transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden} button,input,textarea,select{font:inherit} button{cursor:pointer} a{color:inherit;text-decoration:none}.wrap{width:min(1180px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:50;background:rgba(5,2,12,.84);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:14px 0}.nav{display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{font-weight:950;letter-spacing:.04em;font-size:20px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#d4d4d8}.navlinks a{padding:8px 10px;border:1px solid transparent;border-radius:999px}.navlinks a:hover{border-color:rgba(255,46,147,.3);color:white;background:rgba(255,255,255,.04)}.btn{border:0;border-radius:15px;padding:12px 16px;font-weight:850;color:white;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 0 24px rgba(255,46,147,.16);transition:.2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none}.btn.green{background:linear-gradient(135deg,#16a34a,#22c55e)}.btn.red{background:linear-gradient(135deg,#dc2626,#ff2e93)}.btn.yellow{background:linear-gradient(135deg,#f59e0b,#eab308);color:#120708}.btn.small{padding:9px 11px;border-radius:12px;font-size:12px}.hero{padding:38px 0 24px}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,46,147,.1);border:1px solid rgba(255,46,147,.32);color:#ff70b5;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.dot{width:8px;height:8px;border-radius:999px;background:var(--pink);box-shadow:0 0 16px var(--pink);animation:pulse 1.3s infinite}@keyframes pulse{50%{opacity:.45;transform:scale(.8)}}h1{font-size:clamp(34px,7vw,76px);line-height:.98;margin:18px 0 12px;letter-spacing:-.06em}.grad{background:linear-gradient(135deg,var(--pink),var(--fuchsia),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:clamp(15px,2vw,19px);color:#d4d4d8;max-width:720px;line-height:1.65}.grid{display:grid;gap:22px}.grid12{grid-template-columns:1.1fr .9fr}.card{background:rgba(13,8,27,.72);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.22)}.card.glow{box-shadow:0 0 40px rgba(124,58,237,.12),0 24px 90px rgba(0,0,0,.28)}.section{padding:28px 0}.title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}.title h2{margin:0;font-size:26px;letter-spacing:-.03em}.title p{margin:4px 0 0;color:var(--muted);font-size:13px}.roleRow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.role{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:20px;padding:16px}.role.active{border-color:rgba(255,46,147,.55);box-shadow:0 0 25px rgba(255,46,147,.12)}.role h3{margin:0 0 6px;font-size:16px}.role p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}.steps{display:grid;gap:12px}.step{display:flex;gap:12px;align-items:flex-start;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:18px;padding:14px}.num{width:30px;height:30px;border-radius:10px;background:rgba(255,46,147,.16);color:#ff70b5;display:flex;align-items:center;justify-content:center;font-weight:950;flex:0 0 auto}.step b{display:block;font-size:13px}.step span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:3px}.liveShell{position:relative;border-radius:34px;border:1px solid rgba(255,255,255,.13);padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));overflow:hidden}.liveTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}.liveTop b{font-size:15px}.timer{font-size:34px;font-weight:1000;color:white;letter-spacing:-.04em;text-shadow:0 0 18px rgba(255,46,147,.7)}.themeBadge{border:1px solid rgba(255,46,147,.28);background:rgba(255,46,147,.09);color:#ff9acc;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative}.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;background:rgba(5,2,12,.84);border:1px solid rgba(255,46,147,.45);box-shadow:0 0 24px rgba(255,46,147,.45);color:var(--pink);font-weight:1000;border-radius:999px;width:58px;height:58px;display:flex;align-items:center;justify-content:center}.videoBox{min-height:360px;border-radius:24px;overflow:hidden;border:1px solid var(--line);position:relative;background:#111}.videoBox.left,.videoBox.right{box-shadow:none}video{width:100%;height:100%;object-fit:cover;display:block;background:#090514}.videoOverlay{display:none}.nameTag{position:absolute;top:12px;left:12px;z-index:4;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.right .nameTag{left:auto;right:12px}.outfit{display:none}.placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;color:#a1a1aa;padding:20px}.placeholder .emoji{font-size:52px}.score{margin-top:12px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:18px;padding:12px}.scoreNums{display:flex;align-items:center;justify-content:space-between;font-weight:1000}.scoreNums span:first-child{color:var(--pink)}.scoreNums span:last-child{color:var(--purple)}.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:8px;display:flex}.barA{background:var(--pink);width:58%}.barB{background:var(--purple);flex:1}.effects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.effect{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center;color:white}.effect:hover{border-color:rgba(255,46,147,.45)}.effect .ico{font-size:22px}.effect .txt{font-size:10px;font-weight:900;margin-top:4px}.panel{display:grid;grid-template-columns:1fr;gap:12px}.textarea{width:100%;min-height:130px;background:#070411;color:white;border:1px solid var(--line);border-radius:18px;padding:14px;resize:vertical;font-size:12px;line-height:1.45}.textarea:focus{outline:0;border-color:rgba(255,46,147,.6);box-shadow:0 0 0 3px rgba(255,46,147,.11)}.label{font-size:12px;color:#d4d4d8;font-weight:850;margin-bottom:7px;display:block}.select{width:100%;background:#070411;color:white;border:1px solid var(--line);border-radius:14px;padding:12px}.connState{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stateBox{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px;padding:12px}.stateBox span{display:block;font-size:10px;text-transform:uppercase;color:#71717a;font-weight:900}.stateBox b{display:block;margin-top:5px;font-size:14px}.ok{color:var(--green)}.warn{color:var(--yellow)}.bad{color:var(--red)}.chat{height:210px;overflow:auto;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:18px;padding:12px;font-size:12px;color:#d4d4d8}.chat p{margin:0 0 9px}.chat b{color:white}.gifts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gift{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:15px;padding:10px;text-align:center}.gift:hover{border-color:rgba(255,46,147,.45);transform:translateY(-1px)}.gift .g{font-size:24px}.gift .t{font-size:10px;font-weight:900;margin-top:4px}.floatGift{position:absolute;z-index:30;font-size:46px;animation:fly 1.2s ease-out forwards;text-shadow:0 0 22px rgba(255,46,147,.9)}@keyframes fly{0%{transform:translateY(30px) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-140px) scale(1.35);opacity:0}}.copyHint{font-size:11px;color:var(--muted);line-height:1.5}.notice{border-left:4px solid var(--pink);background:rgba(255,46,147,.07);border-radius:16px;padding:14px;color:#f5d0e3;font-size:13px;line-height:1.55}.footer{padding:32px 0 50px;color:#71717a;text-align:center;font-size:12px}.hidden{display:none!important}@media(max-width:900px){.grid12{grid-template-columns:1fr}.nav{align-items:flex-start}.navlinks{display:none}.videos{grid-template-columns:1fr}.videoBox{min-height:280px}.vs{top:50%;left:auto;right:14px;transform:translateY(-50%);width:46px;height:46px}.effects{grid-template-columns:repeat(2,1fr)}.roleRow,.connState{grid-template-columns:1fr}.gifts{grid-template-columns:repeat(2,1fr)}.timer{font-size:28px}.card{padding:16px}.liveShell{padding:12px;border-radius:24px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a href="./index.html" class="logo">SHIT<span>AGRAM</span>™</a>
+      <nav class="navlinks">
+        <a href="#ligar">Ligar vídeo</a><a href="#live">Live</a><a href="#gifts">Sound Gifts</a><a href="#como">Como usar</a>
+      </nav>
+      <button class="btn small secondary" onclick="location.href='./index.html'">Voltar ao site</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <span class="pill"><span class="dot"></span> v19.1 Live Real Limpa</span>
+      <h1>ARENA <span class="grad">LIVE REAL</span></h1>
+      <p class="lead">Agora a Arena já consegue usar câmara real e ligar dois jogadores por WebRTC. Esta versão funciona sem backend, usando código de convite manual: um jogador cria a batalha, o rival cola o convite, devolve a resposta e os dois ficam em live.</p>
+    </section>
+
+    <section id="ligar" class="section wrap grid grid12">
+      <div class="card glow">
+        <div class="title"><div><h2>1. Escolhe o teu papel</h2><p>Um jogador cria a sala. O outro entra como rival.</p></div></div>
+        <div class="roleRow">
+          <button class="role active" id="roleHost" onclick="setRole('host')"><h3>Sou o Jogador A</h3><p>Crio a batalha e envio o código de convite ao rival.</p></button>
+          <button class="role" id="roleGuest" onclick="setRole('guest')"><h3>Sou o Jogador B</h3><p>Recebo o código, colo aqui e devolvo a resposta.</p></button>
+        </div>
+
+        <div style="margin-top:18px" class="grid">
+          <div>
+            <label class="label">Tema da batalha</label>
+            <select id="themeSelect" class="select" onchange="applyTheme()">
+              <option value="romance">Romance Falhado — vermelho vs rosa</option>
+              <option value="vergonha">Vergonha em Público — rosa vs roxo</option>
+              <option value="noturno">Mico Noturno — azul vs ciano</option>
+              <option value="caos">Caos Total — neon vs verde</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn green" onclick="startCamera()">Ligar a minha câmara</button>
+            <button class="btn secondary" onclick="stopCamera()">Desligar câmara</button>
+          </div>
+        </div>
+
+        <div class="connState">
+          <div class="stateBox"><span>Câmara</span><b id="camState" class="warn">desligada</b></div>
+          <div class="stateBox"><span>Ligação</span><b id="pcState" class="warn">por iniciar</b></div>
+          <div class="stateBox"><span>Canal Battle</span><b id="dcState" class="warn">fechado</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title"><div><h2>2. Código de ligação</h2><p>Sem servidor: copia e cola os códigos entre os dois jogadores.</p></div></div>
+        <div class="steps">
+          <div class="step"><div class="num">A</div><div><b>Jogador A</b><span>Liga a câmara, carrega em “Criar convite”, copia o código e envia ao rival.</span></div></div>
+          <div class="step"><div class="num">B</div><div><b>Jogador B</b><span>Cola o convite em “Código recebido”, carrega em “Criar resposta” e envia a resposta ao A.</span></div></div>
+          <div class="step"><div class="num">C</div><div><b>Jogador A</b><span>Cola a resposta em “Resposta do rival” e carrega em “Confirmar resposta”.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap grid grid12">
+      <div class="card" id="signalHost">
+        <div class="title"><div><h2>Jogador A — Criar convite</h2><p>Usa isto no primeiro telemóvel/computador.</p></div></div>
+        <button class="btn" onclick="createOffer()">Criar convite WebRTC</button>
+        <label class="label" style="margin-top:14px">Convite para enviar ao rival</label>
+        <textarea id="offerBox" class="textarea" readonly placeholder="O convite vai aparecer aqui..."></textarea>
+        <button class="btn small secondary" onclick="copyFrom('offerBox')">Copiar convite</button>
+        <label class="label" style="margin-top:14px">Resposta do rival</label>
+        <textarea id="answerInput" class="textarea" placeholder="Cola aqui a resposta enviada pelo Jogador B..."></textarea>
+        <button class="btn green" onclick="acceptAnswer()">Confirmar resposta e ligar</button>
+      </div>
+
+      <div class="card" id="signalGuest">
+        <div class="title"><div><h2>Jogador B — Entrar na batalha</h2><p>Usa isto no segundo telemóvel/computador.</p></div></div>
+        <label class="label">Código recebido do Jogador A</label>
+        <textarea id="offerInput" class="textarea" placeholder="Cola aqui o convite do Jogador A..."></textarea>
+        <button class="btn" onclick="createAnswer()">Criar resposta para o Jogador A</button>
+        <label class="label" style="margin-top:14px">Resposta para devolver ao Jogador A</label>
+        <textarea id="answerBox" class="textarea" readonly placeholder="A resposta vai aparecer aqui..."></textarea>
+        <button class="btn small secondary" onclick="copyFrom('answerBox')">Copiar resposta</button>
+      </div>
+    </section>
+
+    <section id="live" class="section wrap">
+      <div class="liveShell">
+        <div class="liveTop">
+          <div><b id="battleTitle">MicoMaster VS VexamePro</b><div class="themeBadge" id="themeBadge">💔 Tema: Romance Falhado</div></div>
+          <div class="timer" id="timer">01:00</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small green" onclick="startBattle()">Iniciar 60s</button><button class="btn small secondary" onclick="resetBattle()">Reset</button></div>
+        </div>
+
+        <div class="videos">
+          <div class="vs">VS</div>
+          <div class="videoBox left" id="localBox">
+            <video id="localVideo" autoplay playsinline muted></video>
+            <div class="placeholder" id="localPlaceholder"><div class="emoji">📷</div><b>A tua câmara</b><span>Liga a câmara para apareceres aqui.</span></div>
+            <div class="nameTag">💩 Tu / MicoMaster</div>
+            <div class="videoOverlay"></div>
+          </div>
+          <div class="videoBox right" id="remoteBox">
+            <video id="remoteVideo" autoplay playsinline></video>
+            <div class="placeholder" id="remotePlaceholder"><div class="emoji">🫣</div><b>Rival</b><span>Quando a ligação WebRTC fechar, o vídeo aparece aqui.</span></div>
+            <div class="nameTag">🫣 Rival / VexamePro</div>
+            <div class="videoOverlay"></div>
+          </div>
+        </div>
+
+        <div class="score">
+          <div class="scoreNums"><span id="scoreA">3.280</span><span>REAÇÕES AO VIVO</span><span id="scoreB">2.650</span></div>
+          <div class="bar"><div class="barA" id="barA"></div><div class="barB" id="barB"></div></div>
+        </div>
+
+        <div class="effects">
+          <button class="effect" onclick="useEffect('shitcoins')"><div class="ico">🪙</div><div class="txt">ShitCoins</div></button>
+          <button class="effect" onclick="useEffect('boom')"><div class="ico">💥</div><div class="txt">Explosão</div></button>
+          <button class="effect" onclick="useEffect('shield')"><div class="ico">🛡️</div><div class="txt">Escudo</div></button>
+          <button class="effect" onclick="useEffect('combo')"><div class="ico">⚡</div><div class="txt">Combo</div></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="gifts" class="section wrap grid grid12">
+      <div class="card">
+        <div class="title"><div><h2>Sound Gifts™ em live real</h2><p>Os presentes entram por cima do vídeo e tocam som no navegador.</p></div></div>
+        <div class="gifts">
+          <button class="gift" onclick="sendGift('🪙','ShitCoin',35)"><div class="g">🪙</div><div class="t">ShitCoin</div></button>
+          <button class="gift" onclick="sendGift('🍅','Tomate',50)"><div class="g">🍅</div><div class="t">Tomate</div></button>
+          <button class="gift" onclick="sendGift('😂','Riso',45)"><div class="g">😂</div><div class="t">Riso</div></button>
+          <button class="gift" onclick="sendGift('💔','Coração',70)"><div class="g">💔</div><div class="t">Coração</div></button>
+          <button class="gift" onclick="sendGift('💥','Explosão',100)"><div class="g">💥</div><div class="t">Explosão</div></button>
+          <button class="gift" onclick="sendGift('👑','Coroa',150)"><div class="g">👑</div><div class="t">Coroa</div></button>
+        </div>
+        <p class="copyHint" style="margin-top:12px">Nota: nesta versão sem backend, os gifts e mensagens são sincronizados entre os 2 jogadores pelo DataChannel WebRTC quando a ligação estiver aberta.</p>
+      </div>
+      <div class="card">
+        <div class="title"><div><h2>Chat da batalha</h2><p>Mensagens locais e eventos recebidos pelo rival.</p></div></div>
+        <div id="chat" class="chat"><p><b>Sistema:</b> Liga os dois jogadores para começar a batalha real.</p></div>
+        <div style="display:flex;gap:8px;margin-top:10px"><input id="chatInput" class="select" placeholder="Escreve mensagem..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn small" onclick="sendChat()">Enviar</button></div>
+      </div>
+    </section>
+
+    <section id="como" class="section wrap">
+      <div class="card">
+        <div class="title"><div><h2>Como testar vídeo real agora</h2><p>Funciona melhor em HTTPS, no Chrome/Edge/Android. No iPhone usa Safari.</p></div></div>
+        <div class="notice">Para publicar no teu site, substitui o <b>arena.html</b> antigo por este. Depois abre <b>https://shitagram.pt/arena.html</b> em dois dispositivos. Um faz de Jogador A, outro de Jogador B. A ligação usa WebRTC real, mas sem servidor ainda; por isso os códigos são copiados manualmente.</div>
+        <div class="steps" style="margin-top:14px">
+          <div class="step"><div class="num">1</div><div><b>No dispositivo A</b><span>Ligar câmara → Criar convite → copiar convite.</span></div></div>
+          <div class="step"><div class="num">2</div><div><b>No dispositivo B</b><span>Ligar câmara → colar convite → criar resposta → copiar resposta.</span></div></div>
+          <div class="step"><div class="num">3</div><div><b>Voltar ao dispositivo A</b><span>Colar resposta → Confirmar resposta e ligar. Se tudo estiver certo, aparece o vídeo do rival.</span></div></div>
+          <div class="step"><div class="num">4</div><div><b>Depois</b><span>Iniciar 60s, usar efeitos, enviar Sound Gifts™ e testar a experiência live real.</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer wrap">© 2026 SHITAGRAM™ Arena Live Real. Demo WebRTC manual com imagem limpa.</footer>
+
+  <script>
+    let role='host';let localStream=null;let pc=null;let dc=null;let timerInterval=null;let remaining=60;let scoreA=3280;let scoreB=2650;let audioCtx=null;
+    const iceServers={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+    const $=id=>document.getElementById(id);
+    function setRole(r){role=r;$('roleHost').classList.toggle('active',r==='host');$('roleGuest').classList.toggle('active',r==='guest');addChat('Sistema',r==='host'?'Estás como Jogador A.':'Estás como Jogador B.');}
+    async function startCamera(){try{localStream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},audio:true});$('localVideo').srcObject=localStream;$('localPlaceholder').classList.add('hidden');$('camState').textContent='ligada';$('camState').className='ok';addChat('Sistema','Câmara ligada com sucesso.');}catch(e){$('camState').textContent='erro';$('camState').className='bad';alert('Não consegui ligar a câmara. Confirma permissões do navegador e usa HTTPS.');console.error(e)}}
+    function stopCamera(){if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;$('localVideo').srcObject=null;$('localPlaceholder').classList.remove('hidden');$('camState').textContent='desligada';$('camState').className='warn';}}
+    function makePeer(){pc=new RTCPeerConnection(iceServers);$('pcState').textContent='a criar';$('pcState').className='warn';pc.onconnectionstatechange=()=>{const s=pc.connectionState;$('pcState').textContent=s;$('pcState').className=s==='connected'?'ok':(s==='failed'||s==='disconnected'?'bad':'warn');addChat('Ligação','Estado: '+s)};pc.oniceconnectionstatechange=()=>console.log('ice',pc.iceConnectionState);pc.ontrack=e=>{$('remoteVideo').srcObject=e.streams[0];$('remotePlaceholder').classList.add('hidden');addChat('Sistema','Vídeo do rival recebido.');}; if(localStream)localStream.getTracks().forEach(t=>pc.addTrack(t,localStream)); return pc;}
+    function wireDataChannel(channel){dc=channel;dc.onopen=()=>{$('dcState').textContent='aberto';$('dcState').className='ok';addChat('Sistema','Canal Battle aberto. Gifts e chat sincronizados.');sendData({type:'theme',theme:$('themeSelect').value})};dc.onclose=()=>{$('dcState').textContent='fechado';$('dcState').className='warn'};dc.onmessage=e=>{try{const msg=JSON.parse(e.data);handleData(msg)}catch(err){console.error(err)}};}
+    function waitIceComplete(peer){return new Promise(resolve=>{if(peer.iceGatheringState==='complete')return resolve(); const check=()=>{if(peer.iceGatheringState==='complete'){peer.removeEventListener('icegatheringstatechange',check);resolve();}};peer.addEventListener('icegatheringstatechange',check);setTimeout(resolve,3500);});}
+    async function createOffer(){if(!localStream)await startCamera();makePeer();wireDataChannel(pc.createDataChannel('battle'));const offer=await pc.createOffer();await pc.setLocalDescription(offer);await waitIceComplete(pc);$('offerBox').value=btoa(unescape(encodeURIComponent(JSON.stringify(pc.localDescription))));addChat('Sistema','Convite criado. Envia ao rival.');}
+    async function createAnswer(){if(!localStream)await startCamera();const raw=$('offerInput').value.trim();if(!raw)return alert('Cola primeiro o convite do Jogador A.');makePeer();pc.ondatachannel=e=>wireDataChannel(e.channel);const offer=JSON.parse(decodeURIComponent(escape(atob(raw))));await pc.setRemoteDescription(offer);const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await waitIceComplete(pc);$('answerBox').value=btoa(unescape(encodeURIComponent(JSON.stringify(pc.localDescription))));addChat('Sistema','Resposta criada. Envia ao Jogador A.');}
+    async function acceptAnswer(){if(!pc)return alert('Cria primeiro o convite.');const raw=$('answerInput').value.trim();if(!raw)return alert('Cola a resposta do rival.');const answer=JSON.parse(decodeURIComponent(escape(atob(raw))));await pc.setRemoteDescription(answer);addChat('Sistema','Resposta confirmada. A ligar...');}
+    function sendData(obj){if(dc&&dc.readyState==='open')dc.send(JSON.stringify(obj));}
+    function handleData(msg){if(msg.type==='chat')addChat(msg.from||'Rival',msg.text);if(msg.type==='gift'){showGift(msg.emoji,false);scoreB+=msg.points;updateScore();addChat('Rival',`enviou ${msg.emoji} ${msg.name} +${msg.points}`);playGiftSound(msg.name)}if(msg.type==='effect'){showGift(msg.emoji||'⚡',false);addChat('Rival','usou efeito '+msg.name);playGiftSound(msg.name)}if(msg.type==='timer'){remaining=msg.remaining;renderTimer()}if(msg.type==='theme'){$('themeSelect').value=msg.theme;applyTheme(false)}}
+    function copyFrom(id){const el=$(id);el.select();document.execCommand('copy');addChat('Sistema','Código copiado.');}
+    function startBattle(){remaining=60;clearInterval(timerInterval);timerInterval=setInterval(()=>{remaining--;renderTimer();sendData({type:'timer',remaining});if(remaining<=0){clearInterval(timerInterval);addChat('Sistema',scoreA>=scoreB?'MicoMaster venceu a batalha!':'VexamePro venceu a batalha!');playGiftSound('Coroa');}},1000);addChat('Sistema','Batalha iniciada: 60 segundos.');}
+    function resetBattle(){clearInterval(timerInterval);remaining=60;scoreA=3280;scoreB=2650;renderTimer();updateScore();addChat('Sistema','Batalha reiniciada.');}
+    function renderTimer(){const m=String(Math.floor(remaining/60)).padStart(2,'0');const s=String(remaining%60).padStart(2,'0');$('timer').textContent=`${m}:${s}`;}
+    function updateScore(){$('scoreA').textContent=scoreA.toLocaleString('pt-PT');$('scoreB').textContent=scoreB.toLocaleString('pt-PT');const total=Math.max(scoreA+scoreB,1);const a=Math.round(scoreA/total*100);$('barA').style.width=a+'%';$('barB').style.width=(100-a)+'%';}
+    function useEffect(kind){const map={shitcoins:['🪙','ShitCoins',70],boom:['💥','Explosão',120],shield:['🛡️','Escudo',55],combo:['⚡','Combo',95]};const [emoji,name,points]=map[kind];scoreA+=points;updateScore();showGift(emoji,true);playGiftSound(name);addChat('Tu','usaste '+emoji+' '+name+' +'+points);sendData({type:'effect',emoji,name,points});}
+    function sendGift(emoji,name,points){scoreA+=points;updateScore();showGift(emoji,true);playGiftSound(name);addChat('Tu',`enviaste ${emoji} ${name} +${points}`);sendData({type:'gift',emoji,name,points});}
+    function showGift(emoji,left=true){const box=left?$('localBox'):$('remoteBox');const el=document.createElement('div');el.className='floatGift';el.textContent=emoji;el.style.left=(35+Math.random()*35)+'%';el.style.bottom='40px';box.appendChild(el);setTimeout(()=>el.remove(),1300)}
+    function addChat(from,text){const p=document.createElement('p');p.innerHTML=`<b>${from}:</b> ${text}`;$('chat').appendChild(p);$('chat').scrollTop=$('chat').scrollHeight;}
+    function sendChat(){const input=$('chatInput');const text=input.value.trim();if(!text)return;addChat('Tu',text);sendData({type:'chat',from:'Rival',text});input.value='';}
+    function playGiftSound(name){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();const now=audioCtx.currentTime;const gain=audioCtx.createGain();gain.connect(audioCtx.destination);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.18,now+.03);gain.gain.exponentialRampToValueAtTime(.0001,now+.35);const o=audioCtx.createOscillator();o.type=name==='Explosão'?'sawtooth':name==='Coroa'?'triangle':'sine';o.frequency.setValueAtTime(name==='Explosão'?90:name==='Coroa'?660:440,now);o.frequency.exponentialRampToValueAtTime(name==='Explosão'?45:name==='Coroa'?990:720,now+.22);o.connect(gain);o.start(now);o.stop(now+.38)}catch(e){}}
+    function applyTheme(send=true){const t=$('themeSelect').value;const badge=$('themeBadge');const themes={romance:'💔 Tema: Romance Falhado',vergonha:'🫣 Tema: Vergonha em Público',noturno:'🌙 Tema: Mico Noturno',caos:'⚡ Tema: Caos Total'};badge.textContent=themes[t]||'Tema da batalha';if(send)sendData({type:'theme',theme:t});}
+    applyTheme(false);updateScore();
+    if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+  </script>
+</body>
+</html>
