@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, efeitos, wins, ranking e moderação de segurança." />
   <title>SHITAGRAM™ Arena — Mico Battle Live</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <meta name="theme-color" content="#05020c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SHITAGRAM Arena" />
+  <link rel="manifest" href="manifest.json" />
+  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=DYmam9zjRnQpULs_ayzNshSc19pKITgaRGo1Uj7cXpJp-lMV-uW756s4srQuytkDeMAVF2tHDUESLDyEFkIxQ1VC-G4NmHRSo4VBGXDHXdsomE_kwgiN5CWRnCY8u8P5AN9Up43c0W15BF49IXd-FjtJzuwh0z1CmYve8W68JZcH0Z65EpTWLUeLcYE-JUnRMK78iS-IPwkJ-36D7-tB6P4rqLovepow5A5pUl3JmLqpjxzqECVRePtDlvHKqcv22LPA_VMpleE7D9q1ZXempA" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -68,6 +74,9 @@
         <a href="#feedback" class="hover:text-brand-pink">Feedback</a>
         <a href="#live-real" class="hover:text-brand-pink">Live Real</a>
         <a href="#dados-reais" class="hover:text-brand-pink">Dados Reais</a>
+        <a href="#mvp-real" class="hover:text-brand-pink">MVP Real</a>
+        <a href="#beta-launch" class="hover:text-brand-pink">Beta Launch</a>
+        <a href="#pwa-mobile" class="hover:text-brand-pink">PWA Mobile</a>
         <a href="#progresso" class="hover:text-brand-pink">Progresso</a>
         <a href="index.html#mico-battle-live" class="hover:text-brand-pink">Landing</a>
       </nav>
@@ -656,7 +665,207 @@
       </div>
     </section>
 
-    <section id="progresso" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <section id="mvp-real" class="glass rounded-3xl p-6 lg:p-8 relative overflow-hidden">
+      <div class="absolute -left-24 -top-24 w-80 h-80 bg-brand-purple/12 rounded-full blur-[110px] pointer-events-none"></div>
+      <div class="absolute right-0 bottom-0 w-96 h-96 bg-brand-pink/8 rounded-full blur-[120px] pointer-events-none"></div>
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-5">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-black uppercase tracking-wider">
+            <i class="fa-solid fa-rocket"></i> Próximo passo real
+          </span>
+          <h2 class="font-display font-black text-3xl lg:text-4xl text-white mt-5">v17.9 — MVP Real da Arena</h2>
+          <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
+            Esta etapa transforma tudo o que já está desenhado na demo num plano de execução para programador: o que construir primeiro, o que fica para depois e que regras impedem abuso, spam e batota.
+          </p>
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Fase 1</span>
+              <strong class="block text-white mt-1">Sala + Auth</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Fase 2</span>
+              <strong class="block text-brand-pink mt-1">Realtime</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Fase 3</span>
+              <strong class="block text-brand-purple mt-1">Vídeo</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Fase 4</span>
+              <strong id="mvpStatus" class="block text-yellow-400 mt-1">Handoff pronto</strong>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <button onclick="copyMvpHandoff()" class="tap px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm hover:scale-[1.02] transition-transform"><i class="fa-solid fa-copy mr-2"></i>Copiar handoff técnico</button>
+            <button onclick="simulateMvpReadiness()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10"><i class="fa-solid fa-list-check mr-2"></i>Validar MVP</button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-5">
+              <div class="w-11 h-11 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-lg"><i class="fa-solid fa-user-check"></i></div>
+              <h3 class="font-display font-black text-white mt-4">1. Login e perfis reais</h3>
+              <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Criar conta, perfil de Arena, wins, coins, estatuto de espectador e avatar.</p>
+            </div>
+            <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-5">
+              <div class="w-11 h-11 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-lg"><i class="fa-solid fa-door-open"></i></div>
+              <h3 class="font-display font-black text-white mt-4">2. Salas reais</h3>
+              <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Criar sala, gerar link, aceitar rival, listar espectadores e controlar estado da batalha.</p>
+            </div>
+            <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-5">
+              <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-lg"><i class="fa-solid fa-gift"></i></div>
+              <h3 class="font-display font-black text-white mt-4">3. Gifts e pontuação</h3>
+              <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Sound Gifts™, pontos no servidor, cooldown, anti-spam e chat em tempo real.</p>
+            </div>
+            <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-5">
+              <div class="w-11 h-11 rounded-2xl bg-green-500/10 text-green-400 flex items-center justify-center text-lg"><i class="fa-solid fa-video"></i></div>
+              <h3 class="font-display font-black text-white mt-4">4. Vídeo live</h3>
+              <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Ligar WebRTC/LiveKit apenas depois da sala, gifts, pontuação e moderação estarem estáveis.</p>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-brand-purple/10 to-brand-pink/10 border border-brand-pink/20 rounded-3xl p-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 class="font-display font-black text-white text-xl">Regra de ouro para o técnico</h3>
+                <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Não começar pelo vídeo. Primeiro autenticação, salas, presença, chat, gifts, pontuação e moderação. Só depois a live real.</p>
+              </div>
+              <div class="bg-brand-dark/70 border border-white/10 rounded-2xl px-4 py-3 text-center min-w-[150px]">
+                <span class="block text-[10px] text-zinc-500 font-black uppercase">Prontidão MVP</span>
+                <strong id="mvpReadyPercent" class="block text-2xl text-brand-pink font-black mt-1">72%</strong>
+              </div>
+            </div>
+            <div class="mt-4 bg-white/5 rounded-full h-3 overflow-hidden border border-white/10">
+              <div id="mvpReadyBar" class="h-full w-[72%] bg-gradient-to-r from-brand-pink to-brand-purple rounded-full transition-all duration-700"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    <!-- ================= V17.9 — BETA LAUNCH KIT ================= -->
+    <section id="beta-launch" class="scroll-mt-24 bg-brand-card/35 border border-white/10 rounded-3xl p-6 lg:p-10 space-y-8 relative overflow-hidden">
+      <div class="absolute -top-28 -right-24 w-80 h-80 bg-brand-pink/10 rounded-full blur-[90px] pointer-events-none"></div>
+      <div class="absolute -bottom-28 -left-24 w-80 h-80 bg-brand-purple/10 rounded-full blur-[90px] pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+            <i class="fa-solid fa-rocket"></i> v17.9 — Beta Launch Kit
+          </span>
+          <h2 class="font-display font-black text-3xl lg:text-5xl text-white leading-tight">
+            Pronto para testar a Arena com pessoas reais.
+          </h2>
+          <p class="text-zinc-400 text-sm lg:text-base leading-relaxed">
+            Esta fase prepara a publicação controlada da Arena: checklist, mensagem para testers, roteiro de teste, critérios de sucesso e relatório rápido para perceber se a funcionalidade merece avançar para live real.
+          </p>
+        </div>
+
+        <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-5 min-w-[240px]">
+          <span class="block text-[10px] text-zinc-500 font-black uppercase tracking-wider">Estado da beta</span>
+          <span id="betaLaunchStatus" class="block text-2xl font-black text-brand-pink mt-1">Preparação</span>
+          <div class="w-full h-2 bg-white/5 rounded-full mt-4 overflow-hidden">
+            <div id="betaLaunchBar" class="h-full w-[64%] bg-gradient-to-r from-brand-purple to-brand-pink rounded-full transition-all duration-700"></div>
+          </div>
+          <span id="betaLaunchPercent" class="block text-xs text-zinc-400 mt-2 font-bold">64% pronto</span>
+        </div>
+      </div>
+
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-6 space-y-5">
+          <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple flex items-center justify-center text-xl">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-black text-white text-xl">Checklist antes de publicar</h3>
+            <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Valida os pontos essenciais antes de enviares o link para testers.</p>
+          </div>
+          <div class="space-y-3 text-sm">
+            <label class="flex items-start gap-3 text-zinc-300"><input type="checkbox" class="mt-1 accent-pink-500" onchange="updateBetaLaunchProgress()"> <span>Substituir o <strong>arena.html</strong> antigo pelo novo.</span></label>
+            <label class="flex items-start gap-3 text-zinc-300"><input type="checkbox" class="mt-1 accent-pink-500" onchange="updateBetaLaunchProgress()"> <span>Testar no computador e no telemóvel.</span></label>
+            <label class="flex items-start gap-3 text-zinc-300"><input type="checkbox" class="mt-1 accent-pink-500" onchange="updateBetaLaunchProgress()"> <span>Confirmar que Sound Gifts™ tocam som.</span></label>
+            <label class="flex items-start gap-3 text-zinc-300"><input type="checkbox" class="mt-1 accent-pink-500" onchange="updateBetaLaunchProgress()"> <span>Confirmar que o botão de feedback funciona.</span></label>
+            <label class="flex items-start gap-3 text-zinc-300"><input type="checkbox" class="mt-1 accent-pink-500" onchange="updateBetaLaunchProgress()"> <span>Enviar apenas a 10–20 testers responsivos.</span></label>
+          </div>
+        </div>
+
+        <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-6 space-y-5">
+          <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink flex items-center justify-center text-xl">
+            <i class="fa-solid fa-message"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-black text-white text-xl">Mensagem para testers</h3>
+            <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Texto curto para WhatsApp, Instagram ou TikTok.</p>
+          </div>
+          <div class="bg-black/30 border border-white/10 rounded-2xl p-4 text-sm text-zinc-300 leading-relaxed" id="testerMessageBox">
+            Ei 👀 estou a testar a Arena do SHITAGRAM™.<br><br>
+            É uma batalha de 60 segundos com temas, efeitos, Sound Gifts™ e ranking.<br><br>
+            Podes abrir e dizer-me em 1 minuto:<br>
+            1. Percebeste logo o que é?<br>
+            2. Parece divertido?<br>
+            3. Voltarias para ver outra batalha?<br><br>
+            Link: https://shitagram.pt/arena.html
+          </div>
+          <button onclick="copyTesterMessage()" class="tap w-full py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm hover:scale-[1.02] transition-transform">
+            Copiar mensagem
+          </button>
+        </div>
+
+        <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-6 space-y-5">
+          <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-black text-white text-xl">Critérios de sucesso</h3>
+            <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Só avançar para live real se a beta responder bem.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-2xl font-black text-brand-pink">70%</span>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase">Percebem a ideia</span>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-2xl font-black text-brand-purple">60%</span>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase">Voltariam</span>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-2xl font-black text-yellow-500">4/5</span>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase">Diversão média</span>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-2xl font-black text-green-400">0</span>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase">Erros críticos</span>
+            </div>
+          </div>
+          <button onclick="simulateBetaValidation()" class="tap w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10 transition-all">
+            Validar beta demo
+          </button>
+        </div>
+      </div>
+
+      <div class="relative z-10 bg-gradient-to-r from-brand-purple/10 to-brand-pink/10 border border-brand-pink/20 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <h3 class="font-display font-black text-white text-2xl">Relatório rápido para enviar ao técnico</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed max-w-2xl">
+            Depois dos primeiros testers, copia este relatório e envia ao técnico com o que foi validado, o que falhou e qual deve ser o próximo bloco de desenvolvimento real.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <button onclick="copyBetaReport()" class="tap px-6 py-3.5 rounded-2xl bg-brand-pink text-white font-display font-black text-sm hover:bg-brand-pink/90 transition-all">
+            Copiar relatório beta
+          </button>
+          <button onclick="document.getElementById('feedback').scrollIntoView({behavior:'smooth'})" class="tap px-6 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10 transition-all">
+            Ir para feedback
+          </button>
+        </div>
+      </div>
+    </section>
+
+<section id="progresso" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8">
         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
           <i class="fa-solid fa-database"></i> Guardado no dispositivo
@@ -680,6 +889,73 @@
           </div>
         </div>
         <div id="progressSummary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+      </div>
+    </section>
+
+
+
+    <section id="pwa-mobile" class="scroll-mt-24 bg-brand-card/35 border border-white/10 rounded-3xl p-6 lg:p-10 space-y-8 relative overflow-hidden">
+      <div class="absolute -right-20 -top-20 w-72 h-72 bg-brand-purple/10 rounded-full blur-[90px] pointer-events-none"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+        <div class="lg:col-span-5 space-y-5">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+            <i class="fa-solid fa-mobile-screen-button"></i> v18 — PWA Mobile Pack
+          </span>
+          <h2 class="font-display font-black text-3xl lg:text-4xl text-white">Instalar a Arena como app</h2>
+          <p class="text-zinc-400 text-sm leading-relaxed">Esta versão prepara a Arena para funcionar como experiência web instalável no iPhone e Android, com visual de app, atalhos e base offline simples para a demo.</p>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Android</span>
+              <span id="pwaAndroidStatus" class="block text-brand-pink font-black mt-1">Instalável</span>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">iOS</span>
+              <span class="block text-white font-black mt-1">Adicionar ao ecrã</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="installArenaPWA()" class="tap px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm hover:scale-[1.02] transition-transform">
+              <i class="fa-solid fa-download mr-2"></i>Instalar app
+            </button>
+            <button onclick="copyInstallInstructions()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-bold text-sm hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-copy mr-2"></i>Copiar instruções
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-brand-dark/60 border border-brand-pink/20 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-bolt"></i></div>
+            <h3 class="font-display font-black text-white">Arranque rápido</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">A Arena abre como app, sem depender de o utilizador procurar o link outra vez.</p>
+          </div>
+          <div class="bg-brand-dark/60 border border-brand-purple/20 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-wifi"></i></div>
+            <h3 class="font-display font-black text-white">Base offline</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Guarda a página principal em cache para a demo carregar melhor em mobile.</p>
+          </div>
+          <div class="bg-brand-dark/60 border border-brand-fuchsia/20 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-brand-fuchsia/10 text-brand-fuchsia flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-share-nodes"></i></div>
+            <h3 class="font-display font-black text-white">Mais partilhável</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Ideal para enviar aos testers: abre no browser e pode ficar no ecrã inicial.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative z-10 bg-brand-dark/60 border border-white/10 rounded-3xl p-5 lg:p-6">
+        <h3 class="font-display font-black text-white text-xl mb-3">Como instalar no telemóvel</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-zinc-300">
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <h4 class="font-black text-white mb-2"><i class="fa-brands fa-android text-brand-pink mr-2"></i>Android / Chrome</h4>
+            <p class="text-zinc-400 leading-relaxed">Abre a Arena, toca no menu do Chrome e escolhe “Adicionar ao ecrã principal” ou “Instalar app”.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <h4 class="font-black text-white mb-2"><i class="fa-brands fa-apple text-brand-purple mr-2"></i>iPhone / Safari</h4>
+            <p class="text-zinc-400 leading-relaxed">Abre no Safari, toca no botão de partilha e escolhe “Adicionar ao ecrã principal”.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1320,6 +1596,92 @@ create policy "authenticated users create reports" on public.battle_reports for 
       const el=document.getElementById('backendDemoStatus');
       if(el){ el.textContent='Pronto para ligar'; el.className='block text-green-400 mt-1'; }
       showToast('Ligação demo verificada','A Arena está preparada para receber Supabase/Realtime na próxima fase.','fa-solid fa-plug-circle-check');
+    }
+
+
+    function copyMvpHandoff(){
+      const handoff = `SHITAGRAM™ Arena — v17.9 MVP Real\n\nObjetivo: transformar a Arena demo numa primeira versão real testável com utilizadores.\n\nOrdem obrigatória:\n1. Auth real e perfis Arena\n2. Criar battle_rooms no Supabase\n3. Link de convite e estado da sala\n4. Presença do rival e espectadores em Realtime\n5. Chat e Sound Gifts™ com cooldown\n6. Pontuação calculada no servidor\n7. Resultado, wins e Arena Coins persistentes\n8. Moderação: denúncias, silenciar chat, bloquear spam\n9. Só depois ligar vídeo real com LiveKit/WebRTC\n\nStack recomendada:\nFrontend: React/Next ou HTML progressivo\nBackend: Supabase Auth + Postgres\nRealtime: Supabase Channels\nVídeo: LiveKit/WebRTC\nÁudio: Web Audio API\nSegurança: RLS, cooldown, logs e reports\n\nPrimeiro teste público: 10 a 20 utilizadores, batalhas simuladas ou sem vídeo, para validar clareza, gifts, sons, pontuação e vontade de voltar.`;
+      navigator.clipboard?.writeText(handoff).then(()=>showToast('Handoff copiado','O plano MVP real foi copiado para enviares ao técnico.','fa-solid fa-copy')).catch(()=>showToast('Copia manualmente','O navegador bloqueou a cópia automática.','fa-solid fa-triangle-exclamation'));
+    }
+
+    function simulateMvpReadiness(){
+      const bar=document.getElementById('mvpReadyBar');
+      const pct=document.getElementById('mvpReadyPercent');
+      const status=document.getElementById('mvpStatus');
+      if(bar) bar.style.width='86%';
+      if(pct) pct.textContent='86%';
+      if(status){ status.textContent='Pronto para técnico'; status.className='block text-green-400 mt-1'; }
+      showToast('MVP validado','A Arena está pronta para handoff técnico e primeiros testes beta.','fa-solid fa-list-check');
+    }
+
+
+    function updateBetaLaunchProgress(){
+      const boxes=[...document.querySelectorAll('#beta-launch input[type="checkbox"]')];
+      const checked=boxes.filter(b=>b.checked).length;
+      const pct=Math.round(64 + (checked/Math.max(1,boxes.length))*26);
+      const bar=document.getElementById('betaLaunchBar');
+      const percent=document.getElementById('betaLaunchPercent');
+      const status=document.getElementById('betaLaunchStatus');
+      if(bar) bar.style.width=pct+'%';
+      if(percent) percent.textContent=pct+'% pronto';
+      if(status){
+        status.textContent = pct>=88 ? 'Quase pronta' : 'Preparação';
+        status.className = pct>=88 ? 'block text-2xl font-black text-green-400 mt-1' : 'block text-2xl font-black text-brand-pink mt-1';
+      }
+    }
+
+    function copyTesterMessage(){
+      const msg = `Ei 👀 estou a testar a Arena do SHITAGRAM™.\n\nÉ uma batalha de 60 segundos com temas, efeitos, Sound Gifts™ e ranking.\n\nPodes abrir e dizer-me em 1 minuto:\n1. Percebeste logo o que é?\n2. Parece divertido?\n3. Voltarias para ver outra batalha?\n\nLink: https://shitagram.pt/arena.html`;
+      navigator.clipboard?.writeText(msg).then(()=>showToast('Mensagem copiada','Texto pronto para enviares aos testers.','fa-solid fa-message')).catch(()=>showToast('Copia manualmente','O navegador bloqueou a cópia automática.','fa-solid fa-triangle-exclamation'));
+    }
+
+    function simulateBetaValidation(){
+      const bar=document.getElementById('betaLaunchBar');
+      const percent=document.getElementById('betaLaunchPercent');
+      const status=document.getElementById('betaLaunchStatus');
+      if(bar) bar.style.width='92%';
+      if(percent) percent.textContent='92% pronto';
+      if(status){ status.textContent='Pronta para testers'; status.className='block text-2xl font-black text-green-400 mt-1'; }
+      showToast('Beta validada','A Arena está pronta para enviares a 10–20 testers responsivos.','fa-solid fa-rocket');
+    }
+
+    function copyBetaReport(){
+      const report = `SHITAGRAM™ Arena — v17.9 Beta Launch Kit\n\nObjetivo: testar a Arena com 10–20 pessoas reais antes de investir em live real.\n\nLink de teste: https://shitagram.pt/arena.html\n\nFluxo a testar:\n1. Entrar na Arena\n2. Criar sala ou iniciar batalha demo\n3. Ver tema e mudança de cor\n4. Usar Sound Gifts™\n5. Ver resultado, wins e histórico\n6. Enviar feedback\n\nCritérios de sucesso:\n- 70% entende a ideia em menos de 30 segundos\n- 60% diz que voltaria para ver outra batalha\n- Nota média de diversão acima de 4/5\n- Nenhum erro crítico no mobile\n\nPróximo passo técnico se validar:\n1. Auth real\n2. Salas reais\n3. Realtime para presença, chat, gifts e pontuação\n4. Moderação e cooldown no servidor\n5. Só depois vídeo real com LiveKit/WebRTC`;
+      navigator.clipboard?.writeText(report).then(()=>showToast('Relatório copiado','O relatório beta foi copiado para enviares ao técnico.','fa-solid fa-clipboard-check')).catch(()=>showToast('Copia manualmente','O navegador bloqueou a cópia automática.','fa-solid fa-triangle-exclamation'));
+    }
+
+
+
+    let deferredArenaInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredArenaInstallPrompt = event;
+      const status = document.getElementById('pwaAndroidStatus');
+      if(status) status.textContent = 'Pronta para instalar';
+    });
+
+    async function installArenaPWA(){
+      if(deferredArenaInstallPrompt){
+        deferredArenaInstallPrompt.prompt();
+        const choice = await deferredArenaInstallPrompt.userChoice;
+        deferredArenaInstallPrompt = null;
+        showToast(choice.outcome === 'accepted' ? 'Instalação iniciada' : 'Instalação cancelada', choice.outcome === 'accepted' ? 'A Arena foi adicionada como app.' : 'Podes instalar mais tarde pelo menu do navegador.', 'fa-solid fa-mobile-screen-button');
+        return;
+      }
+      showToast('Instalação manual', 'No iPhone usa Safari > Partilhar > Adicionar ao ecrã principal. No Android usa o menu do Chrome.', 'fa-solid fa-circle-info');
+    }
+
+    function copyInstallInstructions(){
+      const txt = `SHITAGRAM™ Arena — instalar no telemóvel\n\nAndroid/Chrome:\n1. Abre https://shitagram.pt/arena.html\n2. Toca no menu do Chrome\n3. Escolhe “Adicionar ao ecrã principal” ou “Instalar app”\n\niPhone/Safari:\n1. Abre https://shitagram.pt/arena.html no Safari\n2. Toca no botão de partilha\n3. Escolhe “Adicionar ao ecrã principal”`;
+      navigator.clipboard?.writeText(txt).then(()=>showToast('Instruções copiadas','Texto pronto para enviares aos testers.','fa-solid fa-copy')).catch(()=>showToast('Copia manualmente','O navegador bloqueou a cópia automática.','fa-solid fa-triangle-exclamation'));
+    }
+
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(()=>{
+          console.log('SHITAGRAM Arena service worker ativo');
+        }).catch(()=>{});
+      });
     }
 
     function showToast(title,text,icon='fa-solid fa-circle-check'){ document.getElementById('toastTitle').textContent=title; document.getElementById('toastText').textContent=text; document.getElementById('toastIcon').innerHTML=`<i class="${icon}"></i>`; const t=document.getElementById('toast'); t.classList.remove('translate-y-20','opacity-0'); t.classList.add('translate-y-0','opacity-100'); setTimeout(()=>{t.classList.add('translate-y-20','opacity-0');t.classList.remove('translate-y-0','opacity-100');},3200); }
