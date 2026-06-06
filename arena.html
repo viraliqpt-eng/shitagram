@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, efeitos, wins e ranking." />
+  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, efeitos, wins, ranking e moderação de segurança." />
   <title>SHITAGRAM™ Arena — Mico Battle Live</title>
-  <script type="text/javascript" src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=_XKOo4sWhHdFhMDmIBRCUNuY4JaQgoe7hjAYvyPwu1_OxFjTrI-p45kWMcuNFgQYM45dWkF6rZbCDdV6J2_7HApdyHz6-u_vK2VVEi8cmZhNtqbygEUwWXePDJ-ZKdXYCrvlqIvxfG4J83w4QR265LfbQ9L8bBvteD_VsDuehw242iSpxVBUVTiOHDoKwedc8c_AGjQ3EoijQnjuGldJzIXnVbCNyhnS3cHFCAUUmHdtiDlK_sEjooTL9SvjAQZQQj_v0oFKdiYXMu090t7KRQ" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -63,6 +63,10 @@
         <a href="#ranking" class="hover:text-brand-pink">Ranking</a>
         <a href="#perfil" class="hover:text-brand-pink">Perfil</a>
         <a href="#missoes" class="hover:text-brand-pink">Missões</a>
+        <a href="#seguranca" class="hover:text-brand-pink">Segurança</a>
+        <a href="#analytics" class="hover:text-brand-pink">Analytics</a>
+        <a href="#feedback" class="hover:text-brand-pink">Feedback</a>
+        <a href="#live-real" class="hover:text-brand-pink">Live Real</a>
         <a href="#progresso" class="hover:text-brand-pink">Progresso</a>
         <a href="index.html#mico-battle-live" class="hover:text-brand-pink">Landing</a>
       </nav>
@@ -302,6 +306,274 @@
       </div>
     </section>
 
+
+    <section id="seguranca" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-4 glass rounded-3xl p-6 lg:p-8 space-y-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase">
+          <i class="fa-solid fa-shield-halved"></i> Fair Play Live
+        </div>
+        <h2 class="font-display font-black text-3xl text-white">Segurança da Arena</h2>
+        <p class="text-zinc-400 text-sm leading-relaxed">
+          Controlos rápidos para manter as batalhas intensas, mas seguras: modo seguro, chat moderado, cooldown de presentes e denúncias em tempo real.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><span class="block text-[10px] text-zinc-500 font-black uppercase">Modo seguro</span><span id="safeModeLabel" class="block text-brand-pink text-xl font-black mt-1">OFF</span></div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><span class="block text-[10px] text-zinc-500 font-black uppercase">Chat</span><span id="chatModerationLabel" class="block text-white text-xl font-black mt-1">Ativo</span></div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><span class="block text-[10px] text-zinc-500 font-black uppercase">Presentes</span><span id="giftCooldownLabel" class="block text-brand-purple text-xl font-black mt-1">Livre</span></div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8 glass rounded-3xl p-6 lg:p-8 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-display font-black text-2xl text-white">Painel de moderação rápida</h2>
+            <p class="text-zinc-500 text-sm mt-1">Simulação de ferramentas que a Arena precisa antes de ter lives reais.</p>
+          </div>
+          <button onclick="clearSafetyReports()" class="tap px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-black hover:bg-white/10"><i class="fa-solid fa-broom mr-1"></i> Limpar denúncias</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button onclick="toggleSafeMode()" class="tap bg-brand-dark/65 border border-brand-pink/20 rounded-3xl p-5 text-left hover:border-brand-pink/50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-user-shield"></i></div>
+            <h3 class="font-display font-black text-white">Modo seguro</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Reduz efeitos agressivos, baixa sons fortes e destaca regras de fair play.</p>
+          </button>
+          <button onclick="toggleChatMute()" class="tap bg-brand-dark/65 border border-brand-purple/20 rounded-3xl p-5 text-left hover:border-brand-purple/50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-comment-slash"></i></div>
+            <h3 class="font-display font-black text-white">Silenciar chat</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Útil quando há spam ou comentários fora do tom da batalha.</p>
+          </button>
+          <button onclick="toggleGiftCooldown()" class="tap bg-brand-dark/65 border border-yellow-500/20 rounded-3xl p-5 text-left hover:border-yellow-500/50 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-stopwatch"></i></div>
+            <h3 class="font-display font-black text-white">Cooldown gifts</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Evita spam sonoro nos Sound Gifts™ durante picos da live.</p>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <h3 class="font-display font-black text-white mb-4">Denunciar ocorrência</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="submitSafetyReport('Bullying')" class="tap rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-black py-3">Bullying</button>
+              <button onclick="submitSafetyReport('Spam no chat')" class="tap rounded-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 text-xs font-black py-3">Spam</button>
+              <button onclick="submitSafetyReport('Som abusivo')" class="tap rounded-2xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black py-3">Som abusivo</button>
+              <button onclick="submitSafetyReport('Conteúdo impróprio')" class="tap rounded-2xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black py-3">Conteúdo</button>
+            </div>
+            <p class="text-zinc-500 text-[11px] mt-4 leading-relaxed">Na versão real, estas ações iriam para uma fila de moderação com ID da batalha, jogador, espectador e timestamp.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-display font-black text-white">Fila de denúncias</h3>
+              <span id="reportsCount" class="text-xs text-brand-pink font-black bg-brand-pink/10 border border-brand-pink/20 rounded-full px-3 py-1">0</span>
+            </div>
+            <div id="safetyReportsList" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="analytics" class="glass rounded-3xl p-6 lg:p-8 space-y-8">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+        <div>
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+            <i class="fa-solid fa-chart-line"></i> Painel do criador
+          </span>
+          <h2 class="font-display font-black text-3xl text-white mt-5">Analytics da Arena</h2>
+          <p class="text-zinc-400 text-sm mt-2 max-w-2xl leading-relaxed">Mede o que realmente importa: batalhas vistas, presentes enviados, efeitos usados, wins, moedas, envolvimento e potencial de retenção. Nesta demo os dados são simulados e guardados localmente.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button onclick="simulateAnalyticsBoost()" class="tap px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm"><i class="fa-solid fa-bolt mr-2"></i> Simular pico live</button>
+          <button onclick="copyAnalyticsReport()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10"><i class="fa-solid fa-copy mr-2"></i> Copiar relatório</button>
+        </div>
+      </div>
+
+      <div id="analyticsCards" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 bg-brand-dark/65 border border-white/10 rounded-3xl p-5">
+          <div class="flex items-center justify-between gap-4 mb-5">
+            <div>
+              <h3 class="font-display font-black text-white text-xl">Funil da batalha</h3>
+              <p class="text-zinc-500 text-xs mt-1">Do convite até à vitória.</p>
+            </div>
+            <span class="text-[10px] text-brand-pink bg-brand-pink/10 border border-brand-pink/20 rounded-full px-3 py-1 font-black uppercase">Demo</span>
+          </div>
+          <div id="analyticsFunnel" class="space-y-3"></div>
+        </div>
+
+        <div class="lg:col-span-5 bg-brand-dark/65 border border-white/10 rounded-3xl p-5">
+          <div class="flex items-center justify-between gap-4 mb-5">
+            <div>
+              <h3 class="font-display font-black text-white text-xl">Top Sound Gifts™</h3>
+              <p class="text-zinc-500 text-xs mt-1">Presentes com mais impacto sonoro e pontuação.</p>
+            </div>
+            <i class="fa-solid fa-volume-high text-brand-purple text-xl"></i>
+          </div>
+          <div id="analyticsGifts" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+          <h3 class="font-display font-black text-white">Melhor tema</h3>
+          <p id="analyticsBestTheme" class="text-brand-pink text-2xl font-black mt-3">Romance Falhado</p>
+          <p class="text-zinc-500 text-xs mt-2 leading-relaxed">Tema com maior combinação de reações, gifts e tempo médio de visualização.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+          <h3 class="font-display font-black text-white">Momento quente</h3>
+          <p id="analyticsHotMoment" class="text-brand-purple text-2xl font-black mt-3">00:43</p>
+          <p class="text-zinc-500 text-xs mt-2 leading-relaxed">Segundo da batalha onde entram mais votos, comentários e presentes.</p>
+        </div>
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+          <h3 class="font-display font-black text-white">Próxima ação</h3>
+          <p id="analyticsNextAction" class="text-yellow-400 text-lg font-black mt-3">Promover revanche</p>
+          <p class="text-zinc-500 text-xs mt-2 leading-relaxed">Sugestão automática para aumentar retenção depois da live.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="feedback" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8">
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+          <i class="fa-solid fa-comment-dots"></i> Beta Testers
+        </span>
+        <h2 class="font-display font-black text-3xl text-white mt-5">Feedback da Arena</h2>
+        <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Recolhe opinião dos testers logo depois da batalha: clareza, diversão, som, efeitos e vontade de voltar. Tudo fica guardado localmente nesta demo.</p>
+
+        <div class="mt-6 space-y-4">
+          <div>
+            <label class="block text-[11px] text-zinc-500 font-black uppercase mb-2">Nome do tester</label>
+            <input id="feedbackName" value="Tester Beta" class="w-full bg-brand-dark/70 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] text-zinc-500 font-black uppercase mb-2">Diversão</label>
+              <select id="feedbackFun" class="w-full bg-brand-dark/70 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink">
+                <option value="5">5 — Muito viciante</option>
+                <option value="4">4 — Forte</option>
+                <option value="3">3 — Ok</option>
+                <option value="2">2 — Fraco</option>
+                <option value="1">1 — Confuso</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-zinc-500 font-black uppercase mb-2">Clareza</label>
+              <select id="feedbackClarity" class="w-full bg-brand-dark/70 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink">
+                <option value="5">5 — Entendi logo</option>
+                <option value="4">4 — Quase tudo claro</option>
+                <option value="3">3 — Médio</option>
+                <option value="2">2 — Confuso</option>
+                <option value="1">1 — Não percebi</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] text-zinc-500 font-black uppercase mb-2">O que melhorarias?</label>
+            <textarea id="feedbackText" rows="4" placeholder="Ex: Sons mais curtos, botão de revanche maior, mais temas..." class="w-full bg-brand-dark/70 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink resize-none"></textarea>
+          </div>
+          <button onclick="submitFeedback()" class="tap w-full px-5 py-3.5 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm"><i class="fa-solid fa-paper-plane mr-2"></i> Guardar feedback</button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 glass rounded-3xl p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-display font-black text-3xl text-white">Resumo dos testers</h2>
+            <p class="text-zinc-400 text-sm mt-2">Usa isto para decidir o próximo ajuste antes de ligar vídeo real.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="copyFeedbackReport()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10"><i class="fa-solid fa-copy mr-2"></i> Copiar feedback</button>
+            <button onclick="clearFeedback()" class="tap px-5 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 font-display font-black text-sm hover:bg-red-500/15"><i class="fa-solid fa-broom mr-2"></i> Limpar</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6" id="feedbackStats"></div>
+        <div id="feedbackList" class="mt-6 space-y-3"></div>
+      </div>
+    </section>
+
+
+    <section id="live-real" class="space-y-6">
+      <div class="glass rounded-3xl p-6 lg:p-8 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-brand-purple/20 rounded-full blur-[90px] pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-brand-pink/10 rounded-full blur-[90px] pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
+              <i class="fa-solid fa-video"></i> Próxima fase técnica
+            </span>
+            <h2 class="font-display font-black text-3xl lg:text-4xl text-white mt-5">v17.6 — Preparação para Live Real</h2>
+            <p class="text-zinc-400 text-sm lg:text-base mt-3 leading-relaxed">
+              Esta fase transforma a Arena de demo visual para um plano técnico pronto para vídeo real: sala, permissões de câmara, WebRTC, chat, gifts, moderação e gravação de highlights.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="simulateReadinessTest()" class="tap px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm"><i class="fa-solid fa-signal mr-2"></i> Testar preparação</button>
+            <button onclick="copyLiveSpec()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10"><i class="fa-solid fa-copy mr-2"></i> Copiar plano técnico</button>
+          </div>
+        </div>
+
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-xl"><i class="fa-solid fa-camera"></i></div>
+            <h3 class="font-display font-black text-white mt-4">Câmara dos jogadores</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Pré-live com permissão de câmara, microfone, preview local e estado do rival.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-xl"><i class="fa-solid fa-network-wired"></i></div>
+            <h3 class="font-display font-black text-white mt-4">WebRTC / LiveKit</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Ligação de vídeo em tempo real entre os dois jogadores e espectadores.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-xl"><i class="fa-solid fa-gift"></i></div>
+            <h3 class="font-display font-black text-white mt-4">Sound Gifts™ reais</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Presentes enviados pelo público com som, animação, pontos e cooldown anti-spam.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-12 h-12 rounded-2xl bg-green-500/10 text-green-400 flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3 class="font-display font-black text-white mt-4">Fair Play ao vivo</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Denúncias rápidas, chat seguro, limites de som e controlo de abuso durante a live.</p>
+          </div>
+        </div>
+
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
+          <div class="lg:col-span-7 bg-brand-dark/60 border border-white/10 rounded-3xl p-6">
+            <h3 class="font-display font-black text-white text-2xl">Checklist para passar de demo para live</h3>
+            <p class="text-zinc-500 text-sm mt-2">Marca mentalmente o que falta antes de testar com jogadores reais.</p>
+            <div class="mt-5 space-y-3" id="liveChecklist">
+              <button onclick="toggleLiveStep(this)" class="tap w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-brand-pink/40 transition-all"><i class="fa-regular fa-circle mr-2 text-brand-pink"></i><strong>1. Autenticação real</strong><span class="block text-zinc-500 text-xs mt-1 ml-6">Jogador entra com conta própria antes de criar batalhas.</span></button>
+              <button onclick="toggleLiveStep(this)" class="tap w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-brand-pink/40 transition-all"><i class="fa-regular fa-circle mr-2 text-brand-pink"></i><strong>2. Salas de batalha reais</strong><span class="block text-zinc-500 text-xs mt-1 ml-6">Cada duelo tem ID, link, rival, espectadores e estado.</span></button>
+              <button onclick="toggleLiveStep(this)" class="tap w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-brand-pink/40 transition-all"><i class="fa-regular fa-circle mr-2 text-brand-pink"></i><strong>3. Vídeo em direto</strong><span class="block text-zinc-500 text-xs mt-1 ml-6">WebRTC, LiveKit, Daily ou Agora para stream estável.</span></button>
+              <button onclick="toggleLiveStep(this)" class="tap w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-brand-pink/40 transition-all"><i class="fa-regular fa-circle mr-2 text-brand-pink"></i><strong>4. Gifts e pontuação no servidor</strong><span class="block text-zinc-500 text-xs mt-1 ml-6">Evitar batota: votos, coins e wins calculados no backend.</span></button>
+              <button onclick="toggleLiveStep(this)" class="tap w-full text-left bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-brand-pink/40 transition-all"><i class="fa-regular fa-circle mr-2 text-brand-pink"></i><strong>5. Moderação e logs</strong><span class="block text-zinc-500 text-xs mt-1 ml-6">Denúncias, cooldown de som, chat seguro e histórico de ações.</span></button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-brand-dark/60 border border-white/10 rounded-3xl p-6">
+              <h3 class="font-display font-black text-white text-2xl">Arquitetura recomendada</h3>
+              <div class="mt-5 space-y-3 text-sm">
+                <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-zinc-400">Vídeo live</span><strong class="text-white">LiveKit / WebRTC</strong></div>
+                <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-zinc-400">Dados e auth</span><strong class="text-white">Supabase</strong></div>
+                <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-zinc-400">Realtime</span><strong class="text-white">Channels</strong></div>
+                <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-zinc-400">Sons</span><strong class="text-white">Web Audio API</strong></div>
+                <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-zinc-400">Highlights</span><strong class="text-white">Gravação curta</strong></div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-brand-pink/10 to-brand-purple/10 border border-brand-pink/20 rounded-3xl p-6">
+              <h3 class="font-display font-black text-white text-xl">Estado de prontidão</h3>
+              <div class="mt-4 bg-white/5 rounded-full h-3 overflow-hidden border border-white/10">
+                <div id="liveReadyBar" class="h-full w-[42%] bg-gradient-to-r from-brand-pink to-brand-purple rounded-full transition-all duration-700"></div>
+              </div>
+              <p id="liveReadyLabel" class="text-zinc-400 text-sm mt-3">42% — conceito validado, falta backend e vídeo real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="progresso" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8">
         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
@@ -382,7 +654,7 @@
     const defaultState = { theme:'Romance Falhado', leftScore:3280, rightScore:2650, running:false, time:60, interval:null, wins:19, arenaCoins:1250, ownedShop:[], equippedShop:null, scheduled:[
       {opponent:'@GaffeQueen', theme:'Vergonha em Público', time:'Hoje, 21:30'},
       {opponent:'@ReiDosMicos', theme:'Caos Total', time:'Amanhã, 18:00'}
-    ], lastSaved:null, profileName:'MicoMaster', profileTagline:'Vence em 60 segundos.', claimedMissions:[], effectsUsed:0, battlesPlayed:0, missionBonus:0 };
+    ], lastSaved:null, profileName:'MicoMaster', profileTagline:'Vence em 60 segundos.', claimedMissions:[], effectsUsed:0, battlesPlayed:0, missionBonus:0, safeMode:false, chatMuted:false, giftCooldown:false, safetyReports:[], feedbacks:[] };
     let state = JSON.parse(JSON.stringify(defaultState));
     const comments = ['RuiMico: Ele não superou ainda 😂','MicoQueen: Rainha do drama! 💅💔','ShitaFan: Explosão neleee 🚀','Anonimo: O lado rosa está forte 👀','Vexameiro: Usa o escudo agora! 🛡️'];
     const ranking = [
@@ -402,14 +674,159 @@
     ];
 
 
-    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); }
+    function getAnalyticsData(){
+      const battles = state.battlesPlayed || 0;
+      const effects = state.effectsUsed || 0;
+      const reports = (state.safetyReports || []).length;
+      const giftsBase = Math.max(8, effects * 2 + state.ownedShop.length * 3 + battles * 4);
+      return {
+        viewers: Math.max(124, 124 + battles * 38 + state.scheduled.length * 12 + state.ownedShop.length * 18),
+        gifts: giftsBase,
+        retention: Math.min(94, 58 + state.wins + state.ownedShop.length * 3),
+        conversion: Math.min(42, 8 + state.ownedShop.length * 5 + state.scheduled.length * 2),
+        soundScore: Math.min(100, 45 + giftsBase + (state.giftCooldown ? 8 : 0) - reports * 3),
+        fairPlay: Math.max(55, 96 - reports * 7 + (state.safeMode ? 4 : 0)),
+        battleRate: Math.min(100, 30 + battles * 8 + state.wins),
+        revenuePotential: Math.min(100, 25 + state.ownedShop.length * 12 + giftsBase)
+      };
+    }
+
+    function renderAnalytics(){
+      const cards=document.getElementById('analyticsCards');
+      if(!cards) return;
+      const a=getAnalyticsData();
+      const cardData=[
+        ['Espectadores demo', a.viewers.toLocaleString('pt-PT'), 'Pico estimado durante a live', 'fa-users', 'brand-pink'],
+        ['Sound Gifts™', a.gifts, 'Presentes enviados na arena', 'fa-gift', 'brand-purple'],
+        ['Retenção', a.retention+'%', 'Probabilidade de ver outra batalha', 'fa-repeat', 'yellow-400'],
+        ['Fair Play', a.fairPlay+'%', 'Saúde da comunidade ao vivo', 'fa-shield-heart', 'green-400']
+      ];
+      cards.innerHTML=cardData.map(([label,value,desc,icon,color])=>`<div class="bg-brand-dark/65 border border-white/10 rounded-3xl p-5 hover:border-brand-pink/35 transition-all"><div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-${color}"><i class="fa-solid ${icon}"></i></div><span class="block text-[10px] text-zinc-500 font-black uppercase mt-4">${label}</span><strong class="block text-3xl text-white font-black mt-1">${value}</strong><p class="text-zinc-500 text-xs mt-2 leading-relaxed">${desc}</p></div>`).join('');
+
+      const funnel=document.getElementById('analyticsFunnel');
+      const steps=[
+        ['Convites enviados', Math.min(100, 74 + state.scheduled.length*4)],
+        ['Entraram na sala', Math.min(100, 61 + (state.battlesPlayed||0)*5)],
+        ['Assistiram até ao fim', a.retention],
+        ['Enviaram presente', Math.min(100, 22 + a.gifts)],
+        ['Pediriam revanche', Math.min(100, 35 + state.wins)]
+      ];
+      funnel.innerHTML=steps.map(([label,val])=>`<div><div class="flex items-center justify-between text-xs font-black mb-1"><span class="text-zinc-300">${label}</span><span class="text-brand-pink">${val}%</span></div><div class="h-2 rounded-full bg-white/5 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-brand-pink to-brand-purple" style="width:${val}%"></div></div></div>`).join('');
+
+      const gifts=document.getElementById('analyticsGifts');
+      const giftRows=[['💥 Explosão de Mico', Math.min(99, 31+a.gifts)], ['🪙 ShitCoin', Math.min(99, 25+a.gifts)], ['👑 Coroa da Vergonha', Math.min(99, 18+a.gifts)], ['🍅 Tomate Voador', Math.min(99, 14+a.gifts)]];
+      gifts.innerHTML=giftRows.map(([label,val])=>`<div class="flex items-center justify-between gap-3 bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-white text-sm font-bold">${label}</span><span class="text-brand-purple font-black">${val}</span></div>`).join('');
+
+      const best=document.getElementById('analyticsBestTheme'); if(best) best.textContent=state.theme;
+      const hot=document.getElementById('analyticsHotMoment'); if(hot) hot.textContent=state.time<60 ? '00:'+String(Math.max(0,state.time)).padStart(2,'0') : '00:43';
+      const action=document.getElementById('analyticsNextAction'); if(action) action.textContent=state.wins>=20 ? 'Abrir torneio' : 'Promover revanche';
+    }
+
+    function simulateAnalyticsBoost(){
+      state.leftScore += Math.floor(Math.random()*400)+180;
+      state.rightScore += Math.floor(Math.random()*300)+120;
+      state.effectsUsed=(state.effectsUsed||0)+2;
+      state.battlesPlayed=(state.battlesPlayed||0)+1;
+      updateScores(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); renderAnalytics(); renderFeedback();
+      showToast('Pico simulado','Entraram novos espectadores, gifts e reações no painel de Analytics.','fa-solid fa-chart-line');
+    }
+
+    function copyAnalyticsReport(){
+      const a=getAnalyticsData();
+      const text=`SHITAGRAM Arena — Analytics
+Espectadores demo: ${a.viewers}
+Sound Gifts: ${a.gifts}
+Retenção: ${a.retention}%
+Fair Play: ${a.fairPlay}%
+Tema ativo: ${state.theme}
+Wins: ${state.wins}
+Arena Coins: ${state.arenaCoins}`;
+      if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+      showToast('Relatório copiado','O resumo de Analytics foi copiado para partilhar com equipa/testers.','fa-solid fa-copy');
+    }
+
+
+    function renderFeedback(){
+      state.feedbacks = state.feedbacks || [];
+      const stats=document.getElementById('feedbackStats');
+      const list=document.getElementById('feedbackList');
+      if(!stats || !list) return;
+      const total=state.feedbacks.length;
+      const avgFun=total ? (state.feedbacks.reduce((a,b)=>a+Number(b.fun||0),0)/total).toFixed(1) : '0.0';
+      const avgClarity=total ? (state.feedbacks.reduce((a,b)=>a+Number(b.clarity||0),0)/total).toFixed(1) : '0.0';
+      const repeat=Math.min(98, Math.round((Number(avgFun)+Number(avgClarity))*9 + (state.wins>=20?8:0)));
+      const cards=[
+        ['Testers', total, 'Feedbacks guardados', 'fa-users', 'brand-pink'],
+        ['Diversão', avgFun+'/5', 'Média da experiência', 'fa-face-laugh-beam', 'yellow-400'],
+        ['Clareza', avgClarity+'/5', 'Compreensão do fluxo', 'fa-eye', 'brand-purple'],
+        ['Vontade de voltar', (total?repeat:0)+'%', 'Estimativa beta', 'fa-repeat', 'green-400']
+      ];
+      stats.innerHTML=cards.map(([label,value,desc,icon,color])=>`<div class="bg-brand-dark/65 border border-white/10 rounded-3xl p-5"><div class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-${color}"><i class="fa-solid ${icon}"></i></div><span class="block text-[10px] text-zinc-500 font-black uppercase mt-4">${label}</span><strong class="block text-2xl text-white font-black mt-1">${value}</strong><p class="text-zinc-500 text-xs mt-1">${desc}</p></div>`).join('');
+      list.innerHTML = total ? state.feedbacks.slice(0,6).map((f,i)=>`<div class="bg-white/5 border border-white/10 rounded-3xl p-4"><div class="flex items-start justify-between gap-3"><div><h3 class="text-white font-black text-sm">${f.name}</h3><p class="text-zinc-500 text-[10px] mt-0.5">${f.time} • Diversão ${f.fun}/5 • Clareza ${f.clarity}/5</p></div><span class="text-[9px] font-black text-brand-pink bg-brand-pink/10 border border-brand-pink/20 px-2 py-1 rounded-full">#${total-i}</span></div><p class="text-zinc-300 text-xs mt-3 leading-relaxed">${f.text || 'Sem comentário escrito.'}</p></div>`).join('') : `<div class="rounded-3xl bg-brand-dark/70 border border-white/10 p-6 text-center text-zinc-500 text-sm">Ainda não há feedback guardado. Regista a opinião do primeiro tester beta.</div>`;
+    }
+
+    function submitFeedback(){
+      const name=(document.getElementById('feedbackName')?.value || 'Tester Beta').trim();
+      const fun=Number(document.getElementById('feedbackFun')?.value || 5);
+      const clarity=Number(document.getElementById('feedbackClarity')?.value || 5);
+      const text=(document.getElementById('feedbackText')?.value || '').trim();
+      state.feedbacks = state.feedbacks || [];
+      state.feedbacks.unshift({ name, fun, clarity, text, theme:state.theme, wins:state.wins, time:new Date().toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) });
+      const box=document.getElementById('feedbackText'); if(box) box.value='';
+      saveProgress(); renderFeedback(); renderAnalytics();
+      showToast('Feedback guardado','A opinião do tester foi adicionada ao painel beta.','fa-solid fa-comment-dots');
+    }
+
+    function copyFeedbackReport(){
+      state.feedbacks = state.feedbacks || [];
+      const total=state.feedbacks.length;
+      const avgFun=total ? (state.feedbacks.reduce((a,b)=>a+Number(b.fun||0),0)/total).toFixed(1) : '0.0';
+      const avgClarity=total ? (state.feedbacks.reduce((a,b)=>a+Number(b.clarity||0),0)/total).toFixed(1) : '0.0';
+      const latest=state.feedbacks.slice(0,5).map(f=>`- ${f.name}: diversão ${f.fun}/5, clareza ${f.clarity}/5 — ${f.text || 'sem comentário'}`).join('\n');
+      const text=`SHITAGRAM Arena — Feedback Beta\nTesters: ${total}\nDiversão média: ${avgFun}/5\nClareza média: ${avgClarity}/5\nTema ativo: ${state.theme}\nWins: ${state.wins}\n\nÚltimos feedbacks:\n${latest || 'Sem feedback ainda.'}`;
+      if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+      showToast('Feedback copiado','O relatório dos testers foi copiado.','fa-solid fa-copy');
+    }
+
+    function clearFeedback(){
+      state.feedbacks=[];
+      saveProgress(); renderFeedback();
+      showToast('Feedback limpo','Os feedbacks da demo foram removidos.','fa-solid fa-broom');
+    }
+
+
+
+    function toggleLiveStep(btn){
+      const icon=btn.querySelector('i');
+      const active=btn.dataset.done==='1';
+      btn.dataset.done=active?'0':'1';
+      icon.className=active?'fa-regular fa-circle mr-2 text-brand-pink':'fa-solid fa-circle-check mr-2 text-green-400';
+      btn.classList.toggle('border-green-500/30', !active);
+      btn.classList.toggle('bg-green-500/5', !active);
+    }
+
+    function simulateReadinessTest(){
+      const bar=document.getElementById('liveReadyBar');
+      const label=document.getElementById('liveReadyLabel');
+      if(bar){ bar.style.width='68%'; }
+      if(label){ label.textContent='68% — demo forte, próxima fase: autenticação, salas reais e WebRTC.'; }
+      showToast('Preparação analisada','A Arena está pronta para iniciar a fase técnica de live real.','fa-solid fa-video');
+    }
+
+    function copyLiveSpec(){
+      const text=`SHITAGRAM™ Arena — Plano Live Real\n\nObjetivo: transformar a Mico Battle Live de demo visual em live real de 60 segundos.\n\nFluxo:\n1. Jogador cria sala\n2. Rival entra pelo link\n3. Ambos ligam câmara e microfone\n4. Escolhem tema e 4 efeitos\n5. Contagem 3,2,1\n6. Live de 60 segundos\n7. Público envia Sound Gifts™\n8. Servidor calcula pontuação, wins e coins\n9. Resultado, highlight e histórico\n\nStack recomendada:\n- Frontend: HTML/React\n- Backend/auth: Supabase\n- Realtime: Supabase Channels\n- Vídeo: LiveKit ou WebRTC\n- Sons: Web Audio API\n- Segurança: denúncias, cooldown de gifts, moderação e logs`; 
+      if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+      showToast('Plano técnico copiado','A especificação da Live Real foi copiada.','fa-solid fa-copy');
+    }
+
+    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); renderSafety(); renderAnalytics(); renderFeedback(); }
     function renderThemes(){ const el=document.getElementById('themeButtons'); el.innerHTML=''; Object.keys(themes).forEach(name=>{ const b=document.createElement('button'); b.className='tap w-full text-left rounded-2xl px-3 py-3 border text-xs font-bold transition-all '+(name===state.theme?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-300 hover:border-brand-pink/30'); b.innerHTML=`<span class="block">${name}</span><span class="text-[10px] text-zinc-500">Cores automáticas de batalha</span>`; b.onclick=()=>{state.theme=name; applyTheme(name); renderThemes(); saveProgress(); showToast('Tema alterado',`A roupa mudou para o tema ${name}.`)}; el.appendChild(b); }); }
     function renderEffects(){ const el=document.getElementById('effectButtons'); el.innerHTML=''; effects.forEach(e=>{ const b=document.createElement('button'); b.className='tap rounded-2xl bg-white/5 border border-white/10 p-3 text-center hover:border-brand-pink/40 transition-all'; b.innerHTML=`<div class="text-2xl">${e.icon}</div><div class="text-[10px] font-black text-white mt-1">${e.name}</div><div class="text-[9px] text-yellow-400 font-bold">${e.cost}</div>`; b.onclick=()=>useEffect(e); el.appendChild(b); }); }
     function applyTheme(name){ const t=themes[name]; document.getElementById('activeThemeLabel').textContent=name; document.getElementById('playerLeftPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.leftBg} to-black transition-all duration-500`; document.getElementById('playerRightPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.rightBg} to-black transition-all duration-500`; document.getElementById('leftClothes').style.background=t.leftColor; document.getElementById('rightClothes').style.background=t.rightColor; document.getElementById('leftClothes').style.boxShadow=`0 0 35px ${t.leftColor}`; document.getElementById('rightClothes').style.boxShadow=`0 0 35px ${t.rightColor}`; document.getElementById('leftClothesText').textContent=`Roupa ${t.left} ativada`; document.getElementById('rightClothesText').textContent=`Roupa ${t.right} ativada`; document.getElementById('leftClothesText').style.color=t.leftColor; document.getElementById('rightClothesText').style.color=t.rightColor; document.getElementById('leftFace').textContent=t.faceL; document.getElementById('rightFace').textContent=t.faceR; document.getElementById('leftParticles').innerHTML=t.particles.map(x=>`<span>${x}</span>`).join(''); document.getElementById('rightParticles').innerHTML=t.particlesR.map(x=>`<span>${x}</span>`).join(''); }
     function updateScores(){ document.getElementById('scoreLeft').textContent=state.leftScore.toLocaleString('pt-PT'); document.getElementById('scoreRight').textContent=state.rightScore.toLocaleString('pt-PT'); const total=state.leftScore+state.rightScore; document.getElementById('barLeft').style.width=Math.max(5,Math.round(state.leftScore/total*100))+'%'; document.getElementById('barRight').style.width=Math.max(5,Math.round(state.rightScore/total*100))+'%'; }
     function startBattle(){ if(state.running) return; state.running=true; state.time=60; document.getElementById('battleState').textContent='A decorrer'; showToast('Batalha iniciada','Tens 60 segundos para vencer na arena.'); clearInterval(state.interval); state.interval=setInterval(()=>{ state.time--; state.leftScore += Math.floor(Math.random()*55); state.rightScore += Math.floor(Math.random()*55); updateScores(); document.getElementById('timer').textContent='00:'+String(state.time).padStart(2,'0'); if(state.time<=0){ endBattle(); } },1000); }
-    function endBattle(){ clearInterval(state.interval); state.running=false; state.battlesPlayed=(state.battlesPlayed||0)+1; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
-    function useEffect(e){ if(!state.running){ showToast('Batalha ainda não começou','Carrega em Entrar agora para ativar efeitos.','fa-solid fa-circle-info'); return; } state.effectsUsed=(state.effectsUsed||0)+1; if(e.side==='left') state.leftScore+=e.power; else state.rightScore+=e.power; updateScores(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); flashPanel(e.side); addComment(`ArenaBot: ${e.name} ativado! ${e.icon}`); showToast('Efeito ativado',`${e.name} deu impacto na pontuação.`); }
+    function endBattle(){ clearInterval(state.interval); state.running=false; state.battlesPlayed=(state.battlesPlayed||0)+1; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); renderAnalytics(); renderFeedback(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
+    function useEffect(e){ if(!state.running){ showToast('Batalha ainda não começou','Carrega em Entrar agora para ativar efeitos.','fa-solid fa-circle-info'); return; } state.effectsUsed=(state.effectsUsed||0)+1; if(e.side==='left') state.leftScore+=e.power; else state.rightScore+=e.power; updateScores(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); renderAnalytics(); renderFeedback(); flashPanel(e.side); addComment(`ArenaBot: ${e.name} ativado! ${e.icon}`); showToast('Efeito ativado',`${e.name} deu impacto na pontuação.`); }
     function flashPanel(side){ const el=document.getElementById(side==='left'?'playerLeftPanel':'playerRightPanel'); el.classList.add('scale-[1.02]'); setTimeout(()=>el.classList.remove('scale-[1.02]'),250); }
     function renderComments(){ const el=document.getElementById('liveComments'); el.innerHTML=comments.slice(0,5).map(c=>`<p class="text-zinc-300"><strong class="text-white">${c.split(':')[0]}:</strong>${c.substring(c.indexOf(':')+1)}</p>`).join(''); }
     function addComment(c){ comments.unshift(c); renderComments(); }
@@ -455,7 +872,7 @@
       state.ownedShop.push(id);
       state.equippedShop=id;
       applyShopItem(item);
-      renderArenaShop(); saveProgress(); renderProgress(); renderMissions(); renderAchievements();
+      renderArenaShop(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); renderAnalytics();
       showToast('Compra efetuada',`${item.name} foi desbloqueado e equipado.`, 'fa-solid fa-store');
     }
     function applyShopItem(item){
@@ -490,7 +907,12 @@
         claimedMissions: state.claimedMissions || [],
         effectsUsed: state.effectsUsed || 0,
         battlesPlayed: state.battlesPlayed || 0,
-        missionBonus: state.missionBonus || 0
+        missionBonus: state.missionBonus || 0,
+        safeMode: !!state.safeMode,
+        chatMuted: !!state.chatMuted,
+        giftCooldown: !!state.giftCooldown,
+        safetyReports: state.safetyReports || [],
+        feedbacks: state.feedbacks || []
       };
     }
     function loadProgress(){
@@ -689,10 +1111,53 @@
       }).join('');
     }
 
+
+
+    function renderSafety(){
+      const safe=document.getElementById('safeModeLabel');
+      const chat=document.getElementById('chatModerationLabel');
+      const gifts=document.getElementById('giftCooldownLabel');
+      if(safe) safe.textContent=state.safeMode?'ON':'OFF';
+      if(chat) chat.textContent=state.chatMuted?'Silenciado':'Ativo';
+      if(gifts) gifts.textContent=state.giftCooldown?'Cooldown':'Livre';
+      const count=document.getElementById('reportsCount');
+      const list=document.getElementById('safetyReportsList');
+      const reports=state.safetyReports || [];
+      if(count) count.textContent=reports.length;
+      if(list){
+        list.innerHTML = reports.length ? reports.map((r,i)=>`<div class="rounded-2xl bg-brand-dark/70 border border-white/10 p-3 flex items-start justify-between gap-3"><div><h4 class="text-white text-sm font-black">${r.type}</h4><p class="text-zinc-500 text-[10px] mt-0.5">${r.time} • Estado: ${r.status}</p></div><span class="text-[9px] font-black text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2 py-1 rounded-full">#${reports.length-i}</span></div>`).join('') : `<div class="rounded-2xl bg-brand-dark/70 border border-white/10 p-4 text-center text-zinc-500 text-xs">Sem denúncias nesta demo.</div>`;
+      }
+    }
+    function toggleSafeMode(){
+      state.safeMode=!state.safeMode;
+      if(state.safeMode){ addComment('ArenaSafety: Modo seguro ativado 🛡️'); }
+      else { addComment('ArenaSafety: Modo seguro desativado.'); }
+      saveProgress(); renderSafety(); renderProgress(); showToast('Modo seguro', state.safeMode?'Ativado para esta Arena.':'Desativado nesta Arena.', 'fa-solid fa-user-shield');
+    }
+    function toggleChatMute(){
+      state.chatMuted=!state.chatMuted;
+      saveProgress(); renderSafety(); renderProgress(); showToast('Chat da batalha', state.chatMuted?'Chat silenciado temporariamente.':'Chat reativado.', 'fa-solid fa-comment-slash');
+    }
+    function toggleGiftCooldown(){
+      state.giftCooldown=!state.giftCooldown;
+      saveProgress(); renderSafety(); renderProgress(); showToast('Sound Gifts™', state.giftCooldown?'Cooldown aplicado aos presentes.':'Presentes livres novamente.', 'fa-solid fa-stopwatch');
+    }
+    function submitSafetyReport(type){
+      state.safetyReports=state.safetyReports || [];
+      state.safetyReports.unshift({ type, time:new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}), status:'Em análise' });
+      if(type==='Spam no chat') state.chatMuted=true;
+      if(type==='Som abusivo') state.giftCooldown=true;
+      saveProgress(); renderSafety(); renderProgress(); addComment(`Moderador: denúncia registada — ${type}`); showToast('Denúncia registada', `${type} enviado para moderação.`, 'fa-solid fa-flag');
+    }
+    function clearSafetyReports(){
+      state.safetyReports=[];
+      saveProgress(); renderSafety(); renderProgress(); showToast('Fila limpa','As denúncias da demo foram limpas.', 'fa-solid fa-broom');
+    }
+
     function renderScheduled(){ const el=document.getElementById('scheduledList'); el.innerHTML=state.scheduled.map((b,i)=>`<div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h3 class="font-bold text-white">MicoMaster vs ${b.opponent}</h3><p class="text-xs text-zinc-400 mt-1">${b.theme} • ${b.time}</p></div><button onclick="joinScheduled(${i})" class="tap px-4 py-2 rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black">Entrar</button></div>`).join(''); }
     function joinScheduled(i){ state.theme=state.scheduled[i].theme; applyTheme(state.theme); renderThemes(); saveProgress(); renderProgress(); showToast('Batalha carregada',`Tema ${state.theme} aplicado.`); document.getElementById('battle').scrollIntoView({behavior:'smooth'}); }
     function populateSelects(){ ['scheduleTheme','modalTheme'].forEach(id=>{ const s=document.getElementById(id); s.innerHTML=Object.keys(themes).map(t=>`<option>${t}</option>`).join(''); }); }
-    function scheduleBattle(fromModal=false){ const opponent=(fromModal?document.getElementById('modalOpponent').value:document.getElementById('opponentInput').value)||'@VexamePro'; const theme=fromModal?document.getElementById('modalTheme').value:document.getElementById('scheduleTheme').value; const val=fromModal?document.getElementById('modalTime').value:document.getElementById('scheduleTime').value; const time= val ? new Date(val).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Hoje, 21:30'; state.scheduled.unshift({opponent,theme,time}); renderScheduled(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); if(fromModal) closeScheduleModal(); showToast('Batalha marcada',`${opponent} foi desafiado para ${time}.`); }
+    function scheduleBattle(fromModal=false){ const opponent=(fromModal?document.getElementById('modalOpponent').value:document.getElementById('opponentInput').value)||'@VexamePro'; const theme=fromModal?document.getElementById('modalTheme').value:document.getElementById('scheduleTheme').value; const val=fromModal?document.getElementById('modalTime').value:document.getElementById('scheduleTime').value; const time= val ? new Date(val).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Hoje, 21:30'; state.scheduled.unshift({opponent,theme,time}); renderScheduled(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); renderAnalytics(); renderFeedback(); if(fromModal) closeScheduleModal(); showToast('Batalha marcada',`${opponent} foi desafiado para ${time}.`); }
     function renderRanking(){ const el=document.getElementById('rankingBody'); el.innerHTML=ranking.map((r,i)=>`<tr class="${r[0]==='MicoMaster'?'bg-brand-pink/5':''}"><td class="py-4 px-3 font-black text-zinc-400">${i+1}</td><td class="py-4 px-3 text-white font-bold">${i===0?'👑':i===1?'💩':'🫣'} ${r[0]} ${r[0]==='MicoMaster'?'<span class="ml-2 text-[9px] text-brand-pink bg-brand-pink/10 px-2 py-0.5 rounded-full">TU</span>':''}</td><td class="py-4 px-3 text-zinc-300">${r[1]}</td><td class="py-4 px-3 text-zinc-300">${r[2]}</td><td class="py-4 px-3 text-right text-brand-pink font-black">${r[3]} XP</td></tr>`).join(''); }
     function openScheduleModal(){ document.getElementById('scheduleModal').classList.remove('hidden'); document.getElementById('scheduleModal').classList.add('flex'); }
     function closeScheduleModal(){ document.getElementById('scheduleModal').classList.add('hidden'); document.getElementById('scheduleModal').classList.remove('flex'); }
