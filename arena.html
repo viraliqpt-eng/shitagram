@@ -62,6 +62,7 @@
         <a href="#marcar" class="hover:text-brand-pink">Marcar</a>
         <a href="#ranking" class="hover:text-brand-pink">Ranking</a>
         <a href="#perfil" class="hover:text-brand-pink">Perfil</a>
+        <a href="#missoes" class="hover:text-brand-pink">Missões</a>
         <a href="#progresso" class="hover:text-brand-pink">Progresso</a>
         <a href="index.html#mico-battle-live" class="hover:text-brand-pink">Landing</a>
       </nav>
@@ -261,6 +262,46 @@
       </div>
     </section>
 
+
+    <section id="missoes" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-4 glass rounded-3xl p-6 lg:p-8 relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-56 h-56 bg-yellow-500/10 rounded-full blur-[80px]"></div>
+        <span class="relative z-10 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-black uppercase tracking-wider">
+          <i class="fa-solid fa-bolt"></i> Missões diárias
+        </span>
+        <h2 class="relative z-10 font-display font-black text-2xl text-white mt-5">Recompensas da Arena</h2>
+        <p class="relative z-10 text-zinc-400 text-sm mt-2 leading-relaxed">Completa ações simples dentro da Arena para ganhar Arena Coins, XP visual e novos títulos. Esta fase continua guardada no navegador.</p>
+        <div class="relative z-10 mt-6 grid grid-cols-2 gap-3">
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><span class="block text-[10px] text-zinc-500 font-black uppercase">Missões feitas</span><span id="missionsDone" class="block text-yellow-400 text-2xl font-black mt-1">0/4</span></div>
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><span class="block text-[10px] text-zinc-500 font-black uppercase">Bónus total</span><span id="missionBonus" class="block text-brand-pink text-2xl font-black mt-1">0</span></div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8 space-y-6">
+        <div class="glass rounded-3xl p-6 lg:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+            <div>
+              <h2 class="font-display font-black text-2xl text-white">Missões ativas</h2>
+              <p class="text-zinc-500 text-sm mt-1">Pequenas metas para dar motivo para voltar todos os dias.</p>
+            </div>
+            <button onclick="resetDailyMissions()" class="tap px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs font-black hover:bg-white/10"><i class="fa-solid fa-rotate mr-1"></i> Reset missões</button>
+          </div>
+          <div id="missionsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <div class="glass rounded-3xl p-6 lg:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
+            <div>
+              <h2 class="font-display font-black text-2xl text-white">Conquistas</h2>
+              <p class="text-zinc-500 text-sm mt-1">Marcos permanentes do teu perfil de batalha.</p>
+            </div>
+            <span id="achievementTier" class="text-xs text-brand-purple font-black bg-brand-purple/10 border border-brand-purple/20 rounded-full px-3 py-1.5">A calcular...</span>
+          </div>
+          <div id="achievementsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="progresso" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8">
         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
@@ -341,21 +382,34 @@
     const defaultState = { theme:'Romance Falhado', leftScore:3280, rightScore:2650, running:false, time:60, interval:null, wins:19, arenaCoins:1250, ownedShop:[], equippedShop:null, scheduled:[
       {opponent:'@GaffeQueen', theme:'Vergonha em Público', time:'Hoje, 21:30'},
       {opponent:'@ReiDosMicos', theme:'Caos Total', time:'Amanhã, 18:00'}
-    ], lastSaved:null, profileName:'MicoMaster', profileTagline:'Vence em 60 segundos.' };
+    ], lastSaved:null, profileName:'MicoMaster', profileTagline:'Vence em 60 segundos.', claimedMissions:[], effectsUsed:0, battlesPlayed:0, missionBonus:0 };
     let state = JSON.parse(JSON.stringify(defaultState));
     const comments = ['RuiMico: Ele não superou ainda 😂','MicoQueen: Rainha do drama! 💅💔','ShitaFan: Explosão neleee 🚀','Anonimo: O lado rosa está forte 👀','Vexameiro: Usa o escudo agora! 🛡️'];
     const ranking = [
       ['GaffeQueen','43','72%','28.900'], ['MicoMaster','19','68%','18.420'], ['ReiDosMicos','16','61%','15.850'], ['VexamePro','14','57%','13.210'], ['TropeceiDeNovo','11','52%','10.480']
     ];
+    const missions = [
+      { id:'first-battle', icon:'⚔️', title:'Entrar numa batalha', desc:'Inicia uma Mico Battle Live.', goal:1, reward:80, type:'battles' },
+      { id:'use-effects', icon:'⚡', title:'Usar 3 efeitos', desc:'Ativa efeitos durante a batalha.', goal:3, reward:120, type:'effects' },
+      { id:'schedule-battle', icon:'📅', title:'Marcar um duelo', desc:'Agenda pelo menos uma batalha.', goal:1, reward:90, type:'scheduled' },
+      { id:'shop-item', icon:'🛒', title:'Comprar item da loja', desc:'Desbloqueia qualquer item da Arena.', goal:1, reward:150, type:'shop' }
+    ];
+    const achievements = [
+      { id:'rookie', icon:'🥉', title:'Primeiro Sangue', desc:'1 vitória', check:()=>state.wins>=1 },
+      { id:'founder', icon:'💩', title:'Fundador da Arena', desc:'10 vitórias', check:()=>state.wins>=10 },
+      { id:'legend', icon:'👑', title:'Lenda dos 60s', desc:'25 vitórias', check:()=>state.wins>=25 },
+      { id:'collector', icon:'💎', title:'Colecionador', desc:'2 itens comprados', check:()=>state.ownedShop.length>=2 }
+    ];
 
-    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); }
+
+    function init(){ loadProgress(); renderThemes(); renderEffects(); renderComments(); renderScheduled(); renderRanking(); renderArenaShop(); populateSelects(); applyTheme(state.theme); updateScores(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); }
     function renderThemes(){ const el=document.getElementById('themeButtons'); el.innerHTML=''; Object.keys(themes).forEach(name=>{ const b=document.createElement('button'); b.className='tap w-full text-left rounded-2xl px-3 py-3 border text-xs font-bold transition-all '+(name===state.theme?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-300 hover:border-brand-pink/30'); b.innerHTML=`<span class="block">${name}</span><span class="text-[10px] text-zinc-500">Cores automáticas de batalha</span>`; b.onclick=()=>{state.theme=name; applyTheme(name); renderThemes(); saveProgress(); showToast('Tema alterado',`A roupa mudou para o tema ${name}.`)}; el.appendChild(b); }); }
     function renderEffects(){ const el=document.getElementById('effectButtons'); el.innerHTML=''; effects.forEach(e=>{ const b=document.createElement('button'); b.className='tap rounded-2xl bg-white/5 border border-white/10 p-3 text-center hover:border-brand-pink/40 transition-all'; b.innerHTML=`<div class="text-2xl">${e.icon}</div><div class="text-[10px] font-black text-white mt-1">${e.name}</div><div class="text-[9px] text-yellow-400 font-bold">${e.cost}</div>`; b.onclick=()=>useEffect(e); el.appendChild(b); }); }
     function applyTheme(name){ const t=themes[name]; document.getElementById('activeThemeLabel').textContent=name; document.getElementById('playerLeftPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.leftBg} to-black transition-all duration-500`; document.getElementById('playerRightPanel').className=`min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.rightBg} to-black transition-all duration-500`; document.getElementById('leftClothes').style.background=t.leftColor; document.getElementById('rightClothes').style.background=t.rightColor; document.getElementById('leftClothes').style.boxShadow=`0 0 35px ${t.leftColor}`; document.getElementById('rightClothes').style.boxShadow=`0 0 35px ${t.rightColor}`; document.getElementById('leftClothesText').textContent=`Roupa ${t.left} ativada`; document.getElementById('rightClothesText').textContent=`Roupa ${t.right} ativada`; document.getElementById('leftClothesText').style.color=t.leftColor; document.getElementById('rightClothesText').style.color=t.rightColor; document.getElementById('leftFace').textContent=t.faceL; document.getElementById('rightFace').textContent=t.faceR; document.getElementById('leftParticles').innerHTML=t.particles.map(x=>`<span>${x}</span>`).join(''); document.getElementById('rightParticles').innerHTML=t.particlesR.map(x=>`<span>${x}</span>`).join(''); }
     function updateScores(){ document.getElementById('scoreLeft').textContent=state.leftScore.toLocaleString('pt-PT'); document.getElementById('scoreRight').textContent=state.rightScore.toLocaleString('pt-PT'); const total=state.leftScore+state.rightScore; document.getElementById('barLeft').style.width=Math.max(5,Math.round(state.leftScore/total*100))+'%'; document.getElementById('barRight').style.width=Math.max(5,Math.round(state.rightScore/total*100))+'%'; }
     function startBattle(){ if(state.running) return; state.running=true; state.time=60; document.getElementById('battleState').textContent='A decorrer'; showToast('Batalha iniciada','Tens 60 segundos para vencer na arena.'); clearInterval(state.interval); state.interval=setInterval(()=>{ state.time--; state.leftScore += Math.floor(Math.random()*55); state.rightScore += Math.floor(Math.random()*55); updateScores(); document.getElementById('timer').textContent='00:'+String(state.time).padStart(2,'0'); if(state.time<=0){ endBattle(); } },1000); }
-    function endBattle(){ clearInterval(state.interval); state.running=false; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); renderProfile(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
-    function useEffect(e){ if(!state.running){ showToast('Batalha ainda não começou','Carrega em Entrar agora para ativar efeitos.','fa-solid fa-circle-info'); return; } if(e.side==='left') state.leftScore+=e.power; else state.rightScore+=e.power; updateScores(); saveProgress(); renderProgress(); flashPanel(e.side); addComment(`ArenaBot: ${e.name} ativado! ${e.icon}`); showToast('Efeito ativado',`${e.name} deu impacto na pontuação.`); }
+    function endBattle(){ clearInterval(state.interval); state.running=false; state.battlesPlayed=(state.battlesPlayed||0)+1; document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; if(leftWins){ state.wins++; state.arenaCoins+=120; renderArenaShop(); document.getElementById('statWins').textContent=state.wins; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 Arena Coins. Loja atualizada.'; } else { document.getElementById('winnerTitle').textContent='VexamePro venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; } saveProgress(); renderProgress(); renderProfile(); renderMissions(); renderAchievements(); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
+    function useEffect(e){ if(!state.running){ showToast('Batalha ainda não começou','Carrega em Entrar agora para ativar efeitos.','fa-solid fa-circle-info'); return; } state.effectsUsed=(state.effectsUsed||0)+1; if(e.side==='left') state.leftScore+=e.power; else state.rightScore+=e.power; updateScores(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); flashPanel(e.side); addComment(`ArenaBot: ${e.name} ativado! ${e.icon}`); showToast('Efeito ativado',`${e.name} deu impacto na pontuação.`); }
     function flashPanel(side){ const el=document.getElementById(side==='left'?'playerLeftPanel':'playerRightPanel'); el.classList.add('scale-[1.02]'); setTimeout(()=>el.classList.remove('scale-[1.02]'),250); }
     function renderComments(){ const el=document.getElementById('liveComments'); el.innerHTML=comments.slice(0,5).map(c=>`<p class="text-zinc-300"><strong class="text-white">${c.split(':')[0]}:</strong>${c.substring(c.indexOf(':')+1)}</p>`).join(''); }
     function addComment(c){ comments.unshift(c); renderComments(); }
@@ -389,7 +443,7 @@
       if(state.ownedShop.includes(id)){
         state.equippedShop=id;
         applyShopItem(item);
-        renderArenaShop(); saveProgress(); renderProgress();
+        renderArenaShop(); saveProgress(); renderProgress(); renderMissions(); renderAchievements();
         showToast('Item equipado',`${item.name} está ativo na Arena.`, 'fa-solid fa-wand-magic-sparkles');
         return;
       }
@@ -401,7 +455,7 @@
       state.ownedShop.push(id);
       state.equippedShop=id;
       applyShopItem(item);
-      renderArenaShop(); saveProgress(); renderProgress();
+      renderArenaShop(); saveProgress(); renderProgress(); renderMissions(); renderAchievements();
       showToast('Compra efetuada',`${item.name} foi desbloqueado e equipado.`, 'fa-solid fa-store');
     }
     function applyShopItem(item){
@@ -432,7 +486,11 @@
         scheduled: state.scheduled,
         lastSaved: new Date().toISOString(),
         profileName: state.profileName,
-        profileTagline: state.profileTagline
+        profileTagline: state.profileTagline,
+        claimedMissions: state.claimedMissions || [],
+        effectsUsed: state.effectsUsed || 0,
+        battlesPlayed: state.battlesPlayed || 0,
+        missionBonus: state.missionBonus || 0
       };
     }
     function loadProgress(){
@@ -561,10 +619,80 @@
       event.target.value='';
     }
 
+
+
+    function getMissionProgress(m){
+      if(m.type==='battles') return state.battlesPlayed || 0;
+      if(m.type==='effects') return state.effectsUsed || 0;
+      if(m.type==='scheduled') return (state.scheduled || []).length;
+      if(m.type==='shop') return (state.ownedShop || []).length;
+      return 0;
+    }
+    function renderMissions(){
+      const el=document.getElementById('missionsList');
+      if(!el) return;
+      const claimed=state.claimedMissions || [];
+      const done=missions.filter(m=>claimed.includes(m.id)).length;
+      const bonus=state.missionBonus || 0;
+      const doneEl=document.getElementById('missionsDone');
+      const bonusEl=document.getElementById('missionBonus');
+      if(doneEl) doneEl.textContent=`${done}/${missions.length}`;
+      if(bonusEl) bonusEl.textContent=`+${bonus}`;
+      el.innerHTML=missions.map(m=>{
+        const progress=Math.min(getMissionProgress(m), m.goal);
+        const percent=Math.round(progress/m.goal*100);
+        const complete=progress>=m.goal;
+        const isClaimed=claimed.includes(m.id);
+        const btn=isClaimed?'Reclamado':(complete?'Reclamar':'Em progresso');
+        const cls=isClaimed?'bg-green-500/15 border-green-500/30 text-green-400':(complete?'bg-brand-pink/10 border-brand-pink/30 text-brand-pink':'bg-white/5 border-white/10 text-zinc-500');
+        return `<div class="bg-brand-dark/65 border border-white/10 rounded-3xl p-5">
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">${m.icon}</div><div class="flex-1"><h3 class="font-display font-black text-white">${m.title}</h3><p class="text-zinc-400 text-xs mt-1 leading-relaxed">${m.desc}</p></div></div>
+          <div class="mt-5"><div class="flex justify-between text-[10px] font-black text-zinc-500 mb-1"><span>${progress}/${m.goal}</span><span>+${m.reward} coins</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-brand-pink to-brand-purple rounded-full" style="width:${percent}%"></div></div></div>
+          <button onclick="claimMission('${m.id}')" ${(!complete||isClaimed)?'disabled':''} class="tap mt-4 w-full rounded-2xl border ${cls} text-xs font-black py-3 disabled:cursor-not-allowed">${btn}</button>
+        </div>`;
+      }).join('');
+    }
+    function claimMission(id){
+      const m=missions.find(x=>x.id===id);
+      if(!m) return;
+      state.claimedMissions=state.claimedMissions || [];
+      if(state.claimedMissions.includes(id)) return;
+      if(getMissionProgress(m)<m.goal){ showToast('Missão incompleta','Ainda falta cumprir o objetivo da missão.','fa-solid fa-circle-info'); return; }
+      state.claimedMissions.push(id);
+      state.arenaCoins += m.reward;
+      state.missionBonus=(state.missionBonus||0)+m.reward;
+      renderArenaShop(); renderMissions(); renderAchievements(); saveProgress(); renderProgress(); renderProfile();
+      showToast('Missão concluída',`Recebeste +${m.reward} Arena Coins.`, 'fa-solid fa-gift');
+    }
+    function resetDailyMissions(){
+      state.claimedMissions=[];
+      state.effectsUsed=0;
+      state.battlesPlayed=0;
+      state.missionBonus=0;
+      saveProgress(); renderMissions(); renderProgress();
+      showToast('Missões reiniciadas','As missões diárias foram reiniciadas para nova ronda.','fa-solid fa-rotate');
+    }
+    function renderAchievements(){
+      const el=document.getElementById('achievementsList');
+      if(!el) return;
+      const unlocked=achievements.filter(a=>a.check()).length;
+      const tier=document.getElementById('achievementTier');
+      if(tier) tier.textContent=`${unlocked}/${achievements.length} conquistas desbloqueadas`;
+      el.innerHTML=achievements.map(a=>{
+        const ok=a.check();
+        return `<div class="rounded-3xl p-5 border ${ok?'bg-brand-pink/10 border-brand-pink/30':'bg-white/5 border-white/10'} text-center">
+          <div class="w-14 h-14 mx-auto rounded-2xl ${ok?'bg-brand-pink/15 text-brand-pink':'bg-white/5 text-zinc-600'} flex items-center justify-center text-3xl">${a.icon}</div>
+          <h3 class="font-display font-black text-white text-sm mt-4">${a.title}</h3>
+          <p class="text-zinc-500 text-[11px] mt-1">${a.desc}</p>
+          <span class="inline-block mt-3 text-[9px] font-black rounded-full px-2.5 py-1 ${ok?'bg-green-500/15 text-green-400 border border-green-500/30':'bg-white/5 text-zinc-500 border border-white/10'}">${ok?'DESBLOQUEADA':'BLOQUEADA'}</span>
+        </div>`;
+      }).join('');
+    }
+
     function renderScheduled(){ const el=document.getElementById('scheduledList'); el.innerHTML=state.scheduled.map((b,i)=>`<div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h3 class="font-bold text-white">MicoMaster vs ${b.opponent}</h3><p class="text-xs text-zinc-400 mt-1">${b.theme} • ${b.time}</p></div><button onclick="joinScheduled(${i})" class="tap px-4 py-2 rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black">Entrar</button></div>`).join(''); }
     function joinScheduled(i){ state.theme=state.scheduled[i].theme; applyTheme(state.theme); renderThemes(); saveProgress(); renderProgress(); showToast('Batalha carregada',`Tema ${state.theme} aplicado.`); document.getElementById('battle').scrollIntoView({behavior:'smooth'}); }
     function populateSelects(){ ['scheduleTheme','modalTheme'].forEach(id=>{ const s=document.getElementById(id); s.innerHTML=Object.keys(themes).map(t=>`<option>${t}</option>`).join(''); }); }
-    function scheduleBattle(fromModal=false){ const opponent=(fromModal?document.getElementById('modalOpponent').value:document.getElementById('opponentInput').value)||'@VexamePro'; const theme=fromModal?document.getElementById('modalTheme').value:document.getElementById('scheduleTheme').value; const val=fromModal?document.getElementById('modalTime').value:document.getElementById('scheduleTime').value; const time= val ? new Date(val).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Hoje, 21:30'; state.scheduled.unshift({opponent,theme,time}); renderScheduled(); saveProgress(); renderProgress(); if(fromModal) closeScheduleModal(); showToast('Batalha marcada',`${opponent} foi desafiado para ${time}.`); }
+    function scheduleBattle(fromModal=false){ const opponent=(fromModal?document.getElementById('modalOpponent').value:document.getElementById('opponentInput').value)||'@VexamePro'; const theme=fromModal?document.getElementById('modalTheme').value:document.getElementById('scheduleTheme').value; const val=fromModal?document.getElementById('modalTime').value:document.getElementById('scheduleTime').value; const time= val ? new Date(val).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Hoje, 21:30'; state.scheduled.unshift({opponent,theme,time}); renderScheduled(); saveProgress(); renderProgress(); renderMissions(); renderAchievements(); if(fromModal) closeScheduleModal(); showToast('Batalha marcada',`${opponent} foi desafiado para ${time}.`); }
     function renderRanking(){ const el=document.getElementById('rankingBody'); el.innerHTML=ranking.map((r,i)=>`<tr class="${r[0]==='MicoMaster'?'bg-brand-pink/5':''}"><td class="py-4 px-3 font-black text-zinc-400">${i+1}</td><td class="py-4 px-3 text-white font-bold">${i===0?'👑':i===1?'💩':'🫣'} ${r[0]} ${r[0]==='MicoMaster'?'<span class="ml-2 text-[9px] text-brand-pink bg-brand-pink/10 px-2 py-0.5 rounded-full">TU</span>':''}</td><td class="py-4 px-3 text-zinc-300">${r[1]}</td><td class="py-4 px-3 text-zinc-300">${r[2]}</td><td class="py-4 px-3 text-right text-brand-pink font-black">${r[3]} XP</td></tr>`).join(''); }
     function openScheduleModal(){ document.getElementById('scheduleModal').classList.remove('hidden'); document.getElementById('scheduleModal').classList.add('flex'); }
     function closeScheduleModal(){ document.getElementById('scheduleModal').classList.add('hidden'); document.getElementById('scheduleModal').classList.remove('flex'); }
