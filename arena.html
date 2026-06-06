@@ -67,6 +67,7 @@
         <a href="#analytics" class="hover:text-brand-pink">Analytics</a>
         <a href="#feedback" class="hover:text-brand-pink">Feedback</a>
         <a href="#live-real" class="hover:text-brand-pink">Live Real</a>
+        <a href="#dados-reais" class="hover:text-brand-pink">Dados Reais</a>
         <a href="#progresso" class="hover:text-brand-pink">Progresso</a>
         <a href="index.html#mico-battle-live" class="hover:text-brand-pink">Landing</a>
       </nav>
@@ -569,6 +570,87 @@
               </div>
               <p id="liveReadyLabel" class="text-zinc-400 text-sm mt-3">42% — conceito validado, falta backend e vídeo real.</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="dados-reais" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 glass rounded-3xl p-6 lg:p-8 relative overflow-hidden">
+        <div class="absolute -right-20 -top-20 w-72 h-72 bg-brand-pink/10 rounded-full blur-[90px] pointer-events-none"></div>
+        <div class="relative z-10">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
+            <i class="fa-solid fa-server"></i> Próxima fase técnica
+          </span>
+          <h2 class="font-display font-black text-3xl lg:text-4xl text-white mt-5">v17.7 — Dados Reais da Arena</h2>
+          <p class="text-zinc-400 text-sm mt-3 leading-relaxed">
+            Esta etapa prepara a Arena para sair da demo local e passar a guardar batalhas, jogadores, Sound Gifts™, wins, ranking, denúncias e feedback numa base de dados real.
+          </p>
+          <div class="mt-6 grid grid-cols-2 gap-3">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Backend</span>
+              <strong class="block text-white mt-1">Supabase</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Tempo real</span>
+              <strong class="block text-brand-pink mt-1">Realtime</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Vídeo</span>
+              <strong class="block text-brand-purple mt-1">LiveKit</strong>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase">Estado</span>
+              <strong id="backendDemoStatus" class="block text-yellow-400 mt-1">Demo local</strong>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <button onclick="copySupabaseBlueprint()" class="tap px-5 py-3 rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black text-sm hover:scale-[1.02] transition-transform"><i class="fa-solid fa-copy mr-2"></i>Copiar plano SQL</button>
+            <button onclick="simulateBackendCheck()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black text-sm hover:bg-white/10"><i class="fa-solid fa-plug-circle-check mr-2"></i>Testar ligação demo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 glass rounded-3xl p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+          <div>
+            <h2 class="font-display font-black text-3xl text-white">Modelo de dados recomendado</h2>
+            <p class="text-zinc-400 text-sm mt-2">As tabelas essenciais para transformar a Mico Battle Live numa funcionalidade real.</p>
+          </div>
+          <span class="px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase">Backend-ready</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-11 h-11 rounded-2xl bg-brand-pink/10 text-brand-pink flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+            <h3 class="font-display font-black text-white mt-4">arena_profiles</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Nome, avatar, título, wins, defeats, coins, estatuto e ranking do jogador.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-11 h-11 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center text-lg"><i class="fa-solid fa-tower-broadcast"></i></div>
+            <h3 class="font-display font-black text-white mt-4">battle_rooms</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Sala, tema, estado, jogador A, jogador B, espectadores, timer e vencedor.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-11 h-11 rounded-2xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-lg"><i class="fa-solid fa-gift"></i></div>
+            <h3 class="font-display font-black text-white mt-4">battle_gifts</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Presentes enviados, som, estatuto do espectador, pontos e jogador beneficiado.</p>
+          </div>
+          <div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+            <div class="w-11 h-11 rounded-2xl bg-green-500/10 text-green-400 flex items-center justify-center text-lg"><i class="fa-solid fa-shield-heart"></i></div>
+            <h3 class="font-display font-black text-white mt-4">battle_reports</h3>
+            <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Denúncias, spam, bullying, abuso sonoro, decisões de moderação e logs.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+          <h3 class="font-display font-black text-white text-xl">Ordem técnica ideal</h3>
+          <div class="mt-4 space-y-3 text-sm">
+            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-brand-pink text-white flex items-center justify-center text-xs font-black shrink-0">1</span><p class="text-zinc-400"><strong class="text-white">Criar tabelas</strong> no Supabase com RLS ativo e políticas seguras.</p></div>
+            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-brand-purple text-white flex items-center justify-center text-xs font-black shrink-0">2</span><p class="text-zinc-400"><strong class="text-white">Ligar auth</strong> para cada jogador ter perfil real e estatísticas próprias.</p></div>
+            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-brand-pink text-white flex items-center justify-center text-xs font-black shrink-0">3</span><p class="text-zinc-400"><strong class="text-white">Usar realtime</strong> para gifts, votos, chat, pontuação e estado da sala.</p></div>
+            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-brand-purple text-white flex items-center justify-center text-xs font-black shrink-0">4</span><p class="text-zinc-400"><strong class="text-white">Adicionar vídeo real</strong> com LiveKit/WebRTC só depois da sala e pontuação estarem estáveis.</p></div>
           </div>
         </div>
       </div>
@@ -1162,6 +1244,84 @@ Arena Coins: ${state.arenaCoins}`;
     function openScheduleModal(){ document.getElementById('scheduleModal').classList.remove('hidden'); document.getElementById('scheduleModal').classList.add('flex'); }
     function closeScheduleModal(){ document.getElementById('scheduleModal').classList.add('hidden'); document.getElementById('scheduleModal').classList.remove('flex'); }
     function closeResultModal(){ document.getElementById('resultModal').classList.add('hidden'); document.getElementById('resultModal').classList.remove('flex'); }
+
+    function copySupabaseBlueprint(){
+      const sql = `-- SHITAGRAM™ Arena — v17.7 Dados Reais
+-- Blueprint inicial para Supabase
+
+create table if not exists public.arena_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text unique not null,
+  avatar_url text,
+  arena_title text default 'Novo desafiante',
+  spectator_status text default 'normal',
+  wins integer default 0,
+  defeats integer default 0,
+  arena_coins integer default 500,
+  equipped_item text,
+  created_at timestamp with time zone default now()
+);
+
+create table if not exists public.battle_rooms (
+  id uuid primary key default gen_random_uuid(),
+  host_id uuid references public.arena_profiles(id) on delete cascade,
+  rival_id uuid references public.arena_profiles(id) on delete set null,
+  theme text default 'Romance Falhado',
+  mode text default 'public',
+  status text default 'waiting',
+  score_host integer default 0,
+  score_rival integer default 0,
+  winner_id uuid references public.arena_profiles(id) on delete set null,
+  scheduled_at timestamp with time zone,
+  started_at timestamp with time zone,
+  ended_at timestamp with time zone,
+  created_at timestamp with time zone default now()
+);
+
+create table if not exists public.battle_gifts (
+  id uuid primary key default gen_random_uuid(),
+  room_id uuid references public.battle_rooms(id) on delete cascade,
+  sender_id uuid references public.arena_profiles(id) on delete set null,
+  target_player text check (target_player in ('host','rival')),
+  gift_type text not null,
+  sound_key text not null,
+  points integer default 0,
+  created_at timestamp with time zone default now()
+);
+
+create table if not exists public.battle_reports (
+  id uuid primary key default gen_random_uuid(),
+  room_id uuid references public.battle_rooms(id) on delete cascade,
+  reporter_id uuid references public.arena_profiles(id) on delete set null,
+  reported_user_id uuid references public.arena_profiles(id) on delete set null,
+  reason text not null,
+  status text default 'open',
+  created_at timestamp with time zone default now()
+);
+
+alter table public.arena_profiles enable row level security;
+alter table public.battle_rooms enable row level security;
+alter table public.battle_gifts enable row level security;
+alter table public.battle_reports enable row level security;
+
+-- Políticas de arranque para demo controlada. Rever antes de produção.
+create policy "profiles are viewable" on public.arena_profiles for select using (true);
+create policy "users update own profile" on public.arena_profiles for update using (auth.uid() = id);
+create policy "users insert own profile" on public.arena_profiles for insert with check (auth.uid() = id);
+create policy "battle rooms are viewable" on public.battle_rooms for select using (true);
+create policy "authenticated users create rooms" on public.battle_rooms for insert with check (auth.uid() = host_id);
+create policy "gifts are viewable" on public.battle_gifts for select using (true);
+create policy "authenticated users send gifts" on public.battle_gifts for insert with check (auth.uid() = sender_id);
+create policy "authenticated users create reports" on public.battle_reports for insert with check (auth.uid() = reporter_id);`;
+      navigator.clipboard?.writeText(sql).then(()=>showToast('Plano SQL copiado','O blueprint Supabase da Arena foi copiado.','fa-solid fa-database')).catch(()=>showToast('Copia manualmente','O navegador bloqueou a cópia automática.','fa-solid fa-triangle-exclamation'));
+    }
+
+    function simulateBackendCheck(){
+      const el=document.getElementById('backendDemoStatus');
+      if(el){ el.textContent='Pronto para ligar'; el.className='block text-green-400 mt-1'; }
+      showToast('Ligação demo verificada','A Arena está preparada para receber Supabase/Realtime na próxima fase.','fa-solid fa-plug-circle-check');
+    }
+
     function showToast(title,text,icon='fa-solid fa-circle-check'){ document.getElementById('toastTitle').textContent=title; document.getElementById('toastText').textContent=text; document.getElementById('toastIcon').innerHTML=`<i class="${icon}"></i>`; const t=document.getElementById('toast'); t.classList.remove('translate-y-20','opacity-0'); t.classList.add('translate-y-0','opacity-100'); setTimeout(()=>{t.classList.add('translate-y-20','opacity-0');t.classList.remove('translate-y-0','opacity-100');},3200); }
     window.addEventListener('load', init);
   </script>
