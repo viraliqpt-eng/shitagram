@@ -4,23 +4,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#05020c">
-  <title>SHITAGRAM™ — Rede social de micos, XP e Arena</title>
-  <meta name="description" content="SHITAGRAM™ é uma rede social de humor onde publicas micos, ganhas XP, sobes no ranking e entras na Arena Live.">
+  <title>SHITAGRAM™ — Beta fechada de micos, XP e Arena</title>
+  <meta name="description" content="SHITAGRAM™ é uma rede social de humor em beta fechada onde publicas micos, ganhas XP, sobes no ranking e testas a Arena Live.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root{--bg:#05020c;--card:#0e071a;--card2:#140b24;--line:rgba(236,72,153,.22);--text:#fff;--muted:#cfc6db;--soft:#8f849f;--pink:#ff2e93;--purple:#7c3aed;--fuchsia:#d946ef;--grad:linear-gradient(135deg,#7c3aed 0%,#d946ef 48%,#ff2e93 100%);--glow:0 0 34px rgba(255,46,147,.22),0 0 90px rgba(124,58,237,.12)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,rgba(124,58,237,.25),transparent 38%),radial-gradient(circle at 88% 20%,rgba(255,46,147,.14),transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{text-decoration:none;color:inherit}.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}.nav{position:sticky;top:0;z-index:20;background:rgba(5,2,12,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(236,72,153,.12)}.navin{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.logo{font-size:25px;font-weight:1000;letter-spacing:-.8px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:13px 18px;font-weight:900;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);color:#fff}.btn.primary{background:var(--grad);border:0;box-shadow:var(--glow)}.hero{padding:82px 0 58px}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(255,46,147,.10);border:1px solid rgba(255,46,147,.25);color:#ff8ac5;font-weight:900;font-size:12px;text-transform:uppercase}.h1{font-size:clamp(46px,7vw,86px);line-height:.95;letter-spacing:-4px;margin:18px 0}.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{color:var(--muted);font-size:19px;line-height:1.7;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.card{background:linear-gradient(180deg,rgba(20,11,36,.82),rgba(7,3,13,.94));border:1px solid rgba(236,72,153,.18);border-radius:30px;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.30)}.phone{max-width:370px;margin:auto;border-radius:46px;border:6px solid #17101f;background:#07030d;padding:16px;box-shadow:var(--glow)}.phone-top{display:flex;justify-content:space-between;color:var(--soft);font-size:12px;font-weight:800}.post{margin-top:20px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:16px}.avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);display:inline-flex;align-items:center;justify-content:center}.posthead{display:flex;align-items:center;gap:12px}.media{height:180px;border-radius:20px;background:radial-gradient(circle at 50% 36%,rgba(255,46,147,.42),rgba(124,58,237,.18) 43%,rgba(255,255,255,.035));display:flex;align-items:center;justify-content:center;font-size:56px;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{border-radius:18px;background:rgba(255,255,255,.055);padding:12px;text-align:center}.section{padding:36px 0}.section h2{font-size:36px;margin:0 0 20px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.feature h3{margin:0 0 8px}.feature p{margin:0;color:var(--muted);line-height:1.55}.cta{margin:44px 0 70px;text-align:center}.cta .card{padding:40px}.footer{padding:30px 0;border-top:1px solid rgba(236,72,153,.12);color:var(--soft);font-size:13px}.footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer a{margin-left:14px}@media(max-width:850px){.navin{height:auto;padding:14px 0;align-items:flex-start}.navlinks .hide-sm{display:none}.hero{padding:42px 0}.hero-grid{grid-template-columns:1fr}.h1{letter-spacing:-2px}.grid{grid-template-columns:1fr}.phone{max-width:330px}.footer .wrap{display:block}.footer a{margin:0 12px 0 0;display:inline-block;margin-top:10px}}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,rgba(124,58,237,.25),transparent 38%),radial-gradient(circle at 88% 20%,rgba(255,46,147,.14),transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{text-decoration:none;color:inherit}.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}.nav{position:sticky;top:0;z-index:20;background:rgba(5,2,12,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(236,72,153,.12)}.navin{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.logo{font-size:25px;font-weight:1000;letter-spacing:-.8px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:13px 18px;font-weight:900;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);color:#fff}.btn.primary{background:var(--grad);border:0;box-shadow:var(--glow)}.hero{padding:82px 0 58px}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(255,46,147,.10);border:1px solid rgba(255,46,147,.25);color:#ff8ac5;font-weight:900;font-size:12px;text-transform:uppercase}.h1{font-size:clamp(46px,7vw,86px);line-height:.95;letter-spacing:-4px;margin:18px 0}.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{color:var(--muted);font-size:19px;line-height:1.7;max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.card{background:linear-gradient(180deg,rgba(20,11,36,.82),rgba(7,3,13,.94));border:1px solid rgba(236,72,153,.18);border-radius:30px;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.30)}.phone{max-width:370px;margin:auto;border-radius:46px;border:6px solid #17101f;background:#07030d;padding:16px;box-shadow:var(--glow)}.phone-top{display:flex;justify-content:space-between;color:var(--soft);font-size:12px;font-weight:800}.post{margin-top:20px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:16px}.avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);display:inline-flex;align-items:center;justify-content:center}.posthead{display:flex;align-items:center;gap:12px}.media{height:180px;border-radius:20px;background:radial-gradient(circle at 50% 36%,rgba(255,46,147,.42),rgba(124,58,237,.18) 43%,rgba(255,255,255,.035));display:flex;align-items:center;justify-content:center;font-size:56px;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{border-radius:18px;background:rgba(255,255,255,.055);padding:12px;text-align:center}.section{padding:36px 0}.section h2{font-size:36px;margin:0 0 20px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.feature h3{margin:0 0 8px}.feature p{margin:0;color:var(--muted);line-height:1.55}.notice{margin-top:18px;color:var(--soft);font-size:14px;line-height:1.6}.cta{margin:44px 0 70px;text-align:center}.cta .card{padding:40px}.footer{padding:30px 0;border-top:1px solid rgba(236,72,153,.12);color:var(--soft);font-size:13px}.footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.footer a{margin-left:14px}@media(max-width:850px){.navin{height:auto;padding:14px 0;align-items:flex-start}.navlinks .hide-sm{display:none}.hero{padding:42px 0}.hero-grid{grid-template-columns:1fr}.h1{letter-spacing:-2px}.grid{grid-template-columns:1fr}.phone{max-width:330px}.footer .wrap{display:block}.footer a{margin:0 12px 0 0;display:inline-block;margin-top:10px}}
   </style>
 </head>
 <body>
-  <header class="nav"><div class="wrap navin"><a class="logo" href="./index.html">SHIT<span>AGRAM</span>™</a><nav class="navlinks"><a class="btn hide-sm" href="#como">Como funciona</a><a class="btn hide-sm" href="./arena.html">Arena</a><a class="btn" href="./app.html">Entrar</a><a class="btn primary" href="./app.html">Criar conta</a></nav></div></header>
+  <header class="nav">
+    <div class="wrap navin">
+      <a class="logo" href="./index.html">SHIT<span>AGRAM</span>™</a>
+      <nav class="navlinks">
+        <a class="btn hide-sm" href="#como">Como funciona</a>
+        <a class="btn hide-sm" href="./arena.html">Arena</a>
+        <a class="btn" href="./status.html">Ver estado</a>
+        <a class="btn primary" href="./beta.html">Pedir acesso</a>
+      </nav>
+    </div>
+  </header>
+
   <main>
-    <section class="hero"><div class="wrap hero-grid"><div><span class="eyebrow">Aberto ao público</span><h1 class="h1">Publica o mico.<br><span class="grad">Ganha XP.</span><br>Sobe no ranking.</h1><p class="lead">O SHITAGRAM™ é uma rede social de humor onde podes criar conta, publicar momentos embaraçosos, reagir, comentar, entrar na Arena Live e construir o teu perfil.</p><div class="actions"><a class="btn primary" href="./app.html">Criar conta grátis</a><a class="btn" href="./app.html">Já tenho conta</a><a class="btn" href="./arena.html">Ver Arena Live</a></div></div><div class="phone"><div class="phone-top"><span>9:41</span><span>5G ◉</span></div><div class="post"><div class="posthead"><span class="avatar">💩</span><div><strong>MicoMaster</strong><br><small style="color:var(--soft)">+250 XP · público</small></div></div><p style="color:var(--muted)">Fui acenar a alguém e afinal era para a pessoa atrás de mim...</p><div class="media">🙈</div><div class="stats"><div class="stat">❤️<br><b>234</b></div><div class="stat">💬<br><b>45</b></div><div class="stat">⚔️<br><b>Arena</b></div></div></div></div></div></section>
-    <section class="section" id="como"><div class="wrap"><h2>Como funciona</h2><div class="grid"><div class="card feature"><h3>1. Cria conta</h3><p>Registo simples. Entra quando quiseres, recupera conta e sai com clareza.</p></div><div class="card feature"><h3>2. Publica e reage</h3><p>Partilha micos, comenta, recebe reações e ganha XP no teu perfil.</p></div><div class="card feature"><h3>3. Entra na Arena</h3><p>Batalhas live de 60 segundos, Sound Gifts™, ranking e vitórias.</p></div></div></div></section>
-    <section class="section"><div class="wrap"><h2>Áreas da app</h2><div class="grid"><div class="card feature"><h3>🏠 Feed</h3><p>Micos da comunidade.</p></div><div class="card feature"><h3>🎬 ShitClips™</h3><p>Vídeos curtos e melhores momentos.</p></div><div class="card feature"><h3>➕ Publicar</h3><p>Cria o teu post rapidamente.</p></div><div class="card feature"><h3>🏆 Ranking</h3><p>XP, wins e estatuto.</p></div><div class="card feature"><h3>👤 Perfil</h3><p>Conta, moedas e histórico.</p></div><div class="card feature"><h3>⚔️ Arena Live</h3><p>Batalhas rápidas entre jogadores.</p></div></div></div></section>
-    <section class="cta"><div class="wrap"><div class="card"><h2 style="margin:0 0 10px">Já podes entrar.</h2><p class="lead" style="margin:0 auto 22px">Sem candidatura beta. Cria conta e começa a testar a experiência pública.</p><a class="btn primary" href="./app.html">Abrir SHITAGRAM™</a></div></div></section>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Beta fechada</span>
+          <h1 class="h1">Publica o mico.<br><span class="grad">Ganha XP.</span><br>Sobe no ranking.</h1>
+          <p class="lead">O SHITAGRAM™ está em testes com os primeiros utilizadores. Pede acesso, aguarda aprovação e entra para testar micos, XP, ranking e Arena Live antes do lançamento público.</p>
+          <div class="actions">
+            <a class="btn primary" href="./beta.html">Pedir acesso à beta</a>
+            <a class="btn" href="./status.html">Ver estado da candidatura</a>
+            <a class="btn" href="./arena.html">Ver Arena Live</a>
+          </div>
+          <p class="notice">Nota: nesta fase, a entrada é controlada. A criação de conta pública só será aberta quando a autenticação real estiver totalmente ligada.</p>
+        </div>
+
+        <div class="phone">
+          <div class="phone-top"><span>9:41</span><span>5G ◉</span></div>
+          <div class="post">
+            <div class="posthead">
+              <span class="avatar">💩</span>
+              <div><strong>MicoMaster</strong><br><small style="color:var(--soft)">+250 XP · beta</small></div>
+            </div>
+            <p style="color:var(--muted)">Fui acenar a alguém e afinal era para a pessoa atrás de mim...</p>
+            <div class="media">🙈</div>
+            <div class="stats">
+              <div class="stat">❤️<br><b>234</b></div>
+              <div class="stat">💬<br><b>45</b></div>
+              <div class="stat">⚔️<br><b>Arena</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="como">
+      <div class="wrap">
+        <h2>Como funciona</h2>
+        <div class="grid">
+          <div class="card feature"><h3>1. Pede acesso</h3><p>Envia a tua candidatura para entrares na beta fechada.</p></div>
+          <div class="card feature"><h3>2. Aguarda aprovação</h3><p>Os primeiros utilizadores são aprovados manualmente para garantir testes controlados.</p></div>
+          <div class="card feature"><h3>3. Testa a app</h3><p>Publica micos, reage, ganha XP e experimenta a Arena Live quando estiver disponível.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>Áreas da app</h2>
+        <div class="grid">
+          <div class="card feature"><h3>🏠 Feed</h3><p>Micos da comunidade.</p></div>
+          <div class="card feature"><h3>🎬 ShitClips™</h3><p>Vídeos curtos e melhores momentos.</p></div>
+          <div class="card feature"><h3>➕ Publicar</h3><p>Cria o teu post rapidamente.</p></div>
+          <div class="card feature"><h3>🏆 Ranking</h3><p>XP, wins e estatuto.</p></div>
+          <div class="card feature"><h3>👤 Perfil</h3><p>Conta, moedas e histórico.</p></div>
+          <div class="card feature"><h3>⚔️ Arena Live</h3><p>Batalhas rápidas entre jogadores.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <div class="card">
+          <h2 style="margin:0 0 10px">Queres entrar nos primeiros testes?</h2>
+          <p class="lead" style="margin:0 auto 22px">Pede acesso à beta. Se fores aprovado, poderás entrar e testar a experiência antes da abertura pública.</p>
+          <div class="actions" style="justify-content:center">
+            <a class="btn primary" href="./beta.html">Pedir acesso à beta</a>
+            <a class="btn" href="./status.html">Consultar estado</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-  <footer class="footer"><div class="wrap"><span>© 2026 SHITAGRAM™</span><span><a href="./regras.html">Regras</a><a href="./termos.html">Termos</a><a href="./privacidade.html">Privacidade</a><a href="./app.html">App</a></span></div></footer>
-</body></html>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© 2026 SHITAGRAM™ · Beta fechada</span>
+      <span>
+        <a href="./legal.html">Regras</a>
+        <a href="./legal.html">Termos</a>
+        <a href="./legal.html">Privacidade</a>
+        <a href="./beta.html">Beta</a>
+        <a href="mailto:contacto@shitagram.pt">Contacto</a>
+      </span>
+    </div>
+  </footer>
+</body>
+</html>
