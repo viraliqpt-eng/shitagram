@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, efeitos, Sound Gifts, wins e ranking." />
-  <title>SHITAGRAM™ Arena — Mico Battle Live + Sound Gifts</title>
+  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, efeitos, Sound Gifts reativos por tipo de espectador, wins e ranking." />
+  <title>SHITAGRAM™ Arena — Mico Battle Live + Sound Gifts Reativos</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,12 +72,12 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
       <div class="lg:col-span-5 space-y-7">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span> v16.2 Sound Gifts
+          <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span> v16.3 Sound Gifts Reativos
         </div>
         <div class="space-y-4">
           <h1 class="battle-title font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-tight text-white">MICO <span class="bg-gradient-text">BATTLE LIVE</span></h1>
           <p class="text-xl text-white font-extrabold">60 segundos. 2 jogadores. 4 efeitos. 1 vencedor.</p>
-          <p class="text-zinc-400 text-base leading-relaxed max-w-xl">Prepara a batalha, escolhe adversário, tema e efeitos. Durante a arena, os espectadores enviam presentes com sons próprios, animações e impacto na pontuação.</p>
+          <p class="text-zinc-400 text-base leading-relaxed max-w-xl">Prepara a batalha, escolhe adversário, tema e efeitos. Durante a arena, os espectadores enviam presentes com sons próprios, animações e impacto na pontuação. O som muda conforme o tipo de espectador: normal, fundador, premium ou top fã.</p>
         </div>
         <div class="grid grid-cols-2 gap-3 max-w-lg">
           <button onclick="document.getElementById('setup').scrollIntoView({behavior:'smooth'})" class="tap rounded-2xl bg-gradient-to-r from-brand-pink to-brand-fuchsia text-white font-display font-black text-sm px-5 py-4 neon-pink hover:scale-[1.02] transition-transform"><i class="fa-solid fa-gamepad mr-2"></i>Preparar duelo</button>
@@ -246,6 +246,14 @@
               </div>
               <span class="text-[10px] text-brand-pink font-black bg-brand-pink/10 border border-brand-pink/20 rounded-full px-2 py-1">NOVO</span>
             </div>
+            <div class="mb-3 bg-brand-dark/70 border border-white/10 rounded-2xl p-3">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Tipo de espectador</span>
+                <span id="viewerRoleBadge" class="text-[10px] text-brand-pink font-black bg-brand-pink/10 border border-brand-pink/20 rounded-full px-2 py-1">TOP FÃ</span>
+              </div>
+              <div id="viewerRoleButtons" class="grid grid-cols-2 gap-2"></div>
+              <p id="viewerRoleDesc" class="text-[10px] text-zinc-500 mt-2 leading-relaxed">Som exclusivo, bónus alto e destaque no chat.</p>
+            </div>
             <div class="grid grid-cols-2 gap-2" id="giftButtons"></div>
             <div class="mt-3 grid grid-cols-2 gap-2 text-[10px] text-zinc-400">
               <button onclick="setGiftTarget('left')" id="giftTargetLeft" class="tap rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink font-black">Enviar ao MicoMaster</button>
@@ -286,7 +294,13 @@
         <div class="lg:col-span-5">
           <span class="inline-flex items-center gap-2 text-xs font-black text-brand-pink bg-brand-pink/10 border border-brand-pink/25 rounded-full px-3 py-1.5 uppercase tracking-wider"><i class="fa-solid fa-volume-high"></i> Sound Gifts™</span>
           <h2 class="font-display font-black text-3xl text-white mt-4">Presentes que fazem barulho na arena</h2>
-          <p class="text-zinc-400 text-sm mt-3 leading-relaxed">Cada presente enviado por quem assiste tem som próprio, animação, valor em pontos e reação no chat. Presentes maiores criam efeitos visuais mais fortes.</p>
+          <p class="text-zinc-400 text-sm mt-3 leading-relaxed">Cada presente enviado por quem assiste tem som próprio, animação, valor em pontos e reação no chat. Agora o som também muda conforme quem envia: normal, fundador, premium ou top fã.</p>
+          <div class="mt-5 grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-3"><strong class="text-white block">Normal</strong><span class="text-zinc-500">Som simples e curto.</span></div>
+            <div class="bg-white/5 border border-brand-pink/20 rounded-2xl p-3"><strong class="text-white block">Fundador</strong><span class="text-zinc-500">Som com brilho extra.</span></div>
+            <div class="bg-white/5 border border-brand-purple/20 rounded-2xl p-3"><strong class="text-white block">Premium</strong><span class="text-zinc-500">Som neon mais forte.</span></div>
+            <div class="bg-white/5 border border-yellow-500/20 rounded-2xl p-3"><strong class="text-white block">Top Fã</strong><span class="text-zinc-500">Som VIP e bónus máximo.</span></div>
+          </div>
         </div>
         <div class="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-3">
           <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center"><div class="text-3xl">🪙</div><h3 class="font-black text-white text-xs mt-2">ShitCoin</h3><p class="text-[10px] text-zinc-500 mt-1">clink / jackpot</p></div>
@@ -374,6 +388,14 @@
     ]};
     let comments = ['RuiMico: Ele não superou ainda 😂','MicoQueen: Rainha do drama! 💅💔','ShitaFan: Explosão neleee 🚀','Anonimo: O lado rosa está forte 👀','Vexameiro: Usa o escudo agora! 🛡️'];
 
+    const viewerRoles = {
+      normal: { label:'Normal', badge:'NORMAL', multiplier:1, desc:'Som simples, curto e sem destaque especial.', chat:'Espectador', color:'text-zinc-300', icon:'👤' },
+      founder: { label:'Fundador', badge:'FUNDADOR', multiplier:1.25, desc:'Som com brilho extra, sparkle e selo de fundador.', chat:'Fundador', color:'text-brand-pink', icon:'⭐' },
+      premium: { label:'Premium', badge:'PREMIUM', multiplier:1.55, desc:'Som neon mais forte, eco e destaque premium no chat.', chat:'Premium', color:'text-brand-purple', icon:'💎' },
+      topfan: { label:'Top Fã', badge:'TOP FÃ', multiplier:1.9, desc:'Som VIP, impacto máximo e destaque dourado na arena.', chat:'TopFã', color:'text-yellow-400', icon:'👑' }
+    };
+    let currentViewerRole = 'topfan';
+
     const soundGifts = [
       {id:'coin', name:'ShitCoin', icon:'🪙', points:35, sound:'clink', tier:'normal'},
       {id:'tomato', name:'Tomate', icon:'🍅', points:70, sound:'splat', tier:'medium'},
@@ -386,7 +408,7 @@
     let audioCtx = null;
     const ranking = [['GaffeQueen','43','72%','28.900'], ['MicoMaster','19','68%','18.420'], ['ReiDosMicos','16','61%','15.850'], ['VexamePro','14','57%','13.210'], ['TropeceiDeNovo','11','52%','10.480']];
 
-    function init(){ renderThemes(); renderEffectChooser(); renderEffects(); renderSoundGifts(); renderComments(); renderScheduled(); renderRanking(); populateSelects(); applyTheme(state.theme); updateScores(); bindSetupInputs(); }
+    function init(){ renderThemes(); renderEffectChooser(); renderEffects(); renderViewerRoles(); renderSoundGifts(); renderComments(); renderScheduled(); renderRanking(); populateSelects(); applyTheme(state.theme); updateScores(); bindSetupInputs(); }
     function bindSetupInputs(){ document.getElementById('opponentSelect').addEventListener('change', e=>{ state.opponent=e.target.value; updateSummary(); }); document.getElementById('modeSelect').addEventListener('change', e=>{ state.mode=e.target.value; document.getElementById('activeModeLabel').textContent=state.mode; updateSummary(); }); }
     function renderThemes(){ const el=document.getElementById('themeButtons'); el.innerHTML=''; Object.keys(themes).forEach(name=>{ const b=document.createElement('button'); b.className='tap w-full text-left rounded-2xl px-3 py-3 border text-xs font-bold transition-all '+(name===state.theme?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-300 hover:border-brand-pink/30'); b.innerHTML=`<span class="block">${name}</span><span class="text-[10px] text-zinc-500">Roupa muda automaticamente</span>`; b.onclick=()=>{state.theme=name; applyTheme(name); renderThemes(); updateSummary(); showToast('Tema alterado',`A roupa mudou para ${name}.`)}; el.appendChild(b); }); }
     function renderEffectChooser(){ const el=document.getElementById('effectChooser'); el.innerHTML=''; allEffects.forEach(e=>{ const selected=state.selectedEffects.includes(e.id); const b=document.createElement('button'); b.className='tap rounded-2xl border p-4 text-left transition-all '+(selected?'bg-brand-pink/15 border-brand-pink/40':'bg-white/5 border-white/10 hover:border-brand-pink/30'); b.innerHTML=`<div class="flex items-center gap-3"><span class="text-2xl">${e.icon}</span><div><div class="font-black text-white text-sm">${e.name}</div><div class="text-[10px] text-yellow-400 font-bold">${e.cost} ShitCoins</div></div></div>`; b.onclick=()=>toggleEffect(e.id); el.appendChild(b); }); document.getElementById('selectedCount').textContent=state.selectedEffects.length+'/4'; }
@@ -405,12 +427,16 @@
     function addComment(c){ comments.unshift(c); renderComments(); }
     function randomAudienceComment(){ const arr=['MicoQueen: Isto está muito forte 😂','RuiMico: Usa combo agora ⚡','Anonimo: A roupa mudou mesmo 👀','GaffeFan: O lado esquerdo está a ganhar!','Vexameiro: Revanche já!']; return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function renderSoundGifts(){ const el=document.getElementById('giftButtons'); if(!el) return; el.innerHTML=''; soundGifts.forEach(g=>{ const b=document.createElement('button'); const tierClass=g.tier==='vip'?'border-yellow-500/30 bg-yellow-500/10':g.tier==='rare'?'border-red-500/30 bg-red-500/10':'border-white/10 bg-white/5'; b.className='tap rounded-2xl '+tierClass+' p-3 text-center hover:border-brand-pink/50 transition-all'; b.innerHTML=`<div class="text-2xl">${g.icon}</div><div class="text-[10px] font-black text-white mt-1">${g.name}</div><div class="text-[9px] text-yellow-400 font-bold">+${g.points}</div>`; b.onclick=()=>sendGift(g); el.appendChild(b); }); }
+    function renderViewerRoles(){ const el=document.getElementById('viewerRoleButtons'); if(!el) return; el.innerHTML=''; Object.entries(viewerRoles).forEach(([key,r])=>{ const active=key===currentViewerRole; const b=document.createElement('button'); b.className='tap rounded-xl px-2 py-2 border text-[10px] font-black transition-all '+(active?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-400 hover:border-brand-pink/30'); b.innerHTML=`<span class="mr-1">${r.icon}</span>${r.label}`; b.onclick=()=>selectViewerRole(key); el.appendChild(b); }); updateViewerRoleUI(); }
+    function selectViewerRole(key){ currentViewerRole=key; renderViewerRoles(); renderSoundGifts(); const r=viewerRoles[key]; showToast('Espectador alterado',`${r.label}: ${r.desc}`,'fa-solid fa-user-astronaut'); }
+    function updateViewerRoleUI(){ const r=viewerRoles[currentViewerRole]; const badge=document.getElementById('viewerRoleBadge'); const desc=document.getElementById('viewerRoleDesc'); if(badge){badge.textContent=r.badge; badge.className='text-[10px] font-black rounded-full px-2 py-1 border '+(currentViewerRole==='topfan'?'text-yellow-400 bg-yellow-500/10 border-yellow-500/20':currentViewerRole==='premium'?'text-brand-purple bg-brand-purple/10 border-brand-purple/20':currentViewerRole==='founder'?'text-brand-pink bg-brand-pink/10 border-brand-pink/20':'text-zinc-300 bg-white/5 border-white/10');} if(desc) desc.textContent=r.desc; }
+    function renderSoundGifts(){ const el=document.getElementById('giftButtons'); if(!el) return; const role=viewerRoles[currentViewerRole]; el.innerHTML=''; soundGifts.forEach(g=>{ const points=Math.round(g.points*role.multiplier); const b=document.createElement('button'); const tierClass=g.tier==='vip'?'border-yellow-500/30 bg-yellow-500/10':g.tier==='rare'?'border-red-500/30 bg-red-500/10':'border-white/10 bg-white/5'; b.className='tap rounded-2xl '+tierClass+' p-3 text-center hover:border-brand-pink/50 transition-all'; b.innerHTML=`<div class="text-2xl">${g.icon}</div><div class="text-[10px] font-black text-white mt-1">${g.name}</div><div class="text-[9px] text-yellow-400 font-bold">+${points}</div>`; b.onclick=()=>sendGift(g); el.appendChild(b); }); }
     function setGiftTarget(target){ giftTarget=target; document.getElementById('giftTargetLeft').className=target==='left'?'tap rounded-xl bg-brand-pink/10 border border-brand-pink/30 text-brand-pink font-black':'tap rounded-xl bg-white/5 border border-white/10 text-zinc-300 font-black'; document.getElementById('giftTargetRight').className=target==='right'?'tap rounded-xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple font-black':'tap rounded-xl bg-white/5 border border-white/10 text-zinc-300 font-black'; }
-    function sendGift(g){ if(!state.running){ showToast('Sound Gift preparado',`Inicia a batalha para enviar ${g.name} com som.`, 'fa-solid fa-volume-high'); demoSound(g.sound); return; } if(giftTarget==='left') state.leftScore+=g.points; else state.rightScore+=g.points; updateScores(); playGiftAnimation(g,giftTarget); playGiftSound(g); const targetName=giftTarget==='left'?'MicoMaster':state.opponent; addComment(`TopFã: enviou ${g.icon} ${g.name} para ${targetName}`); showToast('Presente enviado',`${g.name} deu +${g.points} pontos e som especial.`, 'fa-solid fa-gift'); }
+    function sendGift(g){ const role=viewerRoles[currentViewerRole]; const points=Math.round(g.points*role.multiplier); if(!state.running){ showToast('Sound Gift preparado',`${role.label} vai enviar ${g.name}: som ${role.badge.toLowerCase()} e +${points} pontos.`, 'fa-solid fa-volume-high'); playRoleGiftSound(g, role); return; } if(giftTarget==='left') state.leftScore+=points; else state.rightScore+=points; updateScores(); playGiftAnimation(g,giftTarget); playRoleGiftSound(g, role); const targetName=giftTarget==='left'?'MicoMaster':state.opponent; addComment(`${role.icon} ${role.chat}: enviou ${g.icon} ${g.name} para ${targetName} (+${points})`); showToast('Presente enviado',`${role.label} enviou ${g.name}: +${points} pontos e som reativo.`, 'fa-solid fa-gift'); }
     function playGiftAnimation(g,target){ const panel=document.getElementById(target==='left'?'playerLeftPanel':'playerRightPanel'); const anim=document.createElement('div'); anim.className='gift-float'; anim.textContent=g.icon; anim.style.left=(target==='left'?'45%':'35%'); anim.style.bottom='36px'; panel.appendChild(anim); panel.classList.add('sound-wave'); setTimeout(()=>{anim.remove();panel.classList.remove('sound-wave');},1150); }
     function ensureAudio(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
     function beep(freq=440,duration=.12,type='sine',gain=.08,delay=0){ const ctx=ensureAudio(); const osc=ctx.createOscillator(); const vol=ctx.createGain(); osc.type=type; osc.frequency.setValueAtTime(freq,ctx.currentTime+delay); vol.gain.setValueAtTime(gain,ctx.currentTime+delay); vol.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+delay+duration); osc.connect(vol); vol.connect(ctx.destination); osc.start(ctx.currentTime+delay); osc.stop(ctx.currentTime+delay+duration); }
+    function playRoleGiftSound(g, role){ demoSound(g.sound); if(role.multiplier>=1.25){beep(1180,.07,'triangle',.045,.18);beep(1560,.08,'triangle',.04,.26);} if(role.multiplier>=1.55){beep(420,.18,'sine',.05,.34);beep(840,.12,'sine',.04,.43);} if(role.multiplier>=1.9){beep(523,.1,'triangle',.07,.55);beep(784,.12,'triangle',.07,.67);beep(1046,.15,'triangle',.06,.8);} }
     function playGiftSound(g){ demoSound(g.sound); }
     function demoSound(sound){ try{ if(sound==='clink'){beep(880,.08,'triangle');beep(1320,.1,'triangle',.06,.08);} else if(sound==='splat'){beep(160,.16,'sawtooth');beep(90,.18,'square',.035,.09);} else if(sound==='laugh'){beep(650,.07,'sine');beep(760,.07,'sine',.06,.08);beep(620,.08,'sine',.06,.16);} else if(sound==='crack'){beep(1300,.04,'square');beep(220,.12,'sawtooth',.05,.05);} else if(sound==='boom'){beep(85,.25,'sawtooth',.11);beep(180,.12,'square',.05,.05);} else if(sound==='trumpet'){beep(523,.12,'triangle');beep(659,.12,'triangle',.07,.13);beep(784,.18,'triangle',.08,.26);} }catch(e){ console.warn('Audio indisponível',e); } }
 
