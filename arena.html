@@ -3,88 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SHITAGRAM™ Arena Live tipo TikTok</title>
+  <title>SHITAGRAM™ Arena Live Real</title>
   <meta name="theme-color" content="#05020c" />
   <link rel="manifest" href="./manifest.json" />
+  <script src="./livekit-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
   <style>
-    :root{--bg:#05020c;--card:#0d081b;--pink:#ff2e93;--purple:#7c3aed;--fuchsia:#d946ef;--text:#f4f4f5;--muted:#a1a1aa;--line:rgba(255,255,255,.11);--green:#22c55e;--red:#ef4444;--yellow:#eab308;--blue:#38bdf8}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,.26),transparent 36%),radial-gradient(circle at 12% 25%,rgba(255,46,147,.13),transparent 28%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:60;background:rgba(5,2,12,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:14px 0}.nav{display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{font-weight:950;letter-spacing:.04em;font-size:20px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#d4d4d8}.navlinks a{padding:8px 10px;border:1px solid transparent;border-radius:999px}.navlinks a:hover{border-color:rgba(255,46,147,.35);background:rgba(255,255,255,.04);color:white}.btn{border:0;border-radius:15px;padding:12px 16px;font-weight:850;color:white;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 0 24px rgba(255,46,147,.16);transition:.18s}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none}.btn.green{background:linear-gradient(135deg,#16a34a,#22c55e)}.btn.red{background:linear-gradient(135deg,#dc2626,#ff2e93)}.btn.yellow{background:linear-gradient(135deg,#f59e0b,#eab308);color:#16040d}.btn.small{padding:9px 11px;border-radius:12px;font-size:12px}.hero{padding:38px 0 24px}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,46,147,.1);border:1px solid rgba(255,46,147,.32);color:#ff70b5;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.dot{width:8px;height:8px;border-radius:999px;background:var(--pink);box-shadow:0 0 16px var(--pink);animation:pulse 1.2s infinite}@keyframes pulse{50%{opacity:.45;transform:scale(.82)}}h1{font-size:clamp(34px,7vw,74px);line-height:.98;margin:18px 0 12px;letter-spacing:-.06em}.grad{background:linear-gradient(135deg,var(--pink),var(--fuchsia),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:clamp(15px,2vw,19px);color:#d4d4d8;max-width:780px;line-height:1.65}.section{padding:28px 0}.grid{display:grid;gap:22px}.grid12{grid-template-columns:1.05fr .95fr}.card{background:rgba(13,8,27,.74);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.24)}.card.glow{box-shadow:0 0 44px rgba(124,58,237,.13),0 24px 90px rgba(0,0,0,.3)}.title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}.title h2{margin:0;font-size:26px;letter-spacing:-.03em}.title p{margin:4px 0 0;color:var(--muted);font-size:13px}.choiceGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.choice{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;text-align:left;color:white}.choice.active{border-color:rgba(255,46,147,.65);box-shadow:0 0 25px rgba(255,46,147,.13)}.choice b{display:block;font-size:13px}.choice span{display:block;color:var(--muted);font-size:11px;margin-top:4px;line-height:1.4}.steps{display:grid;gap:12px}.step{display:flex;gap:12px;align-items:flex-start;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:18px;padding:14px}.num{width:30px;height:30px;border-radius:10px;background:rgba(255,46,147,.16);color:#ff70b5;display:flex;align-items:center;justify-content:center;font-weight:950;flex:0 0 auto}.step b{display:block;font-size:13px}.step span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:3px}.flowPanel{border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border-radius:24px;padding:18px}.screen{display:none}.screen.active{display:block}.input,.select{width:100%;background:#070411;color:white;border:1px solid var(--line);border-radius:15px;padding:13px}.label{font-size:12px;color:#d4d4d8;font-weight:850;margin-bottom:7px;display:block}.inviteCard{background:linear-gradient(135deg,rgba(255,46,147,.12),rgba(124,58,237,.12));border:1px solid rgba(255,46,147,.28);border-radius:24px;padding:18px;text-align:center}.inviteCode{font-size:28px;font-weight:1000;letter-spacing:.04em;margin:10px 0;color:white}.statusList{display:grid;gap:10px}.status{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px;padding:12px}.status span{color:var(--muted);font-size:12px}.status b{font-size:13px}.ok{color:var(--green)}.warn{color:var(--yellow)}.bad{color:var(--red)}.liveShell{position:relative;border-radius:34px;border:1px solid rgba(255,255,255,.13);padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));overflow:hidden}.liveTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}.liveTop b{font-size:15px}.timer{font-size:34px;font-weight:1000;color:white;letter-spacing:-.04em;text-shadow:0 0 18px rgba(255,46,147,.7)}.themeBadge{border:1px solid rgba(255,46,147,.28);background:rgba(255,46,147,.09);color:#ff9acc;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative}.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;background:rgba(5,2,12,.84);border:1px solid rgba(255,46,147,.45);box-shadow:0 0 24px rgba(255,46,147,.45);color:var(--pink);font-weight:1000;border-radius:999px;width:58px;height:58px;display:flex;align-items:center;justify-content:center}.videoBox{min-height:360px;border-radius:24px;overflow:hidden;border:1px solid var(--line);position:relative;background:#111}video{width:100%;height:100%;object-fit:cover;display:block;background:#090514}.nameTag{position:absolute;top:12px;left:12px;z-index:4;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.right .nameTag{left:auto;right:12px}.placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;color:#a1a1aa;padding:20px}.placeholder .emoji{font-size:52px}.score{margin-top:12px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:18px;padding:12px}.scoreNums{display:flex;align-items:center;justify-content:space-between;font-weight:1000}.scoreNums span:first-child{color:var(--pink)}.scoreNums span:last-child{color:var(--purple)}.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:8px;display:flex}.barA{background:var(--pink);width:58%;transition:.25s}.barB{background:var(--purple);flex:1}.effects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.effect{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center;color:white}.effect:hover{border-color:rgba(255,46,147,.45)}.effect .ico{font-size:22px}.effect .txt{font-size:10px;font-weight:900;margin-top:4px}.chat{height:190px;overflow:auto;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:18px;padding:12px;font-size:12px;color:#d4d4d8}.chat p{margin:0 0 9px}.chat b{color:white}.gifts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gift{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:15px;padding:10px;text-align:center}.gift:hover{border-color:rgba(255,46,147,.45);transform:translateY(-1px)}.gift .g{font-size:24px}.gift .t{font-size:10px;font-weight:900;margin-top:4px}.floatGift{position:absolute;z-index:30;font-size:46px;animation:fly 1.2s ease-out forwards;text-shadow:0 0 22px rgba(255,46,147,.9)}@keyframes fly{0%{transform:translateY(30px) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-140px) scale(1.35);opacity:0}}.notice{border-left:4px solid var(--pink);background:rgba(255,46,147,.07);border-radius:16px;padding:14px;color:#f5d0e3;font-size:13px;line-height:1.55}.mini{font-size:11px;color:var(--muted);line-height:1.5}.footer{padding:32px 0 50px;color:#71717a;text-align:center;font-size:12px}.hidden{display:none!important}.toast{position:fixed;right:18px;bottom:18px;z-index:100;background:#0d081b;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 16px;box-shadow:0 20px 70px rgba(0,0,0,.5);transform:translateY(24px);opacity:0;transition:.25s;max-width:340px}.toast.show{transform:translateY(0);opacity:1}.toast b{display:block;font-size:13px}.toast span{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4}@media(max-width:900px){.grid12{grid-template-columns:1fr}.navlinks{display:none}.choiceGrid{grid-template-columns:1fr}.videos{grid-template-columns:1fr}.videoBox{min-height:280px}.vs{top:50%;left:auto;right:14px;transform:translateY(-50%);width:46px;height:46px}.effects{grid-template-columns:repeat(2,1fr)}.gifts{grid-template-columns:repeat(2,1fr)}.timer{font-size:28px}.card{padding:16px}.liveShell{padding:12px;border-radius:24px}}
+    :root{--bg:#05020c;--card:#0d081b;--pink:#ff2e93;--purple:#7c3aed;--fuchsia:#d946ef;--text:#f4f4f5;--muted:#a1a1aa;--line:rgba(255,255,255,.12);--green:#22c55e;--red:#ef4444}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% 0%,rgba(124,58,237,.28),transparent 34%),radial-gradient(circle at 15% 30%,rgba(255,46,147,.14),transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:60;background:rgba(5,2,12,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:14px 0}.nav{display:flex;align-items:center;justify-content:space-between;gap:14px}.logo{font-weight:950;letter-spacing:.04em;font-size:20px}.logo span{color:var(--pink)}.navlinks{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#d4d4d8}.navlinks a{padding:8px 10px;border:1px solid transparent;border-radius:999px}.navlinks a:hover{border-color:rgba(255,46,147,.35);background:rgba(255,255,255,.04);color:white}.btn{border:0;border-radius:15px;padding:12px 16px;font-weight:850;color:white;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 0 24px rgba(255,46,147,.18);transition:.18s}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none}.btn.green{background:linear-gradient(135deg,#16a34a,#22c55e)}.btn.red{background:linear-gradient(135deg,#dc2626,#ff2e93)}.btn.small{padding:9px 11px;border-radius:12px;font-size:12px}.hero{padding:38px 0 24px}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,46,147,.1);border:1px solid rgba(255,46,147,.32);color:#ff70b5;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.dot{width:8px;height:8px;border-radius:999px;background:var(--pink);box-shadow:0 0 16px var(--pink);animation:pulse 1.2s infinite}@keyframes pulse{50%{opacity:.45;transform:scale(.82)}}h1{font-size:clamp(34px,7vw,74px);line-height:.98;margin:18px 0 12px;letter-spacing:-.06em}.grad{background:linear-gradient(135deg,var(--pink),var(--fuchsia),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:clamp(15px,2vw,19px);color:#d4d4d8;max-width:800px;line-height:1.65}.section{padding:28px 0}.grid{display:grid;gap:22px}.grid12{grid-template-columns:.9fr 1.1fr}.card{background:rgba(13,8,27,.76);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.25)}.card.glow{box-shadow:0 0 44px rgba(124,58,237,.13),0 24px 90px rgba(0,0,0,.3)}.title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}.title h2{margin:0;font-size:26px;letter-spacing:-.03em}.title p{margin:4px 0 0;color:var(--muted);font-size:13px}.flowPanel{border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border-radius:24px;padding:18px}.label{font-size:12px;color:#d4d4d8;font-weight:850;margin-bottom:7px;display:block}.input,.select{width:100%;background:#070411;color:white;border:1px solid var(--line);border-radius:15px;padding:13px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choiceGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.choice{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:18px;padding:14px;text-align:left;color:white}.choice.active{border-color:rgba(255,46,147,.65);box-shadow:0 0 25px rgba(255,46,147,.13)}.choice b{display:block;font-size:13px}.choice span{display:block;color:var(--muted);font-size:11px;margin-top:4px;line-height:1.4}.statusList{display:grid;gap:10px}.status{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px;padding:12px}.status span{color:var(--muted);font-size:12px}.status b{font-size:13px}.ok{color:var(--green)}.bad{color:var(--red)}.notice{border-left:4px solid var(--pink);background:rgba(255,46,147,.07);border-radius:16px;padding:14px;color:#f5d0e3;font-size:13px;line-height:1.55}.mini{font-size:11px;color:var(--muted);line-height:1.5}.liveShell{position:relative;border-radius:34px;border:1px solid rgba(255,255,255,.13);padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));overflow:hidden}.liveTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}.liveTop b{font-size:15px}.timer{font-size:34px;font-weight:1000;color:white;letter-spacing:-.04em;text-shadow:0 0 18px rgba(255,46,147,.7)}.themeBadge{border:1px solid rgba(255,46,147,.28);background:rgba(255,46,147,.09);color:#ff9acc;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative}.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;background:rgba(5,2,12,.84);border:1px solid rgba(255,46,147,.45);box-shadow:0 0 24px rgba(255,46,147,.45);color:var(--pink);font-weight:1000;border-radius:999px;width:58px;height:58px;display:flex;align-items:center;justify-content:center}.videoBox{min-height:390px;border-radius:24px;overflow:hidden;border:1px solid var(--line);position:relative;background:#111}.videoBox video{width:100%;height:100%;object-fit:cover;display:block;background:#090514}.videoMount{position:absolute;inset:0}.videoMount video{width:100%;height:100%;object-fit:cover}.nameTag{position:absolute;top:12px;left:12px;z-index:4;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}.right .nameTag{left:auto;right:12px}.placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;color:#a1a1aa;padding:20px}.placeholder .emoji{font-size:52px}.score{margin-top:12px;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:18px;padding:12px}.scoreNums{display:flex;align-items:center;justify-content:space-between;font-weight:1000}.scoreNums span:first-child{color:var(--pink)}.scoreNums span:last-child{color:var(--purple)}.bar{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:8px;display:flex}.barA{background:var(--pink);width:55%;transition:.25s}.barB{background:var(--purple);flex:1}.effects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.effect{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center;color:white}.effect:hover{border-color:rgba(255,46,147,.45)}.effect .ico{font-size:22px}.effect .txt{font-size:10px;font-weight:900;margin-top:4px}.chat{height:180px;overflow:auto;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:18px;padding:12px;font-size:12px;color:#d4d4d8}.chat p{margin:0 0 9px}.chat b{color:white}.gifts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gift{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:15px;padding:10px;text-align:center}.gift:hover{border-color:rgba(255,46,147,.45);transform:translateY(-1px)}.gift .g{font-size:24px}.gift .t{font-size:10px;font-weight:900;margin-top:4px}.floatGift{position:absolute;z-index:30;font-size:46px;animation:fly 1.2s ease-out forwards;text-shadow:0 0 22px rgba(255,46,147,.9)}@keyframes fly{0%{transform:translateY(30px) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-140px) scale(1.35);opacity:0}}.footer{padding:32px 0 50px;color:#71717a;text-align:center;font-size:12px}.hidden{display:none!important}.toast{position:fixed;right:18px;bottom:18px;z-index:100;background:#0d081b;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 16px;box-shadow:0 20px 70px rgba(0,0,0,.5);transform:translateY(24px);opacity:0;transition:.25s;max-width:340px}.toast.show{transform:translateY(0);opacity:1}.toast b{display:block;font-size:13px}.toast span{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4}@media(max-width:900px){.grid12{grid-template-columns:1fr}.navlinks{display:none}.row{grid-template-columns:1fr}.choiceGrid{grid-template-columns:1fr}.videos{grid-template-columns:1fr}.videoBox{min-height:280px}.vs{top:50%;left:auto;right:14px;transform:translateY(-50%);width:46px;height:46px}.effects{grid-template-columns:repeat(2,1fr)}.gifts{grid-template-columns:repeat(2,1fr)}.timer{font-size:28px}.card{padding:16px}.liveShell{padding:12px;border-radius:24px}}
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap nav">
       <a href="./index.html" class="logo">SHIT<span>AGRAM</span>™</a>
-      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#live">Live</a><a href="#gifts">Sound Gifts</a></nav>
-      <button class="btn small secondary" onclick="location.href='./index.html'">Voltar ao site</button>
+      <nav class="navlinks"><a href="#criar">Criar batalha</a><a href="#prelive">Pré-live</a><a href="#live">Live</a><a href="#gifts">Gifts</a></nav>
+      <button class="btn small secondary" onclick="location.href='./app.html'">Entrar na app</button>
     </div>
   </header>
 
   <main>
     <section class="hero wrap">
-      <span class="pill"><span class="dot"></span> v20 Live tipo TikTok</span>
-      <h1>ARENA <span class="grad">SEM CÓDIGOS</span></h1>
-      <p class="lead">Fluxo público simplificado: criar batalha, convidar rival, aceitar, ligar câmara e começar. Tudo acontece com convite simples, sala de preparação e botão de começar.</p>
+      <span class="pill"><span class="dot"></span> v21 Live real automática</span>
+      <h1>ARENA <span class="grad">AO VIVO</span></h1>
+      <p class="lead">Interface pública sem códigos: cria a batalha, convida o rival, liga a câmara e começa. Quando o LiveKit estiver configurado, os dois jogadores aparecem em direto lado a lado.</p>
     </section>
 
     <section id="criar" class="section wrap grid grid12">
       <div class="card glow">
-        <div class="title"><div><h2>Criar Mico Battle</h2><p>Experiência estilo TikTok: convite, aceitação e sala pronta.</p></div></div>
+        <div class="title"><div><h2>Criar batalha</h2><p>Fluxo simples para o utilizador.</p></div></div>
         <div class="flowPanel">
-          <div id="screenCreate" class="screen active">
-            <label class="label">Escolhe o rival</label>
-            <div class="choiceGrid" id="rivalChoices">
-              <button class="choice active" onclick="chooseRival(this,'VexamePro')"><b>🫣 VexamePro</b><span>Online agora</span></button>
-              <button class="choice" onclick="chooseRival(this,'GaffeQueen')"><b>💅 GaffeQueen</b><span>Boa para romance falhado</span></button>
-              <button class="choice" onclick="chooseRival(this,'ReiMicos')"><b>👑 ReiMicos</b><span>Top ranking</span></button>
-            </div>
-            <div style="height:14px"></div>
-            <label class="label">Tema da batalha</label>
-            <select id="battleTheme" class="select">
-              <option>Romance Falhado</option><option>Vergonha em Público</option><option>Gaffe Suprema</option><option>Desastre Total</option><option>Mico Noturno</option><option>Caos Total</option>
-            </select>
-            <div style="height:14px"></div>
-            <button class="btn" onclick="createBattle()">Criar batalha e convidar rival</button>
+          <div class="row">
+            <div><label class="label">O teu nome</label><input class="input" id="playerName" value="MicoMaster"></div>
+            <div><label class="label">Rival</label><select class="select" id="rivalName"><option>VexamePro</option><option>GaffeQueen</option><option>ReiMicos</option></select></div>
           </div>
-
-          <div id="screenInvite" class="screen">
-            <div class="inviteCard">
-              <div class="pill"><span class="dot"></span> Convite enviado</div>
-              <h2 style="margin:14px 0 4px">MicoMaster vs <span id="invitedName">VexamePro</span></h2>
-              <p class="mini">Tema: <b id="invitedTheme">Romance Falhado</b> · 60 segundos · 4 efeitos</p>
-              <div class="inviteCode">BATTLE-<span id="roomCode">0000</span></div>
-              <p class="mini">O rival recebe uma notificação simples com botão “Aceitar batalha”.</p>
-              <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
-                <button class="btn small" onclick="copyInviteText()">Copiar convite</button>
-                <button class="btn small secondary" onclick="simulateAccept()">Simular rival a aceitar</button>
-              </div>
-            </div>
+          <div style="height:12px"></div>
+          <label class="label">Tema</label>
+          <div class="choiceGrid" id="themeChoices">
+            <button class="choice active" onclick="chooseTheme(this,'Romance Falhado')"><b>💔 Romance Falhado</b><span>Drama, risos e embaraço.</span></button>
+            <button class="choice" onclick="chooseTheme(this,'Vergonha em Público')"><b>🫣 Vergonha em Público</b><span>O clássico da arena.</span></button>
+            <button class="choice" onclick="chooseTheme(this,'Caos Total')"><b>⚡ Caos Total</b><span>Modo energia máxima.</span></button>
           </div>
-
-          <div id="screenLobby" class="screen">
-            <div class="title"><div><h2>Sala de preparação</h2><p>Sem código. Só câmara, pronto e batalha.</p></div></div>
-            <div class="statusList">
-              <div class="status"><span>Rival</span><b class="ok" id="rivalStatus">Aceitou convite</b></div>
-              <div class="status"><span>A tua câmara</span><b id="camStatus" class="warn">Desligada</b></div>
-              <div class="status"><span>Estado</span><b id="readyStatus" class="warn">A preparar</b></div>
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-              <button class="btn green" onclick="startCamera()">Ligar câmara</button>
-              <button class="btn" onclick="markReady()">Estou pronto</button>
-              <button class="btn secondary" onclick="goLive()">Começar batalha</button>
-            </div>
+          <div style="height:16px"></div>
+          <div class="row">
+            <button class="btn" onclick="createBattle()">Criar batalha</button>
+            <button class="btn secondary" onclick="acceptInvite()">Aceitar convite</button>
+          </div>
+          <div style="height:12px"></div>
+          <div class="statusList">
+            <div class="status"><b>Sala</b><span id="roomStatus">Ainda não criada</span></div>
+            <div class="status"><b>Rival</b><span id="rivalStatus">A aguardar convite</span></div>
+            <div class="status"><b>Live real</b><span id="livekitStatus">A verificar serviço</span></div>
           </div>
         </div>
-
       </div>
-
       <div class="card">
-        <div class="title"><div><h2>Como fica para o rival</h2><p>O utilizador recebe apenas um convite claro.</p></div></div>
-        <div class="steps">
-          <div class="step"><div class="num">1</div><div><b>Recebe convite</b><span>“MicoMaster convidou-te para uma Mico Battle Live.”</span></div></div>
-          <div class="step"><div class="num">2</div><div><b>Toca em aceitar</b><span>Entra diretamente na sala de preparação.</span></div></div>
-          <div class="step"><div class="num">3</div><div><b>Entra na sala</b><span>Liga a câmara, confirma “Estou pronto” e aguarda a contagem.</span></div></div>
-          <div class="step"><div class="num">4</div><div><b>Batalha começa</b><span>3, 2, 1, BATALHA. Ecrã dividido com os dois jogadores.</span></div></div>
+        <div class="title"><div><h2>Como funciona</h2><p>Para não confundir ninguém.</p></div></div>
+        <div class="statusList">
+          <div class="status"><b>1. Criar</b><span>Escolhes rival e tema</span></div>
+          <div class="status"><b>2. Aceitar</b><span>O rival entra na sala</span></div>
+          <div class="status"><b>3. Câmara</b><span>Ambos ligam vídeo</span></div>
+          <div class="status"><b>4. Batalhar</b><span>60 segundos em direto</span></div>
+        </div>
+        <div style="height:14px"></div>
+        <div class="notice">O utilizador não vê códigos. Se o LiveKit ainda não estiver configurado, a página continua em modo seguro de demonstração com a tua câmara local.</div>
+      </div>
+    </section>
+
+    <section id="prelive" class="section wrap">
+      <div class="card glow">
+        <div class="title"><div><h2>Pré-live</h2><p>Antes da batalha, ambos confirmam câmara e prontidão.</p></div><span class="themeBadge" id="themeBadge">Tema: Romance Falhado</span></div>
+        <div class="row">
+          <button class="btn" onclick="enableCamera()">Ligar câmara</button>
+          <button class="btn secondary" onclick="joinLiveRoom()">Entrar na sala live</button>
+        </div>
+        <div style="height:12px"></div>
+        <div class="row">
+          <button class="btn green" onclick="setReady('me')">Estou pronto</button>
+          <button class="btn green" onclick="setReady('rival')">Simular rival pronto</button>
         </div>
       </div>
     </section>
@@ -92,78 +88,102 @@
     <section id="live" class="section wrap">
       <div class="liveShell">
         <div class="liveTop">
-          <b><span id="playerAName">MicoMaster</span> <span class="grad">VS</span> <span id="playerBName">VexamePro</span></b>
+          <b><span id="nameA">MicoMaster</span> <span class="grad">VS</span> <span id="nameB">VexamePro</span></b>
           <div class="timer" id="timer">01:00</div>
-          <span class="themeBadge">Tema: <span id="liveTheme">Romance Falhado</span></span>
+          <span class="themeBadge" id="liveTheme">Tema: Romance Falhado</span>
         </div>
         <div class="videos">
           <div class="vs">VS</div>
-          <div class="videoBox left">
-            <video id="localVideo" autoplay muted playsinline></video>
-            <div class="nameTag">🎥 Tu</div>
-            <div class="placeholder" id="localPlaceholder"><div class="emoji">📷</div><b>A tua câmara</b><span>Liga a câmara na sala de preparação.</span></div>
+          <div class="videoBox">
+            <div id="localVideo" class="videoMount"></div>
+            <div class="nameTag">👤 TU</div>
+            <div class="placeholder" id="localPlaceholder"><div class="emoji">📷</div><b>A tua câmara aparece aqui</b><span class="mini">Toca em “Ligar câmara”.</span></div>
           </div>
           <div class="videoBox right">
-            <video id="remoteVideo" autoplay playsinline></video>
-            <div class="nameTag">🫣 Rival</div>
-            <div class="placeholder" id="remotePlaceholder"><div class="emoji">🫣</div><b>Rival em espera</b><span>Na versão real, aqui entra o vídeo do adversário.</span></div>
+            <div id="remoteVideo" class="videoMount"></div>
+            <div class="nameTag">⚔️ RIVAL</div>
+            <div class="placeholder" id="remotePlaceholder"><div class="emoji">🫣</div><b>Rival aparece aqui</b><span class="mini">Em live real, este lado recebe o vídeo do adversário.</span></div>
           </div>
         </div>
         <div class="score">
-          <div class="scoreNums"><span id="scoreA">3.280</span><span id="scoreB">2.650</span></div>
+          <div class="scoreNums"><span id="scoreA">3280</span><small>REAÇÕES AO VIVO</small><span id="scoreB">2650</span></div>
           <div class="bar"><div class="barA" id="barA"></div><div class="barB"></div></div>
         </div>
         <div class="effects">
-          <button class="effect" onclick="useEffect('🪙','ShitCoins')"><div class="ico">🪙</div><div class="txt">ShitCoins</div></button>
-          <button class="effect" onclick="useEffect('💥','Explosão')"><div class="ico">💥</div><div class="txt">Explosão</div></button>
-          <button class="effect" onclick="useEffect('🛡️','Escudo')"><div class="ico">🛡️</div><div class="txt">Escudo</div></button>
-          <button class="effect" onclick="useEffect('⚡','Combo')"><div class="ico">⚡</div><div class="txt">Combo</div></button>
+          <button class="effect" onclick="useEffect('🪙','ShitCoins',80)"><div class="ico">🪙</div><div class="txt">ShitCoins</div></button>
+          <button class="effect" onclick="useEffect('💥','Explosão',150)"><div class="ico">💥</div><div class="txt">Explosão</div></button>
+          <button class="effect" onclick="useEffect('🛡️','Escudo',110)"><div class="ico">🛡️</div><div class="txt">Escudo</div></button>
+          <button class="effect" onclick="useEffect('⚡','Combo',200)"><div class="ico">⚡</div><div class="txt">Combo</div></button>
+        </div>
+        <div style="height:12px"></div>
+        <div class="row">
+          <button class="btn" onclick="startBattle()">Começar batalha</button>
+          <button class="btn red" onclick="leaveLiveRoom()">Sair da live</button>
         </div>
       </div>
     </section>
 
     <section id="gifts" class="section wrap grid grid12">
       <div class="card">
-        <div class="title"><div><h2>Sound Gifts™</h2><p>Presentes simples para a audiência usar durante a batalha.</p></div></div>
+        <div class="title"><div><h2>Sound Gifts™</h2><p>Presentes com som e pontos.</p></div></div>
         <div class="gifts">
-          <button class="gift" onclick="sendGift('🪙','ShitCoin',35)"><div class="g">🪙</div><div class="t">ShitCoin</div></button>
+          <button class="gift" onclick="sendGift('🪙','ShitCoin',25)"><div class="g">🪙</div><div class="t">ShitCoin</div></button>
           <button class="gift" onclick="sendGift('🍅','Tomate',45)"><div class="g">🍅</div><div class="t">Tomate</div></button>
-          <button class="gift" onclick="sendGift('😂','Riso',50)"><div class="g">😂</div><div class="t">Riso</div></button>
+          <button class="gift" onclick="sendGift('😂','Riso',55)"><div class="g">😂</div><div class="t">Riso</div></button>
           <button class="gift" onclick="sendGift('💔','Coração',65)"><div class="g">💔</div><div class="t">Coração</div></button>
           <button class="gift" onclick="sendGift('💥','Explosão',90)"><div class="g">💥</div><div class="t">Explosão</div></button>
-          <button class="gift" onclick="sendGift('👑','Coroa',140)"><div class="g">👑</div><div class="t">Coroa</div></button>
+          <button class="gift" onclick="sendGift('👑','Coroa',120)"><div class="g">👑</div><div class="t">Coroa</div></button>
         </div>
       </div>
       <div class="card">
-        <div class="title"><div><h2>Chat ao vivo</h2><p>Simulação da audiência durante a battle.</p></div></div>
-        <div class="chat" id="chat"><p><b>Sistema:</b> Cria uma batalha para começar.</p></div>
+        <div class="title"><div><h2>Chat ao vivo</h2><p>Comentários da batalha.</p></div></div>
+        <div class="chat" id="chatBox"><p><b>Sistema:</b> Arena pronta.</p></div>
+        <div style="height:10px"></div>
+        <div class="row"><input class="input" id="chatInput" placeholder="Escreve uma mensagem..."><button class="btn" onclick="sendChat()">Enviar</button></div>
       </div>
     </section>
-
   </main>
+  <footer class="footer">© 2026 SHITAGRAM™ · Arena Live Real</footer>
+  <div class="toast" id="toast"><b id="toastTitle">Aviso</b><span id="toastText">Mensagem</span></div>
 
-  <footer class="footer wrap">© 2026 SHITAGRAM™ Arena · Live Battle UI com explicação TU vs RIVAL</footer>
-  <div class="toast" id="toast"><b id="toastTitle">Ok</b><span id="toastText">Mensagem</span></div>
-
-  <script>
-    let selectedRival='VexamePro', scoreA=3280, scoreB=2650, timer=60, timerInt=null, localStream=null;
-    function $(id){return document.getElementById(id)}
-    function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
-    function toast(t,d){$('toastTitle').textContent=t;$('toastText').textContent=d;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3200)}
-    function addChat(name,msg){const p=document.createElement('p');p.innerHTML='<b>'+name+':</b> '+msg;$('chat').appendChild(p);$('chat').scrollTop=$('chat').scrollHeight}
-    function chooseRival(btn,name){selectedRival=name;document.querySelectorAll('#rivalChoices .choice').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
-    function createBattle(){const code=Math.floor(1000+Math.random()*8999);$('roomCode').textContent=code;$('invitedName').textContent=selectedRival;$('invitedTheme').textContent=$('battleTheme').value;$('playerBName').textContent=selectedRival;$('liveTheme').textContent=$('battleTheme').value;show('screenInvite');addChat('Sistema','Convite enviado para '+selectedRival+'.');toast('Convite enviado','Agora o rival só precisa aceitar. ')}
-    function copyInviteText(){const text=`🔥 Mico Battle Live\n\nMicoMaster convidou-te para uma batalha de 60 segundos.\nTema: ${$('battleTheme').value}\n\nEntra aqui: https://shitagram.pt/arena.html`;navigator.clipboard?.writeText(text);toast('Convite copiado','Envia por WhatsApp ou mensagem direta.')}
-    function simulateAccept(){show('screenLobby');$('rivalStatus').textContent='Aceitou convite';addChat('Sistema',selectedRival+' entrou na sala.');toast('Rival entrou','Agora liga a câmara e marca como pronto.')}
-    async function startCamera(){try{localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$('localVideo').srcObject=localStream;$('localPlaceholder').style.display='none';$('camStatus').textContent='Ligada';$('camStatus').className='ok';toast('Câmara ligada','Imagem limpa, sem filtro de roupa.')}catch(e){toast('Erro na câmara','Permite acesso à câmara no navegador e usa HTTPS.')}}
-    function markReady(){$('readyStatus').textContent='Pronto';$('readyStatus').className='ok';addChat('Sistema','Ambos estão prontos.');toast('Pronto','Podes começar a batalha.')}
-    function goLive(){show('screenLobby');addChat('Sistema','3, 2, 1... BATALHA!');toast('Batalha começou','Timer de 60 segundos ativo.');timer=60;clearInterval(timerInt);timerInt=setInterval(()=>{timer--;$('timer').textContent='00:'+String(timer).padStart(2,'0');if(timer<=0){clearInterval(timerInt);finishBattle()}},1000)}
-    function finishBattle(){const win=scoreA>=scoreB?'MicoMaster':selectedRival;addChat('Sistema','🏆 '+win+' venceu a batalha!');toast('Batalha terminada',win+' venceu. Win +1, XP e coins adicionados.')}
-    function updateScore(extra){scoreA+=extra;$('scoreA').textContent=scoreA.toLocaleString('pt-PT');$('scoreB').textContent=scoreB.toLocaleString('pt-PT');const total=scoreA+scoreB;$('barA').style.width=Math.min(82,Math.max(25,(scoreA/total)*100))+'%'}
-    function fly(emoji){const el=document.createElement('div');el.className='floatGift';el.textContent=emoji;el.style.left=(20+Math.random()*58)+'%';el.style.top='72%';document.querySelector('.liveShell').appendChild(el);setTimeout(()=>el.remove(),1300)}
-    function sound(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.frequency.value=520+Math.random()*360;o.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(.0001,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.08,ctx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.22);o.start();o.stop(ctx.currentTime+.24)}catch(e){}}
-    function sendGift(emoji,name,points){fly(emoji);sound();updateScore(points);addChat('Fã da Arena','enviou '+emoji+' '+name+' para MicoMaster.');}
-    function useEffect(emoji,name){fly(emoji);sound();updateScore(80);addChat('MicoMaster','ativou '+emoji+' '+name+'.')}
-  </script>
+<script>
+let state={theme:'Romance Falhado', roomName:'', playerName:'MicoMaster', rivalName:'VexamePro', localReady:false, rivalReady:false, scoreA:3280, scoreB:2650, timer:60, interval:null, lkRoom:null, localStream:null};
+const $=id=>document.getElementById(id);
+function toast(t,m){$('toastTitle').textContent=t;$('toastText').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3600)}
+function addChat(who,msg){const p=document.createElement('p');p.innerHTML=`<b>${who}:</b> ${msg}`;$('chatBox').appendChild(p);$('chatBox').scrollTop=$('chatBox').scrollHeight}
+function chooseTheme(btn,theme){document.querySelectorAll('#themeChoices .choice').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.theme=theme;$('themeBadge').textContent='Tema: '+theme;$('liveTheme').textContent='Tema: '+theme;}
+function createBattle(){state.playerName=$('playerName').value.trim()||'MicoMaster';state.rivalName=$('rivalName').value;state.roomName='shitagram-'+Date.now();$('roomStatus').innerHTML='<span class="ok">Criada</span>';$('rivalStatus').textContent='Convite enviado para '+state.rivalName;$('nameA').textContent=state.playerName;$('nameB').textContent=state.rivalName;toast('Batalha criada','Convite enviado. Quando o rival aceitar, entram no pré-live.');addChat('Sistema','Batalha criada: '+state.playerName+' vs '+state.rivalName)}
+function acceptInvite(){if(!state.roomName) state.roomName='shitagram-demo-'+Date.now();state.rivalReady=false;$('roomStatus').innerHTML='<span class="ok">Convite aceite</span>';$('rivalStatus').innerHTML='<span class="ok">Rival entrou na sala</span>';toast('Convite aceite','Sala de preparação pronta.');addChat('Sistema',state.rivalName+' entrou na sala.')}
+async function enableCamera(){try{state.localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$('localVideo').innerHTML='';const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=state.localStream;$('localVideo').appendChild(v);$('localPlaceholder').classList.add('hidden');toast('Câmara ligada','A tua imagem já aparece na arena.')}catch(e){toast('Câmara bloqueada','Autoriza a câmara/microfone no navegador.')}}
+function setReady(who){if(who==='me'){state.localReady=true;toast('Pronto','Tu estás pronto.')}else{state.rivalReady=true;$('rivalStatus').innerHTML='<span class="ok">Rival pronto</span>';toast('Rival pronto','O adversário confirmou prontidão.')}if(state.localReady&&state.rivalReady)addChat('Sistema','Ambos estão prontos. A batalha pode começar.')}
+async function joinLiveRoom(){
+  const endpoint=window.SHITAGRAM_LIVEKIT_TOKEN_ENDPOINT||''; const liveUrl=window.SHITAGRAM_LIVEKIT_URL||'';
+  if(!endpoint || !liveUrl){ $('livekitStatus').innerHTML='<span class="bad">LiveKit por configurar</span>'; toast('Live real ainda não configurada','A interface está pronta. Falta ativar LiveKit/token endpoint.'); return; }
+  if(!window.LivekitClient){toast('Erro LiveKit','SDK LiveKit não carregou.');return;}
+  try{
+    state.playerName=$('playerName').value.trim()||'MicoMaster'; if(!state.roomName) state.roomName='shitagram-'+Date.now();
+    const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomName:state.roomName,identity:state.playerName+'-'+Date.now(),name:state.playerName})});
+    const data=await res.json(); if(!data.token) throw new Error(data.error||'Sem token');
+    const {Room, RoomEvent, createLocalTracks}=window.LivekitClient;
+    state.lkRoom=new Room();
+    state.lkRoom.on(RoomEvent.TrackSubscribed,(track,pub,participant)=>{ const el=track.attach(); $('remoteVideo').innerHTML=''; $('remoteVideo').appendChild(el); $('remotePlaceholder').classList.add('hidden'); addChat('Sistema', participant.identity+' entrou em direto.'); });
+    state.lkRoom.on(RoomEvent.ParticipantDisconnected,()=>{ $('remoteVideo').innerHTML=''; $('remotePlaceholder').classList.remove('hidden'); addChat('Sistema','Rival saiu da live.'); });
+    await state.lkRoom.connect(liveUrl,data.token);
+    const tracks=await createLocalTracks({audio:true,video:true});
+    for(const track of tracks){await state.lkRoom.localParticipant.publishTrack(track); if(track.kind==='video'){ $('localVideo').innerHTML=''; $('localVideo').appendChild(track.attach()); $('localPlaceholder').classList.add('hidden'); }}
+    $('livekitStatus').innerHTML='<span class="ok">Live real ligada</span>'; toast('Live ligada','A sala LiveKit está ativa.');
+  }catch(e){toast('Erro na live',e.message||'Não foi possível ligar.');}
+}
+function leaveLiveRoom(){ if(state.lkRoom){state.lkRoom.disconnect();state.lkRoom=null;} if(state.localStream){state.localStream.getTracks().forEach(t=>t.stop());state.localStream=null;} $('localVideo').innerHTML='';$('remoteVideo').innerHTML='';$('localPlaceholder').classList.remove('hidden');$('remotePlaceholder').classList.remove('hidden');toast('Live terminada','Saíste da sala.');}
+function startBattle(){ if(state.interval) clearInterval(state.interval); state.timer=60; tick(); addChat('Sistema','BATALHA começou!'); state.interval=setInterval(()=>{state.timer--; tick(); if(state.timer<=0){clearInterval(state.interval); const winner=state.scoreA>=state.scoreB?state.playerName:state.rivalName; toast('Batalha terminada',winner+' venceu a arena.'); addChat('Sistema','Vencedor: '+winner+' 👑')}},1000)}
+function tick(){const m=String(Math.floor(state.timer/60)).padStart(2,'0');const s=String(state.timer%60).padStart(2,'0');$('timer').textContent=m+':'+s}
+function updateScore(){ $('scoreA').textContent=state.scoreA; $('scoreB').textContent=state.scoreB; const pct=Math.max(10,Math.min(90,(state.scoreA/(state.scoreA+state.scoreB))*100));$('barA').style.width=pct+'%';}
+function floatGift(emoji){const el=document.createElement('div');el.className='floatGift';el.textContent=emoji;el.style.left=(45+Math.random()*20)+'%';el.style.top='70%';document.querySelector('.liveShell').appendChild(el);setTimeout(()=>el.remove(),1300)}
+function beep(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=440+Math.random()*420;g.gain.value=.05;o.start();setTimeout(()=>{o.stop();ctx.close()},140)}catch(e){}}
+function sendGift(emoji,name,points){state.scoreA+=points;updateScore();floatGift(emoji);beep();addChat('Fã da Arena',`enviou ${emoji} ${name} para ${state.playerName} (+${points})`)}
+function useEffect(emoji,name,points){state.scoreA+=points;updateScore();floatGift(emoji);beep();addChat(state.playerName,`ativou ${emoji} ${name} (+${points})`)}
+function sendChat(){const msg=$('chatInput').value.trim();if(!msg)return;addChat(state.playerName,msg);$('chatInput').value=''}
+window.addEventListener('load',()=>{const endpoint=window.SHITAGRAM_LIVEKIT_TOKEN_ENDPOINT||'';const liveUrl=window.SHITAGRAM_LIVEKIT_URL||'';$('livekitStatus').innerHTML=(endpoint&&liveUrl)?'<span class="ok">Configurável</span>':'<span class="bad">Por configurar</span>';updateScore();});
+</script>
 </body>
 </html>
