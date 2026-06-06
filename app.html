@@ -107,6 +107,7 @@
         <input class="input" id="authPass" placeholder="Password" type="password" />
         <button class="btn primary" id="authSubmit" onclick="submitAuth()">Entrar</button>
         <button class="btn ghost" onclick="toggleAuthMode()" id="authToggle">Ainda não tens conta? Criar conta</button>
+        <button class="btn ghost" onclick="openAuth('recover')" id="authRecover">Recuperar conta</button>
         <button class="btn ghost" onclick="closeAuth()">Cancelar</button>
       </div>
     </div>
@@ -131,8 +132,55 @@
     function openAuth(mode='login'){authMode=mode;renderAuth();document.getElementById('authModal').classList.remove('hidden')}
     function closeAuth(){document.getElementById('authModal').classList.add('hidden')}
     function toggleAuthMode(){authMode=authMode==='login'?'register':'login';renderAuth()}
-    function renderAuth(){document.getElementById('authTitle').textContent=authMode==='login'?'Entrar na tua conta':'Criar conta grátis';document.getElementById('authText').textContent=authMode==='login'?'Continua de onde ficaste: XP, perfil, Arena e publicações.':'Cria um perfil de teste para experimentar a app sem confusão.';document.getElementById('authSubmit').textContent=authMode==='login'?'Entrar':'Criar conta';document.getElementById('authToggle').textContent=authMode==='login'?'Ainda não tens conta? Criar conta':'Já tens conta? Entrar'}
-    function submitAuth(){const name=document.getElementById('authName').value.trim()||'Visitante';const email=document.getElementById('authEmail').value.trim()||'teste@shitagram.pt';user={name:name.replace(/^@/,''),email,avatar:'😎',xp:user?.xp||1250,coins:user?.coins||2340,level:user?.level||6,createdAt:new Date().toISOString()};save();closeAuth();renderAll();showToast(authMode==='login'?'Entraste na tua conta':'Conta criada com sucesso')}
+    function renderAuth(){
+      const title=document.getElementById('authTitle');
+      const text=document.getElementById('authText');
+      const submit=document.getElementById('authSubmit');
+      const toggle=document.getElementById('authToggle');
+      const recover=document.getElementById('authRecover');
+      const name=document.getElementById('authName');
+      const pass=document.getElementById('authPass');
+      const email=document.getElementById('authEmail');
+      email.placeholder='Email da conta';
+      if(authMode==='login'){
+        title.textContent='Entrar na tua conta';
+        text.textContent='Continua de onde ficaste: XP, perfil, Arena e publicações.';
+        submit.textContent='Entrar';
+        toggle.textContent='Ainda não tens conta? Criar conta';
+        recover.textContent='Recuperar conta';
+        recover.classList.remove('hidden');
+        name.classList.remove('hidden');
+        pass.classList.remove('hidden');
+      }else if(authMode==='register'){
+        title.textContent='Criar conta grátis';
+        text.textContent='Cria um perfil de teste para experimentar a app sem confusão.';
+        submit.textContent='Criar conta';
+        toggle.textContent='Já tens conta? Entrar';
+        recover.textContent='Recuperar conta';
+        recover.classList.remove('hidden');
+        name.classList.remove('hidden');
+        pass.classList.remove('hidden');
+      }else{
+        title.textContent='Recuperar conta';
+        text.textContent='Escreve o email da tua conta. Na versão real será enviado um link seguro para voltares a entrar.';
+        submit.textContent='Enviar link de recuperação';
+        toggle.textContent='Voltar ao login';
+        recover.classList.add('hidden');
+        name.classList.add('hidden');
+        pass.classList.add('hidden');
+      }
+    }
+    function submitAuth(){
+      const name=document.getElementById('authName').value.trim()||'Visitante';
+      const email=document.getElementById('authEmail').value.trim()||'teste@shitagram.pt';
+      if(authMode==='recover'){
+        closeAuth();
+        showToast('Link de recuperação enviado para '+email);
+        return;
+      }
+      user={name:name.replace(/^@/,''),email,avatar:'😎',xp:user?.xp||1250,coins:user?.coins||2340,level:user?.level||6,createdAt:new Date().toISOString()};
+      save();closeAuth();renderAll();showToast(authMode==='login'?'Entraste na tua conta':'Conta criada com sucesso')
+    }
     function logout(){user=null;localStorage.removeItem(KEY);renderAll();navTo('feed');showToast('Sessão terminada')}
     function requireLogin(section){if(!isLogged()){document.getElementById('gate').classList.remove('hidden');showToast('Entra ou cria conta para continuar');openAuth('login');return false}document.getElementById('gate').classList.add('hidden');return true}
     function guardedNav(section){const protected=['publicar','perfil','mensagens','convites','definicoes'];if(protected.includes(section)&&!requireLogin(section))return;navTo(section)}
@@ -141,7 +189,7 @@
     function renderAccount(){const actions=document.getElementById('accountActions');const side=document.getElementById('sideUserCard');const status=document.getElementById('loginStatusText');if(isLogged()){actions.innerHTML=`<button class="btn ghost" onclick="navTo('perfil')">👤 <span class="name-text">${user.name}</span></button><a class="btn ghost" href="./arena.html">⚔️ Arena</a><button class="btn danger" onclick="logout()">Sair</button>`;status.textContent='Sessão iniciada · progresso guardado';side.innerHTML=`<div class="user-line"><div class="avatar">${user.avatar}</div><div><div class="user-name">${user.name}</div><div class="user-sub">Grau ${user.level} · ${user.xp} XP</div></div></div><div class="coins"><span>💜 ${user.coins}</span><button class="btn ghost" onclick="navTo('perfil')">Perfil</button></div>`}else{actions.innerHTML=`<button class="btn ghost" onclick="openAuth('login')">Entrar</button><button class="btn primary" onclick="openAuth('register')">Criar conta</button>`;status.textContent='Visitante · entra para guardar progresso';side.innerHTML=`<div class="user-line"><div class="avatar">👀</div><div><div class="user-name">Visitante</div><div class="user-sub">Sem sessão iniciada</div></div></div><div class="row" style="margin-top:14px"><button class="btn primary" onclick="openAuth('login')">Entrar</button><button class="btn ghost" onclick="openAuth('register')">Criar</button></div>`}}
     function renderSide(){document.getElementById('sideRanking').innerHTML=rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><span>@${r[0]}</span></div><span>${r[1]}</span></div>`).join('')}
     function renderFeed(list=posts){document.getElementById('feed').innerHTML=`${!isLogged()?'<div class="notice"><strong>Estás em modo visitante.</strong> Podes explorar, mas para publicar, guardar XP e ver o perfil deves entrar ou criar conta.</div>':''}${list.length?list.map(p=>`<article class="glass card feed-post"><div class="post-head"><div class="post-author"><div class="avatar">${p.avatar}</div><div><strong>@${p.user}</strong><div class="user-sub">📍 ${p.city||'Portugal'} · agora</div></div></div><span class="chip">+${p.xp} XP</span></div><div class="post-body">${p.text}</div><div class="post-media">🙈</div><div class="post-actions"><button class="chip" onclick="showToast('Reação enviada')">💜 ${p.hearts}</button><button class="chip">💬 ${p.comments}</button><button class="chip" onclick="showToast('Partilha copiada')">🔗 Partilhar</button></div></article>`).join(''):'<div class="glass empty">Nenhum mico encontrado.</div>'}`}
-    function renderSection(s){if(s==='feed')renderFeed();if(s==='clips')document.getElementById('clips').innerHTML=`<div class="glass card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e melhores momentos da Arena.</p><div class="post-media">🎬</div></div>`;if(s==='publicar')document.getElementById('publicar').innerHTML=`<div class="glass card"><h2>➕ Publicar mico</h2><p>Conta o teu momento embaraçoso. Podes usar nome ou modo anónimo.</p><div class="form" style="margin-top:16px"><textarea id="newPostText" placeholder="Ex: Fui cumprimentar alguém e não era comigo..."></textarea><button class="btn primary" onclick="publishPost()">Publicar agora</button></div></div>`;if(s==='ranking')document.getElementById('ranking').innerHTML=`<div class="glass card"><h2>🏆 Ranking da vergonha</h2>${rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><strong>@${r[0]}</strong></div><span>${r[1]}</span></div>`).join('')}</div>`;if(s==='perfil')document.getElementById('perfil').innerHTML=isLogged()?`<div class="glass card"><h2>👤 O meu perfil</h2><div class="user-line"><div class="avatar">${user.avatar}</div><div><h3 style="margin:0">@${user.name}</h3><p>${user.email}</p></div></div><div class="grid grid3" style="margin-top:18px"><div class="card"><h3>${user.xp}</h3><p>XP</p></div><div class="card"><h3>${user.coins}</h3><p>ShitCoins</p></div><div class="card"><h3>${posts.filter(p=>p.user===user.name).length}</h3><p>Micos publicados</p></div></div><div class="row" style="margin-top:18px"><a class="btn primary" href="./arena.html">Entrar na Arena</a><button class="btn danger" onclick="logout()">Sair da conta</button></div></div>`:'';if(s==='loja')document.getElementById('loja').innerHTML=`<div class="glass card"><h2>🎁 Loja</h2><p>Compra presentes, boosts, molduras e efeitos com ShitCoins.</p><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">👑</div><div class="gift">⚡</div><div class="gift">🌹</div><div class="gift">😂</div></div></div>`;if(s==='mensagens')document.getElementById('mensagens').innerHTML=`<div class="glass card"><h2>💬 Mensagens</h2><p>As mensagens privadas aparecem aqui. Em breve com Supabase real.</p></div>`;if(s==='convites')document.getElementById('convites').innerHTML=`<div class="glass card"><h2>🎟️ Convites</h2><p>Envia convites para amigos entrarem na beta e na Arena.</p><button class="btn primary" onclick="navigator.clipboard?.writeText('https://shitagram.pt/beta.html');showToast('Link copiado')">Copiar convite</button></div>`;if(s==='privacidade')document.getElementById('privacidade').innerHTML=`<div class="glass card"><h2>🔐 Privacidade</h2><p>Controla anonimato, visibilidade do perfil e dados da conta.</p><div class="grid grid2" style="margin-top:16px"><div class="card"><h3>Modo anónimo</h3><p>Publica sem mostrar o nome.</p></div><div class="card"><h3>Segurança</h3><p>Denúncias, moderação e fair play.</p></div></div></div>`;if(s==='definicoes')document.getElementById('definicoes').innerHTML=`<div class="glass card"><h2>⚙️ Definições</h2><p>Conta, sessão e preferências.</p><div class="row" style="margin-top:16px"><button class="btn danger" onclick="logout()">Sair</button><button class="btn ghost" onclick="localStorage.clear();location.reload()">Reset demo</button></div></div>`}
+    function renderSection(s){if(s==='feed')renderFeed();if(s==='clips')document.getElementById('clips').innerHTML=`<div class="glass card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e melhores momentos da Arena.</p><div class="post-media">🎬</div></div>`;if(s==='publicar')document.getElementById('publicar').innerHTML=`<div class="glass card"><h2>➕ Publicar mico</h2><p>Conta o teu momento embaraçoso. Podes usar nome ou modo anónimo.</p><div class="form" style="margin-top:16px"><textarea id="newPostText" placeholder="Ex: Fui cumprimentar alguém e não era comigo..."></textarea><button class="btn primary" onclick="publishPost()">Publicar agora</button></div></div>`;if(s==='ranking')document.getElementById('ranking').innerHTML=`<div class="glass card"><h2>🏆 Ranking da vergonha</h2>${rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><strong>@${r[0]}</strong></div><span>${r[1]}</span></div>`).join('')}</div>`;if(s==='perfil')document.getElementById('perfil').innerHTML=isLogged()?`<div class="glass card"><h2>👤 O meu perfil</h2><div class="user-line"><div class="avatar">${user.avatar}</div><div><h3 style="margin:0">@${user.name}</h3><p>${user.email}</p></div></div><div class="grid grid3" style="margin-top:18px"><div class="card"><h3>${user.xp}</h3><p>XP</p></div><div class="card"><h3>${user.coins}</h3><p>ShitCoins</p></div><div class="card"><h3>${posts.filter(p=>p.user===user.name).length}</h3><p>Micos publicados</p></div></div><div class="row" style="margin-top:18px"><a class="btn primary" href="./arena.html">Entrar na Arena</a><button class="btn danger" onclick="logout()">Sair da conta</button></div></div>`:'';if(s==='loja')document.getElementById('loja').innerHTML=`<div class="glass card"><h2>🎁 Loja</h2><p>Compra presentes, boosts, molduras e efeitos com ShitCoins.</p><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">👑</div><div class="gift">⚡</div><div class="gift">🌹</div><div class="gift">😂</div></div></div>`;if(s==='mensagens')document.getElementById('mensagens').innerHTML=`<div class="glass card"><h2>💬 Mensagens</h2><p>As mensagens privadas aparecem aqui. Em breve com Supabase real.</p></div>`;if(s==='convites')document.getElementById('convites').innerHTML=`<div class="glass card"><h2>🎟️ Convites</h2><p>Envia convites para amigos entrarem na beta e na Arena.</p><button class="btn primary" onclick="navigator.clipboard?.writeText('https://shitagram.pt/beta.html');showToast('Link copiado')">Copiar convite</button></div>`;if(s==='privacidade')document.getElementById('privacidade').innerHTML=`<div class="glass card"><h2>🔐 Privacidade</h2><p>Controla anonimato, visibilidade do perfil e dados da conta.</p><div class="grid grid2" style="margin-top:16px"><div class="card"><h3>Modo anónimo</h3><p>Publica sem mostrar o nome.</p></div><div class="card"><h3>Segurança</h3><p>Denúncias, moderação e fair play.</p></div></div></div>`;if(s==='definicoes')document.getElementById('definicoes').innerHTML=`<div class="glass card"><h2>⚙️ Definições</h2><p>Conta, sessão e preferências.</p><div class="row" style="margin-top:16px"><button class="btn danger" onclick="logout()">Sair</button><button class="btn ghost" onclick="openAuth('recover')">Recuperar conta</button><button class="btn ghost" onclick="localStorage.clear();location.reload()">Reset demo</button></div></div>`}
     function publishPost(){const el=document.getElementById('newPostText');const txt=el.value.trim();if(!txt)return showToast('Escreve um mico primeiro');posts.unshift({user:user.name,avatar:user.avatar,city:'Portugal',text:txt,xp:250,hearts:0,comments:0});user.xp+=250;user.coins+=80;save();renderAll();navTo('feed');showToast('+250 XP · Mico publicado')}
     function searchPosts(q){q=(q||'').toLowerCase();renderFeed(posts.filter(p=>p.text.toLowerCase().includes(q)||p.user.toLowerCase().includes(q)))}
     function renderAll(){renderAccount();renderSide();renderFeed();renderSection(document.querySelector('.section.active')?.id||'feed')}
