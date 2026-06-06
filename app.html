@@ -8,6 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Supabase Auth v20.9: preencher supabase-config.js para ativar login real -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script>
   <style>
     :root{
       --bg:#05020c;--bg2:#080411;--card:#0e071a;--card2:#140b24;--line:rgba(236,72,153,.22);
@@ -116,8 +120,11 @@
   <div class="toast" id="toast">OK</div>
 
   <script>
-    const KEY='shitagram_user_v20_6';
-    const POSTS_KEY='shitagram_posts_v20_6';
+    const KEY='shitagram_user_v20_9';
+    const POSTS_KEY='shitagram_posts_v20_9';
+    const cfg = window.SHITAGRAM_SUPABASE || {};
+    const SUPABASE_READY = !!(cfg.url && cfg.anonKey && !cfg.url.includes('COLOCA_') && !cfg.anonKey.includes('COLOCA_'));
+    const sb = SUPABASE_READY ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
     let authMode='login';
     let user=JSON.parse(localStorage.getItem(KEY)||'null');
     let posts=JSON.parse(localStorage.getItem(POSTS_KEY)||'null') || [
@@ -128,7 +135,8 @@
     const rankings=[['MicoMaster','12 450 XP'],['RainhaDoDrama','9 870 XP'],['VeraDesastrada','7 250 XP'],['PedroMico','5 400 XP']];
     function save(){localStorage.setItem(KEY,JSON.stringify(user));localStorage.setItem(POSTS_KEY,JSON.stringify(posts));}
     function isLogged(){return !!user}
-    function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+    function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
+    function safeName(v){return (v||'Utilizador').trim().replace(/^@/,'').slice(0,32)}
     function openAuth(mode='login'){authMode=mode;renderAuth();document.getElementById('authModal').classList.remove('hidden')}
     function closeAuth(){document.getElementById('authModal').classList.add('hidden')}
     function toggleAuthMode(){authMode=authMode==='login'?'register':'login';renderAuth()}
@@ -142,18 +150,19 @@
       const pass=document.getElementById('authPass');
       const email=document.getElementById('authEmail');
       email.placeholder='Email da conta';
+      pass.placeholder='Password';
       if(authMode==='login'){
         title.textContent='Entrar na tua conta';
-        text.textContent='Continua de onde ficaste: XP, perfil, Arena e publicações.';
+        text.textContent=SUPABASE_READY?'Login real ativo por Supabase Auth.':'Modo demo ativo. Preenche supabase-config.js para login real.';
         submit.textContent='Entrar';
         toggle.textContent='Ainda não tens conta? Criar conta';
         recover.textContent='Recuperar conta';
         recover.classList.remove('hidden');
-        name.classList.remove('hidden');
+        name.classList.add('hidden');
         pass.classList.remove('hidden');
       }else if(authMode==='register'){
         title.textContent='Criar conta grátis';
-        text.textContent='Cria um perfil de teste para experimentar a app sem confusão.';
+        text.textContent=SUPABASE_READY?'Cria a tua conta real do SHITAGRAM™.':'Modo demo: cria uma conta guardada no navegador.';
         submit.textContent='Criar conta';
         toggle.textContent='Já tens conta? Entrar';
         recover.textContent='Recuperar conta';
@@ -162,7 +171,7 @@
         pass.classList.remove('hidden');
       }else{
         title.textContent='Recuperar conta';
-        text.textContent='Escreve o email da tua conta. Na versão real será enviado um link seguro para voltares a entrar.';
+        text.textContent=SUPABASE_READY?'Receberás um email seguro para recuperar o acesso.':'Na demo mostramos apenas uma confirmação local.';
         submit.textContent='Enviar link de recuperação';
         toggle.textContent='Voltar ao login';
         recover.classList.add('hidden');
@@ -170,30 +179,111 @@
         pass.classList.add('hidden');
       }
     }
-    function submitAuth(){
-      const name=document.getElementById('authName').value.trim()||'Visitante';
-      const email=document.getElementById('authEmail').value.trim()||'teste@shitagram.pt';
-      if(authMode==='recover'){
-        closeAuth();
-        showToast('Link de recuperação enviado para '+email);
+    async function profileFromSupabaseUser(authUser){
+      if(!authUser) return null;
+      let profile=null;
+      if(sb){
+        const {data} = await sb.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+        profile=data;
+      }
+      return {
+        id: authUser.id,
+        name: profile?.username || authUser.user_metadata?.username || (authUser.email||'utilizador').split('@')[0],
+        email: authUser.email || '',
+        avatar: profile?.avatar || '😎',
+        xp: profile?.xp ?? 1250,
+        coins: profile?.coins ?? 2340,
+        level: profile?.level ?? 6,
+        createdAt: authUser.created_at || new Date().toISOString(),
+        provider:'supabase'
+      };
+    }
+    async function ensureProfile(authUser, username){
+      if(!sb || !authUser) return;
+      const clean = safeName(username || authUser.user_metadata?.username || (authUser.email||'utilizador').split('@')[0]);
+      await sb.from('profiles').upsert({
+        id: authUser.id,
+        username: clean,
+        email: authUser.email,
+        avatar: '😎',
+        xp: user?.xp || 1250,
+        coins: user?.coins || 2340,
+        level: user?.level || 6,
+        updated_at: new Date().toISOString()
+      }, { onConflict:'id' });
+    }
+    async function submitAuth(){
+      const name=safeName(document.getElementById('authName').value)||'Utilizador';
+      const email=document.getElementById('authEmail').value.trim();
+      const password=document.getElementById('authPass').value;
+      if(!email) return showToast('Escreve o email da conta');
+      if(authMode!=='recover' && !password) return showToast('Escreve a password');
+
+      if(SUPABASE_READY){
+        try{
+          document.getElementById('authSubmit').disabled=true;
+          if(authMode==='recover'){
+            const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:cfg.redirectTo||window.location.href});
+            if(error) throw error;
+            closeAuth();showToast('Email de recuperação enviado');return;
+          }
+          if(authMode==='register'){
+            const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name},emailRedirectTo:cfg.redirectTo||window.location.href}});
+            if(error) throw error;
+            if(data.user) await ensureProfile(data.user,name);
+            user = data.user ? await profileFromSupabaseUser(data.user) : null;
+            if(user){save();closeAuth();renderAll();showToast('Conta criada com sucesso');}
+            else {closeAuth();showToast('Conta criada. Confirma o email para entrar.');}
+            return;
+          }
+          const {data,error}=await sb.auth.signInWithPassword({email,password});
+          if(error) throw error;
+          user = await profileFromSupabaseUser(data.user);
+          save();closeAuth();renderAll();showToast('Entraste na tua conta');
+        }catch(err){
+          showToast(err?.message || 'Erro no login');
+        }finally{
+          document.getElementById('authSubmit').disabled=false;
+        }
         return;
       }
-      user={name:name.replace(/^@/,''),email,avatar:'😎',xp:user?.xp||1250,coins:user?.coins||2340,level:user?.level||6,createdAt:new Date().toISOString()};
-      save();closeAuth();renderAll();showToast(authMode==='login'?'Entraste na tua conta':'Conta criada com sucesso')
+
+      if(authMode==='recover'){
+        closeAuth();showToast('Link de recuperação enviado para '+email);return;
+      }
+      user={name,email,avatar:'😎',xp:user?.xp||1250,coins:user?.coins||2340,level:user?.level||6,createdAt:new Date().toISOString(),provider:'demo'};
+      save();closeAuth();renderAll();showToast(authMode==='login'?'Entraste na tua conta demo':'Conta demo criada com sucesso')
     }
-    function logout(){user=null;localStorage.removeItem(KEY);renderAll();navTo('feed');showToast('Sessão terminada')}
+    async function logout(){
+      if(SUPABASE_READY){try{await sb.auth.signOut()}catch(e){}}
+      user=null;localStorage.removeItem(KEY);renderAll();navTo('feed');showToast('Sessão terminada')
+    }
     function requireLogin(section){if(!isLogged()){document.getElementById('gate').classList.remove('hidden');showToast('Entra ou cria conta para continuar');openAuth('login');return false}document.getElementById('gate').classList.add('hidden');return true}
     function guardedNav(section){const protected=['publicar','perfil','mensagens','convites','definicoes'];if(protected.includes(section)&&!requireLogin(section))return;navTo(section)}
     function navTo(section){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(section)?.classList.add('active');document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',b.dataset.section===section));document.getElementById('gate').classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'});renderSection(section)}
     document.querySelectorAll('[data-section]').forEach(btn=>btn.addEventListener('click',()=>guardedNav(btn.dataset.section)));
-    function renderAccount(){const actions=document.getElementById('accountActions');const side=document.getElementById('sideUserCard');const status=document.getElementById('loginStatusText');if(isLogged()){actions.innerHTML=`<button class="btn ghost" onclick="navTo('perfil')">👤 <span class="name-text">${user.name}</span></button><a class="btn ghost" href="./arena.html">⚔️ Arena</a><button class="btn danger" onclick="logout()">Sair</button>`;status.textContent='Sessão iniciada · conta ativa';side.innerHTML=`<div class="user-line"><div class="avatar">${user.avatar}</div><div><div class="user-name">${user.name}</div><div class="user-sub">Grau ${user.level} · ${user.xp} XP</div></div></div><div class="coins"><span>💜 ${user.coins}</span><button class="btn ghost" onclick="navTo('perfil')">Perfil</button></div>`}else{actions.innerHTML=`<button class="btn ghost" onclick="openAuth('login')">Entrar</button><button class="btn primary" onclick="openAuth('register')">Criar conta</button>`;status.textContent='Visitante · cria conta ou entra';side.innerHTML=`<div class="user-line"><div class="avatar">👀</div><div><div class="user-name">Visitante</div><div class="user-sub">Sem conta iniciada</div></div></div><div class="row" style="margin-top:14px"><button class="btn primary" onclick="openAuth('login')">Entrar</button><button class="btn ghost" onclick="openAuth('register')">Criar</button></div>`}}
+    function renderAccount(){const actions=document.getElementById('accountActions');const side=document.getElementById('sideUserCard');const status=document.getElementById('loginStatusText');if(isLogged()){actions.innerHTML=`<button class="btn ghost" onclick="navTo('perfil')">👤 <span class="name-text">${user.name}</span></button><a class="btn ghost" href="./arena.html">⚔️ Arena</a><button class="btn danger" onclick="logout()">Sair</button>`;status.textContent=(user.provider==='supabase'?'Login real ativo':'Conta demo ativa')+' · '+(user.email||'');side.innerHTML=`<div class="user-line"><div class="avatar">${user.avatar}</div><div><div class="user-name">${user.name}</div><div class="user-sub">Grau ${user.level} · ${user.xp} XP</div></div></div><div class="coins"><span>💜 ${user.coins}</span><button class="btn ghost" onclick="navTo('perfil')">Perfil</button></div>`}else{actions.innerHTML=`<button class="btn ghost" onclick="openAuth('login')">Entrar</button><button class="btn primary" onclick="openAuth('register')">Criar conta</button>`;status.textContent=SUPABASE_READY?'Aberto ao público · login real disponível':'Aberto ao público · demo local até ligar Supabase';side.innerHTML=`<div class="user-line"><div class="avatar">👀</div><div><div class="user-name">Visitante</div><div class="user-sub">Sem conta iniciada</div></div></div><div class="row" style="margin-top:14px"><button class="btn primary" onclick="openAuth('login')">Entrar</button><button class="btn ghost" onclick="openAuth('register')">Criar</button></div>`}}
     function renderSide(){document.getElementById('sideRanking').innerHTML=rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><span>@${r[0]}</span></div><span>${r[1]}</span></div>`).join('')}
     function renderFeed(list=posts){document.getElementById('feed').innerHTML=`${!isLogged()?'<div class="notice"><strong>Estás em modo visitante.</strong> Podes explorar, mas para publicar, guardar XP e ver o perfil deves entrar ou criar conta.</div>':''}${list.length?list.map(p=>`<article class="glass card feed-post"><div class="post-head"><div class="post-author"><div class="avatar">${p.avatar}</div><div><strong>@${p.user}</strong><div class="user-sub">📍 ${p.city||'Portugal'} · agora</div></div></div><span class="chip">+${p.xp} XP</span></div><div class="post-body">${p.text}</div><div class="post-media">🙈</div><div class="post-actions"><button class="chip" onclick="showToast('Reação enviada')">💜 ${p.hearts}</button><button class="chip">💬 ${p.comments}</button><button class="chip" onclick="showToast('Partilha copiada')">🔗 Partilhar</button></div></article>`).join(''):'<div class="glass empty">Nenhum mico encontrado.</div>'}`}
-    function renderSection(s){if(s==='feed')renderFeed();if(s==='clips')document.getElementById('clips').innerHTML=`<div class="glass card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e melhores momentos da Arena.</p><div class="post-media">🎬</div></div>`;if(s==='publicar')document.getElementById('publicar').innerHTML=`<div class="glass card"><h2>➕ Publicar mico</h2><p>Conta o teu momento embaraçoso. Podes usar nome ou modo anónimo.</p><div class="form" style="margin-top:16px"><textarea id="newPostText" placeholder="Ex: Fui cumprimentar alguém e não era comigo..."></textarea><button class="btn primary" onclick="publishPost()">Publicar agora</button></div></div>`;if(s==='ranking')document.getElementById('ranking').innerHTML=`<div class="glass card"><h2>🏆 Ranking da vergonha</h2>${rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><strong>@${r[0]}</strong></div><span>${r[1]}</span></div>`).join('')}</div>`;if(s==='perfil')document.getElementById('perfil').innerHTML=isLogged()?`<div class="glass card"><h2>👤 O meu perfil</h2><div class="user-line"><div class="avatar">${user.avatar}</div><div><h3 style="margin:0">@${user.name}</h3><p>${user.email}</p></div></div><div class="grid grid3" style="margin-top:18px"><div class="card"><h3>${user.xp}</h3><p>XP</p></div><div class="card"><h3>${user.coins}</h3><p>ShitCoins</p></div><div class="card"><h3>${posts.filter(p=>p.user===user.name).length}</h3><p>Micos publicados</p></div></div><div class="row" style="margin-top:18px"><a class="btn primary" href="./arena.html">Entrar na Arena</a><button class="btn danger" onclick="logout()">Sair da conta</button></div></div>`:'';if(s==='loja')document.getElementById('loja').innerHTML=`<div class="glass card"><h2>🎁 Loja</h2><p>Compra presentes, boosts, molduras e efeitos com ShitCoins.</p><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">👑</div><div class="gift">⚡</div><div class="gift">🌹</div><div class="gift">😂</div></div></div>`;if(s==='mensagens')document.getElementById('mensagens').innerHTML=`<div class="glass card"><h2>💬 Mensagens</h2><p>As mensagens privadas aparecem aqui. Em breve com Supabase real.</p></div>`;if(s==='convites')document.getElementById('convites').innerHTML=`<div class="glass card"><h2>🎟️ Convites</h2><p>Convida amigos para entrarem no SHITAGRAM™ e na Arena.</p><button class="btn primary" onclick="navigator.clipboard?.writeText('https://shitagram.pt/app.html');showToast('Link copiado')">Copiar convite</button></div>`;if(s==='privacidade')document.getElementById('privacidade').innerHTML=`<div class="glass card"><h2>🔐 Privacidade</h2><p>Controla anonimato, visibilidade do perfil e dados da conta.</p><div class="grid grid2" style="margin-top:16px"><div class="card"><h3>Modo anónimo</h3><p>Publica sem mostrar o nome.</p></div><div class="card"><h3>Segurança</h3><p>Denúncias, moderação e fair play.</p></div></div></div>`;if(s==='definicoes')document.getElementById('definicoes').innerHTML=`<div class="glass card"><h2>⚙️ Definições</h2><p>Conta, sessão e preferências.</p><div class="row" style="margin-top:16px"><button class="btn danger" onclick="logout()">Sair</button><button class="btn ghost" onclick="openAuth('recover')">Recuperar conta</button><button class="btn ghost" onclick="localStorage.clear();location.reload()">Reset demo</button></div></div>`}
+    function renderSection(s){if(s==='feed')renderFeed();if(s==='clips')document.getElementById('clips').innerHTML=`<div class="glass card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e melhores momentos da Arena.</p><div class="post-media">🎬</div></div>`;if(s==='publicar')document.getElementById('publicar').innerHTML=`<div class="glass card"><h2>➕ Publicar mico</h2><p>Conta o teu momento embaraçoso. Podes usar nome ou modo anónimo.</p><div class="form" style="margin-top:16px"><textarea id="newPostText" placeholder="Ex: Fui cumprimentar alguém e não era comigo..."></textarea><button class="btn primary" onclick="publishPost()">Publicar agora</button></div></div>`;if(s==='ranking')document.getElementById('ranking').innerHTML=`<div class="glass card"><h2>🏆 Ranking da vergonha</h2>${rankings.map((r,i)=>`<div class="rank-row"><div class="rank-left"><span class="badge-num">${i+1}</span><strong>@${r[0]}</strong></div><span>${r[1]}</span></div>`).join('')}</div>`;if(s==='perfil')document.getElementById('perfil').innerHTML=isLogged()?`<div class="glass card"><h2>👤 O meu perfil</h2><div class="notice"><strong>${user.provider==='supabase'?'Conta real Supabase':'Conta demo local'}.</strong> ${user.provider==='supabase'?'Os dados de login estão ligados ao Supabase Auth.':'Liga o Supabase para autenticação real por email.'}</div><div class="user-line"><div class="avatar">${user.avatar}</div><div><h3 style="margin:0">@${user.name}</h3><p>${user.email}</p></div></div><div class="grid grid3" style="margin-top:18px"><div class="card"><h3>${user.xp}</h3><p>XP</p></div><div class="card"><h3>${user.coins}</h3><p>ShitCoins</p></div><div class="card"><h3>${posts.filter(p=>p.user===user.name).length}</h3><p>Micos publicados</p></div></div><div class="row" style="margin-top:18px"><a class="btn primary" href="./arena.html">Entrar na Arena</a><button class="btn danger" onclick="logout()">Sair da conta</button></div></div>`:'';if(s==='loja')document.getElementById('loja').innerHTML=`<div class="glass card"><h2>🎁 Loja</h2><p>Compra presentes, boosts, molduras e efeitos com ShitCoins.</p><div class="gift-grid"><div class="gift">💜</div><div class="gift">🔥</div><div class="gift">👑</div><div class="gift">⚡</div><div class="gift">🌹</div><div class="gift">😂</div></div></div>`;if(s==='mensagens')document.getElementById('mensagens').innerHTML=`<div class="glass card"><h2>💬 Mensagens</h2><p>As mensagens privadas aparecem aqui. A autenticação real já fica preparada por Supabase.</p></div>`;if(s==='convites')document.getElementById('convites').innerHTML=`<div class="glass card"><h2>🎟️ Convites</h2><p>Convida amigos para entrarem no SHITAGRAM™ e na Arena.</p><button class="btn primary" onclick="navigator.clipboard?.writeText('https://shitagram.pt/app.html');showToast('Link copiado')">Copiar convite</button></div>`;if(s==='privacidade')document.getElementById('privacidade').innerHTML=`<div class="glass card"><h2>🔐 Privacidade</h2><p>Controla anonimato, visibilidade do perfil e dados da conta.</p><div class="grid grid2" style="margin-top:16px"><div class="card"><h3>Modo anónimo</h3><p>Publica sem mostrar o nome.</p></div><div class="card"><h3>Segurança</h3><p>Denúncias, moderação e fair play.</p></div></div></div>`;if(s==='definicoes')document.getElementById('definicoes').innerHTML=`<div class="glass card"><h2>⚙️ Definições</h2><p>Conta, sessão e preferências.</p><div class="row" style="margin-top:16px"><button class="btn danger" onclick="logout()">Sair</button><button class="btn ghost" onclick="openAuth('recover')">Recuperar conta</button><button class="btn ghost" onclick="localStorage.clear();location.reload()">Reset demo</button></div></div>`}
     function publishPost(){const el=document.getElementById('newPostText');const txt=el.value.trim();if(!txt)return showToast('Escreve um mico primeiro');posts.unshift({user:user.name,avatar:user.avatar,city:'Portugal',text:txt,xp:250,hearts:0,comments:0});user.xp+=250;user.coins+=80;save();renderAll();navTo('feed');showToast('+250 XP · Mico publicado')}
     function searchPosts(q){q=(q||'').toLowerCase();renderFeed(posts.filter(p=>p.text.toLowerCase().includes(q)||p.user.toLowerCase().includes(q)))}
     function renderAll(){renderAccount();renderSide();renderFeed();renderSection(document.querySelector('.section.active')?.id||'feed')}
-    renderAll();
+    async function initAuth(){
+      if(SUPABASE_READY){
+        try{
+          const {data}=await sb.auth.getSession();
+          if(data.session?.user){user=await profileFromSupabaseUser(data.session.user);save();}
+          sb.auth.onAuthStateChange(async (event, session)=>{
+            if(session?.user){user=await profileFromSupabaseUser(session.user);save();}
+            else if(event==='SIGNED_OUT'){user=null;localStorage.removeItem(KEY);}
+            renderAll();
+          });
+        }catch(e){showToast('Supabase não respondeu. A app continua em modo local.');}
+      }
+      renderAll();
+    }
+    initAuth();
   </script>
 </body>
 </html>
