@@ -1,8 +1,10 @@
-const CACHE_NAME = 'shitagram-arena-v18';
+const CACHE_NAME = 'shitagram-arena-v18-1';
 
 const ASSETS = [
   './arena.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', event => {
