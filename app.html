@@ -1,312 +1,664 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#090311" />
-  <title>SHITAGRAM™ — App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <title>SHITAGRAM™ — App Mobile</title>
+  <meta name="description" content="SHITAGRAM™ — publica micos, ganha XP, sobe no ranking e explora a vergonha da comunidade." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{
-      --bg:#05020c; --panel:#0d0618; --card:#140a22; --card2:#1a0d2b;
-      --line:rgba(236,72,153,.22); --line2:rgba(124,58,237,.28);
-      --text:#fff; --muted:#cfc6db; --soft:#a79ab6;
-      --pink:#ec4899; --pink2:#ff4fd8; --purple:#7c3aed; --purple2:#a855f7;
-      --ok:#22c55e; --danger:#ef4444;
+      --bg:#000;
+      --card:#090909;
+      --card2:#111;
+      --line:rgba(255,204,0,.22);
+      --line2:rgba(255,255,255,.09);
+      --text:#fff;
+      --muted:#b8b8b8;
+      --soft:#777;
+      --yellow:#ffcc00;
+      --yellow2:#ffd83d;
+      --darkYellow:#5b4400;
+      --danger:#ff4d6d;
+      --green:#20d67b;
+      --radius:26px;
+      --shadow:0 18px 70px rgba(0,0,0,.58);
     }
-    *{box-sizing:border-box} html{scroll-behavior:smooth}
-    body{margin:0;background:radial-gradient(circle at 50% -10%,rgba(236,72,153,.25),transparent 38%),radial-gradient(circle at 90% 10%,rgba(124,58,237,.22),transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
-    button,input,textarea{font:inherit} button{cursor:pointer}
-    .wrap{max-width:1280px;margin:0 auto;padding:22px;display:grid;grid-template-columns:260px 1fr 320px;gap:22px;min-height:100vh}
-    .side,.right,.main-card,.modal-card{background:linear-gradient(180deg,rgba(20,10,34,.86),rgba(8,4,14,.9));border:1px solid var(--line);border-radius:24px;box-shadow:0 0 40px rgba(236,72,153,.08)}
-    .side{position:sticky;top:22px;height:calc(100vh - 44px);padding:22px;display:flex;flex-direction:column;gap:18px}
-    .brand{font-weight:950;letter-spacing:-.05em;font-size:26px}.brand span{color:var(--pink2)}
-    .nav{display:flex;flex-direction:column;gap:8px}.nav button,.nav a{border:0;text-decoration:none;background:transparent;color:#f4eafd;border-radius:16px;padding:13px 14px;text-align:left;font-weight:850;display:flex;align-items:center;gap:12px}.nav button:hover,.nav button.active,.nav a:hover{background:linear-gradient(90deg,rgba(124,58,237,.35),rgba(236,72,153,.25));box-shadow:inset 0 0 0 1px rgba(236,72,153,.18)}
-    .account{margin-top:auto;border-top:1px solid rgba(255,255,255,.08);padding-top:16px}.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(236,72,153,.08);border-radius:999px;padding:8px 12px;color:#f7d7ed;font-weight:800;font-size:12px}
-    .btn{border:0;border-radius:16px;padding:13px 16px;font-weight:950;color:white;background:linear-gradient(135deg,var(--purple),var(--pink));box-shadow:0 10px 30px rgba(236,72,153,.18)}.btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:none}.btn.danger{background:linear-gradient(135deg,#7f1d1d,#ef4444)}.btn.full{width:100%}
-    .top{display:flex;gap:14px;align-items:center;margin-bottom:18px}.search{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:14px 18px;color:white;outline:0}.avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--pink));font-size:22px;font-weight:900}
-    .main{min-width:0}.main-card{padding:24px;margin-bottom:18px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:center;background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(236,72,153,.14));border-color:rgba(236,72,153,.3)}h1,h2,h3{margin:0 0 10px;letter-spacing:-.04em}h1{font-size:30px}.accent{color:var(--pink2)}p{color:var(--muted);line-height:1.55}.muted{color:var(--soft)}
-    .empty{padding:22px;border:1px solid rgba(255,255,255,.08);border-radius:20px;background:rgba(255,255,255,.04)}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.tile{padding:18px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-    .right{position:sticky;top:22px;height:max-content;padding:20px}.rank{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}.num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--pink));font-weight:950}
-    .view{display:none}.view.active{display:block}.form{display:grid;gap:12px}.input{width:100%;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.07);color:white;border-radius:16px;padding:14px 15px;outline:0}.input:focus{border-color:var(--pink)}textarea.input{min-height:110px;resize:vertical}.note{border:1px solid var(--line);background:rgba(236,72,153,.09);border-radius:20px;padding:18px}.ok{color:#8ef0b2}.bad{color:#ffb4b4}.hidden{display:none!important}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modal.show{display:flex}.modal-card{width:min(480px,100%);padding:24px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.x{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:white;border-radius:12px;padding:8px 11px}
-    .mobilebar{display:none;position:fixed;left:10px;right:10px;bottom:10px;padding:9px;border-radius:22px;background:rgba(10,4,18,.94);border:1px solid var(--line);z-index:20;gap:4px;backdrop-filter:blur(12px)}.mobilebar button{flex:1;border:0;background:transparent;color:white;border-radius:16px;padding:8px 4px;font-size:11px;font-weight:900}.mobilebar button.active{background:linear-gradient(135deg,rgba(124,58,237,.45),rgba(236,72,153,.35))}.mobilebar b{display:block;font-size:18px}
-    @media(max-width:1050px){.wrap{grid-template-columns:1fr}.side,.right{position:relative;height:auto}.side{display:block}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.account{margin-top:18px}.right{display:none}}
-    @media(max-width:720px){.wrap{padding:12px 12px 90px}.side{display:none}.mobilebar{display:flex}.hero{display:block}h1{font-size:25px}.grid{grid-template-columns:1fr}.top{position:sticky;top:0;z-index:10;background:rgba(5,2,12,.82);padding:10px 0;backdrop-filter:blur(12px)}}
+
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{
+      background:
+        radial-gradient(circle at 50% -10%,rgba(255,204,0,.15),transparent 32%),
+        radial-gradient(circle at 100% 20%,rgba(255,204,0,.07),transparent 26%),
+        #000;
+      overflow-x:hidden;
+    }
+    button,input,textarea,select{font:inherit}
+    button{border:0;cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none!important}
+
+    .app{
+      min-height:100vh;
+      max-width:520px;
+      margin:0 auto;
+      background:#000;
+      position:relative;
+      padding-bottom:82px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.04);
+    }
+
+    .screen{display:none;min-height:100vh;padding:22px 18px 96px}
+    .screen.active{display:block}
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:linear-gradient(180deg,#000 76%,rgba(0,0,0,0));
+      padding:14px 0 10px;
+    }
+    .brand{font-size:22px;font-weight:1000;letter-spacing:-.8px;color:var(--yellow)}
+    .brand small{font-size:9px;vertical-align:top;color:var(--yellow)}
+    .icon-btn{
+      width:42px;height:42px;border-radius:999px;background:#101010;border:1px solid var(--line2);color:#fff;
+      display:inline-grid;place-items:center;font-size:18px;
+    }
+    .avatar{
+      width:46px;height:46px;border-radius:999px;background:#1a1a1a;border:2px solid var(--yellow);
+      display:grid;place-items:center;font-size:23px;overflow:hidden;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .row{display:flex;align-items:center;gap:12px}
+    .between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;border-radius:999px;padding:15px 18px;background:#151515;color:#fff;
+      border:1px solid var(--line2);font-weight:950;
+    }
+    .btn.primary{background:linear-gradient(180deg,#ffd83d,#ffbf00);color:#000;border:0}
+    .btn.outline{background:transparent;border:1px solid var(--yellow);color:var(--yellow)}
+    .btn.small{width:auto;padding:10px 14px;font-size:13px}
+    .btn.ghost{background:#111;border:1px solid #222}
+
+    .card{
+      background:linear-gradient(180deg,#101010,#060606);
+      border:1px solid var(--line2);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .yellow-card{
+      background:linear-gradient(180deg,rgba(255,204,0,.12),rgba(255,204,0,.03));
+      border:1px solid rgba(255,204,0,.24);
+    }
+    .muted{color:var(--muted)}
+    .soft{color:var(--soft)}
+    .yellow{color:var(--yellow)}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:34px;line-height:1.04;letter-spacing:-1.5px;margin-bottom:12px}
+    h2{font-size:24px;letter-spacing:-.7px;margin-bottom:10px}
+    h3{font-size:17px;margin-bottom:7px}
+    p{color:var(--muted);line-height:1.55}
+
+    /* AUTH */
+    .auth-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:28px 18px}
+    .auth-center{text-align:center;margin:auto 0}
+    .poop-logo{
+      width:132px;height:132px;margin:0 auto 22px;border-radius:999px;background:var(--yellow);
+      display:grid;place-items:center;font-size:72px;box-shadow:0 0 0 10px rgba(255,204,0,.06),0 18px 55px rgba(255,204,0,.16);
+      position:relative;
+    }
+    .poop-logo:before,.poop-logo:after{content:"";position:absolute;width:34px;height:2px;background:var(--yellow);top:24px}
+    .poop-logo:before{left:-32px;transform:rotate(38deg)}
+    .poop-logo:after{right:-32px;transform:rotate(-38deg)}
+    .auth-title{font-size:34px;font-weight:1000;letter-spacing:-1px}
+    .auth-title span{color:var(--yellow)}
+    .mini-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0}
+    .mini-benefits div{text-align:center;font-size:11px;color:#cfcfcf}
+    .mini-benefits b{display:block;color:#fff;font-size:24px;margin-bottom:5px}
+    .auth-link{margin-top:18px;text-align:center;color:#bbb;font-size:14px}
+    .auth-link button{background:transparent;color:var(--yellow);font-weight:900;padding:0}
+    .form{display:grid;gap:14px}
+    .field label{display:block;font-size:12px;font-weight:900;margin-bottom:8px;color:#fff;text-transform:uppercase}
+    .input-wrap{display:flex;align-items:center;gap:10px;background:#090909;border:1px solid #333;border-radius:18px;padding:0 14px}
+    .input-wrap input{flex:1;background:transparent;border:0;outline:0;color:#fff;padding:15px 0;min-width:0}
+    .hint{font-size:12px;color:#aaa;margin-top:7px;line-height:1.45}
+    .back{background:transparent;color:#fff;font-size:22px;margin-bottom:18px}
+    .divider{display:flex;align-items:center;gap:14px;color:#777;margin:18px 0;font-size:12px}
+    .divider:before,.divider:after{content:"";height:1px;background:#222;flex:1}
+    .explore-hero{text-align:center;margin:auto 0}
+    .spaceship{font-size:92px;margin:24px 0;text-shadow:0 0 22px rgba(255,204,0,.25)}
+    .toast{
+      position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
+      width:min(440px,calc(100% - 32px));background:#101010;border:1px solid #333;border-radius:18px;
+      padding:14px 16px;z-index:200;color:#fff;opacity:0;transition:.2s;box-shadow:var(--shadow)
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{border-color:rgba(255,77,109,.4);color:#ffd6df}
+    .toast.ok{border-color:rgba(32,214,123,.35);color:#d5ffe8}
+
+    /* FEED */
+    .stories{display:flex;gap:12px;overflow-x:auto;padding:3px 0 16px;margin:0 -2px}
+    .story{flex:0 0 58px;text-align:center;font-size:11px;color:#aaa}
+    .story .avatar{width:58px;height:58px;margin-bottom:6px}
+    .quick-post{display:flex;align-items:center;gap:10px;background:#0c0c0c;border:1px solid #222;border-radius:22px;padding:10px;margin-bottom:18px}
+    .quick-post input{flex:1;background:transparent;border:0;outline:0;color:#fff;min-width:0}
+    .post-card{padding:0;overflow:hidden;margin-bottom:18px}
+    .post-pad{padding:14px}
+    .post-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .post-user{display:flex;align-items:center;gap:10px}
+    .post-user .avatar{width:40px;height:40px;border-width:1px}
+    .level{background:#29153a;color:#e4c2ff;border:1px solid rgba(255,255,255,.1);font-size:10px;padding:4px 8px;border-radius:999px}
+    .post-img{
+      height:315px;background:linear-gradient(135deg,#2b2b2b,#0d0d0d);
+      display:grid;place-items:center;font-size:84px;border-top:1px solid #191919;border-bottom:1px solid #191919;
+    }
+    .post-img.photo1{background:radial-gradient(circle at 50% 35%,#5b3b2f,#141414 55%,#000)}
+    .post-img.photo2{background:radial-gradient(circle at 50% 35%,#46311e,#111 58%,#000)}
+    .actions-line{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
+    .reactions{display:flex;gap:18px}
+    .reactions span{font-weight:900;color:#ddd}
+
+    /* CLIPS */
+    .clip-card{
+      min-height:620px;position:relative;overflow:hidden;padding:0;background:#000;border-radius:28px;margin-bottom:18px;
+      border:1px solid #222;
+    }
+    .clip-media{
+      position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,#7a553e,#171717 50%,#000 100%);
+      display:grid;place-items:center;font-size:110px;
+    }
+    .clip-overlay{position:absolute;inset:auto 0 0 0;padding:20px;background:linear-gradient(transparent,rgba(0,0,0,.86));}
+    .clip-side{position:absolute;right:14px;bottom:110px;display:grid;gap:18px;text-align:center}
+    .clip-side button{background:rgba(0,0,0,.38);color:#fff;border-radius:999px;width:48px;height:48px;font-size:20px;border:1px solid rgba(255,255,255,.12)}
+    .tabs{display:flex;gap:18px;justify-content:center;margin-bottom:16px}
+    .tabs button{background:transparent;color:#aaa;font-weight:900;padding:8px 0;border-bottom:2px solid transparent}
+    .tabs button.active{color:var(--yellow);border-color:var(--yellow)}
+
+    /* PUBLISH */
+    textarea{
+      width:100%;min-height:150px;background:#090909;border:1px solid #333;border-radius:18px;color:#fff;
+      padding:14px;resize:vertical;outline:0;
+    }
+    .upload-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+    .upload-tile{height:78px;border-radius:18px;background:#0d0d0d;border:1px solid #222;display:grid;place-items:center;text-align:center;color:#aaa;font-weight:800}
+    .level-row{display:flex;gap:6px;margin:12px 0}
+    .level-row button{flex:1;height:34px;border-radius:10px;background:#111;color:#aaa;border:1px solid #222;font-size:12px}
+    .level-row button.active{background:var(--yellow);color:#000;border-color:var(--yellow)}
+
+    /* RANKING */
+    .rank-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+    .rank-tabs button{background:#101010;color:#aaa;border:1px solid #222;border-radius:999px;padding:10px;font-weight:850}
+    .rank-tabs .active{color:#000;background:var(--yellow)}
+    .podium{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:8px;align-items:end;margin:20px 0}
+    .podium .place{text-align:center;background:#0c0c0c;border:1px solid #222;border-radius:24px;padding:14px 8px}
+    .podium .first{padding-top:22px;border-color:rgba(255,204,0,.45);background:linear-gradient(180deg,rgba(255,204,0,.13),#080808)}
+    .rank-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #171717}
+    .rank-left{display:flex;align-items:center;gap:12px}
+    .rank-num{width:28px;height:28px;border-radius:999px;background:#151515;display:grid;place-items:center;font-weight:950;color:#aaa}
+
+    /* PROFILE */
+    .profile-head{text-align:center}
+    .profile-head .avatar{width:112px;height:112px;margin:0 auto 12px;font-size:58px}
+    .profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+    .profile-stats div{text-align:center;background:#0c0c0c;border:1px solid #222;border-radius:18px;padding:12px}
+    .profile-stats b{display:block;font-size:20px}
+    .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+    .gallery div{height:170px;border-radius:18px;background:radial-gradient(circle at center,#3a2a1e,#0c0c0c);display:grid;place-items:end start;padding:10px;font-weight:900}
+
+    .feature-strip{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0;
+    }
+    .feature-strip .card{padding:14px;border-radius:18px}
+    .feature-strip b{color:var(--yellow)}
+
+    .bottom-nav{
+      position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);
+      display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+      background:rgba(0,0,0,.94);border-top:1px solid #1d1d1d;backdrop-filter:blur(20px);z-index:80;
+    }
+    .bottom-nav button{background:transparent;color:#888;font-size:11px;font-weight:850;padding:8px 2px;border-radius:14px}
+    .bottom-nav span{display:block;font-size:21px;margin-bottom:2px}
+    .bottom-nav button.active{color:var(--yellow)}
+    .bottom-nav .plus span{width:44px;height:34px;border-radius:14px;background:var(--yellow);color:#000;display:inline-grid;place-items:center;margin-bottom:2px}
+
+    .desktop-board{display:none}
+
+    @media(min-width:900px){
+      .app{max-width:none;box-shadow:none;background:transparent}
+      .mobile-only{display:none!important}
+      .desktop-board{display:block;max-width:1180px;margin:0 auto;padding:26px}
+      .screen{display:none!important}
+      .bottom-nav{display:none}
+      .desktop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+      .desktop-phone{background:#050505;border:1px solid #333;border-radius:28px;padding:18px;min-height:610px}
+      .desktop-phone .screen{display:block!important;min-height:auto;padding:0}
+      .desktop-title{text-align:center;margin:20px 0 26px}
+      .desktop-title h1{font-size:32px;color:var(--yellow);margin-bottom:8px}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <aside class="side">
-      <div class="brand">SHITA<span>GRAM</span>™</div>
-      <div class="pill" id="authStatus">A verificar conta...</div>
-      <nav class="nav" id="sideNav">
-        <button data-view="feed" class="active">🏠 Feed</button>
-        <button data-view="clips">🎬 ShitClips™</button>
-        <button data-view="publish">➕ Publicar</button>
-        <button data-view="ranking">🏆 Ranking</button>
-        <button data-view="profile">👤 Perfil</button>
-        <a href="arena.html">⚔️ Arena Live</a>
-        <button data-view="shop">🎁 Loja</button>
-        <button data-view="premium">👑 Premium</button>
-        <button data-view="messages">💬 Mensagens</button>
-        <button data-view="invites">🎟️ Convites</button>
-        <button data-view="privacy">🔐 Privacidade</button>
-        <button data-view="settings">⚙️ Definições</button>
-      </nav>
-      <div class="account">
-        <div id="sideUser" class="muted" style="margin-bottom:12px">Visitante</div>
-        <button id="loginBtn" class="btn full">Entrar / Criar conta</button>
-        <button id="logoutBtn" class="btn danger full hidden" style="margin-top:10px">Sair</button>
+  <div class="app">
+    <!-- DESKTOP PRESENTATION -->
+    <section class="desktop-board">
+      <div class="desktop-title">
+        <h1>ANTES DO LOGIN</h1>
+        <p>Experiência simples, rápida e divertida.</p>
       </div>
-    </aside>
+      <div class="desktop-grid">
+        <div class="desktop-phone" data-clone="welcome"></div>
+        <div class="desktop-phone" data-clone="signup"></div>
+        <div class="desktop-phone" data-clone="login"></div>
+        <div class="desktop-phone" data-clone="explore"></div>
+      </div>
+      <div class="desktop-title" style="margin-top:42px">
+        <h1 style="color:#20d67b">DEPOIS DO LOGIN</h1>
+        <p>Experiência de rede social completa.</p>
+      </div>
+      <div class="desktop-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="desktop-phone" data-clone="feed"></div>
+        <div class="desktop-phone" data-clone="clips"></div>
+        <div class="desktop-phone" data-clone="publish"></div>
+        <div class="desktop-phone" data-clone="ranking"></div>
+        <div class="desktop-phone" data-clone="profile"></div>
+      </div>
+      <div class="feature-strip" style="grid-template-columns:repeat(6,1fr);margin-top:28px">
+        <div class="card"><b>XP E NÍVEIS</b><br><small>Ganha XP e sobe de nível.</small></div>
+        <div class="card"><b>REAÇÕES</b><br><small>😂, 💩, 😭 e outras.</small></div>
+        <div class="card"><b>COMENTÁRIOS</b><br><small>Interação com a comunidade.</small></div>
+        <div class="card"><b>NOTIFICAÇÕES</b><br><small>Micos, reação ou menção.</small></div>
+        <div class="card"><b>MODO ESCURO</b><br><small>Feito para a vergonha.</small></div>
+        <div class="card"><b>SEGURO</b><br><small>Dados protegidos.</small></div>
+      </div>
+    </section>
 
-    <main class="main">
+    <!-- AUTH WELCOME -->
+    <section class="screen active" id="screen-welcome">
+      <div class="auth-wrap">
+        <div></div>
+        <div class="auth-center">
+          <div class="poop-logo">💩</div>
+          <div class="auth-title">SHITA<span>GRAM</span><small>™</small></div>
+          <p style="color:#fff;font-weight:700;margin-top:10px">A vergonha agora dá <span class="yellow">XP</span>.</p>
+          <p>Partilha micos, falhanços e histórias embaraçosas. A comunidade reage, tu ganhas XP e sobes no ranking.</p>
+          <div class="mini-benefits">
+            <div><b>😮</b>PARTILHA<br><span class="soft">os teus micos</span></div>
+            <div><b>🔥</b>RECEBE<br><span class="soft">reações</span></div>
+            <div><b>🏆</b>GANHA XP<br><span class="soft">e sobe</span></div>
+          </div>
+          <button class="btn primary" onclick="goAuth('signup')">COMEÇAR</button>
+          <div class="auth-link">Já tens conta? <button onclick="goAuth('login')">Entrar</button></div>
+        </div>
+        <div></div>
+      </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section class="screen" id="screen-signup">
+      <button class="back" onclick="goAuth('welcome')">←</button>
+      <h2>Criar conta</h2>
+      <p>É rápido, fácil e grátis.</p>
+      <div class="form">
+        <div class="field">
+          <label>Nome de utilizador</label>
+          <div class="input-wrap">👤 <input id="signupName" placeholder="ex: teu_nome"></div>
+          <div class="hint">3 a 20 caracteres. Apenas letras, números ou _.</div>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <div class="input-wrap">✉️ <input id="signupEmail" type="email" placeholder="ex: contacto@email.com"></div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">🔒 <input id="signupPassword" type="password" placeholder="mínimo 6 caracteres"></div>
+        </div>
+        <button class="btn primary" onclick="signup()">CRIAR CONTA</button>
+      </div>
+      <div class="auth-link">Já tens conta? <button onclick="goAuth('login')">Entrar</button></div>
+    </section>
+
+    <!-- LOGIN -->
+    <section class="screen" id="screen-login">
+      <button class="back" onclick="goAuth('welcome')">←</button>
+      <h2>Entrar</h2>
+      <p>Bem-vindo de volta!</p>
+      <div class="form">
+        <div class="field">
+          <label>Email</label>
+          <div class="input-wrap">✉️ <input id="loginEmail" type="email" placeholder="ex: contacto@email.com"></div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">🔒 <input id="loginPassword" type="password" placeholder="A tua password"></div>
+        </div>
+        <button class="btn primary" onclick="login()">ENTRAR COM EMAIL</button>
+      </div>
+      <button class="btn ghost" style="margin-top:12px" onclick="recover()">Esqueceste-te da password?</button>
+      <div class="divider">OU</div>
+      <button class="btn ghost" onclick="toast('Google entra numa fase posterior.')">🌈 Entrar com Google</button>
+      <div class="auth-link">Ainda não tens conta? <button onclick="goAuth('signup')">Criar conta</button></div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="screen" id="screen-explore">
+      <div class="between"><button class="back" onclick="goAuth('welcome')">←</button><button class="back" style="font-size:14px" onclick="enterApp(false)">Pular</button></div>
+      <div class="explore-hero">
+        <div class="spaceship">🚀💩</div>
+        <h1>Explora os micos da comunidade</h1>
+        <p>Podes ver os melhores micos mesmo sem conta. Quando quiseres, é só registares-te!</p>
+        <button class="btn outline" onclick="enterApp(false)">VER MICOS PRIMEIRO</button>
+      </div>
+    </section>
+
+    <!-- FEED -->
+    <section class="screen" id="screen-feed">
       <div class="top">
-        <input class="search" placeholder="Procurar micos ou @utilizadores..." />
-        <button id="topLoginBtn" class="btn secondary">Entrar</button>
-        <div class="avatar" id="topAvatar">👤</div>
+        <div class="brand">SHITAGRAM<small>™</small></div>
+        <div class="row">
+          <button class="icon-btn" onclick="toast('Pesquisa em breve.')">🔍</button>
+          <button class="icon-btn" onclick="toast('Sem notificações novas.')">🔔</button>
+        </div>
+      </div>
+      <div class="stories">
+        <div class="story"><div class="avatar">+</div>A tua vez</div>
+        <div class="story"><div class="avatar">👨</div>migo</div>
+        <div class="story"><div class="avatar">👩</div>vergonha</div>
+        <div class="story"><div class="avatar">🧔</div>oops</div>
+        <div class="story"><div class="avatar">👑</div>mico</div>
+      </div>
+      <div class="quick-post">
+        <div class="avatar" style="width:38px;height:38px;font-size:20px">💩</div>
+        <input placeholder="Conta o teu mico...">
+        <button class="btn primary small" onclick="showScreen('publish')">Publicar</button>
       </div>
 
-      <section class="main-card hero">
-        <div>
-          <h1>Publica o mico. <span class="accent">Ganha XP.</span> Sobe na vergonha.</h1>
-          <p>Feed, ShitClips™, ranking, perfil, loja e Arena Live num só lugar.</p>
+      <article class="card post-card">
+        <div class="post-pad">
+          <div class="post-head">
+            <div class="post-user"><div class="avatar">👨</div><div><b>teu_nome</b><br><small class="soft">2h</small></div></div>
+            <span class="level">Trauma Level 8</span>
+          </div>
+          <p>Quando mandei mensagem para a pessoa errada... 🙈💩</p>
         </div>
-        <button class="btn" onclick="goView('publish')">+ Publicar mico</button>
-      </section>
-
-      <section id="feed" class="view active main-card">
-        <h2>🏠 Feed</h2>
-        <div class="empty"><h3>Nenhum mico encontrado</h3><p>Publica o primeiro mico ou tenta procurar outro termo.</p></div>
-      </section>
-
-      <section id="clips" class="view main-card"><h2>🎬 ShitClips™</h2><p>Vídeos curtos de micos, reações e highlights da Arena.</p><div class="empty">Em breve.</div></section>
-
-      <section id="publish" class="view main-card">
-        <h2>➕ Publicar</h2>
-        <div id="publishLocked" class="note hidden"><b>Precisas entrar para publicar.</b><p>Cria conta ou faz login para publicar micos.</p><button class="btn" onclick="openAuth('login')">Entrar / Criar conta</button></div>
-        <form id="postForm" class="form">
-          <textarea class="input" placeholder="Conta o teu mico..."></textarea>
-          <button class="btn">Publicar mico</button>
-        </form>
-      </section>
-
-      <section id="ranking" class="view main-card"><h2>🏆 Ranking</h2><div class="grid"><div class="tile"><b>1. @pedro_mico</b><p>12 450 XP</p></div><div class="tile"><b>2. @ana_costa</b><p>9 870 XP</p></div></div></section>
-
-      <section id="profile" class="view main-card">
-        <h2>👤 O meu perfil</h2>
-        <div id="profileBox" class="note"></div>
-      </section>
-
-      <section id="shop" class="view main-card"><h2>🎁 Loja</h2><p>Presentes, Sound Gifts™, boosts e skins.</p><div class="grid"><div class="tile">🔥 Fogo</div><div class="tile">👑 Coroa</div><div class="tile">🌹 Rosa</div><div class="tile">🌍 Mundo</div></div></section>
-      <section id="premium" class="view main-card"><h2>👑 Premium</h2><p>Premium experimental, sem pagamento real nesta fase.</p><button class="btn">Quero Premium</button></section>
-      <section id="messages" class="view main-card"><h2>💬 Mensagens</h2><div class="empty">Mensagens privadas em breve.</div></section>
-      <section id="invites" class="view main-card"><h2>🎟️ Convites</h2><p>Convida amigos para a Arena e para o feed.</p><button class="btn">Copiar convite</button></section>
-      <section id="privacy" class="view main-card"><h2>🔐 Privacidade</h2><p>Controlo de perfil, denúncias e segurança.</p></section>
-
-      <section id="settings" class="view main-card">
-        <h2>⚙️ Definições</h2>
-        <p>Conta, sessão e preferências.</p>
-        <div id="diagnostics" class="note"></div>
-        <div class="grid" style="margin-top:14px">
-          <button class="btn secondary" onclick="checkSupabase()">Atualizar diagnóstico</button>
-          <button class="btn secondary" onclick="clearLocalStuff()">Limpar sessão local</button>
+        <div class="post-img photo1">🙈</div>
+        <div class="post-pad actions-line">
+          <div class="reactions"><span>💩 128</span><span>💬 32</span><span>↗ 12</span></div>
+          <span>•••</span>
         </div>
-      </section>
-    </main>
+      </article>
 
-    <aside class="right">
-      <h3>🏆 Top da vergonha</h3>
-      <div class="rank"><span><b class="num">1</b> @pedro_mico</span><b>12 450 XP</b></div>
-      <div class="rank"><span><b class="num">2</b> @ana_costa</span><b>9 870 XP</b></div>
-      <div class="rank"><span><b class="num">3</b> @joao_silva</span><b>1 250 XP</b></div>
-      <br><h3>🎁 Presentes em alta</h3><div class="grid"><div class="tile">🔥</div><div class="tile">😅</div><div class="tile">🌹</div><div class="tile">👑</div></div>
-    </aside>
-  </div>
+      <article class="card post-card">
+        <div class="post-pad">
+          <div class="post-head">
+            <div class="post-user"><div class="avatar">🧔</div><div><b>oops_diario</b><br><small class="soft">4h</small></div></div>
+            <span class="level">Trauma Level 6</span>
+          </div>
+          <p>Fui dar um olá e caí das escadas... em público. 10/10 não recomendo.</p>
+        </div>
+        <div class="post-pad actions-line"><div class="reactions"><span>🔥 89</span><span>😂 40</span><span>💬 9</span></div><span>•••</span></div>
+      </article>
+    </section>
 
-  <div class="mobilebar" id="mobileBar">
-    <button data-view="feed" class="active"><b>🏠</b>Feed</button>
-    <button data-view="clips"><b>🎬</b>Clips</button>
-    <button data-view="publish"><b>➕</b>Publicar</button>
-    <button data-view="ranking"><b>🏆</b>Ranking</button>
-    <button data-view="profile"><b>👤</b>Perfil</button>
-  </div>
-
-  <div class="modal" id="authModal">
-    <div class="modal-card">
-      <div class="modal-head"><h2 id="authTitle">Entrar</h2><button class="x" onclick="closeAuth()">✕</button></div>
-      <div id="authMessage" class="note hidden"></div>
-      <form id="authForm" class="form">
-        <input id="authName" class="input hidden" placeholder="Nome / username" autocomplete="name" />
-        <input id="authEmail" class="input" placeholder="Email" type="email" autocomplete="email" required />
-        <input id="authPassword" class="input" placeholder="Password" type="password" autocomplete="current-password" />
-        <button class="btn" id="authSubmit">Entrar</button>
-      </form>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <button class="btn secondary" onclick="openAuth('register')">Criar conta</button>
-        <button class="btn secondary" onclick="openAuth('login')">Entrar</button>
-        <button class="btn secondary" onclick="openAuth('recover')">Recuperar conta</button>
+    <!-- CLIPS -->
+    <section class="screen" id="screen-clips">
+      <div class="top">
+        <div class="brand">SHITCLIPS<small>™</small></div>
       </div>
-    </div>
+      <div class="tabs"><button class="active">Para ti</button><button>Seguir</button></div>
+      <div class="clip-card">
+        <div class="clip-media">🤡</div>
+        <div class="clip-side"><button>❤️</button><b>2.3k</b><button>💬</button><b>156</b><button>↗</button><b>321</b><button>💩</button></div>
+        <div class="clip-overlay">
+          <b>@mico_king</b> <button class="btn small ghost" style="width:auto;margin-left:8px">Seguir</button>
+          <p>Quando tentas ser romântico e acaba tudo mal... 😂😅</p>
+          <small>🎵 som original — mico_king</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLISH -->
+    <section class="screen" id="screen-publish">
+      <div class="top">
+        <button class="icon-btn" onclick="showScreen('feed')">×</button>
+        <b>Publicar</b>
+        <span></span>
+      </div>
+      <div class="card">
+        <div class="row"><div class="avatar">💩</div><h3 style="margin:0">O que aconteceu de vergonhoso hoje?</h3></div>
+        <div class="upload-row">
+          <div class="upload-tile">🖼️<br>Foto</div>
+          <div class="upload-tile">🎥<br>Vídeo</div>
+          <div class="upload-tile">🎬<br>Clip</div>
+        </div>
+        <textarea id="postText" placeholder="Conta o teu mico em detalhe..."></textarea>
+        <p style="margin:14px 0 6px"><b>Trauma Level</b> <span class="soft">(opcional)</span></p>
+        <div class="level-row">
+          <button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button class="active">8</button><button>9</button><button>10</button>
+        </div>
+        <p style="margin:14px 0 6px"><b>Quem pode ver?</b></p>
+        <select class="btn ghost" style="text-align:left;appearance:none"><option>🌐 Público</option><option>👥 Só seguidores</option><option>🕵️ Anónimo</option></select>
+        <button class="btn primary" style="margin-top:18px" onclick="publishMico()">PUBLICAR</button>
+      </div>
+    </section>
+
+    <!-- RANKING -->
+    <section class="screen" id="screen-ranking">
+      <div class="top"><div class="brand">RANKING</div></div>
+      <div class="rank-tabs"><button>Global</button><button class="active">Semanal</button><button>Amigos</button></div>
+      <div class="podium">
+        <div class="place"><div class="avatar" style="margin:auto">👨</div><b>2</b><br><small>migo_dasneves</small><br><span class="yellow">XP 9.870</span></div>
+        <div class="place first"><div style="font-size:34px">👑</div><div class="avatar" style="margin:auto">😎</div><b>1</b><br><small>vergonha_real</small><br><span class="yellow">XP 12.540</span></div>
+        <div class="place"><div class="avatar" style="margin:auto">🧔</div><b>3</b><br><small>mico_king</small><br><span class="yellow">XP 8.330</span></div>
+      </div>
+      <div class="card">
+        <div class="rank-row"><div class="rank-left"><span class="rank-num">4</span><span>oops_diario</span></div><span>XP 7.120</span></div>
+        <div class="rank-row"><div class="rank-left"><span class="rank-num">5</span><span>traumatizado</span></div><span>XP 6.540</span></div>
+        <div class="rank-row"><div class="rank-left"><span class="rank-num">6</span><span>confusao_total</span></div><span>XP 5.980</span></div>
+        <div class="rank-row"><div class="rank-left"><span class="rank-num">7</span><span>falhei_feio</span></div><span>XP 5.210</span></div>
+        <div class="rank-row"><div class="rank-left"><span class="rank-num">8</span><span>tu</span></div><span class="yellow">XP 4.320</span></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="screen" id="screen-profile">
+      <div class="top"><span></span><b id="profileTopName">teu_nome</b><button class="icon-btn">☰</button></div>
+      <div class="profile-head">
+        <div class="avatar">💩</div>
+        <h2 id="profileName">teu_nome</h2>
+        <span class="level">Trauma Level 5</span>
+        <div class="profile-stats">
+          <div><b>42</b><span class="soft">Micos</span></div>
+          <div><b>18</b><span class="soft">Clips</span></div>
+          <div><b>4.320</b><span class="soft">XP</span></div>
+        </div>
+        <p>Especialista em micos públicos e decisões questionáveis. 🔥</p>
+        <button class="btn ghost">Editar Perfil</button>
+      </div>
+      <div class="tabs" style="margin-top:20px"><button class="active">Micos</button><button>Clips</button><button>Guardados</button></div>
+      <div class="gallery"><div>🔥 128</div><div>💩 96</div><div>💖 74</div><div>🔥 112</div></div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="active" data-screen="feed"><span>🏠</span>Feed</button>
+      <button data-screen="clips"><span>🎬</span>Clips</button>
+      <button class="plus" data-screen="publish"><span>+</span>Publicar</button>
+      <button data-screen="ranking"><span>🏆</span>Ranking</button>
+      <button data-screen="profile"><span>👤</span>Perfil</button>
+    </nav>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script>
-    const SUPABASE_URL = 'https://dcupiiiifnfffdsyyccyac.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9';
-    let sb = null;
+    const SUPABASE_URL = "https://dcupiiiifnffdsyyccyac.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_oeiwoIvG0wUvSdHLL2_OkQ_RawWzjP9";
+
+    let supabaseClient = null;
     let currentUser = null;
-    let authMode = 'login';
+    let currentProfile = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg,type=''){
+      const t=$('toast');
+      t.textContent=msg;
+      t.className='toast show ' + type;
+      setTimeout(()=>t.className='toast',3200);
+    }
 
     function initSupabase(){
       try{
-        if(!window.supabase || !SUPABASE_URL || !SUPABASE_KEY) return false;
-        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        if(!window.supabase) throw new Error('Supabase SDK não carregado');
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY,{
+          auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+        });
         return true;
-      }catch(e){ console.error(e); return false; }
-    }
-
-    function setText(id, html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
-    function setAuthMessage(msg, ok=false){ const el=document.getElementById('authMessage'); el.classList.remove('hidden'); el.innerHTML = `<b class="${ok?'ok':'bad'}">${msg}</b>`; }
-
-    function goView(id){
-      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-      document.getElementById(id)?.classList.add('active');
-      document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active', b.dataset.view===id));
-      if(id==='profile') renderProfile();
-      if(id==='settings') checkSupabase();
-      if(id==='publish') guardPublish();
-    }
-    window.goView = goView;
-
-    document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>goView(btn.dataset.view)));
-    document.getElementById('loginBtn').onclick=()=>openAuth('login');
-    document.getElementById('topLoginBtn').onclick=()=>openAuth('login');
-    document.getElementById('logoutBtn').onclick=logout;
-
-    function openAuth(mode='login'){
-      authMode=mode;
-      document.getElementById('authModal').classList.add('show');
-      document.getElementById('authMessage').classList.add('hidden');
-      document.getElementById('authName').classList.toggle('hidden', mode!=='register');
-      document.getElementById('authPassword').classList.toggle('hidden', mode==='recover');
-      document.getElementById('authPassword').required = mode !== 'recover';
-      document.getElementById('authTitle').textContent = mode==='register' ? 'Criar conta' : mode==='recover' ? 'Recuperar conta' : 'Entrar';
-      document.getElementById('authSubmit').textContent = mode==='register' ? 'Criar conta' : mode==='recover' ? 'Enviar link de recuperação' : 'Entrar';
-    }
-    window.openAuth=openAuth;
-    function closeAuth(){document.getElementById('authModal').classList.remove('show')} window.closeAuth=closeAuth;
-
-    document.getElementById('authForm').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      if(!sb){ setAuthMessage('Supabase não carregou. Confirma a ligação à internet e recarrega a página.'); return; }
-      const email=document.getElementById('authEmail').value.trim();
-      const password=document.getElementById('authPassword').value;
-      const name=document.getElementById('authName').value.trim() || email.split('@')[0];
-      try{
-        if(authMode==='register'){
-          const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name,display_name:name}}});
-          if(error) throw error;
-          currentUser=data.user || null;
-          setAuthMessage('Conta criada. Se o Supabase pedir confirmação, verifica o email.', true);
-          await optionalProfileUpsert(name);
-          await refreshUser();
-        } else if(authMode==='recover'){
-          const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo: location.origin + '/app.html'});
-          if(error) throw error;
-          setAuthMessage('Link de recuperação enviado para o email.', true);
-        } else {
-          const {data,error}=await sb.auth.signInWithPassword({email,password});
-          if(error) throw error;
-          currentUser=data.user;
-          closeAuth();
-          await refreshUser();
-          goView('feed');
-        }
-      }catch(err){ setAuthMessage(err.message || String(err)); }
-    });
-
-    async function optionalProfileUpsert(username){
-      try{
-        const {data:{user}} = await sb.auth.getUser();
-        if(!user) return;
-        await sb.from('profiles').upsert({id:user.id, username, email:user.email, updated_at:new Date().toISOString()});
-      }catch(e){ console.warn('profiles opcional:', e.message); }
-    }
-
-    async function refreshUser(){
-      if(!sb){ updateAuthUI(); return; }
-      const {data} = await sb.auth.getUser();
-      currentUser = data?.user || null;
-      updateAuthUI(); renderProfile(); guardPublish(); checkSupabase();
-    }
-
-    function updateAuthUI(){
-      const logged=!!currentUser;
-      const name=currentUser?.user_metadata?.display_name || currentUser?.user_metadata?.username || currentUser?.email || 'Utilizador';
-      setText('authStatus', logged ? '🟢 Conta ligada' : 'Visitante');
-      setText('sideUser', logged ? `<b>${name}</b><br><span class="muted">${currentUser.email||''}</span>` : 'Visitante');
-      document.getElementById('loginBtn').classList.toggle('hidden', logged);
-      document.getElementById('topLoginBtn').classList.toggle('hidden', logged);
-      document.getElementById('logoutBtn').classList.toggle('hidden', !logged);
-      document.getElementById('topAvatar').textContent = logged ? '😎' : '👤';
-    }
-
-    function renderProfile(){
-      const box=document.getElementById('profileBox');
-      if(!box) return;
-      if(!currentUser){
-        box.innerHTML = `<b>Não tens sessão iniciada.</b><p>Entra ou cria conta para veres o teu perfil, XP, ranking, Arena e definições.</p><button class="btn" onclick="openAuth('login')">Entrar / Criar conta</button>`;
-      }else{
-        const name=currentUser.user_metadata?.display_name || currentUser.user_metadata?.username || currentUser.email;
-        box.innerHTML = `<b>Conta Supabase ativa.</b><p><b>Utilizador:</b> ${name}<br><b>Email:</b> ${currentUser.email}<br><b>ID:</b> ${currentUser.id}</p><button class="btn secondary" onclick="goView('settings')">Ver definições</button>`;
+      }catch(e){
+        toast('Ligação indisponível. Tenta atualizar a página.','error');
+        return false;
       }
     }
 
-    function guardPublish(){
-      const locked=document.getElementById('publishLocked'); const form=document.getElementById('postForm');
-      if(!locked||!form) return;
-      locked.classList.toggle('hidden', !!currentUser);
-      form.classList.toggle('hidden', !currentUser);
+    function formatAuthError(error){
+      const msg = String(error?.message || error || '');
+      if(msg.toLowerCase().includes('failed to fetch')) return 'Não foi possível ligar ao servidor. Confirma a ligação e tenta novamente.';
+      if(msg.toLowerCase().includes('invalid login credentials')) return 'Email ou password incorretos.';
+      if(msg.toLowerCase().includes('email not confirmed')) return 'Confirma o email antes de entrar.';
+      if(msg.toLowerCase().includes('already registered')) return 'Este email já está registado. Tenta entrar.';
+      return msg || 'Erro inesperado. Tenta novamente.';
     }
 
-    async function logout(){
-      try{ if(sb) await sb.auth.signOut(); }catch(e){}
-      currentUser=null; updateAuthUI(); renderProfile(); guardPublish(); goView('feed');
+    function goAuth(screen){ setScreen('screen-'+screen); }
+    function showScreen(name){ setScreen('screen-'+name); updateNav(name); }
+    function setScreen(id){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      const el=$(id);
+      if(el) el.classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
     }
 
-    function checkSupabase(){
-      const diag=document.getElementById('diagnostics'); if(!diag) return;
-      const sdk=!!window.supabase;
-      const client=!!sb;
-      diag.innerHTML = `
-        <b>Supabase:</b> ${client ? '<span class="ok">ligado e pronto para login real</span>' : '<span class="bad">não carregado</span>'}<br>
-        <b>URL:</b> ${SUPABASE_URL}<br>
-        <b>SDK Supabase:</b> ${sdk ? '<span class="ok">carregado</span>' : '<span class="bad">não carregado</span>'}<br>
-        <b>Cliente:</b> ${client ? '<span class="ok">criado</span>' : '<span class="bad">não criado</span>'}<br>
-        <b>Sessão:</b> ${currentUser ? 'ativa' : 'sem login'}
-      `;
+    function updateNav(name){
+      document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
     }
-    window.checkSupabase=checkSupabase;
 
-    function clearLocalStuff(){
-      localStorage.removeItem('shitagram_user');
-      localStorage.removeItem('shitagram_demo_user');
-      localStorage.removeItem('shitagram_profile');
-      alert('Sessão local/demo limpa. Agora recarrega a página com Ctrl + F5.');
+    function enterApp(update=true){
+      showScreen('feed');
+      if(update) toast('Bem-vindo ao SHITAGRAM™','ok');
     }
-    window.clearLocalStuff=clearLocalStuff;
 
-    document.getElementById('postForm').addEventListener('submit',(e)=>{e.preventDefault();alert('Mico preparado. A gravação real de posts será ligada à tabela posts no próximo passo.');});
+    async function refreshSession(){
+      if(!supabaseClient) return;
+      const {data,error}=await supabaseClient.auth.getUser();
+      if(error || !data?.user){currentUser=null;return;}
+      currentUser=data.user;
+      await loadProfile();
+      enterApp(false);
+    }
 
-    (async function boot(){
+    async function loadProfile(){
+      if(!currentUser || !supabaseClient) return;
+      const fallbackName = currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'teu_nome';
+      currentProfile={username:fallbackName,display_name:fallbackName,xp:4320,coins:2340};
+      try{
+        const {data}=await supabaseClient.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+        if(data) currentProfile={...currentProfile,...data};
+      }catch(e){}
+      renderProfileIdentity();
+    }
+
+    function renderProfileIdentity(){
+      const name = currentProfile?.username || currentProfile?.display_name || 'teu_nome';
+      if($('profileName')) $('profileName').textContent=name;
+      if($('profileTopName')) $('profileTopName').textContent=name;
+    }
+
+    async function signup(){
+      const username=$('signupName').value.trim();
+      const email=$('signupEmail').value.trim();
+      const password=$('signupPassword').value;
+      if(!username || username.length<3) return toast('Escolhe um nome de utilizador com pelo menos 3 caracteres.','error');
+      if(!email || !password) return toast('Preenche email e password.','error');
+      if(password.length<6) return toast('A password deve ter pelo menos 6 caracteres.','error');
+      if(!supabaseClient) return toast('Ligação indisponível.','error');
+
+      const clean=username.replace(/[^a-zA-Z0-9_]/g,'').slice(0,20);
+      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{username:clean,name:clean}}});
+      if(error) return toast(formatAuthError(error),'error');
+      currentUser=data.user || null;
+      if(currentUser) await loadProfile();
+      toast(data.session ? 'Conta criada. Bem-vindo!' : 'Conta criada. Confirma o email se necessário.','ok');
+      enterApp(false);
+    }
+
+    async function login(){
+      const email=$('loginEmail').value.trim();
+      const password=$('loginPassword').value;
+      if(!email || !password) return toast('Preenche email e password.','error');
+      if(!supabaseClient) return toast('Ligação indisponível.','error');
+
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error) return toast(formatAuthError(error),'error');
+      currentUser=data.user;
+      await loadProfile();
+      toast('Sessão iniciada.','ok');
+      enterApp(false);
+    }
+
+    async function recover(){
+      const email=$('loginEmail').value.trim();
+      if(!email) return toast('Escreve o email primeiro.','error');
+      if(!supabaseClient) return toast('Ligação indisponível.','error');
+      const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin + '/app.html'});
+      toast(error ? formatAuthError(error) : 'Email de recuperação enviado, se a conta existir.', error ? 'error':'ok');
+    }
+
+    function publishMico(){
+      const text=$('postText')?.value.trim();
+      if(!text) return toast('Escreve o teu mico primeiro.','error');
+      $('postText').value='';
+      toast('Mico publicado em modo beta.','ok');
+      showScreen('feed');
+    }
+
+    document.querySelectorAll('.bottom-nav button').forEach(btn=>{
+      btn.addEventListener('click',()=>showScreen(btn.dataset.screen));
+    });
+
+    function cloneScreensForDesktop(){
+      if(window.innerWidth < 900) return;
+      const map=['welcome','signup','login','explore','feed','clips','publish','ranking','profile'];
+      map.forEach(name=>{
+        const target=document.querySelector(`[data-clone="${name}"]`);
+        const source=$('screen-'+name);
+        if(target && source){
+          const copy=source.cloneNode(true);
+          copy.classList.add('active');
+          copy.querySelectorAll('button,input,textarea,select').forEach(el=>el.setAttribute('tabindex','-1'));
+          target.innerHTML='';
+          target.appendChild(copy);
+        }
+      });
+    }
+
+    window.addEventListener('load',async()=>{
       initSupabase();
-      if(sb){
-        sb.auth.onAuthStateChange((_event, session)=>{ currentUser=session?.user || null; updateAuthUI(); renderProfile(); guardPublish(); checkSupabase(); });
-        await refreshUser();
-      } else { updateAuthUI(); renderProfile(); guardPublish(); checkSupabase(); }
-    })();
+      cloneScreensForDesktop();
+      if(supabaseClient) await refreshSession();
+      if(!currentUser) goAuth('welcome');
+    });
   </script>
 </body>
 </html>
