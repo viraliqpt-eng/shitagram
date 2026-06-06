@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com temas, Sound Gifts reativos, histórico de duelos, highlights e partilha de vitória." />
-  <title>SHITAGRAM™ Arena — Histórico, Highlights e Sound Gifts</title>
+  <meta name="description" content="Arena SHITAGRAM™ — Mico Battle Live de 60 segundos com sala de convite, pré-live, preview de câmara, temas, Sound Gifts reativos, histórico, highlights e partilha de vitória." />
+  <title>SHITAGRAM™ Arena — Sala, Convite, Pré-live, Câmara, Sound Gifts e Highlights</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,6 +42,12 @@
     .sound-wave{animation:soundWave .65s ease-out;}
     @keyframes soundWave{0%{box-shadow:0 0 0 0 rgba(255,46,147,.6)}100%{box-shadow:0 0 0 22px rgba(255,46,147,0)}}
 
+    .camera-tile{position:relative;min-height:340px;border-radius:1.8rem;overflow:hidden;background:linear-gradient(180deg,rgba(255,46,147,.12),rgba(5,2,12,.92));border:1px solid rgba(255,255,255,.1);}
+    .camera-video{width:100%;height:100%;min-height:340px;object-fit:cover;background:#05020c;}
+    .camera-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:1.2rem;background:radial-gradient(circle at 50% 30%,rgba(255,46,147,.18),rgba(5,2,12,.95));}
+    .ready-ring{box-shadow:0 0 0 0 rgba(34,197,94,.45);animation:readyPulse 1.3s ease-in-out infinite;}
+    @keyframes readyPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.42)}70%{box-shadow:0 0 0 12px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -56,6 +62,8 @@
       <a href="index.html" class="font-display font-black text-xl sm:text-2xl tracking-wide text-white">SHIT<span class="text-brand-pink">AGRAM</span><span class="text-[9px] text-zinc-500 align-super ml-0.5">TM</span></a>
       <nav class="hidden md:flex items-center gap-6 text-sm text-zinc-300 font-semibold">
         <a href="#setup" class="hover:text-brand-pink">Preparar</a>
+        <a href="#room" class="hover:text-brand-pink">Sala</a>
+        <a href="#prelive" class="hover:text-brand-pink">Pré-live</a>
         <a href="#battle" class="hover:text-brand-pink">Arena</a>
         <a href="#scheduled" class="hover:text-brand-pink">Marcadas</a>
         <a href="#history" class="hover:text-brand-pink">Histórico</a>
@@ -73,12 +81,12 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
       <div class="lg:col-span-5 space-y-7">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span> v16.4 Histórico & Highlights
+          <span class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></span> v16.6 Sala & Convite
         </div>
         <div class="space-y-4">
           <h1 class="battle-title font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-tight text-white">MICO <span class="bg-gradient-text">BATTLE LIVE</span></h1>
           <p class="text-xl text-white font-extrabold">60 segundos. 2 jogadores. 4 efeitos. 1 vencedor.</p>
-          <p class="text-zinc-400 text-base leading-relaxed max-w-xl">Prepara a batalha, escolhe adversário, tema e efeitos. Durante a arena, os espectadores enviam presentes com sons próprios, animações e impacto na pontuação. O som muda conforme o tipo de espectador: normal, fundador, premium ou top fã.</p>
+          <p class="text-zinc-400 text-base leading-relaxed max-w-xl">Cria uma sala de batalha, copia o convite, vê o preview de câmara, espera pelo adversário e confirma que ambos estão prontos. Depois entram numa arena de 60 segundos com temas, Sound Gifts, pontuação, histórico e highlights.</p>
         </div>
         <div class="grid grid-cols-2 gap-3 max-w-lg">
           <button onclick="document.getElementById('setup').scrollIntoView({behavior:'smooth'})" class="tap rounded-2xl bg-gradient-to-r from-brand-pink to-brand-fuchsia text-white font-display font-black text-sm px-5 py-4 neon-pink hover:scale-[1.02] transition-transform"><i class="fa-solid fa-gamepad mr-2"></i>Preparar duelo</button>
@@ -167,8 +175,154 @@
               <div class="rounded-2xl border border-white/10 p-3 text-center" id="previewRightBox"><div class="text-4xl" id="previewRightFace">😳</div><div class="mt-2 h-12 rounded-t-2xl" id="previewRightClothes"></div><p class="text-[10px] font-black mt-2" id="previewRightText">rosa</p></div>
             </div>
           </div>
-          <button onclick="prepareCountdown()" class="tap w-full rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-4 neon-pink hover:scale-[1.02] transition-transform"><i class="fa-solid fa-play mr-2"></i>Iniciar batalha</button>
+          <button onclick="openRoom()" class="tap w-full rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-4 neon-pink hover:scale-[1.02] transition-transform"><i class="fa-solid fa-link mr-2"></i>Criar sala de convite</button>
           <button onclick="openScheduleModal()" class="tap w-full rounded-2xl bg-white/5 border border-white/10 text-white font-display font-bold py-4 hover:bg-white/10 transition-all"><i class="fa-solid fa-clock mr-2"></i>Marcar para depois</button>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="room" class="glass rounded-[2rem] p-6 lg:p-8 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-purple/10 via-transparent to-brand-pink/8 pointer-events-none"></div>
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div class="lg:col-span-5 space-y-5">
+          <div>
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-pink/10 border border-brand-pink/30 text-brand-pink text-xs font-black uppercase tracking-wider"><i class="fa-solid fa-link"></i> Sala de convite</span>
+            <h2 class="font-display font-black text-3xl text-white mt-4">Cria a sala antes da live</h2>
+            <p class="text-zinc-400 text-sm mt-2 leading-relaxed">Antes dos jogadores se verem no pré-live, a batalha recebe um código único. Copias o link, envias ao rival e os espectadores podem entrar para assistir quando começar.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-5 text-center">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase tracking-wider">Código da sala</span>
+              <span id="roomCode" class="block text-3xl font-display font-black text-brand-pink mt-2">MB-0000</span>
+            </div>
+            <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-5 text-center">
+              <span class="block text-[10px] text-zinc-500 font-black uppercase tracking-wider">Espectadores</span>
+              <span id="roomViewers" class="block text-3xl font-display font-black text-white mt-2">0</span>
+            </div>
+          </div>
+          <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-4">
+            <label class="text-[10px] text-zinc-500 font-black uppercase tracking-wider">Link de convite</label>
+            <div class="mt-2 flex gap-2">
+              <input id="roomInviteLink" readonly class="flex-1 bg-black/30 border border-white/10 rounded-2xl px-4 py-3 text-zinc-300 text-sm outline-none select-all" value="https://shitagram.pt/arena.html?battle=MB-0000" />
+              <button onclick="copyInviteLink()" class="tap px-4 py-3 rounded-2xl bg-brand-pink text-white font-display font-black text-xs hover:bg-brand-pink/90"><i class="fa-solid fa-copy"></i></button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="createBattleRoom()" class="tap rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-4 neon-pink"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Gerar nova sala</button>
+            <button onclick="openPreLiveFromRoom()" class="tap rounded-2xl bg-white/5 border border-white/10 text-white font-display font-bold py-4 hover:bg-white/10"><i class="fa-solid fa-video mr-2"></i>Ir para pré-live</button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 space-y-4">
+          <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+            <h3 class="font-display font-black text-white">Estado da sala</h3>
+            <div class="mt-4 space-y-3 text-sm">
+              <div class="flex items-center justify-between"><span class="text-zinc-400">Jogador principal</span><span class="text-green-400 font-black">Online</span></div>
+              <div class="flex items-center justify-between"><span class="text-zinc-400">Adversário</span><span id="roomOpponentState" class="text-yellow-400 font-black">A aguardar</span></div>
+              <div class="flex items-center justify-between"><span class="text-zinc-400">Modo</span><span id="roomModeState" class="text-white font-black">Público</span></div>
+              <div class="flex items-center justify-between"><span class="text-zinc-400">Tema</span><span id="roomThemeState" class="text-brand-pink font-black">Romance Falhado</span></div>
+            </div>
+          </div>
+          <div class="bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+            <h3 class="font-display font-black text-white">Ações rápidas</h3>
+            <div class="mt-4 grid grid-cols-1 gap-3">
+              <button onclick="simulateSpectatorJoin()" class="tap rounded-2xl bg-white/5 border border-white/10 text-white font-bold py-3 hover:bg-white/10"><i class="fa-solid fa-users mr-2"></i>Simular espectadores</button>
+              <button onclick="simulateOpponentJoin(); syncRoomStatus();" class="tap rounded-2xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple font-bold py-3 hover:bg-brand-purple/20"><i class="fa-solid fa-user-plus mr-2"></i>Simular rival a entrar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-3 bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-black text-white">Atividade</h3>
+            <span class="text-[10px] text-brand-purple font-black uppercase">Lobby</span>
+          </div>
+          <div id="lobbyEvents" class="space-y-3 max-h-[340px] overflow-y-auto no-scrollbar text-xs"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="prelive" class="glass rounded-[2rem] p-6 lg:p-8 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-pink/6 via-transparent to-brand-purple/12 pointer-events-none"></div>
+      <div class="relative z-10 space-y-7">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div>
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs font-black uppercase tracking-wider">
+              <i class="fa-solid fa-video"></i> Pré-live
+            </span>
+            <h2 class="font-display font-black text-3xl text-white mt-4">Como os jogadores se veem antes da batalha</h2>
+            <p class="text-zinc-400 text-sm mt-2 max-w-2xl">Aqui cada jogador confirma a própria câmara, vê o adversário, verifica o tema, a cor da roupa e só entra na arena quando ambos estiverem prontos.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="startCameraPreview()" class="tap px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-display font-bold text-sm hover:bg-white/10 transition-all"><i class="fa-solid fa-camera mr-2"></i>Ligar câmara</button>
+            <button onclick="simulateOpponentJoin()" class="tap px-5 py-3 rounded-2xl bg-brand-purple/10 border border-brand-purple/30 text-brand-purple font-display font-bold text-sm hover:bg-brand-purple/20 transition-all"><i class="fa-solid fa-user-plus mr-2"></i>Simular rival</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <div class="lg:col-span-5 camera-tile" id="localCameraTile">
+            <video id="localCameraVideo" class="camera-video hidden" playsinline muted autoplay></video>
+            <div id="localCameraPlaceholder" class="camera-placeholder">
+              <div class="space-y-3">
+                <div class="mx-auto w-20 h-20 rounded-full bg-brand-pink/15 border border-brand-pink/30 flex items-center justify-center text-4xl">📷</div>
+                <h3 class="font-display font-black text-white text-xl">Tu: MicoMaster</h3>
+                <p class="text-zinc-400 text-sm max-w-xs">Liga a câmara para veres o teu preview antes do duelo. Se o navegador bloquear, fica ativo o avatar simulado.</p>
+                <span id="localCameraStatus" class="inline-flex px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase">Câmara por ligar</span>
+              </div>
+            </div>
+            <div class="absolute left-4 right-4 bottom-4 bg-black/50 border border-white/10 rounded-2xl p-3 flex items-center justify-between backdrop-blur-md">
+              <div><h4 class="font-black text-white text-sm">MicoMaster</h4><p class="text-[10px] text-brand-pink font-bold" id="preliveLeftTheme">Roupa vermelha pronta</p></div>
+              <span id="localReadyBadge" class="px-2 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-black">Não pronto</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 flex lg:flex-col items-center justify-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-brand-pink/10 border border-brand-pink/30 flex items-center justify-center text-brand-pink font-display font-black text-xl shadow-[0_0_28px_rgba(255,46,147,.25)]">VS</div>
+            <div class="text-center hidden lg:block">
+              <p class="text-zinc-500 text-[10px] font-black uppercase tracking-wider">Estado</p>
+              <p id="preliveRoomStatus" class="text-white text-sm font-bold mt-1">À espera</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 camera-tile" id="opponentCameraTile">
+            <div id="opponentCameraPlaceholder" class="camera-placeholder">
+              <div class="space-y-3">
+                <div class="mx-auto w-20 h-20 rounded-full bg-brand-purple/15 border border-brand-purple/30 flex items-center justify-center text-4xl" id="opponentAvatarPreview">🫣</div>
+                <h3 class="font-display font-black text-white text-xl" id="preliveOpponentName">VexamePro</h3>
+                <p class="text-zinc-400 text-sm max-w-xs">O rival aparece aqui quando aceitar o convite. Nesta demo podes simular a entrada do adversário.</p>
+                <span id="opponentCameraStatus" class="inline-flex px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase">A aguardar rival</span>
+              </div>
+            </div>
+            <div class="absolute left-4 right-4 bottom-4 bg-black/50 border border-white/10 rounded-2xl p-3 flex items-center justify-between backdrop-blur-md">
+              <div><h4 class="font-black text-white text-sm" id="preliveOpponentFooter">VexamePro</h4><p class="text-[10px] text-brand-purple font-bold" id="preliveRightTheme">Roupa rosa pronta</p></div>
+              <span id="opponentReadyBadge" class="px-2 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-black">À espera</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-4 bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+            <h3 class="font-display font-black text-white">Resumo do pré-live</h3>
+            <div class="mt-3 space-y-2 text-sm text-zinc-300">
+              <p><strong class="text-white">Tema:</strong> <span id="preliveThemeSummary" class="text-brand-pink">Romance Falhado</span></p>
+              <p><strong class="text-white">Modo:</strong> <span id="preliveModeSummary">Público</span></p>
+              <p><strong class="text-white">Efeitos:</strong> <span id="preliveEffectsSummary">ShitCoins, Explosão, Escudo, Combo</span></p>
+            </div>
+          </div>
+          <div class="lg:col-span-4 bg-brand-dark/70 border border-white/10 rounded-3xl p-5">
+            <h3 class="font-display font-black text-white">Checklist</h3>
+            <div class="mt-3 space-y-2 text-xs text-zinc-400">
+              <p id="checkCamera">○ Câmara do jogador</p>
+              <p id="checkOpponent">○ Adversário na sala</p>
+              <p id="checkBothReady">○ Ambos prontos</p>
+            </div>
+          </div>
+          <div class="lg:col-span-4 bg-brand-dark/70 border border-white/10 rounded-3xl p-5 space-y-3">
+            <button onclick="toggleLocalReady()" id="btnLocalReady" class="tap w-full rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black py-3 hover:bg-white/10 transition-all"><i class="fa-solid fa-circle-check mr-2"></i>Estou pronto</button>
+            <button onclick="prepareCountdownFromPrelive()" id="btnStartFromPrelive" class="tap w-full rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-3 opacity-50 cursor-not-allowed" disabled><i class="fa-solid fa-play mr-2"></i>Começar batalha</button>
+          </div>
         </div>
       </div>
     </section>
@@ -407,7 +561,7 @@
       { id:'freeze', name:'Congelar', icon:'🧊', cost:180, side:'right', power:210 },
       { id:'crown', name:'Coroa', icon:'👑', cost:220, side:'left', power:280 }
     ];
-    let state = { theme:'Romance Falhado', mode:'Público', opponent:'VexamePro', selectedEffects:['coins','boom','shield','combo'], leftScore:3280, rightScore:2650, running:false, time:60, interval:null, wins:19, rate:68, lastShareText:'Ainda não terminaste nenhuma batalha.', history:[
+    let state = { roomCode:'MB-0000', inviteLink:'https://shitagram.pt/arena.html?battle=MB-0000', viewers:0, lobbyEvents:['Sala criada e pronta para convite.'], theme:'Romance Falhado', mode:'Público', opponent:'VexamePro', selectedEffects:['coins','boom','shield','combo'], leftScore:3280, rightScore:2650, running:false, time:60, interval:null, wins:19, rate:68, cameraOn:false, opponentJoined:false, localReady:false, opponentReady:false, lastShareText:'Ainda não terminaste nenhuma batalha.', history:[
       {winner:'MicoMaster', opponent:'GaffeQueen', theme:'Vergonha em Público', score:'4.820 - 4.230', highlight:'Explosão de Mico virou a batalha nos últimos 10 segundos.', time:'Hoje, 20:14'},
       {winner:'ReiDosMicos', opponent:'MicoMaster', theme:'Caos Total', score:'5.120 - 4.970', highlight:'Poop Storm e Coroa geraram combo raro da audiência.', time:'Ontem, 22:03'}
     ], scheduled:[
@@ -436,16 +590,118 @@
     let audioCtx = null;
     const ranking = [['GaffeQueen','43','72%','28.900'], ['MicoMaster','19','68%','18.420'], ['ReiDosMicos','16','61%','15.850'], ['VexamePro','14','57%','13.210'], ['TropeceiDeNovo','11','52%','10.480']];
 
-    function init(){ renderThemes(); renderEffectChooser(); renderEffects(); renderViewerRoles(); renderSoundGifts(); renderComments(); renderScheduled(); renderRanking(); populateSelects(); applyTheme(state.theme); updateScores(); bindSetupInputs(); }
+    function init(){ createBattleRoom(true); renderThemes(); renderEffectChooser(); renderEffects(); renderViewerRoles(); renderSoundGifts(); renderComments(); renderScheduled(); renderRanking(); renderLobbyEvents(); populateSelects(); applyTheme(state.theme); updateScores(); bindSetupInputs(); syncPrelive(); syncRoomStatus(); syncRoomStatus(); }
     function bindSetupInputs(){ document.getElementById('opponentSelect').addEventListener('change', e=>{ state.opponent=e.target.value; updateSummary(); }); document.getElementById('modeSelect').addEventListener('change', e=>{ state.mode=e.target.value; document.getElementById('activeModeLabel').textContent=state.mode; updateSummary(); }); }
     function renderThemes(){ const el=document.getElementById('themeButtons'); el.innerHTML=''; Object.keys(themes).forEach(name=>{ const b=document.createElement('button'); b.className='tap w-full text-left rounded-2xl px-3 py-3 border text-xs font-bold transition-all '+(name===state.theme?'bg-brand-pink/15 border-brand-pink/40 text-white':'bg-white/5 border-white/10 text-zinc-300 hover:border-brand-pink/30'); b.innerHTML=`<span class="block">${name}</span><span class="text-[10px] text-zinc-500">Roupa muda automaticamente</span>`; b.onclick=()=>{state.theme=name; applyTheme(name); renderThemes(); updateSummary(); showToast('Tema alterado',`A roupa mudou para ${name}.`)}; el.appendChild(b); }); }
     function renderEffectChooser(){ const el=document.getElementById('effectChooser'); el.innerHTML=''; allEffects.forEach(e=>{ const selected=state.selectedEffects.includes(e.id); const b=document.createElement('button'); b.className='tap rounded-2xl border p-4 text-left transition-all '+(selected?'bg-brand-pink/15 border-brand-pink/40':'bg-white/5 border-white/10 hover:border-brand-pink/30'); b.innerHTML=`<div class="flex items-center gap-3"><span class="text-2xl">${e.icon}</span><div><div class="font-black text-white text-sm">${e.name}</div><div class="text-[10px] text-yellow-400 font-bold">${e.cost} ShitCoins</div></div></div>`; b.onclick=()=>toggleEffect(e.id); el.appendChild(b); }); document.getElementById('selectedCount').textContent=state.selectedEffects.length+'/4'; }
     function toggleEffect(id){ if(state.selectedEffects.includes(id)){ if(state.selectedEffects.length<=1){showToast('Escolhe pelo menos 1 efeito','A batalha precisa de efeitos ativos.');return;} state.selectedEffects=state.selectedEffects.filter(x=>x!==id); } else { if(state.selectedEffects.length>=4){showToast('Limite atingido','Só podes escolher 4 efeitos por batalha.');return;} state.selectedEffects.push(id); } renderEffectChooser(); renderEffects(); updateSummary(); }
     function renderEffects(){ const el=document.getElementById('effectButtons'); el.innerHTML=''; const selected=allEffects.filter(e=>state.selectedEffects.includes(e.id)); selected.forEach(e=>{ const b=document.createElement('button'); b.className='tap rounded-2xl bg-white/5 border border-white/10 p-3 text-center hover:border-brand-pink/40 transition-all'; b.innerHTML=`<div class="text-2xl">${e.icon}</div><div class="text-[10px] font-black text-white mt-1">${e.name}</div><div class="text-[9px] text-yellow-400 font-bold">${e.cost}</div>`; b.onclick=()=>useEffect(e); el.appendChild(b); }); document.getElementById('effectsCount').textContent=selected.length+'/4'; }
-    function updateSummary(){ state.opponent=document.getElementById('opponentSelect')?.value || state.opponent; state.mode=document.getElementById('modeSelect')?.value || state.mode; document.getElementById('summaryOpponent').textContent=state.opponent; document.getElementById('summaryTheme').textContent=state.theme; document.getElementById('setupThemeLabel').textContent=state.theme; document.getElementById('activeModeLabel').textContent=state.mode; document.getElementById('opponentNameTop').textContent=state.opponent; document.getElementById('opponentNamePanel').textContent=state.opponent; const names=allEffects.filter(e=>state.selectedEffects.includes(e.id)).map(e=>e.name).join(', '); document.getElementById('summaryEffects').textContent=names; }
-    function applyTheme(name){ const t=themes[name]; ['activeThemeLabel','setupThemeLabel','summaryTheme'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=name;}); document.getElementById('playerLeftPanel').className=`battle-player min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.leftBg} to-black transition-all duration-500`; document.getElementById('playerRightPanel').className=`battle-player min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.rightBg} to-black transition-all duration-500`; setClothes('left',t.leftColor,t.left,t.faceL,t.particles); setClothes('right',t.rightColor,t.right,t.faceR,t.particlesR); document.getElementById('previewLeftClothes').style.background=t.leftColor; document.getElementById('previewRightClothes').style.background=t.rightColor; document.getElementById('previewLeftText').textContent=t.left; document.getElementById('previewRightText').textContent=t.right; document.getElementById('previewLeftText').style.color=t.leftColor; document.getElementById('previewRightText').style.color=t.rightColor; document.getElementById('previewLeftFace').textContent=t.faceL; document.getElementById('previewRightFace').textContent=t.faceR; updateSummary(); }
+    function updateSummary(){ state.opponent=document.getElementById('opponentSelect')?.value || state.opponent; state.mode=document.getElementById('modeSelect')?.value || state.mode; document.getElementById('summaryOpponent').textContent=state.opponent; document.getElementById('summaryTheme').textContent=state.theme; document.getElementById('setupThemeLabel').textContent=state.theme; document.getElementById('activeModeLabel').textContent=state.mode; document.getElementById('opponentNameTop').textContent=state.opponent; document.getElementById('opponentNamePanel').textContent=state.opponent; const names=allEffects.filter(e=>state.selectedEffects.includes(e.id)).map(e=>e.name).join(', '); document.getElementById('summaryEffects').textContent=names; syncPrelive(); syncRoomStatus(); }
+    function applyTheme(name){ const t=themes[name]; ['activeThemeLabel','setupThemeLabel','summaryTheme'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=name;}); document.getElementById('playerLeftPanel').className=`battle-player min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.leftBg} to-black transition-all duration-500`; document.getElementById('playerRightPanel').className=`battle-player min-h-[360px] p-4 relative overflow-hidden bg-gradient-to-b ${t.rightBg} to-black transition-all duration-500`; setClothes('left',t.leftColor,t.left,t.faceL,t.particles); setClothes('right',t.rightColor,t.right,t.faceR,t.particlesR); document.getElementById('previewLeftClothes').style.background=t.leftColor; document.getElementById('previewRightClothes').style.background=t.rightColor; document.getElementById('previewLeftText').textContent=t.left; document.getElementById('previewRightText').textContent=t.right; document.getElementById('previewLeftText').style.color=t.leftColor; document.getElementById('previewRightText').style.color=t.rightColor; document.getElementById('previewLeftFace').textContent=t.faceL; document.getElementById('previewRightFace').textContent=t.faceR; updateSummary(); syncPrelive(); syncRoomStatus(); }
     function setClothes(side,color,label,face,particles){ document.getElementById(side+'Clothes').style.background=color; document.getElementById(side+'Clothes').style.boxShadow=`0 0 35px ${color}`; document.getElementById(side+'ClothesText').textContent=`Roupa ${label} ativada`; document.getElementById(side+'ClothesText').style.color=color; document.getElementById(side+'Face').textContent=face; document.getElementById(side+'Particles').innerHTML=particles.map(x=>`<span>${x}</span>`).join(''); }
     function updateScores(){ document.getElementById('scoreLeft').textContent=state.leftScore.toLocaleString('pt-PT'); document.getElementById('scoreRight').textContent=state.rightScore.toLocaleString('pt-PT'); const total=state.leftScore+state.rightScore; document.getElementById('barLeft').style.width=Math.max(5,Math.round(state.leftScore/total*100))+'%'; document.getElementById('barRight').style.width=Math.max(5,Math.round(state.rightScore/total*100))+'%'; }
+
+
+    function setText(id,txt,cls){ const el=document.getElementById(id); if(!el) return; el.textContent=txt; if(cls) el.className=cls; }
+    function generateRoomCode(){ return 'MB-' + Math.floor(1000 + Math.random()*9000); }
+    function openRoom(){ updateSummary(); syncRoomStatus(); document.getElementById('room').scrollIntoView({behavior:'smooth'}); showToast('Sala aberta','Copia o convite ou entra no pré-live quando estiver tudo pronto.','fa-solid fa-link'); }
+    function createBattleRoom(silent=false){
+      state.roomCode = generateRoomCode();
+      const base = location && location.origin ? location.origin + location.pathname : 'https://shitagram.pt/arena.html';
+      state.inviteLink = `${base}?battle=${state.roomCode}`;
+      state.viewers = Math.floor(Math.random()*12)+3;
+      state.lobbyEvents = [`Sala ${state.roomCode} criada.`, `Tema ${state.theme} sincronizado.`, `${state.viewers} espectadores em espera.`];
+      setText('roomCode', state.roomCode);
+      const link=document.getElementById('roomInviteLink'); if(link) link.value=state.inviteLink;
+      setText('roomViewers', state.viewers);
+      renderLobbyEvents(); syncRoomStatus();
+      if(!silent) showToast('Nova sala criada',`Código ${state.roomCode} pronto para convite.`,'fa-solid fa-link');
+    }
+    function copyInviteLink(){
+      const input=document.getElementById('roomInviteLink');
+      if(input){ input.select(); input.setSelectionRange(0,99999); }
+      const text=state.inviteLink || (input?input.value:'https://shitagram.pt/arena.html');
+      if(navigator.clipboard){ navigator.clipboard.writeText(text).catch(()=>document.execCommand('copy')); } else { try{document.execCommand('copy')}catch(e){} }
+      state.lobbyEvents.unshift('Link de convite copiado para partilha.');
+      renderLobbyEvents();
+      showToast('Convite copiado','Envia este link ao rival ou aos espectadores.','fa-solid fa-copy');
+    }
+    function simulateSpectatorJoin(){
+      const added=Math.floor(Math.random()*9)+2;
+      state.viewers += added;
+      state.lobbyEvents.unshift(`${added} espectadores entraram na sala.`);
+      setText('roomViewers', state.viewers);
+      renderLobbyEvents();
+      showToast('Espectadores na sala',`${added} pessoas entraram para assistir.`, 'fa-solid fa-users');
+    }
+    function syncRoomStatus(){
+      setText('roomModeState', state.mode);
+      setText('roomThemeState', state.theme);
+      setText('roomOpponentState', state.opponentJoined?'Na sala':'A aguardar', state.opponentJoined?'text-green-400 font-black':'text-yellow-400 font-black');
+      const link=document.getElementById('roomInviteLink'); if(link) link.value=state.inviteLink;
+      setText('roomCode', state.roomCode);
+      setText('roomViewers', state.viewers);
+    }
+    function renderLobbyEvents(){
+      const el=document.getElementById('lobbyEvents'); if(!el) return;
+      el.innerHTML = state.lobbyEvents.slice(0,10).map((event,i)=>`<div class="bg-white/5 border border-white/10 rounded-2xl p-3"><span class="text-brand-pink font-black">${i===0?'AGORA':'LOBBY'}</span><p class="text-zinc-300 mt-1">${event}</p></div>`).join('');
+    }
+    function openPreLiveFromRoom(){
+      state.lobbyEvents.unshift('Jogadores avançaram para o pré-live.');
+      renderLobbyEvents();
+      openPreLive();
+    }
+
+    function openPreLive(){ updateSummary(); syncPrelive(); syncRoomStatus(); document.getElementById('prelive').scrollIntoView({behavior:'smooth'}); showToast('Pré-live aberto','Confirma câmara, rival e prontidão antes de começar.','fa-solid fa-video'); }
+    function syncPrelive(){
+      const t=themes[state.theme] || themes['Romance Falhado'];
+      const names=allEffects.filter(e=>state.selectedEffects.includes(e.id)).map(e=>e.name).join(', ');
+      const pairs={
+        preliveThemeSummary:state.theme, preliveModeSummary:state.mode, preliveEffectsSummary:names,
+        preliveOpponentName:state.opponent, preliveOpponentFooter:state.opponent,
+        preliveLeftTheme:'Roupa '+t.left+' pronta', preliveRightTheme:'Roupa '+t.right+' pronta'
+      };
+      Object.entries(pairs).forEach(([id,val])=>{const el=document.getElementById(id); if(el) el.textContent=val;});
+      const oppAvatar=document.getElementById('opponentAvatarPreview'); if(oppAvatar) oppAvatar.textContent=t.faceR;
+      updatePreliveStatus();
+    }
+    async function startCameraPreview(){
+      const video=document.getElementById('localCameraVideo'); const placeholder=document.getElementById('localCameraPlaceholder');
+      try{
+        if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Sem getUserMedia');
+        const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
+        video.srcObject=stream; video.classList.remove('hidden'); placeholder.classList.add('hidden'); state.cameraOn=true;
+        showToast('Câmara ligada','O teu preview já está ativo no pré-live.','fa-solid fa-camera');
+      }catch(e){
+        state.cameraOn=true;
+        const ph=document.getElementById('localCameraPlaceholder');
+        if(ph) ph.innerHTML='<div class="space-y-3"><div class="mx-auto w-24 h-24 rounded-full bg-brand-pink/20 border border-brand-pink/40 flex items-center justify-center text-5xl">😎</div><h3 class="font-display font-black text-white text-xl">Preview simulado ativo</h3><p class="text-zinc-400 text-sm max-w-xs">A câmara foi bloqueada ou não está disponível. Para a demo, usamos um avatar como substituto.</p><span class="inline-flex px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase">Avatar ativo</span></div>';
+        showToast('Preview simulado','A câmara não abriu, mas a demo continua com avatar.','fa-solid fa-user');
+      }
+      updatePreliveStatus();
+    }
+    function simulateOpponentJoin(){
+      state.opponentJoined=true;
+      setTimeout(()=>{ state.opponentReady=true; updatePreliveStatus(); addComment('ArenaBot: '+state.opponent+' entrou no pré-live e está pronto. ✅'); },700);
+      showToast('Rival entrou','O adversário apareceu na sala de pré-live.','fa-solid fa-user-plus');
+      updatePreliveStatus();
+    }
+    function toggleLocalReady(){ state.localReady=!state.localReady; updatePreliveStatus(); showToast(state.localReady?'Estás pronto':'Prontidão removida', state.localReady?'Agora falta confirmar o rival ou iniciar a batalha.':'Podes alterar tema e efeitos antes de voltares a ficar pronto.','fa-solid fa-circle-check'); }
+    function updatePreliveStatus(){
+      const setText=(id,txt,cls)=>{const el=document.getElementById(id); if(!el) return; el.textContent=txt; if(cls) el.className=cls;};
+      setText('localCameraStatus', state.cameraOn?'Preview ativo':'Câmara por ligar', state.cameraOn?'inline-flex px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase':'inline-flex px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase');
+      setText('opponentCameraStatus', state.opponentJoined?'Rival na sala':'A aguardar rival', state.opponentJoined?'inline-flex px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase':'inline-flex px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[10px] font-black uppercase');
+      setText('localReadyBadge', state.localReady?'Pronto':'Não pronto', state.localReady?'px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black ready-ring':'px-2 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-black');
+      setText('opponentReadyBadge', state.opponentReady?'Pronto':'À espera', state.opponentReady?'px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black ready-ring':'px-2 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-[10px] font-black');
+      const allReady=state.cameraOn && state.opponentJoined && state.localReady && state.opponentReady;
+      setText('preliveRoomStatus', allReady?'Tudo pronto':'À espera');
+      const btn=document.getElementById('btnStartFromPrelive'); if(btn){ btn.disabled=!allReady; btn.className=allReady?'tap w-full rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-3 neon-pink hover:scale-[1.02] transition-transform':'tap w-full rounded-2xl bg-gradient-to-r from-brand-pink to-brand-purple text-white font-display font-black py-3 opacity-50 cursor-not-allowed'; }
+      const readyBtn=document.getElementById('btnLocalReady'); if(readyBtn){ readyBtn.innerHTML=state.localReady?'<i class="fa-solid fa-circle-check mr-2"></i>Pronto confirmado':'<i class="fa-solid fa-circle-check mr-2"></i>Estou pronto'; readyBtn.className=state.localReady?'tap w-full rounded-2xl bg-green-500/10 border border-green-500/20 text-green-400 font-display font-black py-3':'tap w-full rounded-2xl bg-white/5 border border-white/10 text-white font-display font-black py-3 hover:bg-white/10 transition-all'; }
+      const checks=[['checkCamera',state.cameraOn,'Câmara do jogador'],['checkOpponent',state.opponentJoined,'Adversário na sala'],['checkBothReady',state.localReady&&state.opponentReady,'Ambos prontos']];
+      checks.forEach(([id,on,label])=>{const el=document.getElementById(id); if(el){el.textContent=(on?'✓ ':'○ ')+label; el.className=on?'text-green-400':'text-zinc-400';}});
+    }
+    function prepareCountdownFromPrelive(){ if(!(state.cameraOn && state.opponentJoined && state.localReady && state.opponentReady)){ showToast('Ainda não está pronto','Liga a câmara, simula o rival e confirma “Estou pronto”.','fa-solid fa-triangle-exclamation'); return; } prepareCountdown(); }
+
     function prepareCountdown(){ if(state.running) return; document.getElementById('battle').scrollIntoView({behavior:'smooth'}); const overlay=document.getElementById('countdownOverlay'); const num=document.getElementById('countdownNumber'); document.getElementById('countdownTheme').textContent='Tema: '+state.theme; overlay.classList.remove('hidden'); overlay.classList.add('flex'); let values=['3','2','1','BATALHA!']; let i=0; num.textContent=values[i]; num.classList.remove('countdown-pop'); void num.offsetWidth; num.classList.add('countdown-pop'); const c=setInterval(()=>{ i++; if(i>=values.length){ clearInterval(c); overlay.classList.add('hidden'); overlay.classList.remove('flex'); startBattle(); return; } num.textContent=values[i]; num.classList.remove('countdown-pop'); void num.offsetWidth; num.classList.add('countdown-pop'); },800); }
     function startBattle(){ state.running=true; state.time=60; state.leftScore=3280; state.rightScore=2650; document.getElementById('battleState').textContent='A decorrer'; document.getElementById('timer').textContent='01:00'; document.getElementById('playerLeftPanel').classList.add('battle-pulse'); document.getElementById('playerRightPanel').classList.add('battle-pulse'); comments.unshift('ArenaBot: BATALHA iniciada! 🔥'); renderComments(); updateScores(); clearInterval(state.interval); state.interval=setInterval(()=>{ state.time--; state.leftScore += Math.floor(Math.random()*65); state.rightScore += Math.floor(Math.random()*65); if(Math.random()>.72) addComment(randomAudienceComment()); updateScores(); document.getElementById('timer').textContent='00:'+String(state.time).padStart(2,'0'); if(state.time<=0){ endBattle(); } },1000); }
     function endBattle(){ clearInterval(state.interval); state.running=false; document.getElementById('playerLeftPanel').classList.remove('battle-pulse'); document.getElementById('playerRightPanel').classList.remove('battle-pulse'); document.getElementById('battleState').textContent='Terminada'; const leftWins=state.leftScore>=state.rightScore; const winner=leftWins?'MicoMaster':state.opponent; const loser=leftWins?state.opponent:'MicoMaster'; const scoreText=`${state.leftScore.toLocaleString('pt-PT')} - ${state.rightScore.toLocaleString('pt-PT')}`; const highlight=generateHighlight(leftWins); if(leftWins){ state.wins++; state.rate=Math.min(99,state.rate+1); document.getElementById('statWins').textContent=state.wins; document.getElementById('statRate').textContent=state.rate+'%'; document.getElementById('winnerTitle').textContent='MicoMaster venceu!'; document.getElementById('winnerText').textContent='+1 Win, +350 XP e +120 ShitCoins. Ranking atualizado.'; document.getElementById('resultWin').textContent='+1'; } else { document.getElementById('winnerTitle').textContent=state.opponent+' venceu!'; document.getElementById('winnerText').textContent='O adversário ganhou por reações ao vivo. Hora da revanche.'; document.getElementById('resultWin').textContent='0'; } document.getElementById('winnerHighlight').textContent='Highlight: '+highlight; addBattleHistory({winner, loser, opponent:state.opponent, theme:state.theme, score:scoreText, highlight, time:new Date().toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}); document.getElementById('resultModal').classList.remove('hidden'); document.getElementById('resultModal').classList.add('flex'); }
@@ -509,7 +765,7 @@
     function populateSelects(){ ['scheduleTheme','modalTheme'].forEach(id=>{ document.getElementById(id).innerHTML=Object.keys(themes).map(t=>`<option>${t}</option>`).join(''); }); }
     function scheduleBattle(fromModal=false){ const opponent=(fromModal?document.getElementById('modalOpponent').value:document.getElementById('opponentInput').value)||'@VexamePro'; const theme=fromModal?document.getElementById('modalTheme').value:document.getElementById('scheduleTheme').value; const val=fromModal?document.getElementById('modalTime').value:document.getElementById('scheduleTime').value; const time= val ? new Date(val).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Hoje, 21:30'; state.scheduled.unshift({opponent,theme,time}); renderScheduled(); if(fromModal) closeScheduleModal(); showToast('Batalha marcada',`${opponent} foi desafiado para ${time}.`); }
     function renderRanking(){ document.getElementById('rankingBody').innerHTML=ranking.map((r,i)=>`<tr class="${r[0]==='MicoMaster'?'bg-brand-pink/5':''}"><td class="py-4 px-3 font-black text-zinc-400">${i+1}</td><td class="py-4 px-3 text-white font-bold">${i===0?'👑':i===1?'💩':'🫣'} ${r[0]} ${r[0]==='MicoMaster'?'<span class="ml-2 text-[9px] text-brand-pink bg-brand-pink/10 px-2 py-0.5 rounded-full">TU</span>':''}</td><td class="py-4 px-3 text-zinc-300">${r[1]}</td><td class="py-4 px-3 text-zinc-300">${r[2]}</td><td class="py-4 px-3 text-right text-brand-pink font-black">${r[3]} XP</td></tr>`).join(''); }
-    function resetBattle(){ clearInterval(state.interval); state.running=false; state.time=60; state.leftScore=3280; state.rightScore=2650; document.getElementById('timer').textContent='01:00'; document.getElementById('battleState').textContent='Pronto'; document.getElementById('playerLeftPanel').classList.remove('battle-pulse'); document.getElementById('playerRightPanel').classList.remove('battle-pulse'); updateScores(); document.getElementById('setup').scrollIntoView({behavior:'smooth'}); showToast('Nova preparação','Escolhe tema e efeitos para outra batalha.'); }
+    function resetBattle(){ clearInterval(state.interval); state.running=false; state.time=60; state.leftScore=3280; state.rightScore=2650; state.localReady=false; state.opponentReady=false; document.getElementById('timer').textContent='01:00'; document.getElementById('battleState').textContent='Pronto'; document.getElementById('playerLeftPanel').classList.remove('battle-pulse'); document.getElementById('playerRightPanel').classList.remove('battle-pulse'); updateScores(); syncPrelive(); syncRoomStatus(); document.getElementById('setup').scrollIntoView({behavior:'smooth'}); showToast('Nova preparação','Escolhe tema e efeitos para outra batalha.'); }
     function prepareNewBattle(){ closeResultModal(); resetBattle(); }
     function shareVictory(){ const text=state.lastShareText||'Acabei de entrar numa Mico Battle Live no SHITAGRAM™.'; if(navigator.clipboard){ navigator.clipboard.writeText(text).catch(()=>{}); } showToast('Resultado copiado','Texto pronto para colar no WhatsApp, Instagram ou TikTok.'); }
     function openScheduleModal(){ document.getElementById('scheduleModal').classList.remove('hidden'); document.getElementById('scheduleModal').classList.add('flex'); }
