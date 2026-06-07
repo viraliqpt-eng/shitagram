@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SHITAGRAM™ | Acesso Beta</title>
+  <meta name="theme-color" content="#05020c" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#05020c;--card:#0d081b;--pink:#ff2e93;--purple:#7c3aed;--fuchsia:#d946ef;--line:rgba(255,255,255,.12)}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(124,58,237,.30),transparent 34%),
+        radial-gradient(circle at 15% 30%,rgba(255,46,147,.16),transparent 32%),
+        radial-gradient(circle at 80% 70%,rgba(217,70,239,.12),transparent 30%),
+        var(--bg);
+      color:#f4f4f5;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .font-display{font-family:"Plus Jakarta Sans",Inter,sans-serif}
+    .grad{background:linear-gradient(135deg,var(--pink),var(--fuchsia),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .glass{background:rgba(13,8,27,.76);border:1px solid var(--line);box-shadow:0 24px 100px rgba(0,0,0,.35)}
+    .btn{border:0;border-radius:16px;padding:14px 18px;font-weight:900;color:white;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 0 28px rgba(255,46,147,.22);transition:.18s}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+    .btn.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none}
+    .input{width:100%;background:#070411;color:white;border:1px solid var(--line);border-radius:16px;padding:15px 16px;outline:none}
+    .input:focus{border-color:rgba(255,46,147,.65);box-shadow:0 0 0 4px rgba(255,46,147,.10)}
+    .hidden{display:none!important}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:50;background:#0d081b;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 16px;box-shadow:0 20px 70px rgba(0,0,0,.5);transform:translateY(24px);opacity:0;transition:.25s;max-width:340px}
+    .toast.show{transform:translateY(0);opacity:1}
+  </style>
+</head>
+
+<body>
+  <header class="px-5 py-5 border-b border-white/10 bg-[#05020c]/70 backdrop-blur">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <a href="./index.html" class="font-display font-black text-xl tracking-wider">SHIT<span class="text-[#ff2e93]">AGRAM</span>™</a>
+      <a href="./index.html" class="btn secondary text-xs">Voltar ao site</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-5 py-12 lg:py-20">
+    <section id="locked" class="grid lg:grid-cols-2 gap-8 items-center">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-pink-300">
+          🔒 Beta fechada
+        </span>
+        <h1 class="font-display font-black text-4xl sm:text-5xl lg:text-7xl leading-none mt-6">
+          Confirma o teu <span class="grad">acesso founder</span>
+        </h1>
+        <p class="text-zinc-300 text-lg leading-relaxed mt-6 max-w-xl">
+          Esta página é apenas para utilizadores aprovados. Insere o código que recebeste por email para ativar o teu acesso à beta.
+        </p>
+      </div>
+
+      <div class="glass rounded-[32px] p-6 sm:p-8">
+        <div class="w-16 h-16 rounded-2xl mx-auto bg-gradient-to-br from-[#ff2e93] to-[#7c3aed] flex items-center justify-center text-3xl mb-5">🚀</div>
+        <h2 class="font-display font-black text-2xl text-center">Código de convite</h2>
+        <p class="text-zinc-400 text-sm text-center mt-2">
+          Usa o código enviado no email de aprovação.
+        </p>
+
+        <form onsubmit="checkAccess(event)" class="mt-7 space-y-4">
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-zinc-400 mb-2">Código beta</label>
+            <input id="accessCode" class="input text-center font-black tracking-wider uppercase" placeholder="Ex: FOUNDER-2026" autocomplete="one-time-code" required>
+          </div>
+
+          <button class="btn w-full" type="submit">Ativar acesso beta</button>
+        </form>
+
+        <p class="text-zinc-500 text-xs leading-relaxed mt-5 text-center">
+          Ainda não tens código? Volta ao site, pede acesso à beta e aguarda aprovação por email.
+        </p>
+      </div>
+    </section>
+
+    <section id="approved" class="hidden">
+      <div class="glass rounded-[36px] p-7 sm:p-10 lg:p-12 text-center max-w-4xl mx-auto">
+        <div class="w-20 h-20 rounded-3xl mx-auto bg-gradient-to-br from-[#ff2e93] to-[#7c3aed] flex items-center justify-center text-4xl mb-6">✅</div>
+
+        <span class="inline-flex items-center rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-green-300">
+          Acesso aprovado
+        </span>
+
+        <h1 class="font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-none mt-6">
+          Bem-vindo à beta <span class="grad">SHITAGRAM™</span>
+        </h1>
+
+        <p class="text-zinc-300 text-lg leading-relaxed mt-6 max-w-2xl mx-auto">
+          O teu acesso founder foi validado. Podes entrar na app, testar a experiência e guardar esta página para voltar mais tarde.
+        </p>
+
+        <div class="grid sm:grid-cols-3 gap-4 mt-10 text-left">
+          <div class="rounded-2xl border border-white/10 bg-white/[.04] p-5">
+            <div class="text-3xl mb-3">🏅</div>
+            <h3 class="font-black">Badge Fundador</h3>
+            <p class="text-zinc-400 text-sm mt-2">Identidade especial para os primeiros membros.</p>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/[.04] p-5">
+            <div class="text-3xl mb-3">🪙</div>
+            <h3 class="font-black">1.000 ShitCoins</h3>
+            <p class="text-zinc-400 text-sm mt-2">Saldo inicial para testares recursos e recompensas.</p>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/[.04] p-5">
+            <div class="text-3xl mb-3">🎟️</div>
+            <h3 class="font-black">5 convites</h3>
+            <p class="text-zinc-400 text-sm mt-2">Convida amigos para entrarem contigo na beta.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-10">
+          <a class="btn" href="./app.html">Entrar na app</a>
+          <a class="btn secondary" href="./arena.html">Testar Arena Live</a>
+        </div>
+
+        <div class="mt-10 rounded-2xl border border-pink-500/20 bg-pink-500/10 p-5 text-left">
+          <h3 class="font-black text-pink-200">Nota de beta</h3>
+          <p class="text-zinc-300 text-sm leading-relaxed mt-2">
+            Algumas funcionalidades podem estar em teste. Reporta erros, dá feedback e ajuda a tornar a comunidade mais segura, divertida e viciante.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"><b id="toastTitle">Aviso</b><span id="toastText" class="block text-zinc-400 text-sm mt-1">Mensagem</span></div>
+
+  <script>
+    // Códigos simples para a fase inicial. Podes acrescentar mais aqui.
+    // Para desbloquear por link, usa: beta-acesso.html?code=FOUNDER-2026
+    const VALID_CODES = [
+      "FOUNDER-2026",
+      "SHITA-BETA",
+      "PEDRO-001",
+      "MICO-FOUNDERS"
+    ];
+
+    function toast(title, text){
+      document.getElementById("toastTitle").textContent = title;
+      document.getElementById("toastText").textContent = text;
+      document.getElementById("toast").classList.add("show");
+      setTimeout(()=>document.getElementById("toast").classList.remove("show"), 3400);
+    }
+
+    function normalizeCode(code){
+      return (code || "").trim().toUpperCase().replace(/\s+/g, "");
+    }
+
+    function unlock(){
+      localStorage.setItem("shitagram_beta_access", "approved");
+      document.getElementById("locked").classList.add("hidden");
+      document.getElementById("approved").classList.remove("hidden");
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function checkAccess(event){
+      event.preventDefault();
+      const code = normalizeCode(document.getElementById("accessCode").value);
+      if(VALID_CODES.includes(code)){
+        unlock();
+        toast("Acesso aprovado", "Bem-vindo à beta SHITAGRAM™.");
+      } else {
+        toast("Código inválido", "Confirma o código enviado por email ou pede novo acesso.");
+      }
+    }
+
+    window.addEventListener("load", () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = normalizeCode(params.get("code"));
+
+      if(localStorage.getItem("shitagram_beta_access") === "approved"){
+        unlock();
+        return;
+      }
+
+      if(code && VALID_CODES.includes(code)){
+        unlock();
+      }
+    });
+  </script>
+</body>
+</html>

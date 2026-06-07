@@ -40,3 +40,20 @@ Campos enviados:
 - estado
 
 Para testar: abre `index.html`, clica em "Entrar na beta", preenche o formulário e confirma no painel do Formspree.
+
+
+## Aprovar utilizadores para a beta
+
+1. Vai ao Formspree > Beta SHITAGRAM > Submissions.
+2. Escolhe o utilizador que queres aprovar.
+3. Envia-lhe manualmente este link:
+
+https://shitagram.pt/beta-acesso.html?code=FOUNDER-2026
+
+Também podes usar estes códigos iniciais:
+- FOUNDER-2026
+- SHITA-BETA
+- PEDRO-001
+- MICO-FOUNDERS
+
+Para criar códigos novos, abre `beta-acesso.html` e adiciona-os ao array `VALID_CODES`.
