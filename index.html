@@ -1,1258 +1,1191 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HomeMatch Strategist | Inteligência Artificial Imobiliária</title>
-  
-  <!-- Tailwind CSS para design moderno e responsivo -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#fefbeb',
-              100: '#fef3c7',
-              200: '#fde68a',
-              300: '#fcd34d',
-              400: '#fbbf24',
-              500: '#f59e0b',
-              600: '#d97706',
-              900: '#78350f',
-            },
-            slate: {
-              950: '#0b0f19',
-            },
-            navy: {
-              800: '#1e3a5f',
-              900: '#0f172a',
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#080413" />
+  <title>SHITAGRAM™ — Os teus micos viram histórias, reações e ranking</title>
+  <meta name="description" content="SHITAGRAM™ é uma rede social satírica de humor onde publicas micos, reages, ganhas XP, ShitCoins e sobes no ranking da vergonha." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      scroll-behavior: smooth;
+    :root{
+      --bg:#080413;
+      --bg2:#0f071d;
+      --card:#120a22;
+      --card2:#190d30;
+      --line:rgba(255,74,196,.35);
+      --line2:rgba(168,85,247,.32);
+      --text:#fff7ff;
+      --muted:#cfc0de;
+      --soft:#9f8eb6;
+      --pink:#ff3fb4;
+      --pink2:#ff66c7;
+      --purple:#8b5cf6;
+      --violet:#6d28d9;
+      --gold:#f6c65b;
+      --green:#35e0a1;
+      --danger:#ff5e7e;
+      --shadow:0 30px 90px rgba(0,0,0,.55);
+      --radius:24px;
+      --max:1180px;
     }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(126,34,206,.35), transparent 34%),
+        radial-gradient(circle at 18% 18%, rgba(255,63,180,.16), transparent 28%),
+        radial-gradient(circle at 80% 35%, rgba(139,92,246,.18), transparent 30%),
+        linear-gradient(180deg,#0a0615 0%,#06030d 55%,#080413 100%);
+      color:var(--text);
+      overflow-x:hidden;
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
+
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button,input{font:inherit}
+
+    .page{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+      padding:18px 0 40px;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+
+    .top-label{
+      margin:4px 0 12px;
+      color:#fff;
+      letter-spacing:.01em;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+    .top-label strong{
+      display:block;
+      font-size:18px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .top-label span{
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .section-card{
+      position:relative;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(16,8,31,.94), rgba(9,5,18,.94));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .section-card:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 38% 45%, rgba(255,63,180,.12), transparent 34%),
+        radial-gradient(circle at 75% 55%, rgba(139,92,246,.16), transparent 30%);
+      opacity:.9;
+    }
+    .section-inner{position:relative;z-index:1}
+
+    /* NAV */
+    .nav{
+      height:56px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 40px;
+      gap:24px;
+    }
+    .brand{
+      font-size:24px;
+      font-weight:950;
+      letter-spacing:-.05em;
+      line-height:1;
+    }
+    .brand .pink{color:var(--pink)}
+    .brand sup{
+      color:var(--pink2);
+      font-size:9px;
+      margin-left:2px;
+      letter-spacing:0;
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:24px;
+      color:#f4eafa;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .nav-links a{opacity:.9}
+    .nav-links a:hover{color:var(--pink2)}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      cursor:pointer;
+      min-height:42px;
+      padding:0 22px;
+      border-radius:12px;
+      color:#fff;
+      font-weight:900;
+      font-size:14px;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      box-shadow:0 12px 30px rgba(255,63,180,.28);
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(255,63,180,.38)}
+    .btn-ghost{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.28);
+    }
+    .btn-ghost:hover{background:rgba(255,255,255,.09)}
+
+    /* HERO */
+    .hero{
+      display:grid;
+      grid-template-columns:1.05fr 1.15fr .82fr;
+      gap:28px;
+      padding:50px 40px 28px;
+      align-items:center;
+      min-height:450px;
+    }
+    .hero-copy h1{
+      max-width:440px;
+      font-size:42px;
+      line-height:1.02;
+      letter-spacing:-.07em;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+    .gradient-text{
+      background:linear-gradient(90deg,#b66cff 0%,#ff3fb4 48%,#ff6bc8 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .hero-copy p{
+      max-width:430px;
+      margin-top:16px;
+      color:#eee3f6;
+      font-size:17px;
+      line-height:1.45;
+      font-weight:500;
+    }
+    .checks{
+      display:grid;
+      gap:10px;
+      margin:22px 0 26px;
+      color:#f5eafd;
+      font-size:14px;
+      font-weight:700;
+    }
+    .check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .check i{
+      width:18px;height:18px;
+      display:grid;place-items:center;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      color:white;
+      font-size:12px;
+      font-style:normal;
+      flex:0 0 auto;
+    }
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .badges{
+      grid-column:1 / -1;
+      display:flex;
+      gap:22px;
+      flex-wrap:wrap;
+      padding-top:2px;
+      color:#d7c8e4;
+      font-size:12px;
+      font-weight:700;
+    }
+    .badge-dot{display:flex;align-items:center;gap:7px}
+    .badge-dot i{
+      width:10px;height:10px;border-radius:999px;
+      display:inline-block;
+      box-shadow:0 0 18px currentColor;
+    }
+    .b1{color:var(--pink)} .b2{color:var(--gold)} .b3{color:#d46cff} .b4{color:#ffb347}
+
+    /* PHONE MOCKUPS */
+    .phones{
+      min-height:420px;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      isolation:isolate;
+    }
+    .phones:before{
+      content:"";
+      position:absolute;
+      width:390px;height:280px;
+      border-radius:999px;
+      background:radial-gradient(circle, rgba(139,92,246,.42), transparent 68%);
+      filter:blur(20px);
+      z-index:-1;
+    }
+    .phone{
+      width:245px;
+      height:390px;
+      background:#05040a;
+      border:3px solid #23202b;
+      border-radius:34px;
+      padding:12px;
+      box-shadow:0 30px 70px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.05);
+      position:relative;
+    }
+    .phone:before{
+      content:"";
+      position:absolute;
+      top:10px;left:50%;
+      transform:translateX(-50%);
+      width:84px;height:18px;
+      border-radius:0 0 14px 14px;
+      background:#05040a;
+      z-index:3;
+    }
+    .phone.main{transform:rotate(-2deg);z-index:2}
+    .phone.side{
+      width:225px;height:355px;
+      margin-left:-42px;
+      transform:rotate(4deg) translateY(28px);
+      z-index:1;
+    }
+    .screen{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      border-radius:25px;
+      background:
+        radial-gradient(circle at 70% 0%,rgba(139,92,246,.28),transparent 34%),
+        linear-gradient(180deg,#141023,#090711);
+      border:1px solid rgba(255,255,255,.08);
+      padding:28px 14px 14px;
+    }
+    .status{
+      position:absolute;
+      top:18px;right:24px;
+      color:#fff;
+      font-size:9px;
+      opacity:.8;
+      z-index:4;
+    }
+    .profile-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .avatar{
+      width:48px;height:48px;border-radius:50%;
+      background:linear-gradient(135deg,#6d3b13,#f3a541);
+      display:grid;place-items:center;
+      font-size:29px;
+      border:2px solid rgba(255,255,255,.14);
+    }
+    .name{font-size:14px;font-weight:900}
+    .mini{font-size:10px;color:#b9a7cc;margin-top:3px}
+    .stats{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin:12px 0;
+      text-align:center;
+      font-size:10px;color:#bba9cc;
+    }
+    .stats strong{display:block;color:white;font-size:15px;margin-bottom:2px}
+    .progress{
+      height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:10px 0 16px;
+    }
+    .progress span{display:block;width:72%;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple))}
+    .post{
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:15px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .post h4{font-size:12px;margin-bottom:9px}
+    .post p{font-size:12px;line-height:1.35;color:#f5edff}
+    .post-foot{display:flex;gap:14px;margin-top:10px;color:#d9c9e9;font-size:11px}
+    .rank-title{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:16px;font-size:14px;font-weight:900;
+    }
+    .tabs{display:flex;gap:7px;margin-bottom:12px}
+    .tabs span{
+      padding:7px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      color:#cdbce0;font-size:9px;font-weight:800;
+    }
+    .tabs span:first-child{background:rgba(255,63,180,.18);color:#fff}
+    .rank-list{display:grid;gap:9px}
+    .rank-item{
+      display:grid;grid-template-columns:20px 26px 1fr auto;
+      align-items:center;gap:8px;
+      padding:8px;
+      border-radius:12px;
+      background:rgba(255,255,255,.045);
+      font-size:10px;
+    }
+    .rank-item b{font-size:12px}
+    .rank-item .small-avatar{width:26px;height:26px;border-radius:50%;background:#5b4a6e;display:grid;place-items:center}
+    .rank-item em{font-style:normal;color:var(--gold);font-weight:900}
+    .full-rank{width:100%;margin-top:18px;min-height:38px;font-size:12px}
+
+    .side-cards{display:grid;gap:16px}
+    .info-card{
+      min-height:112px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:20px;
+      background:rgba(255,255,255,.045);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .info-card .icon{
+      width:34px;height:34px;
+      border-radius:12px;
+      display:grid;place-items:center;
+      margin-bottom:10px;
+      color:var(--pink2);
+      border:1px solid rgba(255,63,180,.35);
+      background:rgba(255,63,180,.08);
+      font-size:19px;
+    }
+    .info-card h3{font-size:18px;line-height:1.1;margin-bottom:8px}
+    .info-card p{color:#d8c9e4;font-size:13px;line-height:1.45}
+
+    /* COMMON SECTIONS */
+    .grid-sections{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .mini-section{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(14,7,28,.94),rgba(8,4,17,.96));
+      padding:16px;
+      overflow:hidden;
+      position:relative;
+    }
+    .mini-section:before{
+      content:"";
+      position:absolute;inset:0;
+      background:radial-gradient(circle at 50% 30%,rgba(255,63,180,.08),transparent 50%);
+      pointer-events:none;
+    }
+    .mini-section > *{position:relative;z-index:1}
+    .section-title{
+      font-size:20px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.01em;
+      margin-bottom:2px;
+    }
+    .section-sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:12px;
+    }
+    .inner-box{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      padding:22px;
+      background:rgba(255,255,255,.025);
+    }
+    .center{text-align:center}
+    .big-title{
+      font-size:24px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:-.04em;
+      margin-bottom:5px;
+    }
+    .small-sub{color:#e1d4ec;font-size:14px;margin-bottom:18px}
+
+    .steps{
+      display:grid;
+      grid-template-columns:1fr auto 1fr auto 1fr;
+      gap:14px;
+      align-items:center;
+    }
+    .step{
+      min-height:165px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:13px;
+      padding:18px;
+      background:linear-gradient(180deg,rgba(66,28,93,.38),rgba(32,17,52,.55));
+      text-align:left;
+    }
+    .step .emoji{font-size:34px;margin-bottom:14px}
+    .step h4{font-size:14px;margin-bottom:8px}
+    .num{
+      display:inline-grid;place-items:center;
+      width:22px;height:22px;border-radius:7px;
+      margin-right:5px;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      color:#fff;font-weight:950;
+    }
+    .step p{font-size:12px;line-height:1.45;color:#d7c8e4}
+    .arrow{font-size:34px;color:#fff;opacity:.75}
+
+    .proof-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin:20px 0;
+    }
+    .proof{
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:12px;
+      padding:20px 10px;
+      background:rgba(90,36,120,.28);
+      text-align:center;
+    }
+    .proof strong{
+      display:block;
+      font-size:34px;
+      line-height:1;
+      color:var(--pink2);
+      margin-bottom:10px;
+    }
+    .proof span{font-size:12px;color:#e7daf0;line-height:1.35}
+    .social-strip{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:14px 16px;
+      background:rgba(255,255,255,.035);
+      font-size:13px;
+      color:#eadff2;
+    }
+    .faces{display:flex}
+    .faces i{
+      width:28px;height:28px;border-radius:50%;
+      border:2px solid #20152f;
+      margin-left:-7px;
+      background:linear-gradient(135deg,#8759ff,#ffc76c);
+      display:grid;place-items:center;
+      font-size:13px;
+      font-style:normal;
+    }
+    .faces i:first-child{margin-left:0}
+
+    .security-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:18px;
+    }
+    .security-card{
+      min-height:132px;
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:12px;
+      padding:16px;
+      background:rgba(86,34,120,.26);
+      text-align:center;
+    }
+    .security-card .sicon{font-size:28px;margin-bottom:12px}
+    .security-card h4{font-size:13px;margin-bottom:8px}
+    .security-card p{font-size:11px;line-height:1.45;color:#d7c8e4}
+    .zero{
+      margin-top:14px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:14px;
+      background:rgba(255,255,255,.025);
+      text-align:center;
+    }
+    .zero strong{color:var(--pink2);font-size:13px}
+    .chips{margin-top:10px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+    .chips span{
+      padding:10px 18px;border-radius:10px;
+      background:rgba(255,63,180,.12);
+      border:1px solid rgba(255,255,255,.06);
+      color:#f2e5f6;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .after-steps{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:20px 0 18px;
+    }
+    .after-card{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;
+      padding:18px;
+      background:rgba(255,255,255,.035);
+      text-align:left;
+    }
+    .after-card strong{
+      display:block;
+      color:var(--pink2);
+      font-size:22px;
+      margin-bottom:8px;
+    }
+    .after-card h4{font-size:13px;margin-bottom:8px}
+    .after-card p{font-size:11px;line-height:1.45;color:#d7c8e4}
+    .copy-box{
+      display:flex;gap:0;align-items:center;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      overflow:hidden;
+      background:rgba(255,255,255,.04);
+      max-width:500px;
+      margin:12px auto;
+    }
+    .copy-box input{
+      flex:1;
+      min-width:0;
+      border:0;
+      background:transparent;
+      color:#fff;
+      padding:13px 16px;
+      outline:0;
+    }
+    .copy-box button{
+      border-radius:0;
+      min-height:43px;
+      padding:0 24px;
+    }
+    .social-icons{display:flex;justify-content:center;gap:14px;margin-top:12px}
+    .social-icons a{
+      width:34px;height:34px;border-radius:50%;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      font-size:18px;
+    }
+
+    .app-grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:18px;
+      align-items:center;
+    }
+    .app-phone{
+      border:2px solid #2a2234;
+      border-radius:34px;
+      padding:12px;
+      background:#05040a;
+      box-shadow:0 25px 60px rgba(0,0,0,.65);
+    }
+    .app-screen{
+      border-radius:25px;
+      overflow:hidden;
+      background:#0b0814;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .app-head{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px 18px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .coin{color:var(--gold);font-size:12px;font-weight:900}
+    .app-tabs{
+      display:grid;grid-template-columns:repeat(4,1fr);
+      color:#bdaed0;font-size:11px;text-align:center;
+      padding:10px 0;
+    }
+    .feed-card{margin:0 14px 14px;border-radius:16px;background:rgba(255,255,255,.05);overflow:hidden}
+    .feed-author{display:flex;align-items:center;gap:10px;padding:12px;font-size:12px}
+    .feed-img{
+      height:190px;
+      background:
+        linear-gradient(rgba(0,0,0,.18),rgba(0,0,0,.22)),
+        radial-gradient(circle at 50% 30%,#62606d,#29222f 48%,#17101f);
+      display:grid;place-items:center;
+      font-size:58px;
+    }
+    .feed-actions{
+      display:flex;gap:28px;padding:12px;color:#f4e6fb;font-size:13px;
+    }
+    .app-nav{
+      display:grid;grid-template-columns:repeat(5,1fr);
+      border-top:1px solid rgba(255,255,255,.08);
+      text-align:center;color:#cfc0de;font-size:10px;padding:8px 0 10px;
+    }
+    .plus{
+      width:38px;height:32px;border-radius:10px;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      display:grid;place-items:center;margin:-5px auto 2px;
+      color:white;font-size:22px;font-weight:950;
+    }
+    .features{display:grid;gap:18px}
+    .feature{display:flex;gap:14px;align-items:flex-start;color:#eadff4}
+    .feature i{
+      width:32px;height:32px;border-radius:10px;
+      display:grid;place-items:center;
+      color:var(--pink2);
+      border:1px solid rgba(255,63,180,.3);
+      font-style:normal;font-size:18px;flex:0 0 auto;
+    }
+    .feature strong{display:block;font-size:15px;margin-bottom:3px}
+    .feature span{font-size:13px;color:#cdbedf;line-height:1.4}
+
+    .premium-grid{
+      display:grid;
+      grid-template-columns:1fr .62fr;
+      gap:20px;
+      align-items:center;
+    }
+    .premium-features{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin:22px 0;
+    }
+    .premium-feature{
+      font-size:12px;color:#d8c8e5;line-height:1.45;
+    }
+    .premium-feature i{display:block;font-size:26px;margin-bottom:10px;color:var(--gold);font-style:normal}
+    .premium-feature strong{display:block;color:#fff;margin-bottom:4px;font-size:13px}
+    .price-box{
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      padding:18px;
+      background:rgba(255,255,255,.035);
+      text-align:center;
+    }
+    .price-box small{color:#d7c8e4}
+    .price{
+      color:var(--gold);
+      font-size:40px;
+      font-weight:950;
+      line-height:1.1;
+      margin:6px 0;
+    }
+    .price span{font-size:18px;color:#fff;font-weight:800}
+    .mini-phone{
+      width:220px;margin:auto;
+      border:3px solid #27212f;border-radius:32px;padding:11px;background:#05040a;
+    }
+    .mini-phone .screen{min-height:360px}
+    .achievements{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+    .achievements span{
+      height:42px;border-radius:12px;
+      background:rgba(255,255,255,.06);
+      display:grid;place-items:center;
+      color:var(--gold);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .footer{
+      margin-top:10px;
+      padding:26px;
+      text-align:center;
+      color:#bcaecb;
+      border:1px solid rgba(255,63,180,.18);
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+    }
+    .footer p{max-width:760px;margin:0 auto 14px;line-height:1.5}
+    .footer small{display:block;margin-top:14px;color:#8f7fa3}
+
+    @media (max-width:1060px){
+      .hero{grid-template-columns:1fr; padding:38px 26px 26px}
+      .phones{order:2}
+      .side-cards{grid-template-columns:repeat(3,1fr);order:3}
+      .hero-copy{order:1}
+      .badges{order:4}
+      .nav{padding:0 24px}
+      .nav-links{gap:14px}
+      .grid-sections{grid-template-columns:1fr}
+    }
+
+    @media (max-width:760px){
+      .page{width:min(100% - 18px, var(--max));padding-top:10px}
+      .top-label strong{font-size:15px}
+      .top-label span{font-size:12px}
+      .nav{
+        height:auto;
+        padding:18px;
+        align-items:flex-start;
+      }
+      .brand{font-size:21px}
+      .nav-links{
+        display:none;
+      }
+      .nav .btn{min-height:38px;padding:0 14px;font-size:12px}
+      .hero{padding:30px 18px 22px;gap:20px}
+      .hero-copy h1{font-size:35px}
+      .hero-copy p{font-size:15px}
+      .btn{width:100%;min-height:45px}
+      .hero-actions{gap:10px}
+      .phones{min-height:380px;transform:scale(.86);margin:-22px 0}
+      .phone.side{display:none}
+      .side-cards{grid-template-columns:1fr}
+      .badges{gap:12px;font-size:11px}
+      .mini-section{padding:14px}
+      .inner-box{padding:18px}
+      .steps{grid-template-columns:1fr;gap:10px}
+      .arrow{transform:rotate(90deg);text-align:center;font-size:25px}
+      .proof-grid,.security-grid,.after-steps,.premium-features{grid-template-columns:1fr 1fr}
+      .social-strip{flex-direction:column;text-align:center}
+      .app-grid,.premium-grid{grid-template-columns:1fr}
+      .premium-grid .mini-phone{display:none}
+      .copy-box{display:block}
+      .copy-box button{width:100%}
+    }
+
+    @media (max-width:430px){
+      .hero-copy h1{font-size:31px}
+      .proof-grid,.security-grid,.after-steps,.premium-features{grid-template-columns:1fr}
+      .section-title{font-size:17px}
+      .big-title{font-size:21px}
+      .proof strong{font-size:30px}
     }
   </style>
 </head>
 
-<body class="bg-[#fafaf9] text-slate-800 flex flex-col min-h-screen">
-
-  <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- Header -->
-  <header class="bg-gradient-to-r from-navy-900 to-slate-900 text-white py-5 px-6 md:px-12 flex justify-between items-center border-b border-slate-800 shadow-sm">
-    <div class="flex items-center gap-2">
-      <div class="bg-brand-500 text-slate-950 p-2 rounded-lg font-bold text-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      </div>
-      <div>
-        <span class="font-extrabold text-xl tracking-tight">HomeMatch</span>
-        <span class="text-brand-400 font-medium ml-1 text-sm bg-brand-500/10 px-2 py-0.5 rounded-full border border-brand-500/20">Strategist v2.0</span>
-      </div>
+<body>
+  <main class="page">
+    <div class="top-label">
+      <strong>1. Hero / Landing</strong>
+      <span>CTA principal claro e foco na entrada</span>
     </div>
-    <nav class="hidden md:flex items-center gap-8">
-      <a href="#beneficios" class="text-slate-300 hover:text-brand-400 font-medium transition text-sm">Benefícios</a>
-      <a href="#como-funciona" class="text-slate-300 hover:text-brand-400 font-medium transition text-sm">Como Funciona</a>
-      <button onclick="navegarParaWorkspace()" class="text-slate-300 hover:text-brand-400 font-medium transition text-sm bg-brand-500/20 text-brand-300 px-3 py-1.5 rounded-md border border-brand-500/30">Gerador Ativo</button>
-    </nav>
-    <button onclick="iniciarTesteRapido(event)" class="bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-md shadow-brand-500/10">
-      Testar IA Agora
-    </button>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="relative bg-gradient-to-b from-navy-900 via-navy-900 to-slate-950 text-white py-16 px-6 md:px-12 lg:px-24 overflow-hidden">
-    <!-- Background abstract graphics -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent pointer-events-none"></div>
-    
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-      <div class="lg:col-span-7 flex flex-col justify-center text-center lg:text-left">
-        <span class="inline-flex items-center gap-1.5 self-center lg:self-start bg-brand-500/10 text-brand-300 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-6 border border-brand-500/20">
-          <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
-          Inteligência Artificial de Nova Geração
-        </span>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-          Cria anúncios imobiliários premium em <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-brand-500">30 segundos</span>
-        </h1>
-        <p class="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-          Introduz dados simples de qualquer imóvel e recebe uma estratégia completa: descrições sofisticadas para portais, publicações de redes sociais, argumentos de venda focados, tratamento de objeções e roteiros de visita física.
-        </p>
-        <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          <button onclick="iniciarTesteRapido(event)" class="bg-brand-500 hover:bg-brand-400 text-slate-950 font-extrabold px-8 py-4 rounded-xl text-md transition-all transform hover:-translate-y-0.5 shadow-xl shadow-brand-500/20 flex items-center justify-center gap-2">
-            Iniciar Gerador Inteligente
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
-          </button>
-          <a href="#como-funciona" class="bg-slate-800/80 hover:bg-slate-800 text-white font-semibold px-8 py-4 rounded-xl text-md transition-all border border-slate-700/50 flex items-center justify-center gap-2">
-            Ver como funciona
-          </a>
-        </div>
-      </div>
+    <section class="section-card" id="inicio">
+      <div class="section-inner">
+        <header class="nav">
+          <a class="brand" href="#inicio">SHIT<span class="pink">AGRAM</span><sup>™</sup></a>
 
-      <div class="lg:col-span-5 w-full">
-        <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-brand-50/5 rounded-full filter blur-xl"></div>
-          <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            Resultados Imediatos
-          </h3>
-          <ul class="space-y-4 text-sm text-slate-300">
-            <li class="flex items-start gap-3">
-              <span class="flex-shrink-0 w-5 h-5 bg-brand-500/20 text-brand-300 rounded-full flex items-center justify-center font-bold text-xs">✓</span>
-              <span><strong>Descrição Premium</strong> otimizada para os portais imobiliários líderes.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="flex-shrink-0 w-5 h-5 bg-brand-500/20 text-brand-300 rounded-full flex items-center justify-center font-bold text-xs">✓</span>
-              <span><strong>Títulos de Alto Impacto</strong> para obter até 3x mais cliques.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="flex-shrink-0 w-5 h-5 bg-brand-500/20 text-brand-300 rounded-full flex items-center justify-center font-bold text-xs">✓</span>
-              <span><strong>Posts Prontos</strong> para Instagram com hashtags sugeridas.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="flex-shrink-0 w-5 h-5 bg-brand-500/20 text-brand-300 rounded-full flex items-center justify-center font-bold text-xs">✓</span>
-              <span><strong>Preparação de Objeções</strong> para desarmar desconfianças.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="flex-shrink-0 w-5 h-5 bg-brand-500/20 text-brand-300 rounded-full flex items-center justify-center font-bold text-xs">✓</span>
-              <span><strong>Guia Comercial de Visita</strong> com o percurso ideal.</span>
-            </li>
-          </ul>
-          <div class="mt-6 pt-4 border-t border-slate-800 text-center">
-            <span class="text-xs text-slate-400">Impulsionado pelo Gemini 2.5 Flash de alta precisão imobiliária.</span>
+          <nav class="nav-links" aria-label="Menu principal">
+            <a href="#como-funciona">Como funciona</a>
+            <a href="#regras">Regras</a>
+            <a href="#ranking">Ranking</a>
+            <a href="#mood-map">Mood Map</a>
+            <a href="#loja">Loja</a>
+            <a href="#blog">Blog</a>
+          </nav>
+
+          <a class="btn btn-primary" href="#beta">Entrar na beta</a>
+        </header>
+
+        <div class="hero">
+          <div class="hero-copy">
+            <h1>
+              OS TEUS MICOS<br>
+              <span class="gradient-text">VIRAM HISTÓRIAS, REAÇÕES E RANKING.</span>
+            </h1>
+
+            <p>
+              A rede social de humor onde podes ver, publicar e rir dos melhores momentos embaraçosos da vida real.
+            </p>
+
+            <div class="checks">
+              <div class="check"><i>✓</i> Publica os teus micos</div>
+              <div class="check"><i>✓</i> Reage e comenta</div>
+              <div class="check"><i>✓</i> Ganha XP e ShitCoins</div>
+              <div class="check"><i>✓</i> Sobe no ranking da vergonha</div>
+            </div>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#beta">Entrar na beta grátis</a>
+              <a class="btn btn-ghost" href="#como-funciona">Como funciona</a>
+            </div>
+          </div>
+
+          <div class="phones" aria-label="Mockup da aplicação SHITAGRAM">
+            <div class="phone main">
+              <span class="status">9:41</span>
+              <div class="screen">
+                <div class="profile-row">
+                  <div class="avatar">💩</div>
+                  <div>
+                    <div class="name">MicoMaster</div>
+                    <div class="mini">🏅 Fundador</div>
+                  </div>
+                </div>
+
+                <div class="stats">
+                  <div><strong>127</strong>Micos</div>
+                  <div><strong>3.2k</strong>Seguidores</div>
+                  <div><strong>812</strong>A seguir</div>
+                </div>
+
+                <div class="mini">Nível 12 · 2.350 XP</div>
+                <div class="progress"><span></span></div>
+
+                <div class="post">
+                  <h4>🔥 Micos em destaque</h4>
+                  <p>Fui acenar a alguém e não era para mim...</p>
+                  <div class="post-foot"><span>♡ 234</span><span>💬 45</span><span>💩</span></div>
+                </div>
+
+                <div class="post">
+                  <p>Enviei mensagem à pessoa errada 😂</p>
+                  <div class="post-foot"><span>♡ 312</span><span>💬 67</span><span>+250 XP</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="phone side">
+              <span class="status">9:41</span>
+              <div class="screen">
+                <div class="rank-title">
+                  <span>Ranking da Vergonha</span>
+                  <span>×</span>
+                </div>
+                <div class="tabs">
+                  <span>Semanal</span><span>Mensal</span><span>Geral</span>
+                </div>
+                <div class="rank-list">
+                  <div class="rank-item"><b>1</b><span class="small-avatar">💩</span><span>MicoMaster</span><em>9.250 XP</em></div>
+                  <div class="rank-item"><b>2</b><span class="small-avatar">🤭</span><span>VeraDesastrada</span><em>8.420 XP</em></div>
+                  <div class="rank-item"><b>3</b><span class="small-avatar">😂</span><span>Ri dos Micos</span><em>7.150 XP</em></div>
+                  <div class="rank-item"><b>4</b><span class="small-avatar">🙈</span><span>Caos Total</span><em>6.480 XP</em></div>
+                  <div class="rank-item"><b>5</b><span class="small-avatar">👤</span><span>Mico Anónimo</span><em>5.920 XP</em></div>
+                </div>
+                <a class="btn btn-primary full-rank" href="#ranking">Ver ranking completo</a>
+              </div>
+            </div>
+          </div>
+
+          <aside class="side-cards">
+            <article class="info-card" id="regras">
+              <div class="icon">🛡️</div>
+              <h3>Humor sim.<br>Bullying não.</h3>
+              <p>Regras claras, denúncias e moderação ativa para manter a comunidade segura e divertida.</p>
+            </article>
+
+            <article class="info-card">
+              <div class="icon">👤</div>
+              <h3>Anónimo<br>(opcional)</h3>
+              <p>Podes publicar com nome ou de forma anónima. A escolha é tua.</p>
+            </article>
+
+            <article class="info-card">
+              <div class="icon">🏅</div>
+              <h3>Primeiros<br>fundadores</h3>
+              <p>Os primeiros membros recebem Badge Fundador, 1.000 ShitCoins e 5 convites para amigos.</p>
+            </article>
+          </aside>
+
+          <div class="badges">
+            <span class="badge-dot"><i class="b1"></i>Beta fechada</span>
+            <span class="badge-dot"><i class="b2"></i>Gratuita nesta fase</span>
+            <span class="badge-dot"><i class="b3"></i>Badge Fundador</span>
+            <span class="badge-dot"><i class="b4"></i>ShitCoins de boas-vindas</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Interactive AI Workspace Section -->
-  <section id="workspace" class="py-16 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto w-full">
-    <div class="text-center max-w-3xl mx-auto mb-12">
-      <span class="text-brand-600 font-bold text-sm tracking-wide uppercase">Workspace do Corretor</span>
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">Gera a tua Estratégia Comercial</h2>
-      <p class="text-slate-600 mt-3 text-lg">
-        Preenche os campos abaixo com os dados reais do imóvel e clica em gerar. Vê a magia da inteligência artificial acontecer.
-      </p>
-    </div>
+    <section class="grid-sections">
+      <article class="mini-section" id="como-funciona">
+        <h2 class="section-title">2. Como funciona</h2>
+        <p class="section-sub">Explicação simples em 3 passos</p>
 
-    <!-- Workspace Main Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      
-      <!-- Input Panel Form -->
-      <div id="formulario-container" class="lg:col-span-5 bg-white rounded-2xl shadow-xl shadow-slate-100 p-6 md:p-8 border border-slate-100 transition-all">
-        <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-          Ficha Rápida do Imóvel
-        </h3>
-        
-        <form id="imovelForm" onsubmit="handleGerarEstrategia(event)" class="space-y-5">
+        <div class="inner-box center">
+          <h3 class="big-title">Como funciona</h3>
+          <p class="small-sub">É rápido, simples e viciante.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="emoji">👀</div>
+              <h4><span class="num">1</span>Vê os micos</h4>
+              <p>Explora os melhores micos da comunidade e reage aos teus favoritos.</p>
+            </div>
+
+            <div class="arrow">›</div>
+
+            <div class="step">
+              <div class="emoji">✏️</div>
+              <h4><span class="num">2</span>Publica o teu</h4>
+              <p>Conta o teu mico de forma anónima ou com nome e recebe reações da comunidade.</p>
+            </div>
+
+            <div class="arrow">›</div>
+
+            <div class="step">
+              <div class="emoji">🏆</div>
+              <h4><span class="num">3</span>Ganha e sobe</h4>
+              <p>Ganha XP e ShitCoins, sobe no ranking e torna-te uma lenda da vergonha.</p>
+            </div>
+          </div>
+
+          <br>
+          <a class="btn btn-primary" href="#beta">Entrar na beta grátis</a>
+        </div>
+      </article>
+
+      <article class="mini-section">
+        <h2 class="section-title">3. Prova social</h2>
+        <p class="section-sub">Mostrar movimento real da comunidade</p>
+
+        <div class="inner-box center">
+          <h3 class="big-title">A comunidade já está a crescer</h3>
+          <p class="small-sub">E tu podes fazer parte desde o início.</p>
+
+          <div class="proof-grid">
+            <div class="proof"><strong>327</strong><span>Pessoas já pediram acesso à beta</span></div>
+            <div class="proof"><strong>48</strong><span>Micos publicados em teste</span></div>
+            <div class="proof"><strong>12</strong><span>Cidades no Mood Map</span></div>
+            <div class="proof"><strong>89%</strong><span>Dos testers recomendam aos amigos</span></div>
+          </div>
+
+          <div class="social-strip">
+            <div class="faces"><i>🙂</i><i>😂</i><i>🤭</i><i>🙈</i><i>💩</i></div>
+            <span>Junta-te a centenas de futuros fundadores.</span>
+            <a class="btn btn-primary" href="#beta">Entrar na beta grátis</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mini-section">
+        <h2 class="section-title">4. Confiança e segurança</h2>
+        <p class="section-sub">Tirar o medo de publicar e participar</p>
+
+        <div class="inner-box center">
+          <h3 class="big-title">Humor sim. Bullying não.</h3>
+          <p class="small-sub">O SHITAGRAM™ tem regras claras para garantir diversão sem humilhar ou expor ninguém.</p>
+
+          <div class="security-grid">
+            <div class="security-card">
+              <div class="sicon">✅</div>
+              <h4>Regras claras</h4>
+              <p>Podes rir de ti próprio, mas não expor, humilhar ou perseguir outros.</p>
+            </div>
+            <div class="security-card">
+              <div class="sicon">🔔</div>
+              <h4>Denúncias fáceis</h4>
+              <p>Qualquer conteúdo inadequado pode ser denunciado.</p>
+            </div>
+            <div class="security-card">
+              <div class="sicon">🛡️</div>
+              <h4>Moderação ativa</h4>
+              <p>A nossa equipa analisa denúncias e mantém o ambiente seguro.</p>
+            </div>
+            <div class="security-card">
+              <div class="sicon">👤</div>
+              <h4>Anónimo opcional</h4>
+              <p>Publica com nome ou de forma anónima, como te sentires confortável.</p>
+            </div>
+          </div>
+
+          <div class="zero">
+            <strong>Zero tolerância para:</strong>
+            <div class="chips">
+              <span>Bullying</span>
+              <span>Ódio</span>
+              <span>Discriminação</span>
+              <span>Spam</span>
+              <span>Conteúdo ilegal</span>
+            </div>
+          </div>
+
+          <br>
+          <a class="btn btn-ghost" href="#regras">Ver todas as regras</a>
+        </div>
+      </article>
+
+      <article class="mini-section" id="beta">
+        <h2 class="section-title">5. Pós-candidatura</h2>
+        <p class="section-sub">Não deixar o utilizador “morrer” depois de se inscrever</p>
+
+        <div class="inner-box center">
+          <h3 class="big-title">✅ Recebemos o teu pedido!</h3>
+          <p class="small-sub">Obrigado por quereres fazer parte do SHITAGRAM™.</p>
+
+          <p class="small-sub">O que acontece agora?</p>
+
+          <div class="after-steps">
+            <div class="after-card">
+              <strong>01</strong>
+              <h4>Vamos analisar o teu pedido.</h4>
+              <p>Receberás um email assim que tiveres acesso à beta.</p>
+            </div>
+            <div class="after-card">
+              <strong>02</strong>
+              <h4>Enquanto isso...</h4>
+              <p>Convida amigos e sobe na lista de espera para teres prioridade.</p>
+            </div>
+            <div class="after-card">
+              <strong>03</strong>
+              <h4>Prepara-te</h4>
+              <p>Os primeiros fundadores recebem Badge, ShitCoins e convites exclusivos.</p>
+            </div>
+          </div>
+
+          <p>Partilha o <strong>SHITAGRAM™</strong> e ganha prioridade na entrada.</p>
+
+          <div class="copy-box">
+            <input id="shareLink" value="https://shitagram.pt/beta" readonly>
+            <button class="btn btn-primary" onclick="copyLink()">Copiar link</button>
+          </div>
+
+          <p class="small-sub">Envia a amigos, grupos e redes sociais!</p>
+
+          <div class="social-icons">
+            <a href="#" aria-label="WhatsApp">🟢</a>
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="TikTok">🎵</a>
+            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="#" aria-label="Link">🔗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mini-section">
+        <h2 class="section-title">6. Feed / App (Mockup)</h2>
+        <p class="section-sub">Visual mais moderno e claro</p>
+
+        <div class="app-grid">
+          <div class="app-phone">
+            <div class="app-screen">
+              <div class="app-head">
+                <strong>SHIT<span style="color:var(--pink)">AGRAM</span>™</strong>
+                <span class="coin">🪙 2.350</span>
+              </div>
+
+              <div class="app-tabs">
+                <span>Para ti</span><span>Seguindo</span><span>Novos</span><span>Top</span>
+              </div>
+
+              <div class="feed-card">
+                <div class="feed-author">
+                  <div class="avatar" style="width:34px;height:34px;font-size:20px;">💩</div>
+                  <div>
+                    <strong>MicoMaster</strong>
+                    <div class="mini">há 3h · Lisboa</div>
+                  </div>
+                </div>
+                <p style="padding:0 12px 12px;font-size:13px;">Fui acenar a alguém e não era para mim...</p>
+                <div class="feed-img">🙈</div>
+                <div class="feed-actions">
+                  <span>💖 234</span><span>💬 45</span><span>↗ 12</span><span style="margin-left:auto;color:var(--gold)">+250 XP</span>
+                </div>
+              </div>
+
+              <div class="app-nav">
+                <span>🏠<br>Início</span>
+                <span>🔎<br>Explorar</span>
+                <span><b class="plus">+</b>Publicar</span>
+                <span>🏆<br>Ranking</span>
+                <span>👤<br>Perfil</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="features">
+            <div class="feature"><i>🌙</i><div><strong>Design escuro</strong><span>Visual confortável e moderno.</span></div></div>
+            <div class="feature"><i>✏️</i><div><strong>Publicação rápida</strong><span>Publica com nome ou de forma anónima.</span></div></div>
+            <div class="feature"><i>💬</i><div><strong>Reações e comentários</strong><span>Interação simples e divertida.</span></div></div>
+            <div class="feature"><i>⭐</i><div><strong>XP, ShitCoins e ranking</strong><span>Gamificação para manter a comunidade ativa.</span></div></div>
+            <div class="feature"><i>🧭</i><div><strong>Navegação simples</strong><span>Fácil de entender no telemóvel e computador.</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="mini-section">
+        <h2 class="section-title">7. Premium (depois, não antes)</h2>
+        <p class="section-sub">Apresentar como opção futura, não como foco</p>
+
+        <div class="premium-grid">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tipo de Imóvel *</label>
-            <select id="tipoImovel" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required>
-              <option value="Apartamento" selected>Apartamento</option>
-              <option value="Moradia">Moradia</option>
-              <option value="Terreno">Terreno</option>
-              <option value="Escritório / Comercial">Escritório / Comercial</option>
-              <option value="Quintinha / Herdade">Quintinha / Herdade</option>
-            </select>
-          </div>
+            <h3 class="big-title gradient-text">Premium experimental</h3>
+            <p class="small-sub">Mais opções. Mais personalização. Ainda mais micos.</p>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tipologia *</label>
-              <select id="tipologia" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required>
-                <option value="T0">T0 / Estúdio</option>
-                <option value="T1">T1</option>
-                <option value="T2" selected>T2</option>
-                <option value="T3">T3</option>
-                <option value="T4">T4</option>
-                <option value="T5 ou superior">T5+</option>
-                <option value="Não aplicável">Não aplicável</option>
-              </select>
+            <div class="premium-features">
+              <div class="premium-feature"><i>💩</i><strong>Perfil premium</strong>Destaque-te com badges e cores exclusivas.</div>
+              <div class="premium-feature"><i>🪙</i><strong>Mais ShitCoins</strong>Recebe mais ShitCoins e apoia o projeto.</div>
+              <div class="premium-feature"><i>🎁</i><strong>Recursos exclusivos</strong>Acesso antecipado a novas funcionalidades e testes.</div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Área Útil (m²) *</label>
-              <input type="number" id="area" placeholder="Ex: 85" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required value="85">
+
+            <div class="price-box">
+              <small>Preço de teste experimental</small>
+              <div class="price">2,99€ <span>/ mês</span></div>
+              <small>Sem compromisso. Cancela quando quiseres.</small>
+              <br><br>
+              <a class="btn btn-primary" href="#beta">Saber mais em breve</a>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Preço Pedido (€) *</label>
-              <input type="text" id="preco" placeholder="Ex: 290000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required value="290000">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Estado de Conservação *</label>
-              <select id="estado" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required>
-                <option value="Novo">Novo</option>
-                <option value="Em construção">Em construção</option>
-                <option value="Remodelado" selected>Remodelado</option>
-                <option value="Usado (Bom Estado)">Usado (Bom Estado)</option>
-                <option value="Para Obras / Recuperar">Para Obras</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Localização Exata ou Zona *</label>
-            <input type="text" id="localizacao" placeholder="Ex: Benfica, Lisboa (perto do metro)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required value="Benfica, Lisboa">
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Pontos Fortes & Extras (Separados por vírgulas) *</label>
-            <textarea id="pontosFortes" rows="3" placeholder="Ex: Varanda, muita luz solar, garagem box para 1 carro, suite, arrecadação, metro a 3 minutos a pé, condomínio baixo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all" required>Remodelado recentemente, varanda aberta com excelente exposição solar, suite com closet, parqueamento, arrecadação, prédio com 2 elevadores, a 5 minutos a pé do Metro.</textarea>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Público-Alvo Estimado</label>
-              <select id="publicoAlvo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
-                <option value="Qualquer público">Qualquer Perfil</option>
-                <option value="Jovem casal ou Primeira Habitação" selected>Jovem Casal / 1ª Casa</option>
-                <option value="Família com filhos pequenos">Família com filhos</option>
-                <option value="Investidor para arrendamento tradicional/estudantes">Investidor de Arrendamento</option>
-                <option value="Pessoas seniores / Mobilidade facilitada">Reformados / Seniores</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tom de Voz</label>
-              <select id="tomVoz" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
-                <option value="Premium, sofisticado e exclusivo" selected>Premium / Sofisticado</option>
-                <option value="Emocional, caloroso e focado no lar">Emocional / Familiar</option>
-                <option value="Direto, pragmático e focado nos números">Direto / Investidor</option>
-                <option value="Urbano, moderno e enérgico">Urbano / Moderno</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-slate-950 font-extrabold py-4 rounded-xl shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2 transform active:scale-[0.98]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Gerar Estratégia Comercial com IA
-          </button>
-        </form>
-      </div>
-
-      <!-- Result / Workspace Dashboard -->
-      <div id="resultado-painel" class="lg:col-span-7 bg-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden self-stretch flex flex-col min-h-[600px] transition-all">
-        
-        <!-- Default State: Waiting for inputs -->
-        <div id="defaultState" class="flex-grow flex flex-col items-center justify-center p-8 text-center">
-          <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-400 border border-slate-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-brand-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900 mb-2">Pronto para a criação inteligente</h3>
-          <p class="text-slate-500 max-w-sm mx-auto text-sm mb-6">
-            Preencha a ficha do imóvel à esquerda ou clique no botão abaixo para ver um exemplo gerado instantaneamente pela nossa IA!
-          </p>
-          <button onclick="iniciarTesteRapido(event)" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-5 py-3 rounded-xl text-sm transition-all">
-            ✨ Gerar Exemplo de Demonstração
-          </button>
-        </div>
-
-        <!-- Loading State -->
-        <div id="loadingState" class="hidden flex-grow flex flex-col items-center justify-center p-8 text-center bg-slate-50/50">
-          <div class="relative w-24 h-24 mb-6">
-            <div class="absolute inset-0 rounded-full border-4 border-slate-100 border-t-brand-500 animate-spin"></div>
-            <div class="absolute inset-3 rounded-full border-4 border-slate-100 border-b-navy-900 animate-spin animate-reverse"></div>
-          </div>
-          <h3 id="loadingProgressTitle" class="text-lg font-bold text-slate-900 mb-2">A iniciar o consultor inteligente...</h3>
-          <p id="loadingProgressSubtitle" class="text-slate-500 text-sm max-w-xs mx-auto">A estruturar a informação imobiliária.</p>
-        </div>
-
-        <!-- Real Output Dashboard (Active results) -->
-        <div id="outputDashboard" class="hidden flex-grow flex flex-col">
-          
-          <!-- Top Dashboard Header Actions -->
-          <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-100 flex flex-wrap gap-3 items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-              <span class="text-xs font-bold uppercase tracking-widest text-slate-600">Material Comercial Gerado</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="copiarTodoRelatorio()" class="bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold py-1.5 px-3 rounded-lg border border-slate-200 transition-all flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                </svg>
-                Copiar Tudo
-              </button>
-              <button onclick="descarregarRelatorio()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Exportar TXT
-              </button>
-            </div>
-          </div>
-
-          <!-- Navigation Tabs -->
-          <div class="border-b border-slate-100 bg-white sticky top-0 z-10 overflow-x-auto flex flex-nowrap custom-scrollbar">
-            <button onclick="switchTab('tab-descricao')" id="btn-tab-descricao" class="tab-btn px-6 py-4 font-bold text-xs uppercase tracking-wider border-b-2 border-brand-500 text-brand-600 whitespace-nowrap transition-all">
-              🏠 Descrição & Títulos
-            </button>
-            <button onclick="switchTab('tab-social')" id="btn-tab-social" class="tab-btn px-6 py-4 font-bold text-xs uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all">
-              📱 Redes Sociais
-            </button>
-            <button onclick="switchTab('tab-argumentos')" id="btn-tab-argumentos" class="tab-btn px-6 py-4 font-bold text-xs uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all">
-              🎯 Argumentos
-            </button>
-            <button onclick="switchTab('tab-objecoes')" id="btn-tab-objecoes" class="tab-btn px-6 py-4 font-bold text-xs uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all">
-              🛡️ Objeções
-            </button>
-            <button onclick="switchTab('tab-roteiro')" id="btn-tab-roteiro" class="tab-btn px-6 py-4 font-bold text-xs uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap transition-all">
-              🧭 Roteiro Visita
-            </button>
-          </div>
-
-          <!-- Tab Contents Wrapper -->
-          <div class="flex-grow p-6 md:p-8 overflow-y-auto max-h-[500px] custom-scrollbar bg-slate-50/30">
-            
-            <!-- Tab: Descrição & Títulos -->
-            <div id="tab-descricao" class="tab-content space-y-6">
-              <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Títulos Comerciais Sugeridos</h4>
-                  <button onclick="copiarElementoText('titulos-list')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Títulos</button>
-                </div>
-                <div id="titulos-list" class="space-y-2 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                  <!-- Generated dynamic content -->
+          <div class="mini-phone">
+            <div class="screen">
+              <div class="profile-row">
+                <div class="avatar">💩</div>
+                <div>
+                  <div class="name">MicoMaster</div>
+                  <div class="mini">💎 Premium</div>
                 </div>
               </div>
-
-              <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Descrição Premium para Portais</h4>
-                  <button onclick="copiarElementoText('descricao-corpo')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Descrição</button>
-                </div>
-                <div id="descricao-corpo" class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                  <!-- Generated dynamic content -->
-                </div>
+              <div class="mini">Nível 18 · 4.750 XP</div>
+              <div class="progress"><span style="width:88%"></span></div>
+              <div class="stats">
+                <div><strong>176</strong>Micos</div>
+                <div><strong>5.8k</strong>Seguidores</div>
+                <div><strong>960</strong>A seguir</div>
+              </div>
+              <p class="mini" style="margin-top:14px;">Conquistas</p>
+              <div class="achievements">
+                <span>⭐</span><span>🏆</span><span>💎</span><span>⚡</span>
+              </div>
+              <div class="post" style="margin-top:16px;background:rgba(246,198,91,.12);border-color:rgba(246,198,91,.35)">
+                <h4>Premium desde Maio 2026</h4>
+                <p>Badge dourado ativo.</p>
               </div>
             </div>
-
-            <!-- Tab: Redes Sociais -->
-            <div id="tab-social" class="tab-content hidden space-y-6">
-              <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Post de Instagram & Facebook</h4>
-                  <button onclick="copiarElementoText('social-caption')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Post</button>
-                </div>
-                <div id="social-caption" class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                  <!-- Generated dynamic content -->
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ideia para TikTok / Reels</h4>
-                  <button onclick="copiarElementoText('social-video')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Ideia</button>
-                </div>
-                <div id="social-video" class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                  <!-- Generated dynamic content -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Tab: Argumentos de Venda -->
-            <div id="tab-argumentos" class="tab-content hidden space-y-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Argumentos Baseados nos Pontos Fortes</h4>
-                <button onclick="copiarElementoText('argumentos-container')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Lista</button>
-              </div>
-              <div id="argumentos-container" class="space-y-3">
-                <!-- Generated dynamic content -->
-              </div>
-            </div>
-
-            <!-- Tab: Objeções -->
-            <div id="tab-objecoes" class="tab-content hidden space-y-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Antecipação de Resistências dos Compradores</h4>
-                <button onclick="copiarElementoText('objecoes-container')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Objeções</button>
-              </div>
-              <div id="objecoes-container" class="space-y-4">
-                <!-- Generated dynamic content -->
-              </div>
-            </div>
-
-            <!-- Tab: Roteiro de Visita -->
-            <div id="tab-roteiro" class="tab-content hidden space-y-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Guião Passo-a-Passo para a Visita</h4>
-                <button onclick="copiarElementoText('roteiro-container')" class="text-xs text-brand-600 hover:text-brand-700 font-bold flex items-center gap-1">Copiar Guia</button>
-              </div>
-              <div id="roteiro-container" class="space-y-4">
-                <!-- Generated dynamic content -->
-              </div>
-            </div>
-
           </div>
-
-          <!-- Refinement Panel (Chat Interface to Adjust) -->
-          <div class="bg-slate-50 border-t border-slate-100 p-4 md:p-6">
-            <h5 class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-500 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="animation-duration: 3s;">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Refinar o Resultado com IA
-            </h5>
-            <div class="flex gap-2">
-              <input type="text" id="refineInput" placeholder="Ex: Torna o texto mais curto e foca na proximidade do metro..." class="flex-grow bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
-              <button onclick="handleRefinarEstrategia()" class="bg-brand-500 hover:bg-brand-400 text-slate-950 font-extrabold px-5 py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
-                Refinar
-              </button>
-            </div>
-          </div>
-
         </div>
+      </article>
+    </section>
 
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Interactive Benefits & Key Metrics -->
-  <section id="beneficios" class="py-16 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-white to-[#fcfcfb]">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <span class="text-brand-600 font-bold text-sm uppercase tracking-wider">Porquê Escolher</span>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">Diferenciação com um só Clique</h2>
-        <p class="text-slate-600 mt-3 text-lg">
-          Trabalhar de forma mais inteligente significa saber gerir o tempo. Deixe a escrita de anúncios connosco e concentre-se nas reuniões e no fecho de vendas.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
-          <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900 mb-3">Velocidade de Execução</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Elimine o bloqueio criativo de começar descrições imobiliárias do absoluto zero. Crie em 30 segundos o que levava 1 hora.
-          </p>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
-          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900 mb-3">Segurança Comercial</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Preveja e neutralize as desconfianças dos compradores antes mesmo de iniciarem o contacto sobre o anúncio imobiliário.
-          </p>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
-          <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-slate-900 mb-3">Foco no Retorno</h3>
-          <p class="text-slate-600 text-sm leading-relaxed">
-            Transforme anúncios comuns em textos orientados a conversões, apelando às razões emocionais e financeiras corretas de compra.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Timeline -->
-  <section id="como-funciona" class="py-16 px-6 md:px-12 lg:px-24 bg-slate-900 text-white relative overflow-hidden">
-    <div class="absolute inset-0 bg-navy-900/40 pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto relative z-10">
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <span class="text-brand-400 font-bold text-sm tracking-widest uppercase">Processo Simples</span>
-        <h2 class="text-3xl md:text-4xl font-extrabold mt-2">Como Funciona a Tecnologia?</h2>
-        <p class="text-slate-400 mt-3 text-lg">
-          O motor de inteligência artificial de última geração analisa as nuances do imóvel e molda a comunicação.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="bg-slate-850/80 backdrop-blur-md p-6 rounded-2xl border border-slate-800/80">
-          <div class="w-10 h-10 bg-brand-500/10 text-brand-300 rounded-full flex items-center justify-center font-bold text-sm mb-4 border border-brand-500/20">1</div>
-          <h3 class="text-lg font-bold mb-2 text-white">Insira os Dados</h3>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            Áreas, tipologia, estado do imóvel, preço de venda e quaisquer vantagens da sua localização.
-          </p>
-        </div>
-
-        <div class="bg-slate-850/80 backdrop-blur-md p-6 rounded-2xl border border-slate-800/80">
-          <div class="w-10 h-10 bg-brand-500/10 text-brand-300 rounded-full flex items-center justify-center font-bold text-sm mb-4 border border-brand-500/20">2</div>
-          <h3 class="text-lg font-bold mb-2 text-white">A IA Filtra e Organiza</h3>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            Identifica o cliente ideal, a melhor abordagem de venda e descobre os gatilhos mentais do tom escolhido.
-          </p>
-        </div>
-
-        <div class="bg-slate-850/80 backdrop-blur-md p-6 rounded-2xl border border-slate-800/80">
-          <div class="w-10 h-10 bg-brand-500/10 text-brand-300 rounded-full flex items-center justify-center font-bold text-sm mb-4 border border-brand-500/20">3</div>
-          <h3 class="text-lg font-bold mb-2 text-white">Geração Sob-Medida</h3>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            Escreve títulos, descrições fluidas de alta qualidade, objeções com contra-argumentos e guiões de visita.
-          </p>
-        </div>
-
-        <div class="bg-slate-850/80 backdrop-blur-md p-6 rounded-2xl border border-slate-800/80">
-          <div class="w-10 h-10 bg-brand-500/10 text-brand-300 rounded-full flex items-center justify-center font-bold text-sm mb-4 border border-brand-500/20">4</div>
-          <h3 class="text-lg font-bold mb-2 text-white">Pronto para Publicar</h3>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            Ajuste e refine em tempo real, copie tudo com facilidade e publique com confiança nos maiores portais do mercado.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing Plans - Soft Beta Invitation -->
-  <section class="py-16 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-[#fbfbfb] to-slate-100">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <span class="text-brand-600 font-bold text-sm uppercase">Período de Acesso Gratuito</span>
-        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">Acesso Ilimitado Durante a Beta</h2>
-        <p class="text-slate-600 mt-3 text-lg">
-          Experimente sem custos, cartões de crédito ou amarras. Queremos apenas o seu feedback real sobre a facilidade e rapidez do gerador de anúncios imobiliários.
-        </p>
-      </div>
-
-      <div class="max-w-md mx-auto bg-white rounded-3xl p-8 border-2 border-brand-500 shadow-xl relative overflow-hidden">
-        <div class="absolute -top-3 -right-3 bg-brand-500 text-slate-950 font-extrabold text-[10px] uppercase tracking-wider py-2 px-6 transform rotate-12 shadow-sm">
-          Acesso Total
-        </div>
-        <div class="text-center">
-          <h3 class="text-xl font-bold text-slate-900">Plano Beta Gratuito</h3>
-          <p class="text-slate-500 text-xs mt-1">Ideal para Consultores de Sucesso</p>
-          <div class="my-6">
-            <span class="text-4xl font-extrabold text-slate-900">0 €</span>
-            <span class="text-slate-500 text-xs">/ para sempre</span>
-          </div>
-          <ul class="space-y-3.5 text-slate-600 text-sm text-left border-t border-slate-100 pt-6 mb-8">
-            <li class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              Gerações Ilimitadas de Imóveis
-            </li>
-            <li class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              5 abas de inteligência imobiliária
-            </li>
-            <li class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              Suporte interativo para refinar textos
-            </li>
-            <li class="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              Exportador de relatórios comerciais
-            </li>
-          </ul>
-          <button onclick="navegarParaWorkspace()" class="block w-full text-center bg-slate-900 hover:bg-slate-850 text-white font-bold py-3.5 rounded-xl transition-all">
-            Criar Anúncios Grátis
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Interactive Contact to WhatsApp -->
-  <section class="bg-gradient-to-r from-navy-900 to-slate-950 text-white py-16 px-6 md:px-12 text-center relative overflow-hidden">
-    <div class="max-w-4xl mx-auto relative z-10">
-      <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Gostava de Enviar Feedback Direto?</h2>
-      <p class="text-slate-300 text-md max-w-xl mx-auto mb-8">
-        Se adora a tecnologia e gostava de solicitar novas características ou relatar a sua experiência, fale diretamente connosco através do WhatsApp!
+    <footer class="footer">
+      <p>
+        Rir de nós próprios é o melhor remédio, ou pelo menos dá moedas virtuais.
+        O SHITAGRAM™ é uma plataforma satírica e experimental de humor social.
       </p>
-      <div class="flex justify-center">
-        <a href="https://wa.me/351967111975?text=Olá!%20Estou%20a%20usar%20o%20HomeMatch%20Strategist%20e%20gostaria%20de%20partilhar%20feedback." target="_blank" class="inline-flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20ba56] text-white font-extrabold px-8 py-4 rounded-xl text-md shadow-xl transition-all transform hover:-translate-y-0.5">
-          <!-- WhatsApp Icon -->
-          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 11.95.01c3.177.001 6.161 1.24 8.401 3.487 2.24 2.247 3.473 5.236 3.47 8.414-.003 6.557-5.338 11.894-11.893 11.894-2.007-.001-3.98-.51-5.732-1.484L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.97C16.487 1.97 14.021 1.05 11.4 1.045 5.966 1.045 1.54 5.41 1.536 10.839c-.001 1.765.467 3.49 1.354 5.023L1.82 20.916l5.245-1.378c1.517.828 3.2 1.264 4.828 1.266zm13.102-12.285c-.27-.134-1.59-.785-1.838-.875-.246-.09-.427-.135-.607.134-.18.27-.697.875-.855 1.055-.158.18-.315.2-.585.065-.27-.134-1.14-.42-2.17-1.34-.802-.715-1.343-1.6-1.5-1.87-.158-.27-.017-.415.118-.55.121-.12.27-.315.405-.47.135-.158.18-.27.27-.45.09-.18.045-.338-.022-.473-.068-.135-.608-1.463-.833-2.003-.22-.527-.44-.455-.608-.463-.158-.007-.338-.007-.518-.007-.18 0-.473.068-.72.338-.248.27-.945.923-.945 2.25 0 1.328.968 2.61 1.103 2.79.135.18 1.905 2.91 4.613 4.082.645.278 1.148.445 1.54.57.647.206 1.238.177 1.703.107.518-.078 1.592-.652 1.817-1.282.225-.63.225-1.17.157-1.283-.067-.113-.248-.18-.517-.315z"/>
-          </svg>
-          Conversar pelo WhatsApp
-        </a>
+      <div class="badges" style="justify-content:center">
+        <span class="badge-dot"><i class="b1"></i>Como funciona</span>
+        <span class="badge-dot"><i class="b2"></i>Comunidade</span>
+        <span class="badge-dot"><i class="b3"></i>Segurança</span>
+        <span class="badge-dot"><i class="b4"></i>Loja</span>
+        <span class="badge-dot"><i class="b1"></i>Perfil de Jogador</span>
       </div>
-    </div>
-  </section>
+      <small>© 2026 SHITAGRAM™ Portugal. Todos os direitos reservados.</small>
+    </footer>
+  </main>
 
-  <!-- Footer -->
-  <footer class="bg-slate-950 text-slate-400 py-10 px-6 md:px-12 text-center border-t border-slate-900 mt-auto text-xs">
-    <div class="max-w-7xl mx-auto space-y-4">
-      <p class="text-sm font-semibold text-slate-300">HomeMatch Strategist</p>
-      <p class="max-w-xl mx-auto leading-relaxed">
-        © 2026 HomeMatch Strategist. Todos os direitos reservados. Esta ferramenta utiliza inteligência artificial avançada para apoiar na criação de conteúdos de marketing imobiliário e não substitui a verificação legal e avaliação profissional de cada imóvel.
-      </p>
-    </div>
-  </footer>
-
-  <!-- Single-File Client-Side Application JS Logic -->
   <script>
-    // System API state
-    const apiKey = ""; // Runtime automatically injected in the platform
-    
-    // In-memory memory of generated data
-    let currentStore = null;
-    let originalQueryData = null;
+    function copyLink(){
+      const input = document.getElementById('shareLink');
+      input.select();
+      input.setSelectionRange(0, 99999);
 
-    // Smooth scroll directly to the Workspace container
-    function navegarParaWorkspace() {
-      const workspaceSection = document.getElementById('workspace');
-      if (workspaceSection) {
-        workspaceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-
-    // Interactive Demo / Fast Start trigger
-    function iniciarTesteRapido(event) {
-      if (event) event.preventDefault();
-      
-      // Scroll smoothly to form and highlight
-      const container = document.getElementById('workspace');
-      if (container) {
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-
-      // Add visual glow highlight to show where the work is happening
-      const formBox = document.getElementById('formulario-container');
-      if (formBox) {
-        formBox.classList.add('ring-4', 'ring-brand-400');
-        setTimeout(() => {
-          formBox.classList.remove('ring-4', 'ring-brand-400');
-        }, 1500);
-      }
-
-      // Automatically trigger generation with prefilled details
-      setTimeout(() => {
-        handleGerarEstrategia(null);
-      }, 600);
-    }
-
-    // Toast feedback function (since browser alert/confirm are not allowed)
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg border text-sm transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-sm bg-white`;
-      
-      if (type === 'success') {
-        toast.className += ` border-emerald-100 text-slate-800`;
-        toast.innerHTML = `
-          <span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</span>
-          <span>${message}</span>
-        `;
-      } else {
-        toast.className += ` border-rose-100 text-slate-800`;
-        toast.innerHTML = `
-          <span class="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold">!</span>
-          <span>${message}</span>
-        `;
-      }
-      
-      container.appendChild(toast);
-      
-      // Animate in
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      }, 10);
-      
-      // Animate out & remove
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-[-10px]');
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
-    }
-
-    // Switch Tabs Function
-    function switchTab(tabId) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
+      navigator.clipboard.writeText(input.value).then(() => {
+        const btn = event.target;
+        const old = btn.textContent;
+        btn.textContent = 'Copiado!';
+        setTimeout(() => btn.textContent = old, 1400);
+      }).catch(() => {
+        document.execCommand('copy');
+        alert('Link copiado!');
       });
-      // Deactivate all tab buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('border-brand-500', 'text-brand-600');
-        btn.classList.add('border-transparent', 'text-slate-500');
-      });
-
-      // Show active
-      document.getElementById(tabId).classList.remove('hidden');
-      // Style active button
-      document.getElementById('btn-' + tabId).classList.add('border-brand-500', 'text-brand-600');
-      document.getElementById('btn-' + tabId).classList.remove('border-transparent', 'text-slate-500');
-    }
-
-    // Exponential Backoff helper for Gemini API calls (5 retries)
-    async function fetchWithRetry(url, options, maxRetries = 5) {
-      let delay = 1000;
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          const response = await fetch(url, options);
-          if (response.ok) {
-            return await response.json();
-          }
-          throw new Error(`API returned status ${response.status}`);
-        } catch (error) {
-          if (i === maxRetries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 2; // Exponential Backoff: 1s, 2s, 4s, 8s, 16s
-        }
-      }
-    }
-
-    // Loading State Step Changer Simulation
-    function runLoadingSequence() {
-      const titles = [
-        "A carregar o consultor...",
-        "A analisar a ficha do imóvel...",
-        "A estudar o público-alvo...",
-        "A elaborar títulos persuasivos...",
-        "A redigir a descrição premium...",
-        "A antecipar as objeções do cliente...",
-        "A fechar o guião de visita física..."
-      ];
-      const subtitles = [
-        "A conectar aos servidores inteligentes...",
-        "A identificar caraterísticas-chave e mais-valias...",
-        "A ajustar o tom ao perfil do comprador...",
-        "A testar ganchos e headlines...",
-        "A formatar com espaçamentos fluidos...",
-        "A responder estrategicamente às desvantagens...",
-        "Quase pronto! A estruturar os relatórios..."
-      ];
-      
-      let step = 0;
-      const interval = setInterval(() => {
-        if (step < titles.length) {
-          document.getElementById('loadingProgressTitle').innerText = titles[step];
-          document.getElementById('loadingProgressSubtitle').innerText = subtitles[step];
-          step++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 1500);
-
-      return interval;
-    }
-
-    // Main API Handler to Generate Strategy
-    async function handleGerarEstrategia(event) {
-      if (event) event.preventDefault();
-
-      // Collect values from the Form
-      const formInput = {
-        tipoImovel: document.getElementById('tipoImovel').value,
-        tipologia: document.getElementById('tipologia').value,
-        area: document.getElementById('area').value,
-        preco: document.getElementById('preco').value,
-        estado: document.getElementById('estado').value,
-        localizacao: document.getElementById('localizacao').value,
-        pontosFortes: document.getElementById('pontosFortes').value,
-        publicoAlvo: document.getElementById('publicoAlvo').value,
-        tomVoz: document.getElementById('tomVoz').value,
-      };
-
-      originalQueryData = formInput;
-
-      // Show Loading State
-      document.getElementById('defaultState').classList.add('hidden');
-      document.getElementById('outputDashboard').classList.add('hidden');
-      document.getElementById('loadingState').classList.remove('hidden');
-      
-      // Auto-focus scroll to results so mobile users don't miss it!
-      const resultadoPainel = document.getElementById('resultado-painel');
-      if (resultadoPainel) {
-        resultadoPainel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      const progressTimer = runLoadingSequence();
-
-      // Build precise system prompt for real estate Portuguese (Portugal) rules
-      const systemPrompt = `És um consultor imobiliário sénior, copywriter de luxo e especialista em fecho de vendas no mercado de Portugal.
-O teu objetivo é transformar os dados estruturados de um imóvel num kit de venda premium de altíssimo nível comercial.
-Usa SEMPRE português correto de Portugal (escreve "remodelado", "parqueamento", "casa de banho", "casa", "arrecadação", "metro", "primeira habitação").
-Nunca uses termos comuns em português do Brasil (evita "banheiro", "apartamento novo", "vaga", "garagem coberta" se puderes usar parqueamento, etc).
-Deves responder estritamente no formato JSON estruturado fornecido.`;
-
-      const userPrompt = `Analisa os seguintes dados do imóvel e cria o plano completo de marketing e vendas:
-- Tipo de Imóvel: ${formInput.tipoImovel}
-- Tipologia: ${formInput.tipologia}
-- Área Útil: ${formInput.area} m²
-- Preço Pedido: ${formInput.preco} €
-- Estado: ${formInput.estado}
-- Localização: ${formInput.localizacao}
-- Pontos Fortes & Extras: ${formInput.pontosFortes}
-- Público-Alvo sugerido: ${formInput.publicoAlvo}
-- Tom de Voz solicitado: ${formInput.tomVoz}
-
-Instruções para o conteúdo:
-1. "titulos": Devem ser 3 opções irresistíveis, focados na localização, no lifestyle ou no investimento.
-2. "descricao_premium": Deve ser fluida, dividida em parágrafos, estruturada de forma inteligente com introdução apelativa, descrição das divisões/caraterísticas e fecho forte com apelo à ação.
-3. "redes_sociais.instagram_fb": Um post completo com emojis, caraterísticas rápidas em formato de lista, hashtags adequadas ao mercado português (ex: #lisboaimoveis, #comrarcasa, etc).
-4. "redes_sociais.tiktok_reels_ideia": Um conceito de vídeo curto (gancho, o que mostrar e apelo).
-5. "argumentos_venda": 4 pontos fortes detalhados com o benefício final prático para o comprador.
-6. "objecoes": Antecipa 3 ou 4 objeções reais de compradores em Portugal sobre este tipo de imóvel/zona (ex: preço, barulho, estacionamento, etc) e escreve como o corretor deve responder de forma diplomática e persuasiva.
-7. "roteiro_visita": Um passo a passo (3 a 5 etapas sequenciais) de como fazer o percurso da visita pelo imóvel física para fechar a venda de forma profissional.`;
-
-      // API JSON Schema definition for structured response
-      const jsonSchema = {
-        type: "OBJECT",
-        properties: {
-          titulos: {
-            type: "ARRAY",
-            items: { type: "STRING" }
-          },
-          descricao_premium: { type: "STRING" },
-          redes_sociais: {
-            type: "OBJECT",
-            properties: {
-              instagram_fb: { type: "STRING" },
-              tiktok_reels_ideia: { type: "STRING" }
-            },
-            required: ["instagram_fb", "tiktok_reels_ideia"]
-          },
-          argumentos_venda: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                ponto: { type: "STRING" },
-                beneficio: { type: "STRING" }
-              },
-              required: ["ponto", "beneficio"]
-            }
-          },
-          objecoes: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                objecao: { type: "STRING" },
-                resposta: { type: "STRING" }
-              },
-              required: ["objecao", "resposta"]
-            }
-          },
-          roteiro_visita: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                etapa: { type: "STRING" },
-                acao: { type: "STRING" },
-                foco_comercial: { type: "STRING" }
-              },
-              required: ["etapa", "acao", "foco_comercial"]
-            }
-          }
-        },
-        required: ["titulos", "descricao_premium", "redes_sociais", "argumentos_venda", "objecoes", "roteiro_visita"]
-      };
-
-      try {
-        const responseData = await fetchWithRetry(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: userPrompt }] }],
-              systemInstruction: { parts: [{ text: systemPrompt }] },
-              generationConfig: {
-                responseMimeType: "application/json",
-                responseSchema: jsonSchema
-              }
-            })
-          }
-        );
-
-        clearInterval(progressTimer);
-
-        // Parse resulting candidate text
-        const resultText = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!resultText) {
-          throw new Error("Resposta vazia da inteligência artificial.");
-        }
-
-        currentStore = JSON.parse(resultText);
-        renderOutput(currentStore);
-        
-        // Switch view
-        document.getElementById('loadingState').classList.add('hidden');
-        document.getElementById('outputDashboard').classList.remove('hidden');
-        
-        showToast("Estratégia imobiliária gerada com sucesso!");
-        switchTab('tab-descricao');
-
-        // Scroll again to results header to ensure full visibility on smaller screens
-        if (resultadoPainel) {
-          resultadoPainel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-      } catch (error) {
-        clearInterval(progressTimer);
-        document.getElementById('loadingState').classList.add('hidden');
-        document.getElementById('defaultState').classList.remove('hidden');
-        showToast(`Erro na geração: ${error.message}. Por favor tente novamente.`, 'error');
-      }
-    }
-
-    // Refinement API handler (Chat Adjustment)
-    async function handleRefinarEstrategia() {
-      const refineInput = document.getElementById('refineInput').value;
-      if (!refineInput.trim()) {
-        showToast("Por favor digite o que gostaria de refinar.", "error");
-        return;
-      }
-
-      // Show Loading state
-      document.getElementById('outputDashboard').classList.add('hidden');
-      document.getElementById('loadingState').classList.remove('hidden');
-      document.getElementById('loadingProgressTitle').innerText = "A reescrever e refinar com IA...";
-      document.getElementById('loadingProgressSubtitle').innerText = "A aplicar os seus comentários no marketing do imóvel.";
-      
-      const resultadoPainel = document.getElementById('resultado-painel');
-      if (resultadoPainel) {
-        resultadoPainel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      const progressTimer = runLoadingSequence();
-
-      const systemPrompt = `És um consultor imobiliário sénior, copywriter de luxo e especialista em fecho de vendas em Portugal.
-Vais atualizar o plano comercial do imóvel que geraste anteriormente com base nas novas instruções do utilizador.
-Usa SEMPRE português correto de Portugal (escreve "remodelado", "parqueamento", "casa de banho", "arrecadação", "metro", "primeira habitação").
-Responde estritamente no formato JSON estruturado fornecido.`;
-
-      const userPrompt = `Aqui estão os dados originais do imóvel:
-${JSON.stringify(originalQueryData)}
-
-E esta foi a estratégia comercial gerada anteriormente:
-${JSON.stringify(currentStore)}
-
-INSTRUÇÃO DE REFINAMENTO DO UTILIZADOR:
-"${refineInput}"
-
-Por favor, atualiza a estratégia comercial do imóvel (Títulos, Descrição, Redes Sociais, Argumentos, Objeções, Roteiro) integrando de forma natural o pedido acima.`;
-
-      // Recopy Schema for response
-      const jsonSchema = {
-        type: "OBJECT",
-        properties: {
-          titulos: { type: "ARRAY", items: { type: "STRING" } },
-          descricao_premium: { type: "STRING" },
-          redes_sociais: {
-            type: "OBJECT",
-            properties: {
-              instagram_fb: { type: "STRING" },
-              tiktok_reels_ideia: { type: "STRING" }
-            },
-            required: ["instagram_fb", "tiktok_reels_ideia"]
-          },
-          argumentos_venda: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                ponto: { type: "STRING" },
-                beneficio: { type: "STRING" }
-              },
-              required: ["ponto", "beneficio"]
-            }
-          },
-          objecoes: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                objecao: { type: "STRING" },
-                resposta: { type: "STRING" }
-              },
-              required: ["objecao", "resposta"]
-            }
-          },
-          roteiro_visita: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                etapa: { type: "STRING" },
-                acao: { type: "STRING" },
-                foco_comercial: { type: "STRING" }
-              },
-              required: ["etapa", "acao", "foco_comercial"]
-            }
-          }
-        },
-        required: ["titulos", "descricao_premium", "redes_sociais", "argumentos_venda", "objecoes", "roteiro_visita"]
-      };
-
-      try {
-        const responseData = await fetchWithRetry(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: userPrompt }] }],
-              systemInstruction: { parts: [{ text: systemPrompt }] },
-              generationConfig: {
-                responseMimeType: "application/json",
-                responseSchema: jsonSchema
-              }
-            })
-          }
-        );
-
-        clearInterval(progressTimer);
-
-        const resultText = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!resultText) {
-          throw new Error("Resposta vazia da inteligência artificial.");
-        }
-
-        currentStore = JSON.parse(resultText);
-        renderOutput(currentStore);
-        
-        // Switch view back and reset refine input
-        document.getElementById('loadingState').classList.add('hidden');
-        document.getElementById('outputDashboard').classList.remove('hidden');
-        document.getElementById('refineInput').value = "";
-        
-        showToast("Estratégia imobiliária refinada com sucesso!");
-        switchTab('tab-descricao');
-
-        if (resultadoPainel) {
-          resultadoPainel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-      } catch (error) {
-        clearInterval(progressTimer);
-        document.getElementById('loadingState').classList.add('hidden');
-        document.getElementById('outputDashboard').classList.remove('hidden');
-        showToast(`Erro ao refinar: ${error.message}`, 'error');
-      }
-    }
-
-    // Render parsed content to Dashboard DOM
-    function renderOutput(data) {
-      // 1. Titles
-      const titulosList = document.getElementById('titulos-list');
-      titulosList.innerHTML = data.titulos.map((t, idx) => `
-        <div class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded-lg transition-all">
-          <span class="flex-shrink-0 w-6 h-6 bg-brand-100 text-brand-900 rounded-full flex items-center justify-center font-bold text-xs">${idx + 1}</span>
-          <p class="text-sm font-bold text-slate-800 leading-tight">${t}</p>
-        </div>
-      `).join('');
-
-      // 2. Premium Description
-      document.getElementById('descricao-corpo').innerText = data.descricao_premium;
-
-      // 3. Social Captions
-      document.getElementById('social-caption').innerText = data.redes_sociais.instagram_fb;
-      document.getElementById('social-video').innerText = data.redes_sociais.tiktok_reels_ideia;
-
-      // 4. Argumentos de Venda
-      const argsContainer = document.getElementById('argumentos-container');
-      argsContainer.innerHTML = data.argumentos_venda.map((arg, idx) => `
-        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm space-y-1">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <h5 class="text-xs font-bold uppercase tracking-wide text-slate-400">Ponto Forte: ${arg.ponto}</h5>
-          </div>
-          <p class="text-sm font-semibold text-slate-800">${arg.ponto}</p>
-          <p class="text-xs text-slate-500 leading-relaxed">${arg.beneficio}</p>
-        </div>
-      `).join('');
-
-      // 5. Objeções
-      const objContainer = document.getElementById('objecoes-container');
-      objContainer.innerHTML = data.objecoes.map(obj => `
-        <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-          <div class="bg-rose-50/50 px-4 py-2.5 border-b border-rose-100 flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-            <h5 class="text-xs font-bold uppercase tracking-wider text-rose-800">Objeção: ${obj.objecao}</h5>
-          </div>
-          <div class="p-4">
-            <p class="text-xs font-semibold text-slate-600 uppercase tracking-widest mb-1.5">Como responder:</p>
-            <p class="text-sm text-slate-700 leading-relaxed">${obj.resposta}</p>
-          </div>
-        </div>
-      `).join('');
-
-      // 6. Roteiro de Visita
-      const roteiroContainer = document.getElementById('roteiro-container');
-      roteiroContainer.innerHTML = data.roteiro_visita.map((rot, idx) => `
-        <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row">
-          <div class="bg-slate-50 border-b md:border-b-0 md:border-r border-slate-100 px-4 py-3 md:py-0 flex md:flex-col justify-center items-center gap-1.5 min-w-[70px]">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Etapa</span>
-            <span class="text-2xl font-extrabold text-navy-800">${idx + 1}</span>
-          </div>
-          <div class="p-4 flex-grow space-y-2">
-            <div>
-              <h5 class="text-sm font-bold text-slate-800">${rot.etapa}</h5>
-              <p class="text-xs text-slate-500 mt-1"><strong class="text-slate-600">Ação do Corretor:</strong> ${rot.acao}</p>
-            </div>
-            <div class="bg-brand-50/50 p-2.5 rounded-lg border border-brand-100/30">
-              <p class="text-xs text-slate-700 leading-relaxed"><strong class="text-brand-900 font-bold uppercase tracking-widest text-[9px] block mb-0.5">Foco Comercial:</strong> ${rot.foco_comercial}</p>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Helper: Copy Element Text to Clipboard
-    function copiarElementoText(elementId) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-          showToast("Copiado com sucesso!");
-        } else {
-          showToast("Não foi possível copiar.", "error");
-        }
-      } catch (err) {
-        showToast("Erro ao tentar copiar.", "error");
-      }
-      selection.removeAllRanges();
-    }
-
-    // Copy entire generated report text
-    function copiarTodoRelatorio() {
-      if (!currentStore) return;
-
-      let textBlock = `=== RELATÓRIO COMERCIAL DO IMÓVEL ===\n\n`;
-      textBlock += `TÍTULOS SUGERIDOS:\n`;
-      currentStore.titulos.forEach((t, i) => {
-        textBlock += `${i+1}. ${t}\n`;
-      });
-
-      textBlock += `\nDESCRIÇÃO PREMIUM:\n${currentStore.descricao_premium}\n\n`;
-      textBlock += `REDES SOCIAIS (INSTAGRAM / FB):\n${currentStore.redes_sociais.instagram_fb}\n\n`;
-      textBlock += `REDES SOCIAIS (REELS / TIKTOK):\n${currentStore.redes_sociais.tiktok_reels_ideia}\n\n`;
-      textBlock += `ARGUMENTOS DE VENDA:\n`;
-      currentStore.argumentos_venda.forEach((arg, i) => {
-        textBlock += `- Ponto Forte: ${arg.ponto}\n  Benefício: ${arg.beneficio}\n`;
-      });
-
-      textBlock += `\nOBJEÇÕES E RESPOSTAS:\n`;
-      currentStore.objecoes.forEach((obj, i) => {
-        textBlock += `- Objeção: ${obj.objecao}\n  Resposta: ${obj.resposta}\n`;
-      });
-
-      textBlock += `\nROTEIRO DE VISITA FÍSICA:\n`;
-      currentStore.roteiro_visita.forEach((rot, i) => {
-        textBlock += `Etapa ${i+1}: ${rot.etapa}\n  Ação: ${rot.acao}\n  Foco Comercial: ${rot.foco_comercial}\n`;
-      });
-
-      // Save to a dynamic textarea to copy reliably in iframe
-      const textarea = document.createElement('textarea');
-      textarea.value = textBlock;
-      textarea.style.position = 'fixed'; // Avoid scrolling to bottom
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-          showToast("Toda a estratégia foi copiada para a área de transferência!");
-        } else {
-          showToast("Não foi possível copiar.", "error");
-        }
-      } catch (err) {
-        showToast("Erro ao copiar o relatório.", "error");
-      }
-      document.body.removeChild(textarea);
-    }
-
-    // Export output to local .txt file
-    function descarregarRelatorio() {
-      if (!currentStore) return;
-
-      let textBlock = `=== ESTRATÉGIA COMERCIAL DO IMÓVEL ===\nGerado por HomeMatch Strategist\n\n`;
-      textBlock += `TÍTULOS SUGERIDOS:\n`;
-      currentStore.titulos.forEach((t, i) => {
-        textBlock += `${i+1}. ${t}\n`;
-      });
-
-      textBlock += `\nDESCRIÇÃO PREMIUM:\n${currentStore.descricao_premium}\n\n`;
-      textBlock += `REDES SOCIAIS (INSTAGRAM / FB):\n${currentStore.redes_sociais.instagram_fb}\n\n`;
-      textBlock += `REDES SOCIAIS (REELS / TIKTOK):\n${currentStore.redes_sociais.tiktok_reels_ideia}\n\n`;
-      textBlock += `ARGUMENTOS DE VENDA:\n`;
-      currentStore.argumentos_venda.forEach((arg, i) => {
-        textBlock += `- Ponto: ${arg.ponto}\n  Benefício: ${arg.beneficio}\n`;
-      });
-
-      textBlock += `\nOBJEÇÕES E RESPOSTAS:\n`;
-      currentStore.objecoes.forEach((obj, i) => {
-        textBlock += `- Objeção: ${obj.objecao}\n  Resposta: ${obj.resposta}\n`;
-      });
-
-      textBlock += `\nROTEIRO DE VISITA:\n`;
-      currentStore.roteiro_visita.forEach((rot, i) => {
-        textBlock += `Etapa ${i+1}: ${rot.etapa}\n  Ação: ${rot.acao}\n  Foco: ${rot.foco_comercial}\n`;
-      });
-
-      const blob = new Blob([textBlock], { type: 'text/plain;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `Estrategia-Imovel-${originalQueryData.tipoImovel}-${originalQueryData.tipologia}.txt`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast("Ficheiro descarregado com sucesso!");
     }
   </script>
-
 </body>
 </html>
