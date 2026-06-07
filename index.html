@@ -1100,7 +1100,7 @@
                             <h4 class="font-bold text-white text-sm">Vamos analisar o teu pedido.</h4>
                         </div>
                         <p class="text-zinc-400 text-xs pl-11 leading-relaxed">
-                            Receberás um email assim que fores aceite na beta.
+                            Depois de enviares o pedido, recebemos a tua candidatura. Se fores selecionado para a beta, enviamos o acesso para o email indicado.
                         </p>
                     </div>
 
@@ -1387,22 +1387,22 @@
                     </p>
                 </div>
 
-                <form onsubmit="submitWaitlist(event)" class="space-y-4 text-left">
+                <form id="beta-waitlist-form" action="https://formspree.io/f/mzdqedoa" method="POST" onsubmit="submitWaitlist(event)" class="space-y-4 text-left">
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Nome Completo</label>
-                        <input type="text" id="beta-name" required placeholder="Ex: Gonçalo Silva" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
+                        <input type="text" id="beta-name" name="nome" required placeholder="Ex: Gonçalo Silva" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
                     </div>
                     
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Endereço de E-mail</label>
-                        <input type="email" id="beta-email" required placeholder="Ex: goncalo@email.com" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
+                        <input type="email" id="beta-email" name="email" required placeholder="Ex: goncalo@email.com" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
                     </div>
 
                     <div class="space-y-1.5">
                         <label class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">Handle do Instagram (Opcional)</label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-500 text-sm">@</span>
-                            <input type="text" id="beta-handle" placeholder="goncalosilva" class="w-full bg-brand-dark border border-white/10 rounded-xl pl-8 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
+                            <input type="text" id="beta-handle" name="instagram" placeholder="goncalosilva" class="w-full bg-brand-dark border border-white/10 rounded-xl pl-8 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-pink transition-colors">
                         </div>
                     </div>
 
@@ -2169,18 +2169,84 @@
         }
 
         // SUBMETER WAITLIST
-        function submitWaitlist(event) {
-            event.preventDefault();
-            const name = document.getElementById('beta-name').value;
-            state.totalBetaWaitlist += 1; 
-            state.hasRegistered = true;
-            state.waitlistPosition = Math.floor(Math.random() * 500) + 4500; 
+        const WAITLIST_ENDPOINT = "https://formspree.io/f/mzdqedoa";
 
-            document.getElementById('waitlist-form-container').classList.add('hidden');
-            document.getElementById('waitlist-success').classList.remove('hidden');
-            document.getElementById('waitlist-pos').innerText = `#${state.waitlistPosition.toLocaleString()}`;
-            updateUIVariables(); 
-            showToast("Pedido Submetido!", `${name}, o teu lugar na fila de fundadores foi garantido!`, "fa-solid fa-circle-check");
+        async function submitWaitlist(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            const name = document.getElementById('beta-name').value.trim();
+            const email = document.getElementById('beta-email').value.trim();
+            const handle = document.getElementById('beta-handle').value.trim();
+            const terms = document.getElementById('beta-terms').checked;
+
+            if (!name || !email || !terms) {
+                showToast(
+                    "Campos obrigatórios",
+                    "Preenche o nome, email e aceita os termos para entrares na beta.",
+                    "fa-solid fa-circle-exclamation"
+                );
+                return;
+            }
+
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-60', 'cursor-not-allowed');
+            submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> A enviar pedido...';
+
+            const data = new FormData();
+            data.append("nome", name);
+            data.append("email", email);
+            data.append("instagram", handle ? "@" + handle.replace(/^@/, "") : "Não indicado");
+            data.append("origem", "Landing SHITAGRAM");
+            data.append("estado", "Pedido de acesso à beta");
+            data.append("_subject", "Novo pedido de acesso à beta SHITAGRAM™");
+            data.append("_replyto", email);
+
+            try {
+                const response = await fetch(WAITLIST_ENDPOINT, {
+                    method: "POST",
+                    body: data,
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Erro ao enviar formulário");
+                }
+
+                state.totalBetaWaitlist += 1;
+                state.hasRegistered = true;
+                state.waitlistPosition = Math.floor(Math.random() * 500) + 4500;
+
+                document.getElementById('waitlist-form-container').classList.add('hidden');
+                document.getElementById('waitlist-success').classList.remove('hidden');
+                document.getElementById('waitlist-pos').innerText = `#${state.waitlistPosition.toLocaleString()}`;
+
+                updateUIVariables();
+
+                showToast(
+                    "Pedido recebido!",
+                    `${name}, recebemos o teu pedido. Vamos contactar-te por email quando houver acesso disponível.`,
+                    "fa-solid fa-circle-check"
+                );
+
+                form.reset();
+
+            } catch (error) {
+                showToast(
+                    "Erro ao enviar",
+                    "Não foi possível enviar o pedido. Tenta novamente ou contacta-nos pelo Instagram.",
+                    "fa-solid fa-triangle-exclamation"
+                );
+            } finally {
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                submitButton.innerHTML = originalButtonText;
+            }
         }
 
         function formatNumber(num) {

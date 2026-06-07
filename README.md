@@ -24,3 +24,19 @@ Para live real, edita `livekit-config.js` e adiciona:
 - `window.SHITAGRAM_LIVEKIT_TOKEN_ENDPOINT`
 
 O endpoint de token deve ser criado no servidor/backend, nunca com a chave secreta exposta no front-end.
+
+
+## Formulário da beta
+
+O formulário da landing principal está ligado ao Formspree:
+
+https://formspree.io/f/mzdqedoa
+
+Campos enviados:
+- nome
+- email
+- instagram
+- origem
+- estado
+
+Para testar: abre `index.html`, clica em "Entrar na beta", preenche o formulário e confirma no painel do Formspree.
