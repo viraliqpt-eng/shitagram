@@ -1,13 +1,13 @@
 {
-  "name": "SHITAGRAM Arena Live",
-  "short_name": "Arena",
-  "description": "Mico Battle Live do SHITAGRAM™",
-  "start_url": "./arena.html",
+  "name": "SHITAGRAM™",
+  "short_name": "SHITAGRAM",
+  "description": "Rede social de humor onde os teus micos viram histórias, reações e ranking.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#05020c",
-  "theme_color": "#ff2e93",
+  "theme_color": "#05020c",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./icon-192.png",
@@ -20,6 +20,32 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Arena Live",
+      "short_name": "Arena",
+      "description": "Abrir a Arena Live",
+      "url": "./arena.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Entrar na beta",
+      "short_name": "Beta",
+      "description": "Abrir a candidatura à beta",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHITAGRAM™ - Os teus micos viram histórias</title>
+    <meta name="theme-color" content="#05020c" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SHITAGRAM" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
@@ -126,6 +133,7 @@
                 <a href="#como-funciona-detalhado" class="hover:text-brand-pink transition-colors">Como funciona</a>
                 <a href="#prova-social" class="hover:text-brand-pink transition-colors">Comunidade</a>
                 <a href="#confianca-seguranca" class="hover:text-brand-pink transition-colors">Segurança</a>
+                <a href="./arena.html" class="hover:text-brand-pink transition-colors">Arena Live</a>
                 <a href="#feed-app" class="hover:text-brand-pink transition-colors">Feed / App</a>
                 <a href="#premium-experimental" class="hover:text-brand-pink transition-colors">Premium</a>
                 <a href="#pos-candidatura" class="hover:text-brand-pink transition-colors">Pós-candidatura</a>
@@ -197,6 +205,9 @@
                     </button>
                     <a href="#como-funciona-detalhado" class="px-6 py-4 rounded-xl font-display font-bold text-sm bg-white/5 hover:bg-white/10 text-white border border-white/15 transition-all flex items-center justify-center">
                         Ver como funciona
+                    </a>
+                    <a href="./arena.html" class="px-6 py-4 rounded-xl font-display font-bold text-sm bg-white/5 hover:bg-brand-purple/20 text-white border border-brand-purple/30 transition-all flex items-center justify-center">
+                        Ver Arena Live
                     </a>
                 </div>
 
@@ -2175,6 +2186,14 @@
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+
+        // PWA: Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./sw.js').catch(function () {});
+            });
+        }
+
     </script>
 </body>
 </html>
