@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentirógrafo™ v4</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#4b0b75,#08020d 75%);color:white;min-height:100vh}
+header{text-align:center;padding:28px 16px}
+h1{margin:0;font-size:42px;color:#ffcc00;text-shadow:0 0 22px #ff00cc}
+.subtitle{color:#ddd}
+.container{max-width:950px;margin:auto;padding:20px}
+.card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:24px;margin-bottom:20px;box-shadow:0 0 28px rgba(255,0,180,.18)}
+input,textarea{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;margin-top:10px}
+textarea{height:125px;resize:none}
+.characters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:16px}
+.character{cursor:pointer;text-align:center;padding:20px;border-radius:20px;background:rgba(0,0,0,.35);border:2px solid transparent;transition:.2s}
+.character:hover,.character.active{border-color:#ffcc00;transform:scale(1.04);background:rgba(255,204,0,.14)}
+.emoji{font-size:46px}
+button{width:100%;padding:18px;border:none;border-radius:18px;background:linear-gradient(135deg,#ffcc00,#ff0088);color:#160014;font-weight:900;font-size:18px;cursor:pointer;margin-top:14px}
+button:hover{filter:brightness(1.1)}
+.hidden{display:none}
+.timer{font-size:34px;font-weight:900;color:#ffcc00}
+.lie-box,.theme-box{background:rgba(0,0,0,.35);border-left:5px solid #ffcc00;padding:18px;border-radius:16px;font-size:20px;line-height:1.4}
+.theme-box{text-align:center;border-left:none;border:2px solid #ffcc00}
+.theme-big{font-size:36px;font-weight:900;color:#ffcc00}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:18px}
+.score{background:rgba(255,255,255,.12);padding:16px;border-radius:16px;text-align:center}
+.score strong{font-size:30px;color:#ffcc00}
+.ranking-item{display:flex;justify-content:space-between;padding:13px;background:rgba(255,255,255,.08);border-radius:12px;margin-bottom:8px}
+#countdown{position:fixed;inset:0;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;font-size:78px;font-weight:900;color:#ffcc00;text-shadow:0 0 30px #ff00cc;z-index:9999}
+#memeCard{background:linear-gradient(135deg,#250033,#ff0088);padding:26px;border-radius:24px;text-align:center;margin-top:20px;border:2px solid #ffcc00}
+#memeCard h2{color:#ffcc00;margin-top:0}
+#memeText{font-size:24px;font-weight:900;line-height:1.3}
+footer{text-align:center;padding:30px;color:#aaa;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎭 Mentirógrafo™</h1>
+  <p class="subtitle">O jogo nacional das mentiras absurdas.</p>
+</header>
+
+<main class="container">
+
+<section id="home" class="card">
+  <h2>Nome do jogador</h2>
+  <input id="playerName" placeholder="Ex: Pedro">
+
+  <h2>Escolhe o adversário</h2>
+
+  <div class="characters">
+    <div class="character" onclick="selectCharacter(this,'Dona Alzira','👵')"><div class="emoji">👵</div><h3>Dona Alzira</h3><p>Mentiras antigas impossíveis.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Zé Pescador','🐟')"><div class="emoji">🐟</div><h3>Zé Pescador</h3><p>Peixes, mar e exageros.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Toni Empreendedor','🧑‍💼')"><div class="emoji">🧑‍💼</div><h3>Toni Empreendedor</h3><p>Negócios absurdos.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Dr. Antunes','👨‍⚕️')"><div class="emoji">👨‍⚕️</div><h3>Dr. Antunes</h3><p>Curas impossíveis.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Professor Pardal','🧪')"><div class="emoji">🧪</div><h3>Professor Pardal</h3><p>Ciência sem vergonha.</p></div>
+    <div class="character" onclick="selectCharacter(this,'Padre Toninho','⛪')"><div class="emoji">⛪</div><h3>Padre Toninho</h3><p>Milagres duvidosos.</p></div>
+  </div>
+
+  <button onclick="startNormalGame()">🎡 Duelo Normal</button>
+  <button onclick="startArena()">🌍 Entrar na Arena Global</button>
+</section>
+
+<section id="themeSection" class="card hidden">
+  <h2 id="themeTitle">🎡 Tema da ronda</h2>
+  <div class="theme-box">
+    <p>A tua mentira tem de envolver:</p>
+    <div id="themeText" class="theme-big">---</div>
+  </div>
+  <button onclick="startCountdown()">🔥 Começar Duelo</button>
+</section>
+
+<section id="duel" class="card hidden">
+  <h2 id="duelTitle">Duelo</h2>
+  <p class="timer">⏳ <span id="time">60</span>s</p>
+
+  <h3>Tema obrigatório:</h3>
+  <div class="theme-box" id="duelTheme"></div>
+
+  <h3>Mentira do adversário:</h3>
+  <div class="lie-box" id="enemyLie"></div>
+
+  <h3>A tua mentira:</h3>
+  <textarea id="playerLie" placeholder="Escreve aqui a mentira mais descarada..."></textarea>
+
+  <button onclick="judgeLie()">🤖 Enviar Mentira</button>
+</section>
+
+<section id="result" class="card hidden">
+  <h2>Resultado Final</h2>
+
+  <div class="score-grid">
+    <div class="score">Criatividade<br><strong id="criatividade">0</strong></div>
+    <div class="score">Absurdo<br><strong id="absurdo">0</strong></div>
+    <div class="score">Humor<br><strong id="humor">0</strong></div>
+    <div class="score">Descaramento<br><strong id="descaramento">0</strong></div>
+    <div class="score">Bónus Tema<br><strong id="bonus">0</strong></div>
+  </div>
+
+  <h2>🏆 Total: <span id="total">0</span></h2>
+  <p id="comment"></p>
+  <p><strong id="rewardText">+100 XP · +50 Moedas</strong></p>
+
+  <div id="memeCard">
+    <h2>🎭 Mentirógrafo™</h2>
+    <p><strong>Tema:</strong> <span id="memeTheme"></span></p>
+    <p id="memeText"></p>
+    <p id="memeScore"></p>
+  </div>
+
+  <button id="primaryResultButton" onclick="shareMeme()">📱 Partilhar como Meme</button>
+  <button onclick="restart()">🔁 Jogar Outra Vez</button>
+</section>
+
+<section id="arenaFinal" class="card hidden">
+  <h2>🌍 Arena Global Finalizada</h2>
+  <h1 id="arenaTitle"></h1>
+  <p>Pontuação total em 10 rondas:</p>
+  <h2>🏆 <span id="arenaFinalScore">0</span> pts</h2>
+  <button onclick="restart()">🔁 Jogar Novamente</button>
+</section>
+
+<section class="card">
+  <h2>🏆 Ranking Local</h2>
+  <div id="ranking"></div>
+</section>
+
+</main>
+
+<footer>© 2026 Mentirógrafo™ Portugal — Humor, absurdo e descaramento.</footer>
+
+<script>
+let selectedName="", selectedEmoji="", currentTheme="";
+let timer, timeLeft=60, finalTotal=0, finalLie="";
+let arenaMode=false, arenaRound=1, arenaTotal=0;
+const maxArenaRounds=10;
+
+const themes=["Futebol","Portugal","Trabalho","Casamento","Escola","Tecnologia","Dinossauros","Espaço","Família","Praia","Restaurante","Política","Bancos","Padaria","Tasca","Ginásio","Vizinhos","Namoro"];
+
+const lies={
+"Dona Alzira":["No meu tempo os pombos entregavam emails com selo.","A minha televisão funcionava a carvão.","O inverno durava 14 meses e ainda sobrava frio.","Antigamente os frigoríficos cantavam fado quando estavam vazios."],
+"Zé Pescador":["Pesquei uma sardinha que sabia declarar IRS.","Uma vez apanhei um polvo que jogava dominó.","O mar ligou-me a pedir sal emprestado.","Pesquei um bacalhau que vinha com fatura e garantia."],
+"Toni Empreendedor":["Vendi NFTs a extraterrestres reformados.","Criei uma startup que alugava sombras no verão.","Faturei milhões a vender Wi-Fi para caracóis.","Abri uma empresa de consultoria para plantas indecisas."],
+"Dr. Antunes":["Curei preguiça com chá de impressora.","Operei um relógio que tinha ansiedade.","Receitei vitamina C a um computador gripado.","Fiz fisioterapia a uma cadeira que coxeava."],
+"Professor Pardal":["Inventei uma máquina que transforma filas de espera em bolachas.","Criei um capacete que traduz pensamentos de batatas.","Descobri que os semáforos ficam vermelhos por vergonha.","Ensinei uma torradeira a fazer reuniões por Zoom."],
+"Padre Toninho":["Fiz um milagre e multipliquei pastéis de nata numa rotunda.","Abençoei um micro-ondas e ele passou a aquecer sentimentos.","Uma vez confessei um robô que tinha pecado em binário.","Transformei água com gás em refrigerante sagrado."]
+};
+
+const comments=[
+"Esta mentira foi tão absurda que a realidade pediu baixa médica.",
+"Três fact-checkers desistiram depois de ler isto.",
+"Mentira de alto nível. O polígrafo explodiu.",
+"Isto não foi uma mentira. Foi património nacional da tanga.",
+"A física leu isto e foi tirar férias.",
+"Esta mentira devia ser ensinada nas escolas de descaramento."
+];
+
+function playSound(type){
+  const audio=new (window.AudioContext||window.webkitAudioContext)();
+  const osc=audio.createOscillator();
+  const gain=audio.createGain();
+  osc.connect(gain); gain.connect(audio.destination);
+  osc.frequency.value=type==="win"?980:type==="fail"?180:type==="start"?760:500;
+  gain.gain.value=.08;
+  osc.start();
+  setTimeout(()=>{osc.stop();audio.close()},150);
+}
+
+function selectCharacter(element,name,emoji){
+  playSound("click");
+  selectedName=name; selectedEmoji=emoji;
+  document.querySelectorAll(".character").forEach(c=>c.classList.remove("active"));
+  element.classList.add("active");
+}
+
+function validateStart(){
+  if(!document.getElementById("playerName").value.trim()){alert("Escreve primeiro o teu nome.");return false}
+  if(!selectedName){alert("Escolhe primeiro um adversário.");return false}
+  return true;
+}
+
+function startNormalGame(){
+  if(!validateStart())return;
+  arenaMode=false;
+  spinTheme();
+}
+
+function startArena(){
+  if(!validateStart())return;
+  arenaMode=true;
+  arenaRound=1;
+  arenaTotal=0;
+  spinTheme();
+}
+
+function spinTheme(){
+  playSound("start");
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("themeSection").classList.remove("hidden");
+  document.getElementById("themeTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:"🎡 Tema da ronda";
+
+  let spins=0;
+  const themeText=document.getElementById("themeText");
+
+  const interval=setInterval(()=>{
+    currentTheme=themes[Math.floor(Math.random()*themes.length)];
+    themeText.innerText=currentTheme;
+    spins++;
+    if(spins>=14){
+      clearInterval(interval);
+      currentTheme=themes[Math.floor(Math.random()*themes.length)];
+      themeText.innerText=currentTheme;
+      playSound("win");
+    }
+  },90);
+}
+
+function startCountdown(){
+  playSound("start");
+  const box=document.createElement("div");
+  box.id="countdown";
+  document.body.appendChild(box);
+  let count=3;
+  box.innerText=count;
+
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0){box.innerText=count;playSound("click")}
+    else if(count===0){box.innerText="MENTE!";playSound("start")}
+    else{clearInterval(interval);box.remove();beginDuel()}
+  },1000);
+}
+
+function beginDuel(){
+  document.getElementById("themeSection").classList.add("hidden");
+  document.getElementById("duel").classList.remove("hidden");
+  document.getElementById("duelTitle").innerText=arenaMode?`🌍 Arena Global — Ronda ${arenaRound}/${maxArenaRounds}`:`${selectedEmoji} Duelo contra ${selectedName}`;
+  document.getElementById("duelTheme").innerText=currentTheme;
+
+  const enemyOptions=lies[selectedName];
+  document.getElementById("enemyLie").innerText=enemyOptions[Math.floor(Math.random()*enemyOptions.length)];
+
+  timeLeft=60;
+  document.getElementById("time").innerText=timeLeft;
+  timer=setInterval(()=>{
+    timeLeft--;
+    document.getElementById("time").innerText=timeLeft;
+    if(timeLeft<=0){clearInterval(timer);judgeLie()}
+  },1000);
+}
+
+function judgeLie(){
+  clearInterval(timer);
+  const text=document.getElementById("playerLie").value.trim();
+  if(!text){alert("Escreve uma mentira primeiro.");return}
+
+  finalLie=text;
+  const criatividade=randomScore(text.length);
+  const absurdo=randomScore(text.length+8);
+  const humor=randomScore(text.length+4);
+  const descaramento=randomScore(text.length+12);
+  const bonus=calculateThemeBonus(text,currentTheme);
+
+  finalTotal=criatividade+absurdo+humor+descaramento+bonus;
+  if(arenaMode) arenaTotal+=finalTotal;
+
+  document.getElementById("duel").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("criatividade").innerText=criatividade;
+  document.getElementById("absurdo").innerText=absurdo;
+  document.getElementById("humor").innerText=humor;
+  document.getElementById("descaramento").innerText=descaramento;
+  document.getElementById("bonus").innerText=bonus;
+  document.getElementById("total").innerText=finalTotal;
+
+  let comment=comments[Math.floor(Math.random()*comments.length)];
+  if(bonus>=40) comment+=" Bónus máximo: usaste o tema como mestre da tanga.";
+  if(bonus===0) comment+=" Ignoraste o tema e isso custou pontos.";
+  document.getElementById("comment").innerText=comment;
+
+  document.getElementById("memeTheme").innerText=currentTheme;
+  document.getElementById("memeText").innerText="“"+finalLie+"”";
+  document.getElementById("memeScore").innerText="Pontuação: "+finalTotal+" pts";
+
+  const btn=document.getElementById("primaryResultButton");
+
+  if(arenaMode){
+    document.getElementById("rewardText").innerText=`Ronda ${arenaRound}/${maxArenaRounds} · Total Arena: ${arenaTotal} pts`;
+    btn.innerText=arenaRound>=maxArenaRounds?"🏁 Ver Resultado Final":"➡️ Próxima Ronda";
+    btn.onclick=arenaRound>=maxArenaRounds?showArenaFinal:nextArenaRound;
+  }else{
+    document.getElementById("rewardText").innerText=finalTotal>=340?"+150 XP · +80 Moedas":finalTotal>=300?"+100 XP · +50 Moedas":"+20 XP · +10 Moedas";
+    btn.innerText="📱 Partilhar como Meme";
+    btn.onclick=shareMeme;
+    saveRanking(finalTotal,"Duelo");
+    loadRanking();
+  }
+
+  playSound(finalTotal>=300?"win":"fail");
+}
+
+function nextArenaRound(){
+  arenaRound++;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("playerLie").value="";
+  spinTheme();
+}
+
+function showArenaFinal(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("arenaFinal").classList.remove("hidden");
+
+  let title=arenaTotal>=3500?"👑 Campeão Nacional da Tanga":arenaTotal>=2800?"🔥 Mestre do Descaramento":arenaTotal>=2000?"🎭 Mentirógrafo Promissor":"🥔 Aprendiz da Mentira";
+
+  document.getElementById("arenaTitle").innerText=title;
+  document.getElementById("arenaFinalScore").innerText=arenaTotal;
+
+  saveRanking(arenaTotal,"Arena Global");
+  loadRanking();
+}
+
+function calculateThemeBonus(text,theme){
+  const lower=text.toLowerCase();
+  const t=theme.toLowerCase();
+  const keywords={
+    "futebol":["bola","golo","ronaldo","benfica","sporting","porto","árbitro","estádio"],
+    "portugal":["portugal","lisboa","porto","fado","pastel","sardinha","bacalhau"],
+    "trabalho":["chefe","emprego","reunião","salário","empresa","trabalho"],
+    "casamento":["noiva","noivo","aliança","casamento","lua de mel"],
+    "escola":["professor","teste","aluno","escola","caderno"],
+    "tecnologia":["wifi","internet","robô","computador","app","telemóvel"],
+    "dinossauros":["dinossauro","t-rex","jurássico","fóssil"],
+    "espaço":["lua","marte","nasa","astronauta","foguetão","planeta"],
+    "família":["mãe","pai","avó","avô","primo","família"],
+    "praia":["areia","mar","sol","toalha","praia"],
+    "restaurante":["garçom","comida","menu","restaurante","sopa"],
+    "política":["presidente","ministro","parlamento","voto","política"],
+    "bancos":["banco","dinheiro","empréstimo","cartão","juros"],
+    "padaria":["pão","croissant","forno","padaria","bolo"],
+    "tasca":["tasca","vinho","petisco","balcão","bifana"],
+    "ginásio":["ginásio","halter","músculo","treino","proteína"],
+    "vizinhos":["vizinho","prédio","condomínio","barulho","escada"],
+    "namoro":["amor","namoro","beijo","ex","coração"]
+  };
+
+  let bonus=0;
+  if(lower.includes(t)) bonus+=40;
+  (keywords[t]||[]).forEach(word=>{if(lower.includes(word)) bonus+=10});
+  return Math.min(bonus,50);
+}
+
+function randomScore(seed){
+  let min=50;
+  if(seed>35)min=70;
+  if(seed>75)min=80;
+  return Math.floor(Math.random()*(100-min+1))+min;
+}
+
+function saveRanking(score,mode){
+  const player=document.getElementById("playerName").value.trim()||"Jogador";
+  const ranking=JSON.parse(localStorage.getItem("mentirografoRankingV4"))||[];
+  ranking.push({name:player,score,theme:currentTheme,mode});
+  ranking.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("mentirografoRankingV4",JSON.stringify(ranking.slice(0,10)));
+}
+
+function loadRanking(){
+  const ranking=JSON.parse(localStorage.getItem("mentirografoRankingV4"))||[];
+  const box=document.getElementById("ranking");
+  if(ranking.length===0){box.innerHTML="<p>Ainda sem pontuações.</p>";return}
+  box.innerHTML=ranking.map((item,index)=>`
+    <div class="ranking-item">
+      <span>${index+1}. ${item.name} <small>(${item.mode})</small></span>
+      <strong>${item.score} pts</strong>
+    </div>
+  `).join("");
+}
+
+function shareMeme(){
+  const text="🎭 Mentirógrafo™\n\nTema: "+currentTheme+"\n\nA minha mentira:\n“"+finalLie+"”\n\nPontuação: "+finalTotal+" pts";
+  if(navigator.share){navigator.share({title:"Mentirógrafo™",text})}
+  else{navigator.clipboard.writeText(text);alert("Meme copiado para partilhares.")}
+}
+
+function restart(){
+  clearInterval(timer);
+  arenaMode=false;
+  arenaRound=1;
+  arenaTotal=0;
+  currentTheme="";
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("themeSection").classList.add("hidden");
+  document.getElementById("duel").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("arenaFinal").classList.add("hidden");
+  document.getElementById("playerLie").value="";
+  document.getElementById("themeText").innerText="---";
+}
+
+loadRanking();
+</script>
+
+</body>
+</html>
